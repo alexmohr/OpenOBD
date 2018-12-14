@@ -1,3 +1,0 @@
-/home/me/dev/open-obd2/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/me/dev/open-obd2/cmake-build-debug/CMakeFiles/open_obd2.dir
-/home/me/dev/open-obd2/cmake-build-debug/CMakeFiles/edit_cache.dir

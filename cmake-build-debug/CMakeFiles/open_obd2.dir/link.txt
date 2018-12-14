@@ -1,1 +1,0 @@
-/usr/bin/c++  -g   CMakeFiles/open_obd2.dir/src/main.cpp.o CMakeFiles/open_obd2.dir/src/Config.cpp.o CMakeFiles/open_obd2.dir/lib/easylogging++.cc.o  -o open_obd2  -L/home/me/dev/open-obd2/lib 

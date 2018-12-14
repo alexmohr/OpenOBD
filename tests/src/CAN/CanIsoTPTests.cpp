@@ -17,7 +17,7 @@ void initIsoTp(CanIsoTP* vehicleCAN, CanIsoTP* testerCAN){
     testerCAN->openIsoTp(VEHICLE_ID, TESTER_ID, const_cast<char *>(CAN_INTERFACE));
 }
 
-TEST(CanIsoTp, SingleFrameMessage){
+TEST(CanIsoTp, SingleFrameMessage) { // NOLINT(cert-err58-cpp)
     vector<byte> request  {(byte) 0x09 , (byte)0x02};
 
     auto vehicleCAN = new CanIsoTP();
@@ -25,7 +25,7 @@ TEST(CanIsoTp, SingleFrameMessage){
     initIsoTp(vehicleCAN, testerCAN);
     testerCAN->send(request.data(), static_cast<int>(request.size()));
 
-    byte* buf = (byte*)malloc(request.size());
+    auto buf = (byte *) malloc(request.size());
     int readSize;
     vehicleCAN->receive(buf, static_cast<int>(request.size()), readSize);
 
@@ -37,10 +37,16 @@ TEST(CanIsoTp, SingleFrameMessage){
     }
 }
 
-TEST(CanIsoTp, MultiFrameMessage){
-    vector<byte> request {(byte)0x49,(byte) 0x02, (byte) 0x01,(byte) 0x57, (byte)0x4d, (byte)0x45,
-                           (byte)0x21, (byte) 0x34 ,(byte)0x35,(byte) 0x33, (byte) 0x30,(byte) 0x34, (byte)0x34, (byte)0x32,
-                           (byte)0x22, (byte) 0x59 ,(byte)0x30,(byte) 0x33, (byte) 0x33,(byte) 0x32, (byte)0x30, (byte)0x34
+TEST(CanIsoTp, MultiFrameMessage) { // NOLINT(cert-err58-cpp)
+    // Request: 0x02 0x09 0x02 0x00 0x00 0x00 0x00 0x00
+    // Response: flow control has been removed because it will be added by kernel driver.
+    // 0x10 0x14 0x49 0x02 0x01 0x57 0x4d 0x45
+    //0x21 0x34 0x35 0x33 0x30 0x34 0x34 0x32
+    //0x22 0x59 0x30 0x33 0x33 0x32 0x30 0x34
+    vector<byte> request{
+            (byte) 0x49, (byte) 0x02, (byte) 0x01, (byte) 0x57, (byte) 0x4d, (byte) 0x45,
+            (byte) 0x21, (byte) 0x34, (byte) 0x35, (byte) 0x33, (byte) 0x30, (byte) 0x34, (byte) 0x34, (byte) 0x32,
+            (byte) 0x22, (byte) 0x59, (byte) 0x30, (byte) 0x33, (byte) 0x33, (byte) 0x32, (byte) 0x30, (byte) 0x34
     };
 
     auto vehicleCAN = new CanIsoTP();

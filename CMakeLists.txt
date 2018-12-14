@@ -50,8 +50,11 @@ add_executable(open_obd2 src/main.cpp src/Config.cpp src/Config.h
 
 # Now simply link against gtest or gtest_main as needed. Eg
 add_executable(Test
-        tests/src/OBD/OBDHandlerTests.cpp tests/src/CAN/CanIsoTPTests.cpp
-
+        tests/src/OBD/OBDHandlerTest.h
+        tests/src/OBD/OBDHandlerTest.cpp
+        tests/src/OBD/OBDHandlerTestsService1.cpp
+        tests/src/OBD/OBDHandlerTestsService2.cpp
+        tests/src/CAN/CanIsoTPTests.cpp
 
 
         src/Config.cpp src/Config.h
@@ -63,8 +66,6 @@ add_executable(Test
         src/OBD/data/Enumerated/FuelSystemStatus.h
         src/Pid.cpp src/Pid.h src/Service.h
         src/CAN/CanIsoTP.cpp
-        src/CAN/CanIsoTP.h include/linux/can/isotp.h
-
-        )
+        src/CAN/CanIsoTP.h include/linux/can/isotp.h tests/src/OBD/OBDHandlerTestSimulatedCAN.cpp)
 target_link_libraries(Test gtest_main)
 add_test(NAME obdtest COMMAND Test)

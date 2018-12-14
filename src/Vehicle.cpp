@@ -19,10 +19,6 @@ Vehicle::Vehicle(Vehicle &vehicle) {
 
 }
 
-void Vehicle::fromFrame(byte *frame) {
-    monitorStatus->fromFrame(frame);
-}
-
 MonitorStatus *Vehicle::getMonitorStatus() {
     return monitorStatus;
 }

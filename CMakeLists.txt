@@ -6,5 +6,65 @@ set(CMAKE_CXX_STANDARD 17)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 link_directories(${PROJECT_SOURCE_DIR}/lib)
 
+
+# Download and unpack googletest at configure time
+configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
+execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+        RESULT_VARIABLE result
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
+if(result)
+    message(FATAL_ERROR "CMake step for googletest failed: ${result}")
+endif()
+execute_process(COMMAND ${CMAKE_COMMAND} --build .
+        RESULT_VARIABLE result
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
+if(result)
+    message(FATAL_ERROR "Build step for googletest failed: ${result}")
+endif()
+
+# Prevent overriding the parent project's compiler/linker
+# settings on Windows
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
+# Add googletest directly to our build. This defines
+# the gtest and gtest_main targets.
+add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
+        ${CMAKE_CURRENT_BINARY_DIR}/googletest-build
+        EXCLUDE_FROM_ALL)
+
+include_directories("${gtest_SOURCE_DIR}/include")
+
+
+
 add_executable(open_obd2 src/main.cpp src/Config.cpp src/Config.h
-        lib/easylogging++.cc)
+        lib/easylogging++.cc src/OBD/OBDHandler.cpp src/OBD/OBDHandler.h src/Vehicle.cpp src/Vehicle.h
+        src/OBD/data/BitEncoded/MonitorStatus.cpp src/OBD/data/BitEncoded/MonitorStatus.h
+        src/OBD/data/OBDTest.cpp src/OBD/data/OBDTest.h
+        src/OBD/data/DataObject.h src/OBD/data/BitEncoded/Engine.cpp src/OBD/data/BitEncoded/Engine.cpp
+        src/OBD/data/BitEncoded/Engine.h
+        src/OBD/data/Enumerated/FuelSystemStatus.h
+        src/Pid.cpp src/Pid.h src/Service.h
+        src/CAN/CanIsoTP.cpp
+        src/CAN/CanIsoTP.h include/linux/can/isotp.h)
+
+
+# Now simply link against gtest or gtest_main as needed. Eg
+add_executable(Test
+        tests/src/OBD/OBDHandlerTests.cpp tests/src/CAN/CanIsoTPTests.cpp
+
+
+
+        src/Config.cpp src/Config.h
+        lib/easylogging++.cc src/OBD/OBDHandler.cpp src/OBD/OBDHandler.h src/Vehicle.cpp src/Vehicle.h
+        src/OBD/data/BitEncoded/MonitorStatus.cpp src/OBD/data/BitEncoded/MonitorStatus.h
+        src/OBD/data/OBDTest.cpp src/OBD/data/OBDTest.h
+        src/OBD/data/DataObject.h src/OBD/data/BitEncoded/Engine.cpp src/OBD/data/BitEncoded/Engine.cpp
+        src/OBD/data/BitEncoded/Engine.h
+        src/OBD/data/Enumerated/FuelSystemStatus.h
+        src/Pid.cpp src/Pid.h src/Service.h
+        src/CAN/CanIsoTP.cpp
+        src/CAN/CanIsoTP.h include/linux/can/isotp.h
+
+        )
+target_link_libraries(Test gtest_main)
+add_test(NAME obdtest COMMAND Test)

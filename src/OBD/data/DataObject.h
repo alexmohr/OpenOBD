@@ -5,7 +5,12 @@
 #ifndef OPEN_OBD2_DATAPOSITION_H
 #define OPEN_OBD2_DATAPOSITION_H
 
-#include "types.h"
+#include <stdio.h>
+#include <cstddef>
+#include "easylogging++.h"
+
+using namespace std;
+
 
 enum ByteIndex{
     A = 1,
@@ -15,22 +20,41 @@ enum ByteIndex{
     E = 5,
 };
 
-template <typename T>
+template <class T>
 class DataObject {
-public:
+private:
     ByteIndex startByte;
-    BYTE startIndex;
+    byte startIndex;
     ByteIndex  stopByte;
-    BYTE stopIndex;
-    DataObject();
+    byte stopIndex;
+public:
 
-    DataObject(ByteIndex startByte, BYTE startIndex);
+    DataObject(ByteIndex startByte, byte startIndex) : DataObject(startByte, startIndex,
+                                                                  startByte, startIndex) {
 
-    DataObject(ByteIndex startByte, BYTE startIndex,
-            ByteIndex stopByte, BYTE stopIndex);
-    DataObject(BYTE *frame);
+    }
 
-    void getValue(BYTE* src, BYTE* value);
+
+    DataObject(ByteIndex startByte, byte startIndex,
+            ByteIndex stopByte, byte stopIndex) {
+        this->startByte = startByte;
+        this->startIndex= startIndex;
+        this->stopByte= stopByte;
+        this->stopIndex = stopIndex;
+    }
+
+    T getValue() {
+
+    }
+
+    void setValue(byte* frame){
+        auto dataSize= (stopByte-startByte)+1;
+        byte* data = (byte*)malloc(sizeof(byte)*dataSize);
+        memcpy(data, frame+startByte, dataSize);
+
+        LOG(ERROR) << dataSize;
+
+    }
 };
 
 

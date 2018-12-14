@@ -17,7 +17,7 @@
                 "minValues": [-255],
                 "maxValues": [-255],
                 "units": [""],
-                "formulas": ["EncodingS01P01"],
+                "formulas": ["MonitoringStatus"],
                 "dataFields": 1
             },
             {

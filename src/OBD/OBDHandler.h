@@ -5,18 +5,35 @@
 #ifndef OPEN_OBD2_OBDHANDLER_H
 #define OPEN_OBD2_OBDHANDLER_H
 
-#include "Config.h"
-
-
-class OBDCommand {
-private:
-    Service srv;
-};
+#include "../Config.h"
+#include "../Vehicle.h"
 
 
 class OBDHandler{
-    byte* encodeFrame(Service srv, byte payload[]);
-    void decodeFrame(byte* canFrame, Service* srv);
+private:
+    const int ANSWER_OFFSET = 0x40;
+    Vehicle *vehicle;
+    Vehicle *vehicleFreezeFrame;
+    map<Service, PidCollection>* pidConfig;
+public:
+    OBDHandler(Vehicle *vehicle, map<Service, PidCollection>* pidConfig);
+
+    /**
+     * Create a response for a request
+     * @param frame The data of the requst
+     * @return data which can be send via can.
+     */
+    byte* createAnswerFrame(byte *frame);
+
+    /**
+     * Updates the vehicle with received data.
+     * @param frame The CAN frame received which contains the data.
+     */
+    void updateFromFrame(byte *frame, int i);
+
+    Vehicle * getVehicle();
+
+    void getFrameInfo(const byte *frame, int serviceId, Pid &pid, Service &service);
 };
 
 #endif //OPEN_OBD2_OBDHANDLER_H

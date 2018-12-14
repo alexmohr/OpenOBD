@@ -2,67 +2,54 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true" buildAllGenerated="true">
     <generated>
+      <config projectName="open_obd2" targetName="gmock_main" />
+      <config projectName="open_obd2" targetName="gtest" />
+      <config projectName="open_obd2" targetName="Test" />
+      <config projectName="open_obd2" targetName="gmock" />
+      <config projectName="open_obd2" targetName="gtest_main" />
       <config projectName="open_obd2" targetName="open_obd2" />
     </generated>
   </component>
-  <component name="CMakeSettings">
+  <component name="CMakeSettings" AUTO_RELOAD="true">
     <configurations>
       <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7e2fc7cf-8b38-4576-a31a-9b0aded16bad" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/open-obd2.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.~lock.pids.xlsx#" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.12.4/CMakeCCompiler.cmake" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.12.4/CMakeCXXCompiler.cmake" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.12.4/CMakeDetermineCompilerABI_C.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.12.4/CMakeDetermineCompilerABI_CXX.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.12.4/CMakeSystem.cmake" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.12.4/CompilerIdC/CMakeCCompilerId.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.12.4/CompilerIdC/a.out" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.12.4/CompilerIdCXX/CMakeCXXCompilerId.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.12.4/CompilerIdCXX/a.out" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeDirectoryInformation.cmake" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile.cmake" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TargetDirectories.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-environment.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/cmake.check_cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/feature_tests.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/feature_tests.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/feature_tests.cxx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/open_obd2.dir/DependInfo.cmake" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/open_obd2.dir/build.make" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/open_obd2.dir/cmake_clean.cmake" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/open_obd2.dir/depend.make" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/open_obd2.dir/flags.make" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/open_obd2.dir/link.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/open_obd2.dir/progress.make" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/progress.marks" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/Makefile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/cmake_install.cmake" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmake-build-debug/open_obd2.cbp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/configuration/pidConfig.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/createAdapter.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/diagnose odb2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/json.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pids.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Config.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
+    <list default="true" id="583d4e18-7099-465e-b163-bc2dacda1c70" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt.in" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configuration/pidConfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/configuration/pidConfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/diagnose odb2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/diagnose odb2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/easylogging++.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/easylogging++.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/linux/can/isotp.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/linux/can/isotp.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/easylogging++.cc" beforeDir="false" afterPath="$PROJECT_DIR$/lib/easylogging++.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mod_diagnose odb2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/mod_diagnose odb2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CAN/CanIsoTP.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/CAN/CanIsoTP.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CAN/CanIsoTP.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/CAN/CanIsoTP.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Config.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Config.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Config.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Config.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OBD/OBDHandler.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OBD/OBDHandler.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OBD/OBDHandler.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/OBD/OBDHandler.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OBD/data/BitEncoded/Engine.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OBD/data/BitEncoded/Engine.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OBD/data/BitEncoded/Engine.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/OBD/data/BitEncoded/Engine.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OBD/data/BitEncoded/MonitorStatus.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OBD/data/BitEncoded/MonitorStatus.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OBD/data/BitEncoded/MonitorStatus.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/OBD/data/BitEncoded/MonitorStatus.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OBD/data/DataObject.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/OBD/data/DataObject.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OBD/data/OBDTest.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OBD/data/OBDTest.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OBD/data/OBDTest.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/OBD/data/OBDTest.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Pid.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pid.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Pid.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pid.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Vehicle.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Vehicle.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Vehicle.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/Vehicle.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/src/CAN/CanIsoTPTests.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/src/CAN/CanIsoTPTests.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/src/OBD/OBDHandlerTests.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/src/OBD/OBDHandlerTests.cpp" afterDir="false" />
     </list>
-    <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
+    <ignored path="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/" />
+    <ignored path="$PROJECT_DIR$/CMakeFiles/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,74 +61,71 @@
     <session id="39630454">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="1" />
-          <entry key="project.open.time.10" value="1" />
-          <entry key="project.open.time.3" value="1" />
-          <entry key="project.open.time.8" value="2" />
-          <entry key="project.opened" value="4" />
+          <entry key="project.closed" value="2" />
+          <entry key="project.open.time.11" value="1" />
+          <entry key="project.open.time.5" value="1" />
+          <entry key="project.open.time.7" value="2" />
+          <entry key="project.open.time.8" value="1" />
+          <entry key="project.opened" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="cc" value="1" />
-          <entry key="cpp" value="5" />
-          <entry key="fstream" value="1" />
-          <entry key="h" value="14" />
-          <entry key="hpp" value="2" />
+          <entry key="Makefile" value="1" />
+          <entry key="cc" value="2" />
+          <entry key="cpp" value="16" />
+          <entry key="gitignore" value="2" />
+          <entry key="h" value="32" />
+          <entry key="hpp" value="1" />
+          <entry key="in" value="1" />
           <entry key="json" value="2" />
-          <entry key="open_obd2 (disassembly)" value="7" />
-          <entry key="xml" value="1" />
+          <entry key="open_obd2 (disassembly)" value="14" />
+          <entry key="txt" value="2" />
+          <entry key="xml" value="6" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Disassembly" value="7" />
+          <entry key="CMakeLists.txt" value="2" />
+          <entry key="Disassembly" value="14" />
           <entry key="JSON" value="2" />
-          <entry key="ObjectiveC" value="23" />
-          <entry key="XML" value="1" />
+          <entry key="ObjectiveC" value="51" />
+          <entry key="PLAIN_TEXT" value="4" />
+          <entry key="XML" value="6" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="GDB" value="15" />
-          <entry key="cpp" value="1944" />
-          <entry key="h" value="2177" />
-          <entry key="json" value="5" />
-          <entry key="mm" value="1" />
-          <entry key="txt" value="58" />
-          <entry key="xml" value="44" />
+          <entry key="cpp" value="5197" />
+          <entry key="gitignore" value="48" />
+          <entry key="h" value="916" />
+          <entry key="mm" value="191" />
+          <entry key="txt" value="203" />
+          <entry key="xml" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="CMakeLists.txt" value="58" />
-          <entry key="GDBCommands" value="15" />
-          <entry key="JSON" value="5" />
-          <entry key="ObjectiveC" value="4122" />
-          <entry key="XML" value="44" />
+          <entry key="CMakeLists.txt" value="203" />
+          <entry key="ObjectiveC" value="6304" />
+          <entry key="PLAIN_TEXT" value="48" />
+          <entry key="XML" value="1" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.cidr.testingFrameworks.usages">
+        <counts>
+          <entry key="Google Test" value="52" />
         </counts>
       </usages-collector>
     </session>
   </component>
-  <component name="FavoritesManager">
-    <favorites_list name="open_obd2" />
-  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="168">
-              <caret line="8" column="42" selection-start-line="8" selection-start-column="42" selection-end-line="8" selection-end-column="42" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="273">
-              <caret line="13" column="12" selection-start-line="13" selection-start-column="12" selection-end-line="13" selection-end-column="12" />
+            <state relative-caret-position="529">
+              <caret line="35" column="70" selection-start-line="22" selection-start-column="3" selection-end-line="35" selection-end-column="70" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -150,78 +134,75 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file:///usr/include/c++/8.2.1/bits/stl_map.h">
+        <entry file="file://$PROJECT_DIR$/tests/src/CAN/CanIsoTPTests.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="172">
-              <caret line="204" selection-start-line="204" selection-end-line="204" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/configuration/pidConfig.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5817">
-              <caret line="277" selection-start-line="277" selection-end-line="277" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Config.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="167">
-              <caret line="22" selection-start-line="22" selection-end-line="22" />
+            <state relative-caret-position="347">
+              <caret line="29" column="73" selection-start-line="27" selection-start-column="4" selection-end-line="29" selection-end-column="73" />
               <folding>
-                <element signature="e#98#110#0" expanded="true" />
+                <element signature="e#38#62#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file:///usr/include/c++/8.2.1/bits/stl_tree.h">
+        <entry file="file://$PROJECT_DIR$/src/CAN/CanIsoTP.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="355">
+              <caret line="32" column="34" selection-start-line="32" selection-start-column="34" selection-end-line="32" selection-end-column="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/CAN/CanIsoTP.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="172">
-              <caret line="752" selection-start-line="752" selection-end-line="752" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/include/json.hpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="13267" selection-start-line="13267" selection-end-line="13267" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file:///usr/include/c++/8.2.1/bits/allocator.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="172">
-              <caret line="130" selection-start-line="130" selection-end-line="130" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file:///usr/include/c++/8.2.1/ext/new_allocator.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="172">
-              <caret line="78" selection-start-line="78" selection-end-line="78" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Config.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="73" selection-start-line="73" selection-end-line="73" />
+              <caret line="134" selection-start-line="134" selection-end-line="134" />
               <folding>
-                <element signature="e#104#121#0" expanded="true" />
+                <element signature="e#2165#2186#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/tests/src/OBD/OBDHandlerTests.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="196">
+              <caret line="42" selection-start-line="42" selection-end-line="42" />
+              <folding>
+                <element signature="e#38#70#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file:///usr/include/c++/8.2.1/bits/stl_vector.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="180">
+              <caret line="1055" selection-start-line="1055" selection-end-line="1055" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="63">
+              <caret line="3" column="8" selection-start-line="3" selection-start-column="8" selection-end-line="3" selection-end-column="8" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/OBD/OBDHandler.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="427">
+              <caret line="31" column="41" selection-start-line="31" selection-start-column="33" selection-end-line="31" selection-end-column="41" />
+              <folding>
+                <element signature="e#37#60#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -231,17 +212,38 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>JSON_THROW</find>
-      <find>throw</find>
-      <find>j_</find>
-      <find>from</find>
-      <find>Confi</find>
-      <find>0 - 100</find>
-      <find>&quot;minValues&quot;: [0 - 100],</find>
-      <find>jsdata</find>
+      <find>insert</find>
+      <find>log(</find>
+      <find>LOG</find>
+      <find>memcpy</find>
+      <find>classs pid</find>
+      <find>updateVehicle</find>
+      <find>class pid</find>
+      <find>= t</find>
+      <find>to_int32(data)</find>
+      <find>gtest</find>
+      <find>googletest</find>
+      <find>GTestMain</find>
+      <find>easy</find>
+      <find>x02 0x01 0x00</find>
+      <find>0x02 0x09 0x02 0x00 0x00 0x00</find>
+      <find>0x04 0x19 0x02 0xff 0x00 0x00 0x00 0x00</find>
+      <find>fcopts</find>
+      <find>nbytes</find>
+      <find>tester =</find>
+      <find>getFrameInfo(const byte *frame, int serviceId, Pid &amp;pid, Service &amp;service);</find>
+      <find>config.</find>
+      <find>linux</find>
+      <find>GTESTMAIN</find>
+      <find>main</find>
+      <find>main(</find>
+      <find>j</find>
+      <find>for *</find>
+      <find>for ( .* in</find>
+      <find>for</find>
     </findStrings>
     <replaceStrings>
-      <replace>&quot;minValues&quot;: [0, 100],</replace>
+      <replace>data</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -250,25 +252,30 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/diagnose odb2.xml" />
-        <option value="$PROJECT_DIR$/pid.h" />
-        <option value="$PROJECT_DIR$/services.h" />
-        <option value="$PROJECT_DIR$/pids.cpp" />
-        <option value="$PROJECT_DIR$/pids.h" />
-        <option value="$PROJECT_DIR$/src/header/configParser.h" />
-        <option value="$PROJECT_DIR$/src/header/ConfigParser.h" />
-        <option value="$PROJECT_DIR$/src/pids.h" />
-        <option value="$PROJECT_DIR$/include/json.hpp" />
-        <option value="$PROJECT_DIR$/src/Configuration.cpp" />
-        <option value="$PROJECT_DIR$/src/Configuration.h" />
-        <option value="$PROJECT_DIR$/src/ConfigParser.cpp" />
-        <option value="$PROJECT_DIR$/src/ConfigParser.h" />
-        <option value="$PROJECT_DIR$/src/services.h" />
-        <option value="$PROJECT_DIR$/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/configuration/pidConfig.json" />
         <option value="$PROJECT_DIR$/src/Config.cpp" />
+        <option value="$PROJECT_DIR$/src/Vehicle.cpp" />
+        <option value="$PROJECT_DIR$/src/Service.h" />
+        <option value="$PROJECT_DIR$/src/Pid.h" />
+        <option value="$PROJECT_DIR$/src/Vehicle.h" />
+        <option value="$PROJECT_DIR$/src/Pid.cpp" />
+        <option value="$PROJECT_DIR$/CMakeLists.txt.in" />
+        <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/tests/OBDTests.cpp" />
+        <option value="$PROJECT_DIR$/src/OBD/OBDHandler.h" />
+        <option value="$PROJECT_DIR$/diagnose odb2.xml" />
+        <option value="$PROJECT_DIR$/mod_diagnose odb2.xml" />
+        <option value="$PROJECT_DIR$/src/CAN/isotp.cpp" />
+        <option value="$PROJECT_DIR$/src/CAN/CanIsotp.cpp" />
+        <option value="$PROJECT_DIR$/include/linux/can/isotp.h" />
         <option value="$PROJECT_DIR$/src/Config.h" />
+        <option value="$PROJECT_DIR$/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/tests/OBDHandlerTests.cpp" />
         <option value="$PROJECT_DIR$/src/main.cpp" />
+        <option value="$PROJECT_DIR$/src/CAN/CanIsoTP.cpp" />
+        <option value="$PROJECT_DIR$/src/CAN/CanIsoTP.h" />
+        <option value="$PROJECT_DIR$/tests/src/CAN/CanIsoTPTests.cpp" />
+        <option value="$PROJECT_DIR$/src/OBD/OBDHandler.cpp" />
+        <option value="$PROJECT_DIR$/tests/src/OBD/OBDHandlerTests.cpp" />
       </list>
     </option>
   </component>
@@ -280,7 +287,7 @@
   </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectFrameBounds">
-    <option name="width" value="1920" />
+    <option name="width" value="480" />
     <option name="height" value="1057" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -301,12 +308,25 @@
             <path>
               <item name="open_obd2" type="b2602c69:ProjectViewProjectNode" />
               <item name="open-obd2" type="462c0819:PsiDirectoryNode" />
-              <item name="configuration" type="462c0819:PsiDirectoryNode" />
+              <item name="include" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="open_obd2" type="b2602c69:ProjectViewProjectNode" />
               <item name="open-obd2" type="462c0819:PsiDirectoryNode" />
               <item name="include" type="462c0819:PsiDirectoryNode" />
+              <item name="linux" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="open_obd2" type="b2602c69:ProjectViewProjectNode" />
+              <item name="open-obd2" type="462c0819:PsiDirectoryNode" />
+              <item name="include" type="462c0819:PsiDirectoryNode" />
+              <item name="linux" type="462c0819:PsiDirectoryNode" />
+              <item name="can" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="open_obd2" type="b2602c69:ProjectViewProjectNode" />
+              <item name="open-obd2" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="open_obd2" type="b2602c69:ProjectViewProjectNode" />
@@ -315,7 +335,40 @@
             </path>
             <path>
               <item name="open_obd2" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Scratches and Consoles" type="1a2a3e82:ScratchProjectViewPane$MyProjectNode" />
+              <item name="open-obd2" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="CAN" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="open_obd2" type="b2602c69:ProjectViewProjectNode" />
+              <item name="open-obd2" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="OBD" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="open_obd2" type="b2602c69:ProjectViewProjectNode" />
+              <item name="open-obd2" type="462c0819:PsiDirectoryNode" />
+              <item name="tests" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="open_obd2" type="b2602c69:ProjectViewProjectNode" />
+              <item name="open-obd2" type="462c0819:PsiDirectoryNode" />
+              <item name="tests" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="open_obd2" type="b2602c69:ProjectViewProjectNode" />
+              <item name="open-obd2" type="462c0819:PsiDirectoryNode" />
+              <item name="tests" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="CAN" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="open_obd2" type="b2602c69:ProjectViewProjectNode" />
+              <item name="open-obd2" type="462c0819:PsiDirectoryNode" />
+              <item name="tests" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="OBD" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -326,17 +379,19 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
-    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/cmake-build-debug/Test" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/lib" />
-      <recent name="$PROJECT_DIR$/include" />
+      <recent name="$PROJECT_DIR$/tests/src/OBD" />
+      <recent name="$PROJECT_DIR$/tests/src/CAN" />
+      <recent name="$PROJECT_DIR$/tests/src" />
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/src" />
-      <recent name="$PROJECT_DIR$/src/header" />
-      <recent name="$PROJECT_DIR$/configuration" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -351,62 +406,158 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.open_obd2">
+  <component name="RunManager" selected="Application.gtest_main">
+    <configuration name="CanIsoTp.MultiFrameMessage" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" temporary="true" PASS_PARENT_ENVS_2="true" PROJECT_NAME="open_obd2" TARGET_NAME="Test" RUN_TARGET_PROJECT_NAME="open_obd2" RUN_TARGET_NAME="Test" TEST_CLASS="CanIsoTp" TEST_METHOD="MultiFrameMessage" TEST_MODE="SUITE_TEST">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="CanIsoTp.SingleFrameMessage" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" temporary="true" PASS_PARENT_ENVS_2="true" PROJECT_NAME="open_obd2" TARGET_NAME="Test" RUN_TARGET_PROJECT_NAME="open_obd2" RUN_TARGET_NAME="Test" TEST_CLASS="CanIsoTp" TEST_METHOD="SingleFrameMessage" TEST_MODE="SUITE_TEST">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="OBDHandler.PIDSupported01_20" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" temporary="true" PASS_PARENT_ENVS_2="true" PROJECT_NAME="open_obd2" TARGET_NAME="Test" RUN_TARGET_PROJECT_NAME="open_obd2" RUN_TARGET_NAME="Test" TEST_CLASS="OBDHandler" TEST_METHOD="PIDSupported01_20" TEST_MODE="SUITE_TEST">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="OBDHandler.PIDSupported01_20_With_Simulated_CAN" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" temporary="true" PASS_PARENT_ENVS_2="true" PROJECT_NAME="open_obd2" TARGET_NAME="Test" RUN_TARGET_PROJECT_NAME="open_obd2" RUN_TARGET_NAME="Test" TEST_CLASS="OBDHandler" TEST_METHOD="PIDSupported01_20_With_Simulated_CAN" TEST_MODE="SUITE_TEST">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" CONFIG_NAME="Debug" EXPLICIT_BUILD_TARGET_NAME="all">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="open_obd2" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="open_obd2" TARGET_NAME="open_obd2" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="open_obd2" RUN_TARGET_NAME="open_obd2">
+    <configuration name="Test (1)" type="CMakeRunConfiguration" factoryName="Application" temporary="true" PASS_PARENT_ENVS_2="true" PROJECT_NAME="open_obd2" TARGET_NAME="Test" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="open_obd2" RUN_TARGET_NAME="Test">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="open_obd2" TARGET_NAME="gtest_main" CONFIG_NAME="Debug" RUN_PATH="$PROJECT_DIR$/cmake-build-debug/Test">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="gmock" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="open_obd2" TARGET_NAME="gmock" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="gmock_main" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="open_obd2" TARGET_NAME="gmock_main" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="gtest" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="open_obd2" TARGET_NAME="gtest" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="open_obd2" RUN_TARGET_NAME="Test">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="gtest_main" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="open_obd2" TARGET_NAME="gtest_main" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="open_obd2" RUN_TARGET_NAME="Test">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <list>
       <item itemvalue="Application.Build All" />
-      <item itemvalue="Application.open_obd2" />
+      <item itemvalue="Application.gmock" />
+      <item itemvalue="Application.gmock_main" />
+      <item itemvalue="Application.gtest" />
+      <item itemvalue="Application.gtest_main" />
+      <item itemvalue="Application.Test" />
+      <item itemvalue="Application.Test (1)" />
+      <item itemvalue="Google Test.OBDHandler.PIDSupported01_20" />
+      <item itemvalue="Google Test.CanIsoTp.SingleFrameMessage" />
+      <item itemvalue="Google Test.CanIsoTp.MultiFrameMessage" />
+      <item itemvalue="Google Test.OBDHandler.PIDSupported01_20_With_Simulated_CAN" />
     </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Google Test.CanIsoTp.MultiFrameMessage" />
+        <item itemvalue="Google Test.OBDHandler.PIDSupported01_20_With_Simulated_CAN" />
+        <item itemvalue="Google Test.OBDHandler.PIDSupported01_20" />
+        <item itemvalue="Google Test.CanIsoTp.SingleFrameMessage" />
+        <item itemvalue="Application.Test (1)" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="7e2fc7cf-8b38-4576-a31a-9b0aded16bad" name="Default Changelist" comment="" />
-      <created>1544445015908</created>
+      <changelist id="583d4e18-7099-465e-b163-bc2dacda1c70" name="Default Changelist" comment="" />
+      <created>1544768584017</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1544445015908</updated>
-      <workItem from="1544445019182" duration="12695000" />
-      <workItem from="1544612053858" duration="5003000" />
-      <workItem from="1544627594142" duration="4390000" />
-      <workItem from="1544690663335" duration="5922000" />
+      <updated>1544768584017</updated>
+      <workItem from="1544768587892" duration="17205000" />
+      <workItem from="1544785824577" duration="706000" />
+      <workItem from="1544786632292" duration="1642000" />
+      <workItem from="1544794316225" duration="531000" />
+      <workItem from="1544796682499" duration="10186000" />
     </task>
     <servers />
   </component>
+  <component name="TestHistory">
+    <history-entry file="OBDHandler_PIDSupported01_20_With_Simulated_CAN - 2018.12.14 at 18h 15m 09s.xml">
+      <configuration name="OBDHandler.PIDSupported01_20_With_Simulated_CAN" configurationId="CMakeGoogleTestRunConfigurationType" />
+    </history-entry>
+    <history-entry file="OBDHandler_PIDSupported01_20 - 2018.12.14 at 18h 15m 23s.xml">
+      <configuration name="OBDHandler.PIDSupported01_20" configurationId="CMakeGoogleTestRunConfigurationType" />
+    </history-entry>
+    <history-entry file="OBDHandler_PIDSupported01_20 - 2018.12.14 at 18h 16m 02s.xml">
+      <configuration name="OBDHandler.PIDSupported01_20" configurationId="CMakeGoogleTestRunConfigurationType" />
+    </history-entry>
+    <history-entry file="OBDHandler_PIDSupported01_20 - 2018.12.14 at 18h 17m 07s.xml">
+      <configuration name="OBDHandler.PIDSupported01_20" configurationId="CMakeGoogleTestRunConfigurationType" />
+    </history-entry>
+    <history-entry file="OBDHandler_PIDSupported01_20_With_Simulated_CAN - 2018.12.14 at 18h 20m 02s.xml">
+      <configuration name="OBDHandler.PIDSupported01_20_With_Simulated_CAN" configurationId="CMakeGoogleTestRunConfigurationType" />
+    </history-entry>
+    <history-entry file="OBDHandler_PIDSupported01_20_With_Simulated_CAN - 2018.12.14 at 18h 20m 58s.xml">
+      <configuration name="OBDHandler.PIDSupported01_20_With_Simulated_CAN" configurationId="CMakeGoogleTestRunConfigurationType" />
+    </history-entry>
+    <history-entry file="OBDHandler_PIDSupported01_20 - 2018.12.14 at 18h 22m 35s.xml">
+      <configuration name="OBDHandler.PIDSupported01_20" configurationId="CMakeGoogleTestRunConfigurationType" />
+    </history-entry>
+    <history-entry file="OBDHandler_PIDSupported01_20_With_Simulated_CAN - 2018.12.14 at 18h 22m 39s.xml">
+      <configuration name="OBDHandler.PIDSupported01_20_With_Simulated_CAN" configurationId="CMakeGoogleTestRunConfigurationType" />
+    </history-entry>
+    <history-entry file="OBDHandler_PIDSupported01_20_With_Simulated_CAN - 2018.12.14 at 18h 22m 49s.xml">
+      <configuration name="OBDHandler.PIDSupported01_20_With_Simulated_CAN" configurationId="CMakeGoogleTestRunConfigurationType" />
+    </history-entry>
+    <history-entry file="CanIsoTp_MultiFrameMessage - 2018.12.14 at 18h 23m 09s.xml">
+      <configuration name="CanIsoTp.MultiFrameMessage" configurationId="CMakeGoogleTestRunConfigurationType" />
+    </history-entry>
+  </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="28010000" />
+    <option name="totallyTimeSpent" value="30270000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1920" height="1057" extended-state="0" />
+    <frame x="0" y="0" width="480" height="1057" extended-state="0" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49770993" visible="true" weight="0.1026738" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="1.0" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Favorites" order="2" sideWeight="0.50229007" side_tool="true" weight="0.20597652" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39827773" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32938644" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32889345" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.32684427" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Terminal" order="8" visible="true" weight="0.32938644" />
-      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info anchor="bottom" id="Version Control" order="10" show_stripe_button="false" />
-      <window_info anchor="bottom" id="CMake" order="11" weight="0.32938644" />
-      <window_info anchor="bottom" id="Thumbnails" order="12" weight="0.32938644" />
-      <window_info anchor="bottom" id="Messages" order="13" weight="0.32831" />
+      <window_info anchor="bottom" id="Messages" order="8" sideWeight="0.49946523" weight="0.38012296" />
+      <window_info anchor="bottom" id="Terminal" order="9" weight="0.32889345" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5005348" side_tool="true" weight="0.32938644" />
+      <window_info active="true" anchor="bottom" id="Version Control" order="11" visible="true" weight="0.34660926" />
+      <window_info anchor="bottom" id="CMake" order="12" weight="0.32938644" />
+      <window_info anchor="bottom" id="Thumbnails" order="13" weight="0.32938644" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -419,179 +570,394 @@
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/build/googletest-src" />
+      <path value="$PROJECT_DIR$/cmake-build-debug/googletest-src" />
+      <path value="$PROJECT_DIR$/googletest-src" />
+    </ignored-roots>
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/OBD/data/DataObject.h</url>
+          <line>54</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/OBD/OBDHandler.h</url>
+          <line>30</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/main.cpp</url>
-          <line>16</line>
-          <option name="timeStamp" value="5" />
+          <line>38</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/tests/src/OBD/OBDHandlerTests.cpp</url>
+          <line>42</line>
+          <option name="timeStamp" value="21" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/tests/src/OBD/OBDHandlerTests.cpp</url>
+          <line>69</line>
+          <option name="timeStamp" value="51" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/tests/src/OBD/OBDHandlerTests.cpp</url>
+          <line>63</line>
+          <option name="timeStamp" value="52" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/tests/src/OBD/OBDHandlerTests.cpp</url>
+          <line>41</line>
+          <option name="timeStamp" value="53" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
+      <configuration name="CMakeGoogleTestRunConfigurationType">
+        <watch expression="buf[0]" language="ObjectiveC" />
+        <watch expression="sizeof(buf)" language="ObjectiveC" />
+        <watch expression="buf[1]" language="ObjectiveC" />
+      </configuration>
       <configuration name="CMakeRunConfiguration">
-        <watch expression="t" language="ObjectiveC" />
+        <watch expression="data[0]" language="ObjectiveC" />
+        <watch expression="data[1]" language="ObjectiveC" />
+        <watch expression="size" language="ObjectiveC" />
+        <watch expression="sizeof(data)" language="ObjectiveC" />
       </configuration>
     </watches-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="watch">
       <expression>
-        <expression-string>t</expression-string>
+        <expression-string>sizeof(buf)</expression-string>
+        <language-id>ObjectiveC</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>response.size()</expression-string>
+        <language-id>ObjectiveC</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>buf[i]</expression-string>
+        <language-id>ObjectiveC</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>response[i]</expression-string>
+        <language-id>ObjectiveC</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>val[i]</expression-string>
+        <language-id>ObjectiveC</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>buf[1]</expression-string>
+        <language-id>ObjectiveC</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>buf[0]</expression-string>
+        <language-id>ObjectiveC</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>sizeof(data)</expression-string>
+        <language-id>ObjectiveC</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>size</expression-string>
+        <language-id>ObjectiveC</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>ceil(size / 8)</expression-string>
         <language-id>ObjectiveC</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/diagnose odb2.xml">
+    <entry file="file://$PROJECT_DIR$/src/OBD/data/BitEncoded/MonitorStatus.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="15" column="32" selection-start-line="15" selection-start-column="28" selection-end-line="15" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/include/c++/8.2.1/fstream">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4515">
-          <caret line="215" column="30" selection-start-line="215" selection-start-column="25" selection-end-line="215" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Configuration.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="231">
-          <caret line="11" selection-start-line="11" selection-end-line="11" />
-          <folding>
-            <element signature="e#105#124#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Configuration.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="6" selection-start-line="6" selection-end-line="6" />
-          <folding>
-            <element signature="e#37#62#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/easylogging++.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="3202" selection-start-line="3202" selection-end-line="3202" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/pids.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="12" selection-start-line="12" selection-end-line="12" />
-          <folding>
-            <element signature="e#106#123#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/easylogging++.cc">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="399">
-          <caret line="19" column="24" selection-start-line="19" selection-end-line="19" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/pids.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="63">
-          <caret line="3" selection-start-line="3" selection-end-line="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/services.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147">
-          <caret line="7" selection-start-line="7" selection-end-line="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="8" column="42" selection-start-line="8" selection-start-column="42" selection-end-line="8" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/include/c++/8.2.1/bits/stl_tree.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="172">
-          <caret line="752" selection-start-line="752" selection-end-line="752" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/configuration/pidConfig.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5817">
-          <caret line="277" selection-start-line="277" selection-end-line="277" />
+        <state relative-caret-position="163">
+          <caret line="16" selection-start-line="16" selection-end-line="16" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Config.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="167">
-          <caret line="22" selection-start-line="22" selection-end-line="22" />
+        <state relative-caret-position="294">
+          <caret line="26" selection-start-line="26" selection-end-line="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/OBD/data/DataObject.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="281">
+          <caret line="54" selection-start-line="54" selection-end-line="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Service.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="399">
+          <caret line="19" column="41" selection-start-line="9" selection-start-column="5" selection-end-line="19" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/configuration/pidConfig.json">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/OBD/data/BitEncoded/Engine.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="12" column="21" selection-start-line="12" selection-start-column="21" selection-end-line="12" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Vehicle.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="20" selection-start-line="20" selection-end-line="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Pid.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="163">
+          <caret line="14" selection-start-line="14" selection-end-line="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Pid.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="84">
+          <caret line="64" selection-start-line="64" selection-end-line="64" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cmake-build-debug/googletest-build/googlemock/gtest/Makefile" />
+    <entry file="file://$PROJECT_DIR$/src/OBD/data/OBDTest.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="336">
+          <caret line="16" column="14" selection-start-line="16" selection-start-column="14" selection-end-line="16" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Vehicle.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="735">
+          <caret line="29" column="9" selection-start-line="29" selection-start-column="9" selection-end-line="29" selection-end-column="9" />
+          <caret line="30" column="9" selection-start-line="30" selection-start-column="9" selection-end-line="30" selection-end-column="9" />
+          <caret line="31" column="9" selection-start-line="31" selection-start-column="9" selection-end-line="31" selection-end-column="9" />
+          <caret line="32" column="9" selection-start-line="32" selection-start-column="9" selection-end-line="32" selection-end-column="9" />
+          <caret line="33" column="9" selection-start-line="33" selection-start-column="9" selection-end-line="33" selection-end-column="9" />
+          <caret line="34" column="9" selection-start-line="34" selection-start-column="9" selection-end-line="34" selection-end-column="9" />
+          <caret line="35" column="9" selection-start-line="35" selection-start-column="9" selection-end-line="35" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt.in">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="294">
+          <caret line="14" column="1" selection-start-line="14" selection-start-column="1" selection-end-line="14" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/easylogging++.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="184">
+          <caret line="2460" selection-start-line="2460" selection-end-line="2460" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/easylogging++.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95466">
+          <caret line="4546" column="10" selection-start-line="4546" selection-start-column="10" selection-end-line="4546" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/linux/can/CanIsoTP.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3486">
+          <caret line="166" column="6" selection-start-line="166" selection-start-column="6" selection-end-line="166" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/include/stdio.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="295">
+          <caret line="780" column="12" selection-start-line="780" selection-start-column="12" selection-end-line="780" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/include/net/if.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="508">
+          <caret line="192" column="20" selection-start-line="192" selection-start-column="20" selection-end-line="192" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/include/linux/can.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="295">
+          <caret line="174" column="24" selection-start-line="174" selection-start-column="17" selection-end-line="174" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/linux/can/isotp.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2478">
+          <caret line="166" column="6" selection-start-line="166" selection-start-column="6" selection-end-line="166" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/OBD/OBDHandler.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="35" column="9" selection-start-line="35" selection-start-column="9" selection-end-line="35" selection-end-column="84" />
           <folding>
-            <element signature="e#98#110#0" expanded="true" />
+            <element signature="e#100#122#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/include/c++/8.2.1/bits/stl_map.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="172">
-          <caret line="204" selection-start-line="204" selection-end-line="204" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/json.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="13267" selection-start-line="13267" selection-end-line="13267" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/include/c++/8.2.1/bits/allocator.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="172">
-          <caret line="130" selection-start-line="130" selection-end-line="130" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/include/c++/8.2.1/ext/new_allocator.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="172">
-          <caret line="78" selection-start-line="78" selection-end-line="78" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Config.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="73" selection-start-line="73" selection-end-line="73" />
+        <state relative-caret-position="184">
+          <caret line="18" column="24" selection-start-line="18" selection-start-column="24" selection-end-line="18" selection-end-column="24" />
           <folding>
             <element signature="e#104#121#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/diagnose odb2.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="5" column="27" selection-start-line="5" selection-start-column="23" selection-end-line="5" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mod_diagnose odb2.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="84">
+          <caret line="4" column="26" selection-start-line="4" selection-start-column="26" selection-end-line="4" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/json.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="2099" column="18" selection-start-line="2099" selection-start-column="18" selection-end-line="2099" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="65" column="52" selection-start-line="65" selection-start-column="52" selection-end-line="65" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/include/c++/8.2.1/bits/stl_map.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="299" selection-start-line="299" selection-end-line="299" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/include/c++/8.2.1/bits/stl_vector.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="1055" selection-start-line="1055" selection-end-line="1055" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="273">
-          <caret line="13" column="12" selection-start-line="13" selection-start-column="12" selection-end-line="13" selection-end-column="12" />
+        <state relative-caret-position="529">
+          <caret line="35" column="70" selection-start-line="22" selection-start-column="3" selection-end-line="35" selection-end-column="70" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cmake-build-debug/googletest-src/googletest/include/gtest/gtest.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="199">
+          <caret line="488" column="15" selection-start-line="488" selection-start-column="15" selection-end-line="488" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="63">
+          <caret line="3" column="8" selection-start-line="3" selection-start-column="8" selection-end-line="3" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cmake-build-debug/googletest-src/googletest/src/gtest.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="2702" selection-start-line="2702" selection-end-line="2702" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/OBD/OBDHandler.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="427">
+          <caret line="31" column="41" selection-start-line="31" selection-start-column="33" selection-end-line="31" selection-end-column="41" />
+          <folding>
+            <element signature="e#37#60#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/CAN/CanIsoTP.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="355">
+          <caret line="32" column="34" selection-start-line="32" selection-start-column="34" selection-end-line="32" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/CAN/CanIsoTP.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="172">
+          <caret line="134" selection-start-line="134" selection-end-line="134" />
+          <folding>
+            <element signature="e#2165#2186#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/src/CAN/CanIsoTPTests.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="347">
+          <caret line="29" column="73" selection-start-line="27" selection-start-column="4" selection-end-line="29" selection-end-column="73" />
+          <folding>
+            <element signature="e#38#62#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/src/OBD/OBDHandlerTests.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="42" selection-start-line="42" selection-end-line="42" />
+          <folding>
+            <element signature="e#38#70#0" expanded="true" />
           </folding>
         </state>
       </provider>

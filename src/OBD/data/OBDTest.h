@@ -12,14 +12,17 @@ using namespace std;
 
 
 class OBDTest {
-public:
-    DataObject<bool> Available;
-    DataObject<bool> Incomplete;
+private:
+    DataObject<bool>* available;
+    DataObject<bool>* incomplete;
     string name;
-
+public:
     OBDTest(string name,
-            BYTE availableByte, BYTE availableIndex,
-            BYTE incompleteByte, BYTE incompleteIndex);
+            ByteIndex availableByte, byte availableIndex,
+            ByteIndex  incompleteByte, byte incompleteIndex);
+
+
+    void fromFrame(byte* frame);
 };
 
 

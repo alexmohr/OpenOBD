@@ -10,23 +10,26 @@ using namespace std;
 
 
 template <typename T>
-void copyFromVector(const json& jsData, vector<T> &target){
+void copyToVector(const json &jsData, vector<T> &target){
     target.resize(jsData.size());
     std::copy(jsData.begin(), jsData.end(), target.begin());
-
 }
 
 void from_json(const json& jsData, map<Service, PidCollection>& pcmap) {
-    int i,j;
-
+    int i;
 
     for (i = 0; i < jsData.size(); i++){
         const auto jsonPC = jsData[i];
         const vector<int> services = jsonPC .at("validForServices");
         for (auto &serviceId : services){
             PidCollection pc;
-            copyFromVector(jsonPC["pidList"], pc.pidList);
-            copyFromVector(services, pc.validForServices);
+
+            for (auto &element : jsonPC["pidList"]){
+                pc.pidList.insert(pair<int,Pid>(element["id"], element));
+            }
+            //target.resize(jsData.size());
+
+            copyToVector(services, pc.validForServices);
 
             auto service = static_cast<Service>(serviceId);
             pcmap.insert(pair<Service, PidCollection>(service, pc));
@@ -40,10 +43,10 @@ void from_json(const json& jsData, Pid& pid) {
     pid.description = jsData.at("description");
     pid.datafields = jsData.at("dataFields");
 
-    copyFromVector(jsData.at("maxValues"), pid.maxValues);
-    copyFromVector(jsData.at("minValues"), pid.minValues);
-    copyFromVector(jsData.at("units"), pid.units);
-    copyFromVector(jsData.at("formulas"), pid.formulas);
+    copyToVector(jsData.at("maxValues"), pid.maxValues);
+    copyToVector(jsData.at("minValues"), pid.minValues);
+    copyToVector(jsData.at("units"), pid.units);
+    copyToVector(jsData.at("formulas"), pid.formulas);
 }
 
 

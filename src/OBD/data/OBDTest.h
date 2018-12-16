@@ -22,7 +22,7 @@ public:
             ByteIndex  incompleteByte, byte incompleteIndex);
 
 
-    void fromFrame(byte* frame);
+    void fromFrame(byte* frame, int size);
 
     void setName(string name);
 };

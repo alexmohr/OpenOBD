@@ -17,16 +17,16 @@ Engine::Engine() {
     setEngineType(PETROL);
 }
 
-void Engine::fromFrame(byte *frame) {
-    engineSystem1->fromFrame(frame);
-    engineSystem2->fromFrame(frame);
-    engineSystem3->fromFrame(frame);
-    engineSystem4->fromFrame(frame);
-    engineSystem5->fromFrame(frame);
-    engineSystem6->fromFrame(frame);
-    engineSystem7->fromFrame(frame);
-    engineSystem8->fromFrame(frame);
-
+void Engine::fromFrame(byte *frame, int size) {
+    engineSystem1->fromFrame(frame, size);
+    engineSystem2->fromFrame(frame, size);
+    engineSystem3->fromFrame(frame, size);
+    engineSystem4->fromFrame(frame, size);
+    engineSystem5->fromFrame(frame, size);
+    engineSystem6->fromFrame(frame, size);
+    engineSystem7->fromFrame(frame, size);
+    engineSystem8->fromFrame(frame, size);
+    
 }
 
 byte *Engine::toFrame() {

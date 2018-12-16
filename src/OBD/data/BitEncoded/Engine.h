@@ -44,7 +44,7 @@ public:
     }
 
     byte *toFrame();
-    void fromFrame(byte *frame);
+    void fromFrame(byte *frame, int size);
 
     void setEngineType(EngineType type);
 

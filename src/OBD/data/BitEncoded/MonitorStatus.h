@@ -49,7 +49,7 @@ public:
      * Update the status with frame data.
      * @param frame The frame data.
      */
-    void fromFrame(byte *frame);
+    void fromFrame(byte *frame, int size);
 
 
     bool getMil();

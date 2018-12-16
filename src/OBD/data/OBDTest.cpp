@@ -14,9 +14,9 @@ OBDTest::OBDTest(string name, ByteIndex availableByte, byte availableIndex, Byte
     this->incomplete = new DataObject<bool>(incompleteByte, incompleteIndex);
 }
 
-void OBDTest::fromFrame(byte *frame) {
-    available->setValue(frame);
-    incomplete->setValue(frame);
+void OBDTest::fromFrame(byte *frame, int size) {
+    available->setValue(frame, size);
+    incomplete->setValue(frame, size);
 }
 
 void OBDTest::setName(string name) {

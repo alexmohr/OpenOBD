@@ -13,31 +13,46 @@ MonitorStatus::MonitorStatus(Engine *engine) {
 
 }
 
-void MonitorStatus::fromFrame(byte *frame) {
-    engine->fromFrame(frame);
-    mil->setValue(frame);
-    dtcCount->setValue(frame);
-    components->fromFrame(frame);
-    misfire->fromFrame(frame);
-    fuelSystem->fromFrame(frame);
+void MonitorStatus::fromFrame(byte *frame, int size) {
+    dtcCount->setValue(frame, size);
+
+    mil->setValue(frame, size);
+    engine->fromFrame(frame, size);
+
+    components->fromFrame(frame, size);
+    misfire->fromFrame(frame, size);
+    fuelSystem->fromFrame(frame, size);
 }
 
+
 bool MonitorStatus::getMil() {
-    return false;
+    return mil->getValue();
 }
 
 void MonitorStatus::setMil(bool value) {
-
+    mil->setValue(value);
 }
 
 unsigned int MonitorStatus::getDtcCount() {
-    return 0;
+    return dtcCount->getValue();
 }
 
-void MonitorStatus::setDtcCount(unsigned int status) {
-
+void MonitorStatus::setDtcCount(unsigned int count) {
+    dtcCount->setValue(count);
 }
 
 Engine* MonitorStatus::getEngine() {
     return engine;
+}
+
+OBDTest *MonitorStatus::getComponents() {
+    return components;
+}
+
+OBDTest *MonitorStatus::getFuelSystem() {
+    return fuelSystem;
+}
+
+OBDTest *MonitorStatus::getMisfire() {
+    return misfire;
 }

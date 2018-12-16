@@ -86,19 +86,7 @@ public:
 
             value = (T) (mask & data);
         }
-////
-//
-//        auto s1 = ((*data >> startIndex));
-//        auto s2 = ((1UL << (stopIndex - startIndex) - 1));
-//        auto s3 = s2 - 1;
-//
-//        value = (T) ((*data >> (startIndex - 1)) & ((1UL << (stopIndex - startIndex))));
-        // auto foo = BitExtract(data, startIndex, stopIndex - startIndex);
-        //LOG(DEBUG) << "Updated value of data object, new value:" << to_string(fooo);
-
-        return 1;
-
-    }
+        return 1;    }
 };
 
 

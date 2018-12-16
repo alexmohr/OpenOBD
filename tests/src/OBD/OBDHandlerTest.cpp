@@ -14,7 +14,7 @@ OBDHandler *getHandler() {
     auto pcMap = map<Service, PidCollection>();
     p.parseJson("../configuration/pidConfig.json", pcMap);
 
-    Engine *engine = new Diesel();
+    Engine *engine = new Engine();
     auto *vehicle = new Vehicle(engine);
     auto handler = new OBDHandler(vehicle, new map<Service, PidCollection>((pcMap)));
     return handler;

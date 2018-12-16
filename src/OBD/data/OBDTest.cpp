@@ -18,3 +18,7 @@ void OBDTest::fromFrame(byte *frame) {
     available->setValue(frame);
     incomplete->setValue(frame);
 }
+
+void OBDTest::setName(string name) {
+    this->name = name;
+}

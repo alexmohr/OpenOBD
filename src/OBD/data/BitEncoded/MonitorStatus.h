@@ -56,9 +56,17 @@ public:
     void setMil(bool value);
 
     unsigned int getDtcCount();
-    void setDtcCount(unsigned int status);
+    void setDtcCount(unsigned int count);
 
     Engine* getEngine();
+
+    OBDTest *getComponents();
+
+    OBDTest *getFuelSystem();
+
+    OBDTest *getMisfire();
+
+
 
 
 };

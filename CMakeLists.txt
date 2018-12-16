@@ -55,6 +55,8 @@ add_executable(Test
         tests/src/OBD/OBDHandlerTestsService1.cpp
         tests/src/OBD/OBDHandlerTestsService2.cpp
         tests/src/CAN/CanIsoTPTests.cpp
+        tests/src/OBD/OBDHandlerTestSimulatedCAN.cpp
+        tests/src/OBD/data/DataObjectTest.cpp
 
 
         src/Config.cpp src/Config.h
@@ -66,6 +68,6 @@ add_executable(Test
         src/OBD/data/Enumerated/FuelSystemStatus.h
         src/Pid.cpp src/Pid.h src/Service.h
         src/CAN/CanIsoTP.cpp
-        src/CAN/CanIsoTP.h include/linux/can/isotp.h tests/src/OBD/OBDHandlerTestSimulatedCAN.cpp)
+        src/CAN/CanIsoTP.h include/linux/can/isotp.h)
 target_link_libraries(Test gtest_main)
 add_test(NAME obdtest COMMAND Test)

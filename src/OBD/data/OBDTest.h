@@ -23,6 +23,8 @@ public:
 
 
     void fromFrame(byte* frame);
+
+    void setName(string name);
 };
 
 

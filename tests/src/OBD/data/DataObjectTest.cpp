@@ -149,6 +149,14 @@ TEST(DataObjectTest, TestDecodeShortOdd) {
     EXPECT_EQ(0x71, obj->getValue());
 }
 
+TEST(DataObjectTest, TestDecodeShortOverlap) {
+    auto *obj = new DataObject<unsigned short>(A, (byte) 1, B, (byte) 6);
+    vector<byte> data{(byte) 0x3c, (byte) 0x00};
+    obj->setValue(data.data(), data.size());
+    EXPECT_EQ(0x0f, obj->getValue());
+}
+
+
 
 TEST(DataObjectTest, TestDecode2BitAsShortBorder) {
     // A7	A6	A5	A4	A3	A2	A1	A0	B7

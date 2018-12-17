@@ -31,6 +31,15 @@ enum ByteIndex{
  3=4
  0=7
 
+ b1
+ 7=8
+ 6=9
+ 5=10
+ 4=11
+ 3=12
+ 2=13
+ 1=14
+ 0=15
  */
 
 template <class T>
@@ -72,14 +81,19 @@ public:
     }
 
     int getBitIndex(int byteVal, int idx, int sByte) const {
-        int bitIndex;
         if (sByte == A) {
-            bitIndex = 7 - idx;
+            return 7 - idx;
         } else {
-            bitIndex = 0 == idx ? byteVal + 7 : byteVal + (idx % 7);
-        }
+            if (idx == 0) {
+                return byteVal + 7;
+            }
 
-        return bitIndex;
+            if (idx == 7) {
+                return byteVal;
+            }
+
+            return 7 - (idx % 7) + byteVal;
+        }
     }
 
     int setValue(byte *frame, int bufferSize) {
@@ -108,7 +122,6 @@ public:
             // bit index is the value below A1...D7 in the comment at the top of the fle
             int startBitIndex = getBitIndex(startByteValue, startIndex, startByte);
             int stopBitIndex = getBitIndex(stopByteValue, stopIndex, stopByte);
-
 
             auto bitSize = abs(stopBitIndex - startBitIndex);
 

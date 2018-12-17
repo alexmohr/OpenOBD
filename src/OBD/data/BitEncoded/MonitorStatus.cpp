@@ -5,7 +5,21 @@
 #include "MonitorStatus.h"
 
 byte *MonitorStatus::toFrame() {
-    return nullptr;
+    unsigned int data = 0;
+
+    data = mil->toFrame(data) |
+           dtcCount->toFrame(data) |
+           components->toFrame(data) |
+           misfire->toFrame(data) |
+           fuelSystem->toFrame(data) |
+           engine->toFrame(data);
+
+    byte *retVal = new byte[4];
+    retVal[0] = (byte) (data & 0xFF);
+    retVal[1] = (byte) ((data >> 8) & 0xFF);
+    retVal[2] = (byte) ((data >> 16) & 0xFF);
+    retVal[3] = (byte) ((data >> 24) & 0xFF);
+    return retVal;
 }
 
 MonitorStatus::MonitorStatus(Engine *engine) {
@@ -14,9 +28,9 @@ MonitorStatus::MonitorStatus(Engine *engine) {
 }
 
 void MonitorStatus::fromFrame(byte *frame, int size) {
-    dtcCount->setValue(frame, size);
+    mil->fromFrame(frame, size);
+    dtcCount->fromFrame(frame, size);
 
-    mil->setValue(frame, size);
     engine->fromFrame(frame, size);
 
     components->fromFrame(frame, size);

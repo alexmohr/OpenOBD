@@ -36,28 +36,95 @@ TEST(OBDHandler, PID_1_MonitoringStatus) { // NOLINT(cert-err58-cpp)
         heatct 0    0
         cata   1    1
 
-        answer 71 F9 67 F1
-
      */
     const auto pid = (byte) 0x01;
     vector<byte> request{(RequestServiceID), pid};
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xf1, (byte) 0xf9, (byte) 0x67, (byte) 0xf1};
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xf1, (byte) 0x67, (byte) 0xe3, (byte) 0xf1};
+    // do test will check the can response.
     auto handler = doTest(request, response);
     auto monitoringStatus = handler->getVehicle()->getMonitorStatus();
+
+    // validate object state
     EXPECT_EQ(monitoringStatus->getMil(), true);
     EXPECT_EQ(monitoringStatus->getDtcCount(), 113);
 
+    EXPECT_EQ(monitoringStatus->getComponents()->getAvailable()->getValue(), true);
+    EXPECT_EQ(monitoringStatus->getComponents()->getIncomplete()->getValue(), true);
+
+    EXPECT_EQ(monitoringStatus->getFuelSystem()->getAvailable()->getValue(), true);
+    EXPECT_EQ(monitoringStatus->getFuelSystem()->getIncomplete()->getValue(), true);
+
+    EXPECT_EQ(monitoringStatus->getMisfire()->getAvailable()->getValue(), true);
+    EXPECT_EQ(monitoringStatus->getMisfire()->getIncomplete()->getValue(), false);
 
     auto engine = monitoringStatus->getEngine();
     EXPECT_EQ(engine->getEngineType(), PETROL);
 
+    EXPECT_EQ(engine->getEngineSystem1()->getAvailable()->getValue(), true);
+    EXPECT_EQ(engine->getEngineSystem2()->getAvailable()->getValue(), true);
+    EXPECT_EQ(engine->getEngineSystem3()->getAvailable()->getValue(), true);
+    EXPECT_EQ(engine->getEngineSystem4()->getAvailable()->getValue(), false);
+    EXPECT_EQ(engine->getEngineSystem5()->getAvailable()->getValue(), false);
+    EXPECT_EQ(engine->getEngineSystem6()->getAvailable()->getValue(), false);
+    EXPECT_EQ(engine->getEngineSystem7()->getAvailable()->getValue(), true);
+    EXPECT_EQ(engine->getEngineSystem8()->getAvailable()->getValue(), true);
 
+    EXPECT_EQ(engine->getEngineSystem1()->getIncomplete()->getValue(), true);
+    EXPECT_EQ(engine->getEngineSystem2()->getIncomplete()->getValue(), true);
+    EXPECT_EQ(engine->getEngineSystem3()->getIncomplete()->getValue(), true);
+    EXPECT_EQ(engine->getEngineSystem4()->getIncomplete()->getValue(), true);
+    EXPECT_EQ(engine->getEngineSystem5()->getIncomplete()->getValue(), false);
+    EXPECT_EQ(engine->getEngineSystem6()->getIncomplete()->getValue(), false);
+    EXPECT_EQ(engine->getEngineSystem7()->getIncomplete()->getValue(), false);
+    EXPECT_EQ(engine->getEngineSystem8()->getIncomplete()->getValue(), true);
 }
 
+TEST(OBDHandler, PID_1_MonitoringStatusInitViaVehicle) { // NOLINT(cert-err58-cpp)
+    OBDHandler *handler = getHandler();
+    auto monitoringStatus = handler->getVehicle()->getMonitorStatus();
+
+    // validate object state
+    monitoringStatus->setMil(true);
+    monitoringStatus->setDtcCount(113);
+
+    monitoringStatus->getComponents()->getAvailable()->setValue(true);
+    monitoringStatus->getComponents()->getIncomplete()->setValue(true);
+
+    monitoringStatus->getFuelSystem()->getAvailable()->setValue(true);
+    monitoringStatus->getFuelSystem()->getIncomplete()->setValue(true);
+
+    monitoringStatus->getMisfire()->getAvailable()->setValue(true);
+    monitoringStatus->getMisfire()->getIncomplete()->setValue(false);
+
+    auto engine = monitoringStatus->getEngine();
+    engine->setEngineType(PETROL);
+
+    engine->getEngineSystem1()->getAvailable()->setValue(true);
+    engine->getEngineSystem2()->getAvailable()->setValue(true);
+    engine->getEngineSystem3()->getAvailable()->setValue(true);
+    engine->getEngineSystem4()->getAvailable()->setValue(false);
+    engine->getEngineSystem5()->getAvailable()->setValue(false);
+    engine->getEngineSystem6()->getAvailable()->setValue(false);
+    engine->getEngineSystem7()->getAvailable()->setValue(true);
+    engine->getEngineSystem8()->getAvailable()->setValue(true);
+
+    engine->getEngineSystem1()->getIncomplete()->setValue(true);
+    engine->getEngineSystem2()->getIncomplete()->setValue(true);
+    engine->getEngineSystem3()->getIncomplete()->setValue(true);
+    engine->getEngineSystem4()->getIncomplete()->setValue(true);
+    engine->getEngineSystem5()->getIncomplete()->setValue(false);
+    engine->getEngineSystem6()->getIncomplete()->setValue(false);
+    engine->getEngineSystem7()->getIncomplete()->setValue(false);
+    engine->getEngineSystem8()->getIncomplete()->setValue(true);
+
+    const auto pid = (byte) 0x01;
+    vector<byte> request{(RequestServiceID), pid};
+    byte *val = handler->createAnswerFrame(request.data());
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xf1, (byte) 0x67, (byte) 0xe3, (byte) 0xf1};
+    compareResponse(response, val);
+}
 
 /*
-0
-1
 2
 3
 4

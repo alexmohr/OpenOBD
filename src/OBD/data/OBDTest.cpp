@@ -15,8 +15,13 @@ OBDTest::OBDTest(string name, ByteIndex availableByte, byte availableIndex, Byte
 }
 
 void OBDTest::fromFrame(byte *frame, int size) {
-    available->setValue(frame, size);
-    incomplete->setValue(frame, size);
+    available->fromFrame(frame, size);
+    incomplete->fromFrame(frame, size);
+}
+
+unsigned int OBDTest::toFrame(unsigned int &data) {
+    return data |= available->toFrame(data) |
+                   incomplete->toFrame(data);
 }
 
 void OBDTest::setName(string name) {

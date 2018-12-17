@@ -32,9 +32,9 @@ private:
     Engine* engine;
 
 
-    OBDTest *components = new OBDTest("Components", B,(byte)2,B,(byte)6);
-    OBDTest *fuelSystem = new OBDTest("FuelSystem", B,(byte)1,B,(byte)5);
-    OBDTest *misfire = new OBDTest("Misfire", B,(byte)0,B,(byte)4);
+    OBDTest *components = new OBDTest("Components", B, (byte) 2, B, (byte) 6);
+    OBDTest *fuelSystem = new OBDTest("FuelSystem", B, (byte) 1, B, (byte) 5);
+    OBDTest *misfire = new OBDTest("Misfire", B, (byte) 0, B, (byte) 4);
 
 public:
     explicit MonitorStatus(Engine* engine);
@@ -65,10 +65,6 @@ public:
     OBDTest *getFuelSystem();
 
     OBDTest *getMisfire();
-
-
-
-
 };
 
 #endif //OPEN_OBD2_MONITORSTATUS_H

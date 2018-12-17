@@ -113,6 +113,8 @@ byte* Pid::readService1_2(Vehicle *vehicle) {
         case 0xC0:
             data = vehicle->PIDSupportedC1_E0;
             break;
+        case 0x01:
+            data = vehicle->getMonitorStatus()->toFrame();
 
     }
 

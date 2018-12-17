@@ -24,6 +24,8 @@ public:
 
     void fromFrame(byte* frame, int size);
 
+    unsigned int toFrame(unsigned int &data);
+
     void setName(string name);
 
     DataObject<bool> *getAvailable();

@@ -4,6 +4,8 @@
 
 #ifndef OPEN_OBD2_DATAPOSITION_H
 #define OPEN_OBD2_DATAPOSITION_H
+#define BITS_PER_BYTE 8
+#define MAX_BIT_INDEX 7
 
 #include <stdio.h>
 #include <cstddef>
@@ -24,23 +26,9 @@ enum ByteIndex{
 /*
     A7	A6	A5	A4	A3	A2	A1	A0	B7	B6	B5	B4	B3	B2	B1	B0	C7	C6	C5	C4	C3	C2	C1	C0	D7	D6	D5	D4	D3	D2	D1	D0
     00  01  02  03  04  05  06  07  08  09  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31
- 7=0
- 6=1
- 5=2
- 4=3
- 3=4
- 0=7
-
- b1
- 7=8
- 6=9
- 5=10
- 4=11
- 3=12
- 2=13
- 1=14
- 0=15
  */
+
+
 
 template <class T>
 class DataObject {
@@ -51,8 +39,25 @@ private:
     unsigned int stopIndex;
     T value;
     bool isBool = false;
-public:
+    byte *data;
 
+    int getBitIndexRead(int byteVal, int idx, int sByte) const {
+        if (sByte == A) {
+            return MAX_BIT_INDEX - idx;
+        } else {
+            if (idx == 0) {
+                return byteVal + MAX_BIT_INDEX;
+            }
+
+            if (idx == MAX_BIT_INDEX) {
+                return byteVal;
+            }
+
+            return MAX_BIT_INDEX - (idx % MAX_BIT_INDEX) + byteVal;
+        }
+    }
+
+public:
     DataObject(ByteIndex startByte, byte startIndex) : DataObject(startByte, startIndex,
                                                                   startByte, startIndex) {
 
@@ -72,6 +77,7 @@ public:
         }
     }
 
+
     T getValue() {
         return value;
     }
@@ -80,23 +86,33 @@ public:
         value = val;
     }
 
-    int getBitIndex(int byteVal, int idx, int sByte) const {
-        if (sByte == A) {
-            return 7 - idx;
+    unsigned int toFrame(unsigned int &data) {
+        auto startByteValue = -BITS_PER_BYTE + ((startByte + 1) * BITS_PER_BYTE);
+        auto stopByteValue = -BITS_PER_BYTE + ((stopByte + 1) * BITS_PER_BYTE);
+
+        // bit index is the value below A1...D7 in the comment at the top of the fle
+        int startBitIndex = getBitIndexRead(startByteValue, startIndex, startByte);
+        int stopBitIndex = getBitIndexRead(stopByteValue, stopIndex, stopByte);
+        unsigned int retVal;
+
+        if (isBool) {
+            retVal = (unsigned int) value << (startByte * 8) + startIndex;
         } else {
-            if (idx == 0) {
-                return byteVal + 7;
-            }
-
-            if (idx == 7) {
-                return byteVal;
-            }
-
-            return 7 - (idx % 7) + byteVal;
+            retVal = (unsigned int) value << (startIndex - stopBitIndex + 1);
         }
+
+        return retVal;
+        //auto retVal = abs(stopBitIndex - startBitIndex);
+//
+//        vector<byte> arrayOfByte(1);
+//        for (int i = 0; i < bitSize; i++) {
+//            arrayOfByte[bitSize - 1 - i] = (value >> (i * 8));
+//        }
+
+        return 0;
     }
 
-    int setValue(byte *frame, int bufferSize) {
+    int fromFrame(byte *frame, int bufferSize) {
         int i;
         unsigned int data = 0;
         const int size = stopByte - startByte + 1;
@@ -116,12 +132,12 @@ public:
         if (isBool) {
             value = (T) (data & (1 << startIndex));
         } else {
-            auto startByteValue = -8 + ((startByte + 1) * 8);
-            auto stopByteValue = -8 + ((stopByte + 1) * 8);
+            auto startByteValue = -BITS_PER_BYTE + ((startByte + 1) * BITS_PER_BYTE);
+            auto stopByteValue = -BITS_PER_BYTE + ((stopByte + 1) * BITS_PER_BYTE);
 
             // bit index is the value below A1...D7 in the comment at the top of the fle
-            int startBitIndex = getBitIndex(startByteValue, startIndex, startByte);
-            int stopBitIndex = getBitIndex(stopByteValue, stopIndex, stopByte);
+            int startBitIndex = getBitIndexRead(startByteValue, startIndex, startByte);
+            int stopBitIndex = getBitIndexRead(stopByteValue, stopIndex, stopByte);
 
             auto bitSize = abs(stopBitIndex - startBitIndex);
 
@@ -133,9 +149,8 @@ public:
             if (bitSize > 4) {
                 value = (T) (mask & (data));
             } else {
-                value = (T) ((1 << startBitIndex) - 1 & mask);
+                value = (T) ((data << startBitIndex) - 1 & mask);
             }
-
         }
 
         return 1;

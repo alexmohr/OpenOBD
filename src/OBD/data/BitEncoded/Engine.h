@@ -29,7 +29,8 @@ private:
     OBDTest* engineSystem7;
     OBDTest* engineSystem8;
 
-    EngineType type;
+    DataObject<EngineType> *type = new DataObject<EngineType>(B, (byte) 3);
+
 public:
     Engine();
     ~Engine(){
@@ -43,12 +44,29 @@ public:
         delete engineSystem8;
     }
 
-    byte *toFrame();
+    unsigned int toFrame(unsigned int &data);
     void fromFrame(byte *frame, int size);
 
     void setEngineType(EngineType type);
 
     EngineType getEngineType();
+
+    OBDTest *getEngineSystem1();
+
+    OBDTest *getEngineSystem2();
+
+    OBDTest *getEngineSystem3();
+
+    OBDTest *getEngineSystem4();
+
+    OBDTest *getEngineSystem5();
+
+    OBDTest *getEngineSystem6();
+
+    OBDTest *getEngineSystem7();
+
+    OBDTest *getEngineSystem8();
+
 };
 
 #endif //OPEN_OBD2_ENGINE_H

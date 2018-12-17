@@ -11,12 +11,12 @@
 using namespace std;
 
 void byteTest(DataObject<byte> *obj, vector<byte> data) {
-    EXPECT_EQ(1, obj->setValue(data.data(), data.size()));
+    EXPECT_EQ(1, obj->fromFrame(data.data(), data.size()));
     EXPECT_EQ((byte) 0x42, obj->getValue());
 }
 
 void testBool(DataObject<bool> *obj, vector<byte> data, bool expected) {
-    EXPECT_EQ(1, obj->setValue(data.data(), data.size()));
+    EXPECT_EQ(1, obj->fromFrame(data.data(), data.size()));
     EXPECT_EQ(expected, obj->getValue());
 }
 
@@ -122,7 +122,7 @@ TEST(DataObjectTest, TestDecodeByteD) {
 TEST(DataObjectTest, TestDecodeShortLeft) {
     auto *obj = new DataObject<unsigned short>(A, (byte) 7, B, (byte) 0);
     vector<byte> data{(byte) 0xca, (byte) 0xfe};
-    obj->setValue(data.data(), data.size());
+    obj->fromFrame(data.data(), data.size());
     EXPECT_EQ(0xcafe, obj->getValue());
 }
 
@@ -130,7 +130,7 @@ TEST(DataObjectTest, TestDecodeShortLeft) {
 TEST(DataObjectTest, TestDecodeShortMiddle) {
     auto *obj = new DataObject<unsigned short>(B, (byte) 7, C, (byte) 0);
     vector<byte> data{(byte) 0xff, (byte) 0xca, (byte) 0xfe, (byte) 0xff};
-    EXPECT_EQ(1, obj->setValue(data.data(), data.size()));
+    EXPECT_EQ(1, obj->fromFrame(data.data(), data.size()));
     EXPECT_EQ(0xcafe, obj->getValue());
 }
 
@@ -138,21 +138,21 @@ TEST(DataObjectTest, TestDecodeShortMiddle) {
 TEST(DataObjectTest, TestDecodeShortRight) {
     auto *obj = new DataObject<unsigned short>(C, (byte) 7, D, (byte) 0);
     vector<byte> data{(byte) 0xff, (byte) 0xff, (byte) 0xca, (byte) 0xfe};
-    EXPECT_EQ(1, obj->setValue(data.data(), data.size()));
+    EXPECT_EQ(1, obj->fromFrame(data.data(), data.size()));
     EXPECT_EQ(0xcafe, obj->getValue());
 }
 
 TEST(DataObjectTest, TestDecodeShortOdd) {
     auto *obj = new DataObject<unsigned short>(A, (byte) 6, A, (byte) 0);
     vector<byte> data{(byte) 0xf1, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-    EXPECT_EQ(1, obj->setValue(data.data(), data.size()));
+    EXPECT_EQ(1, obj->fromFrame(data.data(), data.size()));
     EXPECT_EQ(0x71, obj->getValue());
 }
 
 TEST(DataObjectTest, TestDecodeShortOverlap) {
     auto *obj = new DataObject<unsigned short>(A, (byte) 1, B, (byte) 6);
     vector<byte> data{(byte) 0x3c, (byte) 0x00};
-    obj->setValue(data.data(), data.size());
+    obj->fromFrame(data.data(), data.size());
     EXPECT_EQ(0x0f, obj->getValue());
 }
 
@@ -166,7 +166,7 @@ TEST(DataObjectTest, TestDecode2BitAsShortBorder) {
     // data in binary
     // 0000 0001 1000 0000
     vector<byte> data{(byte) 0x01, (byte) 0x80};
-    obj->setValue(data.data(), data.size());
+    obj->fromFrame(data.data(), data.size());
     EXPECT_EQ(0x03, obj->getValue());
 }
 
@@ -180,7 +180,7 @@ TEST(DataObjectTest, TestDecode2BitAsShortMiddle) {
     // 7654 3210
     // 0011 0000
     vector<byte> data{(byte) 0x30};
-    obj->setValue(data.data(), data.size());
+    obj->fromFrame(data.data(), data.size());
     EXPECT_EQ(0x03, obj->getValue());
 }
 
@@ -194,7 +194,7 @@ TEST(DataObjectTest, TestDecode2BitAsShortMiddle2) {
     // 7654 3210
     // 0011 0000
     vector<byte> data{(byte) 0xC};
-    obj->setValue(data.data(), data.size());
+    obj->fromFrame(data.data(), data.size());
     EXPECT_EQ(0x03, obj->getValue());
 }
 
@@ -208,15 +208,26 @@ TEST(DataObjectTest, TestDecode3BitAsShortMiddle2) {
     // 7654 3210
     // 0011 0000
     vector<byte> data{(byte) 0x1C};
-    obj->setValue(data.data(), data.size());
+    obj->fromFrame(data.data(), data.size());
     EXPECT_EQ(0x07, obj->getValue());
 }
+
+TEST(DataObjectTest, TestDecode2BitMSB) {
+    // A7	A6	A5	A4	A3	A2	A1	A0	B7
+    // 00  01  02  03  04  05  06  07  08
+    auto *obj = new DataObject<unsigned short>(A, (byte) 7, A, (byte) 6);
+
+    vector<byte> data{(byte) 0xC0};
+    obj->fromFrame(data.data(), data.size());
+    EXPECT_EQ(0x03, obj->getValue());
+}
+
 
 
 TEST(DataObjectTest, TestDecodeInt) {
     auto *obj = new DataObject<int>(A, (byte) 7, D, (byte) 0);
     vector<byte> data{(byte) 0xca, (byte) 0xfe, (byte) 0xba, (byte) 0xbe,};
-    EXPECT_EQ(1, obj->setValue(data.data(), data.size()));
+    EXPECT_EQ(1, obj->fromFrame(data.data(), data.size()));
     EXPECT_EQ(0xcafebabe, obj->getValue());
 }
 

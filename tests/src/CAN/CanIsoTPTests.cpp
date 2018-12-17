@@ -17,9 +17,7 @@ void initIsoTp(CanIsoTP* vehicleCAN, CanIsoTP* testerCAN){
     testerCAN->openIsoTp(VEHICLE_ID, TESTER_ID, const_cast<char *>(CAN_INTERFACE));
 }
 
-TEST(CanIsoTp, SingleFrameMessage) { // NOLINT(cert-err58-cpp)
-    vector<byte> request  {(byte) 0x09 , (byte)0x02};
-
+void doTest(vector<byte> &request) {
     auto vehicleCAN = new CanIsoTP();
     auto testerCAN = new CanIsoTP();
     initIsoTp(vehicleCAN, testerCAN);
@@ -32,9 +30,15 @@ TEST(CanIsoTp, SingleFrameMessage) { // NOLINT(cert-err58-cpp)
     EXPECT_EQ(readSize, static_cast<int> (request.size()));
 
     long i;
-    for (i = 0; i < request.size(); i++){
+    for (i = 0; i < request.size(); i++) {
         EXPECT_EQ(request.at(i), buf[i]);
     }
+}
+
+TEST(CanIsoTp, SingleFrameMessage) { // NOLINT(cert-err58-cpp)
+    vector<byte> request  {(byte) 0x09 , (byte)0x02};
+
+    doTest(request);
 }
 
 TEST(CanIsoTp, MultiFrameMessage) { // NOLINT(cert-err58-cpp)
@@ -49,8 +53,5 @@ TEST(CanIsoTp, MultiFrameMessage) { // NOLINT(cert-err58-cpp)
             (byte) 0x22, (byte) 0x59, (byte) 0x30, (byte) 0x33, (byte) 0x33, (byte) 0x32, (byte) 0x30, (byte) 0x34
     };
 
-    auto vehicleCAN = new CanIsoTP();
-    auto testerCAN = new CanIsoTP();
-    initIsoTp(vehicleCAN, testerCAN);
-    testerCAN->send(request.data(), static_cast<int>(request.size()));
+    doTest(request);
 }

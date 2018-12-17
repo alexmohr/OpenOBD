@@ -22,3 +22,11 @@ void OBDTest::fromFrame(byte *frame, int size) {
 void OBDTest::setName(string name) {
     this->name = name;
 }
+
+DataObject<bool> *OBDTest::getAvailable() {
+    return available;
+}
+
+DataObject<bool> *OBDTest::getIncomplete() {
+    return incomplete;
+}

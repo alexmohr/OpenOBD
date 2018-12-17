@@ -5,11 +5,11 @@
 #include "Pid.h"
 
 
-void Pid::updateVehicle(Service service, Vehicle *vehicle, byte *data) {
+void Pid::updateVehicle(Service service, Vehicle *vehicle, byte *data, int dataSize) {
     switch (service){
         case POWERTRAIN:
         case FREEZE_FRAME:
-            updateService1_2(vehicle, data);
+            updateService1_2(vehicle, data, size);
             break;
         case CONFIRMED_DTCS:
             break;
@@ -59,7 +59,7 @@ byte* Pid::getVehicleData(Service service, Vehicle *vehicle) {
 }
 
 
-void Pid::updateService1_2(Vehicle *vehicle, byte *data) {
+void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
     switch (id){
         case 0x00:
             vehicle->PIDSupported01_20 = data;
@@ -82,7 +82,8 @@ void Pid::updateService1_2(Vehicle *vehicle, byte *data) {
         case 0xC0:
             vehicle->PIDSupportedC1_E0 = data;
             break;
-
+        case 0x01:
+            vehicle->getMonitorStatus()->fromFrame(data, size);
     }
 }
 

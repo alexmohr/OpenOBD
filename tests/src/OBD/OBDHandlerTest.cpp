@@ -27,11 +27,14 @@ void compareResponse(vector<byte> expectedResponse, byte *actualResponse) {
     }
 }
 
-void doTest(vector<byte> request, vector<byte> response) {
+OBDHandler* doTest(vector<byte> request, vector<byte> response) {
     OBDHandler *handler = getHandler();
     handler->updateFromFrame(response.data(), static_cast<int>(response.size()));
     byte *val = handler->createAnswerFrame(request.data());
+
     compareResponse(response, val);
+
+    return handler;
 }
 
 

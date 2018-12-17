@@ -18,6 +18,6 @@ OBDHandler *getHandler();
 
 void compareResponse(vector<byte> expectedResponse, byte *actualResponse);
 
-void doTest(vector<byte> request, vector<byte> response);
+OBDHandler *doTest(vector<byte> request, vector<byte> response);
 
 #endif //OPEN_OBD2_OBDHANDLERTEST_H

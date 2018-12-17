@@ -23,10 +23,10 @@ public:
     vector<string> units;
     vector<string> formulas;
 
-    void updateVehicle(Service service, Vehicle *vehicle, byte *data);
+    void updateVehicle(Service service, Vehicle *vehicle, byte *data, int dataSize);
     byte* getVehicleData(Service service, Vehicle *vehicle);
 
-    void updateService1_2(Vehicle *vehicle, byte *data);
+    void updateService1_2(Vehicle *vehicle, byte *data, int size);
     byte* readService1_2(Vehicle *vehicle);
 
     int to_int32(byte* data);

@@ -25,6 +25,10 @@ public:
     void fromFrame(byte* frame, int size);
 
     void setName(string name);
+
+    DataObject<bool> *getAvailable();
+
+    DataObject<bool> *getIncomplete();
 };
 
 

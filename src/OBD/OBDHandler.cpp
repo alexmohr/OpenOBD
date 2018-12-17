@@ -57,7 +57,7 @@ void OBDHandler::updateFromFrame(byte *frame, int frameSize) {
     int dataSize = frameSize -2;
     byte* data = (byte*)malloc(sizeof(byte)*dataSize);
     memcpy(data, frame+startByte, static_cast<size_t>(dataSize));
-    pid.updateVehicle(service, vehicle, data);
+    pid.updateVehicle(service, vehicle, data, dataSize);
 }
 
 void OBDHandler::getFrameInfo(const byte *frame, int serviceId, Pid &pid, Service &service) {

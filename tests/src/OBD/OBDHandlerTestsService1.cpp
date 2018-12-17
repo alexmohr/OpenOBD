@@ -20,7 +20,7 @@ TEST(OBDHandler, PID_0_PIDSupported01_20) { // NOLINT(cert-err58-cpp)
 TEST(OBDHandler, PID_1_MonitoringStatus) { // NOLINT(cert-err58-cpp)
     /*
      *  MIL: on
-        dtc count: 57
+        dtc count: 113
         B7 = 0
         Engine = petrol
         components avail: 1 incomplete 1
@@ -41,8 +41,17 @@ TEST(OBDHandler, PID_1_MonitoringStatus) { // NOLINT(cert-err58-cpp)
      */
     const auto pid = (byte) 0x01;
     vector<byte> request{(RequestServiceID), pid};
-    vector<byte> response{ResponseServiceID, pid, (byte) 0x71, (byte) 0xf9, (byte) 0x67, (byte) 0xf1};
-    doTest(request, response);
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xf1, (byte) 0xf9, (byte) 0x67, (byte) 0xf1};
+    auto handler = doTest(request, response);
+    auto monitoringStatus = handler->getVehicle()->getMonitorStatus();
+    EXPECT_EQ(monitoringStatus->getMil(), true);
+    EXPECT_EQ(monitoringStatus->getDtcCount(), 113);
+
+
+    auto engine = monitoringStatus->getEngine();
+    EXPECT_EQ(engine->getEngineType(), PETROL);
+
+
 }
 
 

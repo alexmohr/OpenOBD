@@ -1,0 +1,3 @@
+CanIsoTp.SingleFrameMessageVirtualCAN
+CanIsoTp.MultiFrameMessageVirtualCAN
+OBDHandler.PIDSupported01_20_With_VirtualCAN

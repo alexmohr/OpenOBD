@@ -35,13 +35,13 @@ void doTest(vector<byte> &request) {
     }
 }
 
-TEST(CanIsoTp, SingleFrameMessage) { // NOLINT(cert-err58-cpp)
+TEST(CanIsoTp, SingleFrameMessageVirtualCAN) { // NOLINT(cert-err58-cpp)
     vector<byte> request  {(byte) 0x09 , (byte)0x02};
 
     doTest(request);
 }
 
-TEST(CanIsoTp, MultiFrameMessage) { // NOLINT(cert-err58-cpp)
+TEST(CanIsoTp, MultiFrameMessageVirtualCAN) { // NOLINT(cert-err58-cpp)
     // Request: 0x02 0x09 0x02 0x00 0x00 0x00 0x00 0x00
     // Response: flow control has been removed because it will be added by kernel driver.
     // 0x10 0x14 0x49 0x02 0x01 0x57 0x4d 0x45

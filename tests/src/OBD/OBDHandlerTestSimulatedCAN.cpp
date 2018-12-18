@@ -9,7 +9,7 @@
 #include "gtest/gtest.h"
 
 
-TEST(OBDHandler, PIDSupported01_20_With_Simulated_CAN) {
+TEST(OBDHandler, PIDSupported01_20_With_VirtualCAN) {
 
     // these data has uds structure removed because it is added by the kernel driver.
     vector<byte> request{(byte) 0x01, (byte) 0x00};

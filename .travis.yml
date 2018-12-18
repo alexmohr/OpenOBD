@@ -24,9 +24,8 @@ compiler:
 
 
 script:
-- mkdir build
-- cd build
-- cmake ../
-- cmake --build .
-- ../createAdapter.sh
-- ./Test
+  - mkdir build
+  - cd build
+  - cmake ../
+  - cmake --build .
+  - ./Test --gtest_filter=-` tr '\n' ':' < ../tests/travis.excludes`

@@ -123,11 +123,4 @@ byte* Pid::readService1_2(Vehicle *vehicle) {
 
 
 
-int Pid::to_int32(byte *data) {
-    int result;
-    memcpy(&result, data, sizeof(int));
-    return result;
-}
-
-
 

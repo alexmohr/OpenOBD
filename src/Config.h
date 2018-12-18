@@ -10,7 +10,8 @@
 #include <fstream>
 #include "json.hpp"
 #include "easylogging++.h"
-#include "Pid.h"
+#include "OBD/Pid.h"
+#include "OBD/DataTroubleCode.h"
 
 using namespace std;
 using json = nlohmann::json;
@@ -25,8 +26,12 @@ public:
 };
 
 
+
 void from_json(const json& jsdata, map<Service, PidCollection>& pcmap);
 void from_json(const json& jsdata, Pid& pid);
+
+void from_json(const json &jsData, map<int, DataTroubleCode> &dtcMap);
+
 
 template <typename T>
 void copyToVector(const json &jsdata, vector<T> &target);

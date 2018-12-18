@@ -7,11 +7,12 @@
 
 #define CAN_INTERFACE "vcan0"
 
+#include "easylogging++.h"
+#include "gtest/gtest.h"
+
 #include "../../../src/Config.h"
 #include "../../../src/OBD/OBDHandler.h"
-#include "easylogging++.h"
 #include "../../../src/CAN/CanIsoTP.h"
-#include "gtest/gtest.h"
 
 
 OBDHandler *getHandler();

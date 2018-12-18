@@ -4,7 +4,7 @@
 
 
 #include "Config.h"
-
+#include "easylogging++.h"
 using namespace std;
 
 
@@ -13,6 +13,27 @@ template <typename T>
 void copyToVector(const json &jsData, vector<T> &target){
     target.resize(jsData.size());
     std::copy(jsData.begin(), jsData.end(), target.begin());
+}
+
+void from_json(const json &jsData, map<int, DataTroubleCode> &dtcMap) {
+    for (auto const &value: jsData) {
+        DataTroubleCode dtc = DataTroubleCode();
+        dtc.setSaeId(value.at("saeId"));
+        dtc.setDescription(value.at("description"));
+        auto it = dtcMap.find(dtc.getCanId());
+        if (it == dtcMap.end()) {
+            dtcMap.insert(pair<int, DataTroubleCode>(dtc.getCanId(), dtc));
+        } else {
+            it->second.setDescription(it->second.getDescription() + " OR " + dtc.getDescription());
+            LOG(WARNING) << "DataTroubleCode Configuration contains duplicate can id: "
+                         << dtc.getCanId()
+                         << " Descriptions have been merged";
+
+            // if these are not the same something is realy wrong because the calculation
+            // of the can creates collisions.
+            assert (it->second.getSaeId() == dtc.getSaeId());
+        }
+    }
 }
 
 void from_json(const json& jsData, map<Service, PidCollection>& pcmap) {
@@ -27,7 +48,6 @@ void from_json(const json& jsData, map<Service, PidCollection>& pcmap) {
             for (auto &element : jsonPC["pidList"]){
                 pc.pidList.insert(pair<int,Pid>(element["id"], element));
             }
-            //target.resize(jsData.size());
 
             copyToVector(services, pc.validForServices);
 

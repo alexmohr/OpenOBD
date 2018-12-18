@@ -16,6 +16,9 @@ int main() {
     auto pcMap = map<Service, PidCollection>();
     p.parseJson("../configuration/pidConfig.json", pcMap);
 
+    auto dtcMap = map<int, DataTroubleCode>();
+    p.parseJson("../configuration/dtcConfig.json", pcMap);
+
 /*
     <msg id="2024" pl="" t="00:00:16.665"/>
     <msg id="2024" pl="" t="00:00:16.668"/>

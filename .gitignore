@@ -2,4 +2,4 @@
 CMakeFiles/
 cmake-*/
 *build*/
-.~lock*
+.~lock.*

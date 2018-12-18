@@ -1,3 +1,5 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "cert-err58-cpp"
 //
 // Created by me on 14/12/18.
 //
@@ -10,14 +12,14 @@
 const byte RequestServiceID = (byte) 0x01;
 const byte ResponseServiceID = (byte) 0x41;
 
-TEST(OBDHandler, PID_0_PIDSupported01_20) { // NOLINT(cert-err58-cpp)
+TEST(OBDHandler, PID_0_PIDSupported01_20) {
     auto const pid = (byte) 0x00;
     vector<byte> request{RequestServiceID, pid};
     vector<byte> response{ResponseServiceID, pid, (byte) 0xbe, (byte) 0x7e, (byte) 0xb8, (byte) 0x13};
     doTest(request, response);
 }
 
-TEST(OBDHandler, PID_1_MonitoringStatus) { // NOLINT(cert-err58-cpp)
+TEST(OBDHandler, PID_1_MonitoringStatus) {
     /*
      *  MIL: on
         dtc count: 113
@@ -79,7 +81,8 @@ TEST(OBDHandler, PID_1_MonitoringStatus) { // NOLINT(cert-err58-cpp)
     EXPECT_EQ(engine->getEngineSystem8()->getIncomplete()->getValue(), true);
 }
 
-TEST(OBDHandler, PID_1_MonitoringStatusInitViaVehicle) { // NOLINT(cert-err58-cpp)
+// make sure that the application can generate the request on its own and does not need can frames to init.
+TEST(OBDHandler, PID_1_MonitoringStatusInitViaVehicle) {
     OBDHandler *handler = getHandler();
     auto monitoringStatus = handler->getVehicle()->getMonitorStatus();
 
@@ -97,7 +100,7 @@ TEST(OBDHandler, PID_1_MonitoringStatusInitViaVehicle) { // NOLINT(cert-err58-cp
     monitoringStatus->getMisfire()->getIncomplete()->setValue(false);
 
     auto engine = monitoringStatus->getEngine();
-    engine->setEngineType(PETROL);
+    engine->setEngineType(DIESEL);
 
     engine->getEngineSystem1()->getAvailable()->setValue(true);
     engine->getEngineSystem2()->getAvailable()->setValue(true);
@@ -120,8 +123,16 @@ TEST(OBDHandler, PID_1_MonitoringStatusInitViaVehicle) { // NOLINT(cert-err58-cp
     const auto pid = (byte) 0x01;
     vector<byte> request{(RequestServiceID), pid};
     byte *val = handler->createAnswerFrame(request.data());
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xf1, (byte) 0x67, (byte) 0xe3, (byte) 0xf1};
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xf1, (byte) 0x6f, (byte) 0xe3, (byte) 0xf1};
     compareResponse(response, val);
+}
+
+TEST(OBDHandler, PID_2_FreezeDTC) {
+    const auto pid = (byte) 0x02;
+    vector<byte> request{(RequestServiceID), pid};
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xf1, (byte) 0x67, (byte) 0xe3, (byte) 0xf1};
+    // do test will check the can response.
+   // auto handler = doTest(request, response);
 }
 
 /*
@@ -291,3 +302,4 @@ C0
 C3
 C4
 */
+#pragma clang diagnostic pop

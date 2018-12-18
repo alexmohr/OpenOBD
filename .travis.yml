@@ -13,8 +13,8 @@ install:
   - sudo apt-get install build-essential linux-headers-$(uname -r)
   - make
   - sudo make modules_install
-  - modprobe can
-  - insmod ./net/can/can-isotp.ko
+  - sudo modprobe can
+  - sudo insmod ./net/can/can-isotp.ko
 
 language: cpp
 

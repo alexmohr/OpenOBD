@@ -1,0 +1,23 @@
+dist: xenial
+
+before_install:
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-get update -qq
+
+install:
+  - sudo apt-get install -qq cmake gcc can-utils
+
+language: cpp
+
+compiler:
+  - clang
+  - gcc
+
+
+script:
+- mkdir build
+- cd build
+- cmake ../
+- make
+- ../createAdapter.sh
+- ./Test

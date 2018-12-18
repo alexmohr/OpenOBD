@@ -132,7 +132,7 @@ TEST(OBDHandler, PID_2_FreezeDTC) {
     vector<byte> request{(RequestServiceID), pid};
     vector<byte> response{ResponseServiceID, pid, (byte) 0xf1, (byte) 0x67, (byte) 0xe3, (byte) 0xf1};
     // do test will check the can response.
-   // auto handler = doTest(request, response);
+    // auto handler = doTest(request, response);
 }
 
 /*

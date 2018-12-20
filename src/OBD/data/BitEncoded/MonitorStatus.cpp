@@ -4,7 +4,7 @@
 
 #include "MonitorStatus.h"
 
-byte *MonitorStatus::toFrame() {
+unsigned int MonitorStatus::toFrame() {
     unsigned int data = 0;
 
     data = mil->toFrame(data) |
@@ -13,13 +13,7 @@ byte *MonitorStatus::toFrame() {
            misfire->toFrame(data) |
            fuelSystem->toFrame(data) |
            engine->toFrame(data);
-
-    byte *retVal = new byte[4];
-    retVal[0] = (byte) (data & 0xFF);
-    retVal[1] = (byte) ((data >> 8) & 0xFF);
-    retVal[2] = (byte) ((data >> 16) & 0xFF);
-    retVal[3] = (byte) ((data >> 24) & 0xFF);
-    return retVal;
+    return data;
 }
 
 MonitorStatus::MonitorStatus(Engine *engine) {

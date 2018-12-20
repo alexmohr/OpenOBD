@@ -21,6 +21,7 @@ public:
             ByteIndex availableByte, byte availableIndex,
             ByteIndex  incompleteByte, byte incompleteIndex);
 
+    ~OBDTest();
 
     void fromFrame(byte* frame, int size);
 

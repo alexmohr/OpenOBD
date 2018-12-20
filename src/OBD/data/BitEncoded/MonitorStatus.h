@@ -41,9 +41,8 @@ public:
 
     /**
      * Converts this object into frame data.
-     * @return Byte array representing the monitoring status
      */
-    byte* toFrame();
+    unsigned int toFrame();
 
     /**
      * Update the status with frame data.

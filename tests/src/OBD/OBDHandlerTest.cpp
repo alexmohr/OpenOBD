@@ -20,12 +20,18 @@ OBDHandler *getHandler() {
     return handler;
 }
 
-void compareResponse(vector<byte> expectedResponse, byte *actualResponse) {
+void compareResponse(byte *expectedResponse, byte *actualResponse, int size) {
     int i;
-    for (i = 0; i < expectedResponse.size(); i++) {
+    for (i = 0; i < size; i++) {
         EXPECT_EQ(actualResponse[i], expectedResponse[i]);
     }
 }
+
+
+void compareResponse(vector<byte> expectedResponse, byte *actualResponse) {
+    compareResponse(expectedResponse.data(), actualResponse, static_cast<int>(expectedResponse.size()));
+}
+
 
 OBDHandler* doTest(vector<byte> request, vector<byte> response) {
     OBDHandler *handler = getHandler();

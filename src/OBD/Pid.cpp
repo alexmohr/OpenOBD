@@ -58,67 +58,73 @@ byte* Pid::getVehicleData(Service service, Vehicle *vehicle) {
     return data;
 }
 
-
 void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
-    switch (id){
-        case 0x00:
-            vehicle->PIDSupported01_20 = data;
+    auto pid = (Service1Pids) id;
+    switch (pid) {
+        case SupportedPid01_20:
+            vehicle->setPidSupportedFromFrame(Pid01_20, data, size);
             break;
-        case 0x20:
-            vehicle->PIDSupported21_40 = data;
+        case SupportedPid21_40:
+            vehicle->setPidSupportedFromFrame(Pid21_40, data, size);
             break;
-        case 0x40:
-            vehicle->PIDSupported41_60 = data;
+        case SupportedPid41_60:
+            vehicle->setPidSupportedFromFrame(Pid41_60, data, size);
             break;
-        case 0x60:
-            vehicle->PIDSupported61_80 = data;
+        case SupportedPid61_80:
+            vehicle->setPidSupportedFromFrame(Pid61_80, data, size);
             break;
-        case 0x80:
-            vehicle->PIDSupported81_A0 = data;
+        case SupportedPid81_A0:
+            vehicle->setPidSupportedFromFrame(Pid81_A0, data, size);
             break;
-        case 0xA0:
-            vehicle->PIDSupportedA1_C0 = data;
+        case SupportedPidA1_C0:
+            vehicle->setPidSupportedFromFrame(PidA1_C0, data, size);
             break;
-        case 0xC0:
-            vehicle->PIDSupportedC1_E0 = data;
+        case SupportedPidC1_E0:
+            vehicle->setPidSupportedFromFrame(PidC1_E0, data, size);
             break;
-        case 0x01:
+        case MonitoringStatus:
             vehicle->getMonitorStatus()->fromFrame(data, size);
+            break;
     }
 }
 
 
 
 byte* Pid::readService1_2(Vehicle *vehicle) {
-    byte* data = nullptr;
-    switch (id){
-        case 0x00:
-            data = vehicle->PIDSupported01_20;
+    unsigned int data = 0;
+    auto pid = (Service1Pids) id;
+    switch (pid) {
+        case SupportedPid01_20:
+            data = vehicle->getPidSupportedRange(Pid01_20, data);
             break;
-        case 0x20:
-            data = vehicle->PIDSupported21_40;
+        case SupportedPid21_40:
+            data = vehicle->getPidSupportedRange(Pid21_40, data);
             break;
-        case 0x40:
-            data = vehicle->PIDSupported41_60;
+        case SupportedPid41_60:
+            data = vehicle->getPidSupportedRange(Pid41_60, data);
             break;
-        case 0x60:
-            data = vehicle->PIDSupported61_80;
+        case SupportedPid61_80:
+            data = vehicle->getPidSupportedRange(Pid61_80, data);
             break;
-        case 0x80:
-            data = vehicle->PIDSupported81_A0;
+        case SupportedPid81_A0:
+            data = vehicle->getPidSupportedRange(Pid81_A0, data);
             break;
-        case 0xA0:
-            data = vehicle->PIDSupportedA1_C0;
+        case SupportedPidA1_C0:
+            data = vehicle->getPidSupportedRange(PidA1_C0, data);
             break;
-        case 0xC0:
-            data = vehicle->PIDSupportedC1_E0;
+        case SupportedPidC1_E0:
+            data = vehicle->getPidSupportedRange(PidC1_E0, data);
             break;
-        case 0x01:
+        case MonitoringStatus:
             data = vehicle->getMonitorStatus()->toFrame();
-
     }
 
-    return data;
+    byte *retVal = new byte[4];
+    retVal[0] = (byte) (data & 0xFF);
+    retVal[1] = (byte) ((data >> 8) & 0xFF);
+    retVal[2] = (byte) ((data >> 16) & 0xFF);
+    retVal[3] = (byte) ((data >> 24) & 0xFF);
+    return retVal;
 }
 
 

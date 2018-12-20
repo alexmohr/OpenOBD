@@ -12,7 +12,15 @@ OBDTest::OBDTest(string name, ByteIndex availableByte, byte availableIndex, Byte
     this->name = std::move(name);
     this->available = new DataObject<bool>(availableByte, availableIndex);
     this->incomplete = new DataObject<bool>(incompleteByte, incompleteIndex);
+    available->setValue(false);
 }
+
+
+OBDTest::~OBDTest() {
+    delete available;
+    delete incomplete;
+}
+
 
 void OBDTest::fromFrame(byte *frame, int size) {
     available->fromFrame(frame, size);

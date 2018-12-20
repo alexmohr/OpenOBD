@@ -17,6 +17,7 @@
 
 OBDHandler *getHandler();
 
+void compareResponse(byte *expectedResponse, byte *actualResponse, int size);
 void compareResponse(vector<byte> expectedResponse, byte *actualResponse);
 
 OBDHandler *doTest(vector<byte> request, vector<byte> response);

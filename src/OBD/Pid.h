@@ -12,6 +12,18 @@
 
 using namespace std;
 
+enum Service1Pids {
+    SupportedPid01_20 = 0x00,
+    SupportedPid21_40 = 0x20,
+    SupportedPid41_60 = 0x40,
+    SupportedPid61_80 = 0x60,
+    SupportedPid81_A0 = 0x80,
+    SupportedPidA1_C0 = 0xA0,
+    SupportedPidC1_E0 = 0xC0,
+
+    MonitoringStatus = 0x01
+};
+
 class Pid {
 public:
     // todo refactor to getter / setter methods
@@ -29,8 +41,6 @@ public:
 
     void updateService1_2(Vehicle *vehicle, byte *data, int size);
     byte* readService1_2(Vehicle *vehicle);
-
-    int to_int32(byte* data);
 
 };
 

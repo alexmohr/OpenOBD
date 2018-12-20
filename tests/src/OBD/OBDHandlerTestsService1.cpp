@@ -19,6 +19,99 @@ TEST(OBDHandler, PID_0_PIDSupported01_20) {
     doTest(request, response);
 }
 
+TEST(OBDHandler, PID_0_PIDSupported01_20_Single) {
+    auto const pid = (byte) 0x00;
+    vector<byte> request{RequestServiceID, pid};
+    vector<byte> response{ResponseServiceID, pid, (byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00};
+
+    OBDHandler *handler = getHandler();
+
+    vector<int> supported{0x01};
+
+    for (auto const &value: supported) {
+        handler->getVehicle()->setPidSupported(value, true);
+    }
+
+    for (auto const &value: supported) {
+        EXPECT_TRUE(handler->getVehicle()->getPidSupported(value));
+    }
+
+    byte *val = handler->createAnswerFrame(request.data());
+    compareResponse(response, val);
+}
+
+TEST(OBDHandler, PID_0_PIDSupported01_20_Setter) {
+    auto const pid = (byte) 0x00;
+    vector<byte> request{RequestServiceID, pid};
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xbe, (byte) 0x1f, (byte) 0xa8, (byte) 0x13};
+
+    OBDHandler *handler = getHandler();
+
+    vector<int> supported{0x01, 0x03, 0x04, 0x05, 0x06, 0x07, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x13, 0x15, 0x1C,
+                          0x1F, 0x20};
+
+    for (auto const &value: supported) {
+        handler->getVehicle()->setPidSupported(value, true);
+    }
+
+    for (auto const &value: supported) {
+        EXPECT_TRUE(handler->getVehicle()->getPidSupported(value));
+    }
+
+
+    byte *val = handler->createAnswerFrame(request.data());
+    compareResponse(response, val);
+}
+
+TEST(OBDHandler, PID_0_PIDSupportedGeneric) {
+    const int pidsPerCall = 32;
+    int j, k, currentPid;
+
+    vector<Service1Pids> pids = {
+            SupportedPid01_20,
+            SupportedPid21_40,
+            SupportedPid41_60,
+            SupportedPid61_80,
+            SupportedPid81_A0,
+            SupportedPidA1_C0,
+            SupportedPidC1_E0};
+
+
+    OBDHandler *handler = getHandler();
+    auto vehicle = handler->getVehicle();
+    currentPid = 0;
+
+    for (const auto &pid: pids) {
+        k = pidsPerCall;
+        for (j = 1; j <= pidsPerCall; j++) {
+            currentPid++;
+            EXPECT_FALSE(vehicle->getPidSupported(currentPid));
+
+            vehicle->setPidSupported(currentPid, true);
+            EXPECT_TRUE(vehicle->getPidSupported(currentPid));
+
+            vector<byte> request = {RequestServiceID, (byte) pid};
+            byte *val = handler->createAnswerFrame(request.data());
+            byte *response = (byte *) malloc(sizeof(byte) * 8);
+            response[0] = ResponseServiceID;
+            response[1] = request.at(1);
+
+            unsigned int data = 0;
+            data |= 1 << --k;
+
+            response[5] = (byte) (data & 0xFF);
+            response[4] = (byte) ((data >> 8) & 0xFF);
+            response[3] = (byte) ((data >> 16) & 0xFF);
+            response[2] = (byte) ((data >> 24) & 0xFF);
+
+            compareResponse(response, val, 8);
+            vehicle->setPidSupported(currentPid, false);
+        }
+    }
+}
+
+
+
 TEST(OBDHandler, PID_1_MonitoringStatus) {
     /*
      *  MIL: on
@@ -81,6 +174,21 @@ TEST(OBDHandler, PID_1_MonitoringStatus) {
     EXPECT_EQ(engine->getEngineSystem8()->getIncomplete()->getValue(), true);
 }
 
+
+// make sure that the application can generate the request on its own and does not need can frames to init.
+TEST(OBDHandler, PID_1_Test_MIL) {
+    OBDHandler *handler = getHandler();
+    auto monitoringStatus = handler->getVehicle()->getMonitorStatus();
+    // validate object state
+    monitoringStatus->setMil(true);
+    const auto pid = (byte) 0x01;
+    vector<byte> request{(RequestServiceID), pid};
+    byte *val = handler->createAnswerFrame(request.data());
+    vector<byte> response{ResponseServiceID, pid, (byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00};
+    compareResponse(response, val);
+
+}
+
 // make sure that the application can generate the request on its own and does not need can frames to init.
 TEST(OBDHandler, PID_1_MonitoringStatusInitViaVehicle) {
     OBDHandler *handler = getHandler();
@@ -132,7 +240,7 @@ TEST(OBDHandler, PID_2_FreezeDTC) {
     vector<byte> request{(RequestServiceID), pid};
     vector<byte> response{ResponseServiceID, pid, (byte) 0xf1, (byte) 0x67, (byte) 0xe3, (byte) 0xf1};
     // do test will check the can response.
-    // auto handler = doTest(request, response);
+    //auto handler = doTest(request, response);
 }
 
 /*

@@ -45,7 +45,7 @@ void from_json(const json& jsData, map<Service, PidCollection>& pcmap) {
         for (auto &serviceId : services){
             PidCollection pc;
 
-            for (auto &element : jsonPC["pidList"]){
+            for (auto const &element : jsonPC["pidList"]) {
                 pc.pidList.insert(pair<int,Pid>(element["id"], element));
             }
 

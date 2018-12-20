@@ -30,6 +30,9 @@ enum ByteIndex{
 
 
 
+
+
+
 template <class T>
 class DataObject {
 private:
@@ -75,6 +78,8 @@ public:
         if (startByte == stopByte && stopIndex == startIndex) {
             isBool = true;
         }
+
+        value = (T) 0;
     }
 
 
@@ -102,14 +107,6 @@ public:
         }
 
         return retVal;
-        //auto retVal = abs(stopBitIndex - startBitIndex);
-//
-//        vector<byte> arrayOfByte(1);
-//        for (int i = 0; i < bitSize; i++) {
-//            arrayOfByte[bitSize - 1 - i] = (value >> (i * 8));
-//        }
-
-        return 0;
     }
 
     int fromFrame(byte *frame, int bufferSize) {

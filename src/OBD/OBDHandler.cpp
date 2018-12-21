@@ -6,9 +6,9 @@
 #include "easylogging++.h"
 
 
-OBDHandler::OBDHandler(Vehicle *vehicle, map<Service, PidCollection>* pidConfig){
+OBDHandler::OBDHandler(Vehicle *vehicle, unique_ptr<map<Service, PidCollection>> pidConfig){
     this->vehicle = vehicle;
-    this->pidConfig = pidConfig;
+    this->pidConfig = move(pidConfig);
     vehicleFreezeFrame = new Vehicle(*vehicle);
 
 }

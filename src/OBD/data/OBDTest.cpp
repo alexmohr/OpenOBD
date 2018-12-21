@@ -10,15 +10,13 @@
 OBDTest::OBDTest(string name, ByteIndex availableByte, byte availableIndex, ByteIndex incompleteByte,
                  byte incompleteIndex) {
     this->name = std::move(name);
-    this->available = new DataObject<bool>(availableByte, availableIndex);
-    this->incomplete = new DataObject<bool>(incompleteByte, incompleteIndex);
+    this->available = make_unique<DataObject<bool>>(availableByte, availableIndex);
+    this->incomplete = make_unique<DataObject<bool>>(incompleteByte, incompleteIndex);
     available->setValue(false);
 }
 
 
 OBDTest::~OBDTest() {
-    delete available;
-    delete incomplete;
 }
 
 
@@ -36,10 +34,10 @@ void OBDTest::setName(string name) {
     this->name = name;
 }
 
-DataObject<bool> *OBDTest::getAvailable() {
-    return available;
+DataObject<bool> &OBDTest::getAvailable() {
+    return *available;
 }
 
-DataObject<bool> *OBDTest::getIncomplete() {
-    return incomplete;
+DataObject<bool> &OBDTest::getIncomplete() {
+    return *incomplete;
 }

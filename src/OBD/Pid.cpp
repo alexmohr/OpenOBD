@@ -62,29 +62,31 @@ void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
     auto pid = (Service1Pids) id;
     switch (pid) {
         case SupportedPid01_20:
-            vehicle->setPidSupportedFromFrame(Pid01_20, data, size);
+            vehicle->getPidSupport().setPidSupportedFromFrame(Pid01_20, data, size);
             break;
         case SupportedPid21_40:
-            vehicle->setPidSupportedFromFrame(Pid21_40, data, size);
+            vehicle->getPidSupport().setPidSupportedFromFrame(Pid21_40, data, size);
             break;
         case SupportedPid41_60:
-            vehicle->setPidSupportedFromFrame(Pid41_60, data, size);
+            vehicle->getPidSupport().setPidSupportedFromFrame(Pid41_60, data, size);
             break;
         case SupportedPid61_80:
-            vehicle->setPidSupportedFromFrame(Pid61_80, data, size);
+            vehicle->getPidSupport().setPidSupportedFromFrame(Pid61_80, data, size);
             break;
         case SupportedPid81_A0:
-            vehicle->setPidSupportedFromFrame(Pid81_A0, data, size);
+            vehicle->getPidSupport().setPidSupportedFromFrame(Pid81_A0, data, size);
             break;
         case SupportedPidA1_C0:
-            vehicle->setPidSupportedFromFrame(PidA1_C0, data, size);
+            vehicle->getPidSupport().setPidSupportedFromFrame(PidA1_C0, data, size);
             break;
         case SupportedPidC1_E0:
-            vehicle->setPidSupportedFromFrame(PidC1_E0, data, size);
+            vehicle->getPidSupport().setPidSupportedFromFrame(PidC1_E0, data, size);
             break;
         case MonitoringStatus:
-            vehicle->getMonitorStatus()->fromFrame(data, size);
+            vehicle->getMonitorStatus().fromFrame(data, size);
             break;
+        case FreezeDTC:
+            vehicle->getFreezeDTC().fromFrame(data, size);
     }
 }
 
@@ -95,35 +97,35 @@ byte* Pid::readService1_2(Vehicle *vehicle) {
     auto pid = (Service1Pids) id;
     switch (pid) {
         case SupportedPid01_20:
-            data = vehicle->getPidSupportedRange(Pid01_20, data);
+            data = vehicle->getPidSupport().getPidSupportedRange(Pid01_20, data);
             break;
         case SupportedPid21_40:
-            data = vehicle->getPidSupportedRange(Pid21_40, data);
+            data = vehicle->getPidSupport().getPidSupportedRange(Pid21_40, data);
             break;
         case SupportedPid41_60:
-            data = vehicle->getPidSupportedRange(Pid41_60, data);
+            data = vehicle->getPidSupport().getPidSupportedRange(Pid41_60, data);
             break;
         case SupportedPid61_80:
-            data = vehicle->getPidSupportedRange(Pid61_80, data);
+            data = vehicle->getPidSupport().getPidSupportedRange(Pid61_80, data);
             break;
         case SupportedPid81_A0:
-            data = vehicle->getPidSupportedRange(Pid81_A0, data);
+            data = vehicle->getPidSupport().getPidSupportedRange(Pid81_A0, data);
             break;
         case SupportedPidA1_C0:
-            data = vehicle->getPidSupportedRange(PidA1_C0, data);
+            data = vehicle->getPidSupport().getPidSupportedRange(PidA1_C0, data);
             break;
         case SupportedPidC1_E0:
-            data = vehicle->getPidSupportedRange(PidC1_E0, data);
+            data = vehicle->getPidSupport().getPidSupportedRange(PidC1_E0, data);
             break;
         case MonitoringStatus:
-            data = vehicle->getMonitorStatus()->toFrame();
+            data = vehicle->getMonitorStatus().toFrame();
+            break;
+        case FreezeDTC:
+            data = vehicle->getFreezeDTC().toFrame(data);
+            break;
     }
 
-    byte *retVal = new byte[4];
-    retVal[0] = (byte) (data & 0xFF);
-    retVal[1] = (byte) ((data >> 8) & 0xFF);
-    retVal[2] = (byte) ((data >> 16) & 0xFF);
-    retVal[3] = (byte) ((data >> 24) & 0xFF);
+    byte *retVal = toByteArray(data);
     return retVal;
 }
 

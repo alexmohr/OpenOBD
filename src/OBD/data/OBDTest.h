@@ -13,8 +13,8 @@ using namespace std;
 
 class OBDTest {
 private:
-    DataObject<bool>* available;
-    DataObject<bool>* incomplete;
+    unique_ptr<DataObject<bool>> available;
+    unique_ptr<DataObject<bool>> incomplete;
     string name;
 public:
     OBDTest(string name,
@@ -29,9 +29,9 @@ public:
 
     void setName(string name);
 
-    DataObject<bool> *getAvailable();
+    DataObject<bool> &getAvailable();
 
-    DataObject<bool> *getIncomplete();
+    DataObject<bool> &getIncomplete();
 };
 
 

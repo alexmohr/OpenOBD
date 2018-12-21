@@ -47,7 +47,7 @@ add_executable(open_obd2 src/main.cpp src/Config.cpp src/Config.h
         src/CAN/CanIsoTP.cpp
         src/CAN/CanIsoTP.h include/linux/can/isotp.h
         src/OBD/DataTroubleCode.cpp
-        src/OBD/DataTroubleCode.h src/common/endian.h)
+        src/OBD/DataTroubleCode.h src/common/endian.h src/OBD/data/BitEncoded/PidSupport.cpp src/OBD/data/BitEncoded/PidSupport.h src/OBD/data/BitEncoded/FreezeDTC.cpp src/OBD/data/BitEncoded/FreezeDTC.h src/common/conversion.h src/common/conversion.cpp)
 
 
 # Now simply link against gtest or gtest_main as needed. Eg
@@ -73,6 +73,6 @@ add_executable(Test
         src/CAN/CanIsoTP.cpp
         src/OBD/DataTroubleCode.cpp
         src/OBD/DataTroubleCode.h
-        src/CAN/CanIsoTP.h include/linux/can/isotp.h src/common/endian.h)
+        src/CAN/CanIsoTP.h include/linux/can/isotp.h src/common/endian.h src/OBD/data/BitEncoded/PidSupport.cpp src/OBD/data/BitEncoded/PidSupport.h src/OBD/data/BitEncoded/FreezeDTC.cpp src/OBD/data/BitEncoded/FreezeDTC.h src/common/conversion.h src/common/conversion.cpp)
 target_link_libraries(Test gtest_main)
 add_test(NAME obdtest COMMAND Test)

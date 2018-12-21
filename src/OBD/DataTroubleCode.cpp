@@ -15,6 +15,7 @@ DataTroubleCode::DataTroubleCode() {
     canId = 0;
 }
 
+
 unsigned int DataTroubleCode::getCanId() {
     if (0 == canId) {
         canId = convertSaeIdToCan(saeId);
@@ -80,3 +81,5 @@ string DataTroubleCode::getSaeId() {
 string DataTroubleCode::getDescription() {
     return description;
 }
+
+

@@ -6,14 +6,14 @@
 
 
 Engine::Engine() {
-    engineSystem1 = new OBDTest("", C, (byte) 7, D, (byte) 7);
-    engineSystem2 = new OBDTest("", C, (byte) 6, D, (byte) 6);
-    engineSystem3 = new OBDTest("", C, (byte) 5, D, (byte) 5);
-    engineSystem4 = new OBDTest("", C, (byte) 4, D, (byte) 4);
-    engineSystem5 = new OBDTest("", C, (byte) 3, D, (byte) 3);
-    engineSystem6 = new OBDTest("", C, (byte) 2, D, (byte) 2);
-    engineSystem7 = new OBDTest("", C, (byte) 1, D, (byte) 1);
-    engineSystem8 = new OBDTest("", C, (byte) 0, D, (byte) 0);
+    engineSystem1 = make_unique<OBDTest>("", C, (byte) 7, D, (byte) 7);
+    engineSystem2 = make_unique<OBDTest>("", C, (byte) 6, D, (byte) 6);
+    engineSystem3 = make_unique<OBDTest>("", C, (byte) 5, D, (byte) 5);
+    engineSystem4 = make_unique<OBDTest>("", C, (byte) 4, D, (byte) 4);
+    engineSystem5 = make_unique<OBDTest>("", C, (byte) 3, D, (byte) 3);
+    engineSystem6 = make_unique<OBDTest>("", C, (byte) 2, D, (byte) 2);
+    engineSystem7 = make_unique<OBDTest>("", C, (byte) 1, D, (byte) 1);
+    engineSystem8 = make_unique<OBDTest>("", C, (byte) 0, D, (byte) 0);
     setEngineType(PETROL);
 }
 
@@ -57,36 +57,36 @@ EngineType Engine::getEngineType() {
     return type->getValue();
 }
 
-OBDTest *Engine::getEngineSystem1() {
-    return engineSystem1;
+OBDTest& Engine::getEngineSystem1() {
+    return *engineSystem1;
 }
 
-OBDTest *Engine::getEngineSystem2() {
-    return engineSystem2;
+OBDTest& Engine::getEngineSystem2() {
+    return *engineSystem2;
 }
 
-OBDTest *Engine::getEngineSystem3() {
-    return engineSystem3;
+OBDTest& Engine::getEngineSystem3() {
+    return *engineSystem3;
 }
 
-OBDTest *Engine::getEngineSystem4() {
-    return engineSystem4;
+OBDTest& Engine::getEngineSystem4() {
+    return *engineSystem4;
 }
 
-OBDTest *Engine::getEngineSystem5() {
-    return engineSystem5;
+OBDTest& Engine::getEngineSystem5() {
+    return *engineSystem5;
 }
 
-OBDTest *Engine::getEngineSystem6() {
-    return engineSystem6;
+OBDTest& Engine::getEngineSystem6() {
+    return *engineSystem6;
 }
 
-OBDTest *Engine::getEngineSystem7() {
-    return engineSystem7;
+OBDTest& Engine::getEngineSystem7() {
+    return *engineSystem7;
 }
 
-OBDTest *Engine::getEngineSystem8() {
-    return engineSystem8;
+OBDTest& Engine::getEngineSystem8() {
+    return *engineSystem8;
 }
 
 unsigned int Engine::toFrame(unsigned int &data) {

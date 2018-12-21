@@ -7,16 +7,16 @@
 unsigned int MonitorStatus::toFrame() {
     unsigned int data = 0;
 
-    data = mil->toFrame(data) |
-           dtcCount->toFrame(data) |
-           components->toFrame(data) |
-           misfire->toFrame(data) |
-           fuelSystem->toFrame(data) |
-           engine->toFrame(data);
+    data = mil->toFrame(data);
+    data |= dtcCount->toFrame(data);
+    data |= components->toFrame(data);
+    data |= misfire->toFrame(data);
+    data |= fuelSystem->toFrame(data);
+    data |= engine->toFrame(data);
     return data;
 }
 
-MonitorStatus::MonitorStatus(Engine *engine) {
+MonitorStatus::MonitorStatus(shared_ptr<Engine> engine) {
     this->engine = engine;
 
 }
@@ -49,18 +49,18 @@ void MonitorStatus::setDtcCount(unsigned int count) {
     dtcCount->setValue(count);
 }
 
-Engine* MonitorStatus::getEngine() {
-    return engine;
+Engine &MonitorStatus::getEngine() {
+    return *engine;
 }
 
-OBDTest *MonitorStatus::getComponents() {
-    return components;
+OBDTest &MonitorStatus::getComponents() {
+    return *components;
 }
 
-OBDTest *MonitorStatus::getFuelSystem() {
-    return fuelSystem;
+OBDTest &MonitorStatus::getFuelSystem() {
+    return *fuelSystem;
 }
 
-OBDTest *MonitorStatus::getMisfire() {
-    return misfire;
+OBDTest &MonitorStatus::getMisfire() {
+    return *misfire;
 }

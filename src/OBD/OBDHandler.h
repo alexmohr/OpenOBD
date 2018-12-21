@@ -14,9 +14,9 @@ private:
     const int ANSWER_OFFSET = 0x40;
     Vehicle *vehicle;
     Vehicle *vehicleFreezeFrame;
-    map<Service, PidCollection>* pidConfig;
+    unique_ptr<map<Service, PidCollection>> pidConfig;
 public:
-    OBDHandler(Vehicle *vehicle, map<Service, PidCollection>* pidConfig);
+    OBDHandler(Vehicle *vehicle, unique_ptr<map<Service, PidCollection>> pidConfig);
 
     /**
      * Create a response for a request

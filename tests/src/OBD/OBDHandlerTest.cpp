@@ -9,14 +9,19 @@ INITIALIZE_EASYLOGGINGPP // NOLINT(cert-err58-cpp)
 
 OBDHandler *getHandler() {
 
-    Config p = Config();
+    Config config
+    = Config();
 
     auto pcMap = map<Service, PidCollection>();
-    p.parseJson("../configuration/pidConfig.json", pcMap);
+    config.parseJson("../configuration/pidConfig.json", pcMap);
 
-    Engine *engine = new Engine();
-    auto *vehicle = new Vehicle(engine);
-    auto handler = new OBDHandler(vehicle, new map<Service, PidCollection>((pcMap)));
+    auto dtcMap = map<int, DataTroubleCode>();
+    config.parseJson("../configuration/dtcConfig.json", dtcMap);
+
+    shared_ptr<Engine> engine = make_shared<Engine>();
+    auto *vehicle = new Vehicle(engine, make_unique<map<int, DataTroubleCode>>(dtcMap));
+
+    auto handler = new OBDHandler(vehicle, make_unique<map<Service, PidCollection>>(pcMap));
     return handler;
 }
 

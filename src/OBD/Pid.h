@@ -9,6 +9,7 @@
 #include <string>
 #include "../Vehicle.h"
 #include "../Service.h"
+#include "../common/conversion.h"
 
 using namespace std;
 
@@ -21,7 +22,8 @@ enum Service1Pids {
     SupportedPidA1_C0 = 0xA0,
     SupportedPidC1_E0 = 0xC0,
 
-    MonitoringStatus = 0x01
+    MonitoringStatus = 0x01,
+    FreezeDTC = 0x02,
 };
 
 class Pid {

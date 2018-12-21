@@ -100,12 +100,12 @@ public:
         int stopBitIndex = getBitIndexRead(stopByteValue, stopIndex, stopByte);
         unsigned int retVal;
 
-        if (isBool) {
-            retVal = (unsigned int) value << (startByte * 8) + startIndex;
-        } else {
-            retVal = (unsigned int) value << (startIndex - stopBitIndex + 1);
-        }
+        size_t targetSize = sizeof(retVal) * 8;
+        auto bitSize = abs(stopBitIndex - startBitIndex);
 
+
+        size_t shift = targetSize - bitSize - startBitIndex - 1;
+        retVal = (unsigned int) value << (shift);
         return retVal;
     }
 

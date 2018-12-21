@@ -7,6 +7,7 @@
 
 #include <string>
 #include "../CAN/CanIsoTP.h"
+#include "data/DataObject.h"
 
 using namespace std;
 

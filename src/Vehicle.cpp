@@ -12,11 +12,11 @@ Vehicle::Vehicle(shared_ptr<Engine> engine, shared_ptr<map<int, DataTroubleCode>
     pidSupport = make_unique<PidSupport>();
     freezeDTC = make_unique<FreezeDTC>(dtcMap);
 
-    fuelSystem1 = make_unique<DataObject<FuelSystemStatus>>(A, 7, B, 0);
+    fuelSystem1 = make_unique<DataObject<StateOfFuelSystem>>(A, 7, A, 0);
+    fuelSystem2 = make_unique<DataObject<StateOfFuelSystem>>(B, 7, B, 0);
 }
 
-Vehicle::~Vehicle() {
-}
+Vehicle::~Vehicle() = default;
 
 
 Vehicle::Vehicle(Vehicle &vehicle) {
@@ -36,6 +36,14 @@ PidSupport &Vehicle::getPidSupport() {
 
 FreezeDTC &Vehicle::getFreezeDTC() {
     return *freezeDTC;
+}
+
+DataObject<StateOfFuelSystem> &Vehicle::getFuelSystem1() {
+    return *fuelSystem1;
+}
+
+DataObject<StateOfFuelSystem> &Vehicle::getFuelSystem2() {
+    return *fuelSystem2;
 }
 
 

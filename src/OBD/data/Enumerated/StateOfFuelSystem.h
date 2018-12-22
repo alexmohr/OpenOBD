@@ -6,7 +6,7 @@
 #define OPEN_OBD2_FUELSYSTEMSTATUS_H
 
 
-enum FuelSystemStatus{
+enum StateOfFuelSystem {
     DoesNotExist = 0,
     OpenLoopEngineTooCool = 1,
     ClosedLoopUsingOxygenSensor = 2,

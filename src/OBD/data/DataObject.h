@@ -42,7 +42,6 @@ private:
     unsigned int stopIndex;
     T value;
     bool isBool = false;
-    byte *data;
 
     int getBitIndexRead(int byteVal, int idx, int sByte) const {
         if (sByte == A) {
@@ -61,7 +60,7 @@ private:
     }
 
 public:
-    DataObject(ByteIndex startByte, int startIndex) : DataObject(startByte, startIndex,
+    DataObject(ByteIndex startByte, unsigned int startIndex) : DataObject(startByte, startIndex,
                                                                  startByte, startIndex) {
 
     }
@@ -70,10 +69,10 @@ public:
     DataObject(ByteIndex startByte, unsigned int startIndex,
                ByteIndex stopByte, unsigned stopIndex) {
         this->startByte = startByte;
-        this->startIndex = (unsigned int) startIndex;
+        this->startIndex = startIndex;
         this->stopByte= stopByte;
         int offset = (stopByte - startByte + 1);
-        this->stopIndex = (unsigned int) stopIndex;
+        this->stopIndex = stopIndex;
 
         if (startByte == stopByte && stopIndex == startIndex) {
             isBool = true;

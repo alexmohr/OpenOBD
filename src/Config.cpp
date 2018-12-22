@@ -25,9 +25,9 @@ void from_json(const json &jsData, map<int, DataTroubleCode> &dtcMap) {
             dtcMap.insert(pair<int, DataTroubleCode>(dtc.getCanId(), dtc));
         } else {
             it->second.setDescription(it->second.getDescription() + " OR " + dtc.getDescription());
-            LOG(WARNING) << "DataTroubleCode Configuration contains duplicate can id: "
-                         << dtc.getCanId()
-                         << " Descriptions have been merged";
+//            LOG(WARNING) << "DataTroubleCode Configuration contains duplicate can id: "
+//                         << dtc.getCanId()
+//                         << " Descriptions have been merged";
 
             // if these are not the same something is realy wrong because the calculation
             // of the can creates collisions.

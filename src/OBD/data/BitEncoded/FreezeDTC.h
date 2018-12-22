@@ -22,6 +22,9 @@ public:
 
     unsigned int toFrame(unsigned int &data);
 
+    void setValue(unsigned short value);
+
+    DataTroubleCode getValue();
 
 };
 

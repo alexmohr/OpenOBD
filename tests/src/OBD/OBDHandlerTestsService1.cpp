@@ -237,15 +237,71 @@ TEST(OBDHandler, PID_1_MonitoringStatusInitViaVehicle) {
 }
 
 TEST(OBDHandler, PID_2_FreezeDTC) {
-    const auto pid = (byte) 0x02;
+    const auto pid = (byte) FreezeDTCPid;
     vector<byte> request{(RequestServiceID), pid};
     vector<byte> response{ResponseServiceID, pid, (byte) 0xe5, (byte) 0x00};
-    doTest(request, response);
+    auto handler = doTest(request, response);
 
-    // 0x00, 0xe5, 0x00
-    // do test will check the can response.
-    //auto handler = doTest(request, response);
+    auto code = handler->getVehicle()->getFreezeDTC().getValue();
+
+    EXPECT_EQ("U2500", code.getSaeId());
+    EXPECT_EQ("(CAN) Lack of Acknowledgement From Engine Management", code.getDescription());
+    EXPECT_EQ(0xe500, code.getCanId());
 }
+
+TEST(OBDHandler, PID_2_FreezeDTC_Setter) {
+    OBDHandler *handler = getHandler();
+    FreezeDTC &freezeDTC = handler->getVehicle()->getFreezeDTC();
+
+    const int codeID = 0x5751;
+    freezeDTC.setValue(codeID);
+
+    DataTroubleCode code = freezeDTC.getValue();
+    EXPECT_EQ(codeID, code.getCanId());
+    EXPECT_EQ("C1751", code.getSaeId());
+    EXPECT_EQ("Vehicle Speed Sensor # 1 Output Circuit Short to Vbatt", code.getDescription());
+
+    const auto pid = (byte) FreezeDTCPid;
+    vector<byte> request{(RequestServiceID), pid};
+    vector<byte> response{ResponseServiceID, pid, (byte) 0x57, (byte) 0x51};
+    doTest(request, response);
+}
+
+
+TEST(OBDHandler, PID_3_FuelSystemState) {
+    const auto pid = (byte) FuelSystemStatus;
+    vector<byte> request{(RequestServiceID), pid};
+    OBDHandler *handler;
+    int i;
+    for (i = -1; i <= 4; i++) {
+        StateOfFuelSystem state;
+        if (-1 == i) {
+            state = DoesNotExist;
+        } else {
+            state = StateOfFuelSystem(pow(2, i));
+        }
+
+        vector<byte> response{ResponseServiceID, pid, (byte) state, (byte) state};
+        handler = doTest(request, response);
+        EXPECT_EQ(handler->getVehicle()->getFuelSystem1().getValue(), state);
+        EXPECT_EQ(handler->getVehicle()->getFuelSystem2().getValue(), state);
+
+        vector<byte> response2{ResponseServiceID, pid, (byte) state, (byte) 0};
+        handler = doTest(request, response2);
+        EXPECT_EQ(handler->getVehicle()->getFuelSystem1().getValue(), state);
+        EXPECT_EQ(handler->getVehicle()->getFuelSystem2().getValue(), DoesNotExist);
+        handler->getVehicle()->getFuelSystem2().setValue(state);
+        doTest(request, response);
+
+        vector<byte> response3{ResponseServiceID, pid, (byte) 0, (byte) state};
+        handler = doTest(request, response3);
+        EXPECT_EQ(handler->getVehicle()->getFuelSystem1().getValue(), DoesNotExist);
+        EXPECT_EQ(handler->getVehicle()->getFuelSystem2().getValue(), state);
+        handler->getVehicle()->getFuelSystem1().setValue(state);
+        doTest(request, response);
+    }
+}
+
 
 /*
 2

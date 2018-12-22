@@ -23,3 +23,14 @@ void FreezeDTC::fromFrame(byte *data, int size) {
     dataObj->fromFrame(data, size);
     dtc = &dtcMap->at(dataObj->getValue());
 }
+
+void FreezeDTC::setValue(unsigned short value) {
+    dataObj->setValue(value);
+    dtc = &dtcMap->at(dataObj->getValue());
+}
+
+DataTroubleCode FreezeDTC::getValue() {
+    return *dtc;
+}
+
+

@@ -6,11 +6,8 @@
 
 INITIALIZE_EASYLOGGINGPP // NOLINT(cert-err58-cpp)
 
-
 OBDHandler *getHandler() {
-
-    Config config
-    = Config();
+    Config config = Config();
 
     auto pcMap = map<Service, PidCollection>();
     config.parseJson("../configuration/pidConfig.json", pcMap);
@@ -47,6 +44,5 @@ OBDHandler* doTest(vector<byte> request, vector<byte> response) {
 
     return handler;
 }
-
 
 

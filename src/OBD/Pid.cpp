@@ -85,8 +85,13 @@ void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
         case MonitoringStatus:
             vehicle->getMonitorStatus().fromFrame(data, size);
             break;
-        case FreezeDTC:
+        case FreezeDTCPid:
             vehicle->getFreezeDTC().fromFrame(data, size);
+            break;
+        case FuelSystemStatus:
+            vehicle->getFuelSystem1().fromFrame(data, size);
+            vehicle->getFuelSystem2().fromFrame(data, size);
+            break;
     }
 }
 
@@ -120,8 +125,12 @@ byte* Pid::readService1_2(Vehicle *vehicle) {
         case MonitoringStatus:
             data = vehicle->getMonitorStatus().toFrame();
             break;
-        case FreezeDTC:
+        case FreezeDTCPid:
             data = vehicle->getFreezeDTC().toFrame(data);
+            break;
+        case FuelSystemStatus:
+            data = vehicle->getFuelSystem1().toFrame(data) |
+                   vehicle->getFuelSystem2().toFrame(data);
             break;
     }
 

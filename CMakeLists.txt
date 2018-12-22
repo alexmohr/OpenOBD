@@ -42,7 +42,7 @@ add_executable(open_obd2 src/main.cpp src/Config.cpp src/Config.h
         src/OBD/data/OBDTest.cpp src/OBD/data/OBDTest.h
         src/OBD/data/DataObject.h src/OBD/data/BitEncoded/Engine.cpp src/OBD/data/BitEncoded/Engine.cpp
         src/OBD/data/BitEncoded/Engine.h
-        src/OBD/data/Enumerated/FuelSystemStatus.h
+        src/OBD/data/Enumerated/StateOfFuelSystem.h
         src/OBD/Pid.cpp src/OBD/Pid.h src/Service.h
         src/CAN/CanIsoTP.cpp
         src/CAN/CanIsoTP.h include/linux/can/isotp.h
@@ -68,7 +68,7 @@ add_executable(Test
         src/OBD/data/OBDTest.cpp src/OBD/data/OBDTest.h
         src/OBD/data/DataObject.h src/OBD/data/BitEncoded/Engine.cpp src/OBD/data/BitEncoded/Engine.cpp
         src/OBD/data/BitEncoded/Engine.h
-        src/OBD/data/Enumerated/FuelSystemStatus.h
+        src/OBD/data/Enumerated/StateOfFuelSystem.h
         src/OBD/Pid.cpp src/OBD/Pid.h src/Service.h
         src/CAN/CanIsoTP.cpp
         src/OBD/DataTroubleCode.cpp

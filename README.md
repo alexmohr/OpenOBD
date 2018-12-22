@@ -23,10 +23,10 @@ Prerequisites:
 * g++-8
 Any other compiler than g++-8 with C++17 support should work as well but is not ( yet ) supported officially.
 
-``
+````
 mkdir build
 cd build
 cmake ../
 cmake --build .
 # there is currently no install script because no usable front end exists yet 
-``
+````

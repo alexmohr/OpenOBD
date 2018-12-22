@@ -27,16 +27,16 @@ PidSupport::PidSupport(){
 void PidSupport::initPid(vector<DataObject<bool>> &data) {
     int i;
     for (i = 7; i >= 0; i--) {
-        data.emplace_back(D, (byte) i);
+        data.emplace_back(D, i);
     }
     for (i = 7; i >= 0; i--) {
-        data.emplace_back(C, (byte) i);
+        data.emplace_back(C, i);
     }
     for (i = 7; i >= 0; i--) {
-        data.emplace_back(B, (byte) i);
+        data.emplace_back(B, i);
     }
     for (i = 7; i >= 0; i--) {
-        data.emplace_back(A, (byte) i);
+        data.emplace_back(A, i);
     }
     for (auto &pid  : data) {
         pid.setValue(false);

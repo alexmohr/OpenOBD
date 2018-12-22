@@ -18,8 +18,8 @@ private:
     string name;
 public:
     OBDTest(string name,
-            ByteIndex availableByte, byte availableIndex,
-            ByteIndex  incompleteByte, byte incompleteIndex);
+            ByteIndex availableByte, unsigned int availableIndex,
+            ByteIndex incompleteByte, unsigned int incompleteIndex);
 
     ~OBDTest();
 

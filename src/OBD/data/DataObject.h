@@ -61,14 +61,14 @@ private:
     }
 
 public:
-    DataObject(ByteIndex startByte, byte startIndex) : DataObject(startByte, startIndex,
-                                                                  startByte, startIndex) {
+    DataObject(ByteIndex startByte, int startIndex) : DataObject(startByte, startIndex,
+                                                                 startByte, startIndex) {
 
     }
 
 
-    DataObject(ByteIndex startByte, byte startIndex,
-               ByteIndex stopByte, byte stopIndex) {
+    DataObject(ByteIndex startByte, unsigned int startIndex,
+               ByteIndex stopByte, unsigned stopIndex) {
         this->startByte = startByte;
         this->startIndex = (unsigned int) startIndex;
         this->stopByte= stopByte;

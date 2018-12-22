@@ -8,7 +8,7 @@
 FreezeDTC::FreezeDTC(shared_ptr<map<int, DataTroubleCode>> dtcMap) {
     this->dtcMap = dtcMap;
     this->dtc = nullptr;
-    this->dataObj = make_unique<DataObject<unsigned short>>(A, (byte) 7, B, (byte) 0);
+    this->dataObj = make_unique<DataObject<unsigned short>>(A, 7, B, 0);
 }
 
 FreezeDTC::~FreezeDTC() {

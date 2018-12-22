@@ -6,14 +6,14 @@
 
 
 Engine::Engine() {
-    engineSystem1 = make_unique<OBDTest>("", C, (byte) 7, D, (byte) 7);
-    engineSystem2 = make_unique<OBDTest>("", C, (byte) 6, D, (byte) 6);
-    engineSystem3 = make_unique<OBDTest>("", C, (byte) 5, D, (byte) 5);
-    engineSystem4 = make_unique<OBDTest>("", C, (byte) 4, D, (byte) 4);
-    engineSystem5 = make_unique<OBDTest>("", C, (byte) 3, D, (byte) 3);
-    engineSystem6 = make_unique<OBDTest>("", C, (byte) 2, D, (byte) 2);
-    engineSystem7 = make_unique<OBDTest>("", C, (byte) 1, D, (byte) 1);
-    engineSystem8 = make_unique<OBDTest>("", C, (byte) 0, D, (byte) 0);
+    engineSystem1 = make_unique<OBDTest>("", C, 7, D, 7);
+    engineSystem2 = make_unique<OBDTest>("", C, 6, D, 6);
+    engineSystem3 = make_unique<OBDTest>("", C, 5, D, 5);
+    engineSystem4 = make_unique<OBDTest>("", C, 4, D, 4);
+    engineSystem5 = make_unique<OBDTest>("", C, 3, D, 3);
+    engineSystem6 = make_unique<OBDTest>("", C, 2, D, 2);
+    engineSystem7 = make_unique<OBDTest>("", C, 1, D, 1);
+    engineSystem8 = make_unique<OBDTest>("", C, 0, D, 0);
     setEngineType(PETROL);
 }
 

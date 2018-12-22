@@ -7,10 +7,11 @@
 
 
 enum FuelSystemStatus{
+    DoesNotExist = 0,
     OpenLoopEngineTooCool = 1,
     ClosedLoopUsingOxygenSensor = 2,
     OpenLoadEngineLoadOrFuelCut = 4,
-    OpenLoopFailure = 8;
+    OpenLoopFailure = 8,
     ClosedLoopUsingOxygenSensorWithFault = 16
 };
 

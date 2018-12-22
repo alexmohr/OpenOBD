@@ -29,7 +29,7 @@ private:
     unique_ptr<OBDTest> engineSystem7;
     unique_ptr<OBDTest> engineSystem8;
 
-    DataObject<EngineType> *type = new DataObject<EngineType>(B, (byte) 3);
+    DataObject<EngineType> *type = new DataObject<EngineType>(B, 3);
 
 public:
     Engine();

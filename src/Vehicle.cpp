@@ -11,6 +11,8 @@ Vehicle::Vehicle(shared_ptr<Engine> engine, shared_ptr<map<int, DataTroubleCode>
     monitorStatus = make_unique<MonitorStatus>(engine);
     pidSupport = make_unique<PidSupport>();
     freezeDTC = make_unique<FreezeDTC>(dtcMap);
+
+    fuelSystem1 = make_unique<DataObject<FuelSystemStatus>>(A, 7, B, 0);
 }
 
 Vehicle::~Vehicle() {

@@ -10,6 +10,7 @@
 #include "OBD/data/BitEncoded/MonitorStatus.h"
 #include "OBD/data/BitEncoded/FreezeDTC.h"
 #include "OBD/data/BitEncoded/PidSupport.h"
+#include "OBD/data/Enumerated/FuelSystemStatus.h"
 
 
 using namespace std;
@@ -22,6 +23,9 @@ private:
     unique_ptr<MonitorStatus> monitorStatus;
     unique_ptr<PidSupport> pidSupport;
     unique_ptr<FreezeDTC> freezeDTC;
+
+    unique_ptr<DataObject<FuelSystemStatus>> fuelSystem1;
+    unique_ptr<DataObject<FuelSystemStatus>> fuelSystem2;
 
     int speed;
     int rpm;

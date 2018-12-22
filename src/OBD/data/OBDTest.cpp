@@ -7,8 +7,8 @@
 #include "OBDTest.h"
 
 
-OBDTest::OBDTest(string name, ByteIndex availableByte, byte availableIndex, ByteIndex incompleteByte,
-                 byte incompleteIndex) {
+OBDTest::OBDTest(string name, ByteIndex availableByte, unsigned int availableIndex, ByteIndex incompleteByte,
+                 unsigned int incompleteIndex) {
     this->name = std::move(name);
     this->available = make_unique<DataObject<bool>>(availableByte, availableIndex);
     this->incomplete = make_unique<DataObject<bool>>(incompleteByte, incompleteIndex);

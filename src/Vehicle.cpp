@@ -6,11 +6,13 @@
 #include "common/endian.h"
 
 
-Vehicle::Vehicle(shared_ptr<Engine> engine, shared_ptr<map<int, DataTroubleCode>> dtcMap) {
+Vehicle::Vehicle(shared_ptr<map<int, DataTroubleCode>> dtcMap) {
     this->dtcMap = dtcMap;
+    engine = make_shared<Engine>();
     monitorStatus = make_unique<MonitorStatus>(engine);
     pidSupport = make_unique<PidSupport>();
     freezeDTC = make_unique<FreezeDTC>(dtcMap);
+
 
     fuelSystem1 = make_unique<DataObject<StateOfFuelSystem>>(A, 7, A, 0);
     fuelSystem2 = make_unique<DataObject<StateOfFuelSystem>>(B, 7, B, 0);
@@ -44,6 +46,10 @@ DataObject<StateOfFuelSystem> &Vehicle::getFuelSystem1() {
 
 DataObject<StateOfFuelSystem> &Vehicle::getFuelSystem2() {
     return *fuelSystem2;
+}
+
+Engine &Vehicle::getEngine() {
+    return *engine;
 }
 
 

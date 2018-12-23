@@ -12,7 +12,7 @@ unsigned int MonitorStatus::toFrame() {
     data |= components->toFrame(data);
     data |= misfire->toFrame(data);
     data |= fuelSystem->toFrame(data);
-    data |= engine->toFrame(data);
+    data |= engine->toFrameForMonitoringSystem(data);
     return data;
 }
 
@@ -25,7 +25,7 @@ void MonitorStatus::fromFrame(byte *frame, int size) {
     mil->fromFrame(frame, size);
     dtcCount->fromFrame(frame, size);
 
-    engine->fromFrame(frame, size);
+    engine->fromFrameForMonitoringSystem(frame, size);
 
     components->fromFrame(frame, size);
     misfire->fromFrame(frame, size);

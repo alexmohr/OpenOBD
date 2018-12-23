@@ -65,7 +65,6 @@ public:
 
     }
 
-
     DataObject(ByteIndex startByte, unsigned int startIndex,
                ByteIndex stopByte, unsigned stopIndex) {
         this->startByte = startByte;

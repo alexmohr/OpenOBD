@@ -24,7 +24,8 @@ enum Service1Pids {
 
     MonitoringStatus = 0x01,
     FreezeDTCPid = 0x02,
-    FuelSystemStatus = 0x03
+    FuelSystemStatus = 0x03,
+    CalculatedEngineLoad = 0x04
 };
 
 class Pid {

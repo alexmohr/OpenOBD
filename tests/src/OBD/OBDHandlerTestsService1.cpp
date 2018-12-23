@@ -302,10 +302,31 @@ TEST(OBDHandler, PID_3_FuelSystemState) {
     }
 }
 
+TEST(OBDHandler, PID_4_CalculatedEngineLoad) {
+    const auto pid = (byte) CalculatedEngineLoad;
+    vector<byte> request{(RequestServiceID), pid};
+    vector<byte> response{ResponseServiceID, pid, (byte) 0x6b};
+    auto handler = doTest(request, response);
+
+    auto &engine = handler->getVehicle()->getEngine();
+    EXPECT_EQ(ceil(engine.getLoad().getValue()), 42);
+}
+
+TEST(OBDHandler, PID_4_CalculatedEngineLoadSetter) {
+    // no setting via can frame
+    const auto pid = (byte) CalculatedEngineLoad;
+    vector<byte> request{(RequestServiceID), pid};
+    vector<byte> response{ResponseServiceID, pid, (byte) 0x6b};
+
+    OBDHandler *handler = getHandler();
+    auto &engine = handler->getVehicle()->getEngine();
+    engine.getLoad().setValue(42);
+    EXPECT_EQ(ceil(engine.getLoad().getValue()), 42);
+}
+
 
 /*
-2
-3
+
 4
 5
 6

@@ -9,6 +9,7 @@
 
 #include <string>
 #include "../OBDTest.h"
+#include "../CalculatedDataObject.h"
 
 using namespace std;
 
@@ -29,15 +30,18 @@ private:
     unique_ptr<OBDTest> engineSystem7;
     unique_ptr<OBDTest> engineSystem8;
 
-    DataObject<EngineType> *type = new DataObject<EngineType>(B, 3);
+    unique_ptr<DataObject<EngineType>> type;
+
+    unique_ptr<CalculatedDataObject<byte, float>> calculatedLoad;
 
 public:
     Engine();
 
     ~Engine() = default;
 
-    unsigned int toFrame(unsigned int &data);
-    void fromFrame(byte *frame, int size);
+    unsigned int toFrameForMonitoringSystem(unsigned int &data);
+
+    void fromFrameForMonitoringSystem(byte *frame, int size);
 
     void setEngineType(EngineType type);
 
@@ -59,6 +63,7 @@ public:
 
     OBDTest &getEngineSystem8();
 
+    CalculatedDataObject<byte, float> &getLoad();
 };
 
 #endif //OPEN_OBD2_ENGINE_H

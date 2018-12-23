@@ -14,10 +14,16 @@ Engine::Engine() {
     engineSystem6 = make_unique<OBDTest>("", C, 2, D, 2);
     engineSystem7 = make_unique<OBDTest>("", C, 1, D, 1);
     engineSystem8 = make_unique<OBDTest>("", C, 0, D, 0);
+    type = make_unique<DataObject<EngineType>>(B, 3);
     setEngineType(PETROL);
+
+
+    calculatedLoad = make_unique<CalculatedDataObject<byte, float>>(A, 7, A, 0,
+                                                                    CalculatedValues::toPercent,
+                                                                    CalculatedValues::fromPercent);
 }
 
-void Engine::fromFrame(byte *frame, int size) {
+void Engine::fromFrameForMonitoringSystem(byte *frame, int size) {
     engineSystem1->fromFrame(frame, size);
     engineSystem2->fromFrame(frame, size);
     engineSystem3->fromFrame(frame, size);
@@ -89,7 +95,7 @@ OBDTest& Engine::getEngineSystem8() {
     return *engineSystem8;
 }
 
-unsigned int Engine::toFrame(unsigned int &data) {
+unsigned int Engine::toFrameForMonitoringSystem(unsigned int &data) {
     data = engineSystem1->toFrame(data) |
            engineSystem2->toFrame(data) |
            engineSystem3->toFrame(data) |
@@ -101,3 +107,8 @@ unsigned int Engine::toFrame(unsigned int &data) {
            type->toFrame(data);
     return data;
 }
+
+CalculatedDataObject<byte, float> &Engine::getLoad() {
+    return *calculatedLoad;
+}
+

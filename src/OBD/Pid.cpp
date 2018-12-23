@@ -92,6 +92,9 @@ void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
             vehicle->getFuelSystem1().fromFrame(data, size);
             vehicle->getFuelSystem2().fromFrame(data, size);
             break;
+        case CalculatedEngineLoad:
+            vehicle->getEngine().getLoad().fromFrame(data, size);
+            break;
     }
 }
 
@@ -132,6 +135,8 @@ byte* Pid::readService1_2(Vehicle *vehicle) {
             data = vehicle->getFuelSystem1().toFrame(data) |
                    vehicle->getFuelSystem2().toFrame(data);
             break;
+        case CalculatedEngineLoad:
+            data = vehicle->getEngine().getLoad().toFrame(data);
     }
 
     byte *retVal = toByteArray(data);

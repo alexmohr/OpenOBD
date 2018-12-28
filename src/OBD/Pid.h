@@ -39,6 +39,7 @@ enum Service1Pids {
     IntakeAirTemperature = 0x0F,
     MAFAirFlowRate = 0x10,
     ThrottlePosition = 0x11,
+    CommandedSecondaryAirStatus = 0x12,
 };
 
 class Pid {

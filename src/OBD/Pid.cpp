@@ -134,6 +134,9 @@ void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
         case ThrottlePosition:
             vehicle->getThrottlePosition().fromFrame(data, size);
             break;
+        case CommandedSecondaryAirStatus:
+            vehicle->getCommandedSecondaryAirStatus().fromFrame(data, size);
+            break;
     }
 }
 
@@ -215,6 +218,9 @@ byte* Pid::readService1_2(Vehicle *vehicle) {
             break;
         case ThrottlePosition:
             data = vehicle->getThrottlePosition().toFrame(data);
+            break;
+        case CommandedSecondaryAirStatus:
+            data = vehicle->getCommandedSecondaryAirStatus().toFrame(data);
             break;
     }
 

@@ -11,6 +11,7 @@
 #include "OBD/data/BitEncoded/FreezeDTC.h"
 #include "OBD/data/BitEncoded/PidSupport.h"
 #include "OBD/data/Enumerated/StateOfFuelSystem.h"
+#include "OBD/data/Enumerated/StateOfCommandedSecondaryAir.h"
 
 
 using namespace std;
@@ -27,6 +28,7 @@ private:
 
     unique_ptr<DataObject<StateOfFuelSystem>> fuelSystem1;
     unique_ptr<DataObject<StateOfFuelSystem>> fuelSystem2;
+    unique_ptr<DataObject<StateOfCommandedSecondaryAir>> commandedSecondaryAirStatus;
 
     unique_ptr<DataObject<byte>> speed;
 
@@ -58,6 +60,7 @@ public:
 
     CalculatedDataObject<byte, float> &getThrottlePosition();
 
+    DataObject<StateOfCommandedSecondaryAir> &getCommandedSecondaryAirStatus();
 
 };
 

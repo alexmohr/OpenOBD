@@ -32,10 +32,9 @@ add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
         ${CMAKE_CURRENT_BINARY_DIR}/googletest-build
         EXCLUDE_FROM_ALL)
 
-include_directories("${gtest_SOURCE_DIR}/include")
+include_directories("${gtest_SOURCE_DIR}/include include//*")
 
 set(CPPSRC
-        include/linux/can/isotp.h
         lib/easylogging++.cc
         src/CAN/CanIsoTP.cpp
         src/CAN/CanIsoTP.h
@@ -43,6 +42,7 @@ set(CPPSRC
         src/common/conversion.h
         src/common/endian.h
         src/Config.cpp src/Config.h
+        src/OBD/data/Enumerated/StateOfCommandedSecondaryAir.h
         src/OBD/data/BitEncoded/Engine.cpp
         src/OBD/data/BitEncoded/Engine.cpp
         src/OBD/data/BitEncoded/Engine.h
@@ -66,7 +66,8 @@ set(CPPSRC
         src/OBD/Pid.cpp
         src/OBD/Pid.h src/Service.h
         src/Vehicle.cpp
-        src/Vehicle.h)
+        src/Vehicle.h
+        )
 
 
 add_executable(open_obd2 ${CPPSRC})

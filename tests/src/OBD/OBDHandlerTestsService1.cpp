@@ -275,7 +275,7 @@ TEST(OBDHandler, PID_03_FuelSystemState) {
     for (i = -1; i <= 4; i++) {
         StateOfFuelSystem state;
         if (-1 == i) {
-            state = DoesNotExist;
+            state = StateOfFuelSystemDoesNotExist;
         } else {
             state = StateOfFuelSystem(pow(2, i));
         }
@@ -288,13 +288,13 @@ TEST(OBDHandler, PID_03_FuelSystemState) {
         vector<byte> response2{ResponseServiceID, pid, (byte) state, (byte) 0};
         handler = doTest(request, response2);
         EXPECT_EQ(handler->getVehicle()->getFuelSystem1().getValue(), state);
-        EXPECT_EQ(handler->getVehicle()->getFuelSystem2().getValue(), DoesNotExist);
+        EXPECT_EQ(handler->getVehicle()->getFuelSystem2().getValue(), StateOfFuelSystemDoesNotExist);
         handler->getVehicle()->getFuelSystem2().setValue(state);
         doTest(request, response);
 
         vector<byte> response3{ResponseServiceID, pid, (byte) 0, (byte) state};
         handler = doTest(request, response3);
-        EXPECT_EQ(handler->getVehicle()->getFuelSystem1().getValue(), DoesNotExist);
+        EXPECT_EQ(handler->getVehicle()->getFuelSystem1().getValue(), StateOfFuelSystemDoesNotExist);
         EXPECT_EQ(handler->getVehicle()->getFuelSystem2().getValue(), state);
         handler->getVehicle()->getFuelSystem1().setValue(state);
         doTest(request, response);
@@ -533,6 +533,29 @@ TEST(OBDHandler, PID_11_ThrottlePosition) {
         EXPECT_FLOAT_EQ(vehicle.getThrottlePosition().getValue(), val);
     }
 }
+
+TEST(OBDHandler, PID_12_CommandedSecondaryAirStatus) {
+    const auto pid = (byte) CommandedSecondaryAirStatus;
+    vector<byte> request{(RequestServiceID), pid};
+
+    vector<byte> response{ResponseServiceID, pid, (byte) 0x02};
+    auto handler = doTest(request, response);
+
+    auto &vehicle = *handler->getVehicle();
+    auto system = vehicle.getCommandedSecondaryAirStatus();
+    EXPECT_FLOAT_EQ(system.getValue(), ClosedLoopUsingOxygenSensor);
+    
+    vector<StateOfCommandedSecondaryAir> values{CommandedSecondaryAirStatusDoesNotExist,
+                                                Upstream,
+                                                DownstreamOfCatalyticConverter,
+                                                FromTheOutsideAtmosphereOrOff,
+                                                PumpCommandedOnForDiagnostics};
+    for (auto const &val: values) {
+        system.setValue(val);
+        EXPECT_FLOAT_EQ(system.getValue(), val);
+    }
+}
+
 
 
 

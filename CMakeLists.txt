@@ -34,24 +34,43 @@ add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
 
 include_directories("${gtest_SOURCE_DIR}/include")
 
-
-
-add_executable(open_obd2 src/main.cpp src/Config.cpp src/Config.h
-        lib/easylogging++.cc src/OBD/OBDHandler.cpp src/OBD/OBDHandler.h src/Vehicle.cpp src/Vehicle.h
-        src/OBD/data/BitEncoded/MonitorStatus.cpp src/OBD/data/BitEncoded/MonitorStatus.h
-        src/OBD/data/OBDTest.cpp src/OBD/data/OBDTest.h
-        src/OBD/data/DataObject.h src/OBD/data/BitEncoded/Engine.cpp src/OBD/data/BitEncoded/Engine.cpp
-        src/OBD/data/BitEncoded/Engine.h
-        src/OBD/data/Enumerated/StateOfFuelSystem.h
-        src/OBD/Pid.cpp src/OBD/Pid.h src/Service.h
+set(CPPSRC
+        include/linux/can/isotp.h
+        lib/easylogging++.cc
         src/CAN/CanIsoTP.cpp
-        src/CAN/CanIsoTP.h include/linux/can/isotp.h
+        src/CAN/CanIsoTP.h
+        src/common/conversion.cpp
+        src/common/conversion.h
+        src/common/endian.h
+        src/Config.cpp src/Config.h
+        src/OBD/data/BitEncoded/Engine.cpp
+        src/OBD/data/BitEncoded/Engine.cpp
+        src/OBD/data/BitEncoded/Engine.h
+        src/OBD/data/BitEncoded/FreezeDTC.cpp
+        src/OBD/data/BitEncoded/FreezeDTC.h
+        src/OBD/data/BitEncoded/MonitorStatus.cpp
+        src/OBD/data/BitEncoded/MonitorStatus.h
+        src/OBD/data/BitEncoded/PidSupport.cpp
+        src/OBD/data/BitEncoded/PidSupport.h
+        src/OBD/data/CalculatedDataObject.h
+        src/OBD/data/CalculatedValues.cpp
+        src/OBD/data/CalculatedValues.h
+        src/OBD/data/DataObject.h
+        src/OBD/data/Enumerated/StateOfFuelSystem.h
+        src/OBD/data/OBDTest.cpp
+        src/OBD/data/OBDTest.h
         src/OBD/DataTroubleCode.cpp
-        src/OBD/DataTroubleCode.h src/common/endian.h
-        src/OBD/data/BitEncoded/PidSupport.cpp src/OBD/data/BitEncoded/PidSupport.h src/OBD/data/BitEncoded/FreezeDTC.cpp src/OBD/data/BitEncoded/FreezeDTC.h src/common/conversion.h src/common/conversion.cpp src/OBD/data/CalculatedValues.cpp src/OBD/data/CalculatedValues.h src/OBD/data/CalculatedDataObject.h)
+        src/OBD/DataTroubleCode.h
+        src/OBD/OBDHandler.cpp
+        src/OBD/OBDHandler.h
+        src/OBD/Pid.cpp
+        src/OBD/Pid.h src/Service.h
+        src/Vehicle.cpp
+        src/Vehicle.h)
 
 
-# Now simply link against gtest or gtest_main as needed. Eg
+add_executable(open_obd2 ${CPPSRC})
+
 add_executable(Test
         tests/src/OBD/OBDHandlerTest.h
         tests/src/OBD/OBDHandlerTest.cpp
@@ -62,18 +81,7 @@ add_executable(Test
         tests/src/OBD/data/DataObjectTest.cpp
         tests/src/OBD/DataTroubleCodeTest.cpp
         tests/src/ConfigTest.cpp
+        ${CPPSRC})
 
-        src/Config.cpp src/Config.h
-        lib/easylogging++.cc src/OBD/OBDHandler.cpp src/OBD/OBDHandler.h src/Vehicle.cpp src/Vehicle.h
-        src/OBD/data/BitEncoded/MonitorStatus.cpp src/OBD/data/BitEncoded/MonitorStatus.h
-        src/OBD/data/OBDTest.cpp src/OBD/data/OBDTest.h
-        src/OBD/data/DataObject.h src/OBD/data/BitEncoded/Engine.cpp src/OBD/data/BitEncoded/Engine.cpp
-        src/OBD/data/BitEncoded/Engine.h
-        src/OBD/data/Enumerated/StateOfFuelSystem.h
-        src/OBD/Pid.cpp src/OBD/Pid.h src/Service.h
-        src/CAN/CanIsoTP.cpp
-        src/OBD/DataTroubleCode.cpp
-        src/OBD/DataTroubleCode.h
-        src/CAN/CanIsoTP.h include/linux/can/isotp.h src/common/endian.h src/OBD/data/BitEncoded/PidSupport.cpp src/OBD/data/BitEncoded/PidSupport.h src/OBD/data/BitEncoded/FreezeDTC.cpp src/OBD/data/BitEncoded/FreezeDTC.h src/common/conversion.h src/common/conversion.cpp src/OBD/data/CalculatedValues.cpp src/OBD/data/CalculatedValues.h src/OBD/data/CalculatedDataObject.h)
 target_link_libraries(Test gtest_main)
 add_test(NAME obdtest COMMAND Test)

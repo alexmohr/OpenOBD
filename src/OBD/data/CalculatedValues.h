@@ -30,6 +30,14 @@ public:
     static float to256APlusBDivided4(unsigned short val);
 
     static unsigned short from256APlusBDivided4(float val);
+
+    static float to256APlusBDivided100(unsigned short val);
+
+    static unsigned short from256APlusBDivided100(float val);
+
+    static float toADivided2Minus64(byte val);
+
+    static byte fromADivided2Minus64(float val);
 };
 
 

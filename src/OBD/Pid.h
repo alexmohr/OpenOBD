@@ -32,9 +32,13 @@ enum Service1Pids {
     ShortTermFuelTrimBank2 = 0x08,
     LongTermFuelTrimBank2 = 0x09,
     FuelPressure = 0x0a,
-    IntakeManifoldAbsolutePressure = 0x0b,
-    EngineRPM = 0x0c,
-    VehicleSpeed = 0x0d,
+    IntakeManifoldAbsolutePressure = 0x0B,
+    EngineRPM = 0x0C,
+    VehicleSpeed = 0x0D,
+    TimingAdvance = 0x0E,
+    IntakeAirTemperature = 0x0F,
+    MAFAirFlowRate = 0x10,
+
 };
 
 class Pid {
@@ -47,7 +51,6 @@ public:
     vector<float> maxValues;
     vector<float> minValues;
     vector<string> units;
-    vector<string> formulas;
 
     void updateVehicle(Service service, Vehicle *vehicle, byte *data, int dataSize);
     byte* getVehicleData(Service service, Vehicle *vehicle);

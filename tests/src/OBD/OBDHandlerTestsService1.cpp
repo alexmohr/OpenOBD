@@ -13,14 +13,14 @@
 const byte RequestServiceID = (byte) 0x01;
 const byte ResponseServiceID = (byte) 0x41;
 
-TEST(OBDHandler, PID_0_PIDSupported01_20) {
+TEST(OBDHandler, PID_00_PIDSupported01_20) {
     auto const pid = (byte) 0x00;
     vector<byte> request{RequestServiceID, pid};
     vector<byte> response{ResponseServiceID, pid, (byte) 0xbe, (byte) 0x7e, (byte) 0xb8, (byte) 0x13};
     doTest(request, response);
 }
 
-TEST(OBDHandler, PID_0_PIDSupported01_20_Single) {
+TEST(OBDHandler, PID_00_PIDSupported01_20_Single) {
     auto const pid = (byte) 0x00;
     vector<byte> request{RequestServiceID, pid};
     vector<byte> response{ResponseServiceID, pid, (byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00};
@@ -41,7 +41,7 @@ TEST(OBDHandler, PID_0_PIDSupported01_20_Single) {
     compareResponse(response, val);
 }
 
-TEST(OBDHandler, PID_0_PIDSupported01_20_Setter) {
+TEST(OBDHandler, PID_00_PIDSupported01_20_Setter) {
     auto const pid = (byte) 0x00;
     vector<byte> request{RequestServiceID, pid};
     vector<byte> response{ResponseServiceID, pid, (byte) 0xbe, (byte) 0x1f, (byte) 0xa8, (byte) 0x13};
@@ -64,7 +64,7 @@ TEST(OBDHandler, PID_0_PIDSupported01_20_Setter) {
     compareResponse(response, val);
 }
 
-TEST(OBDHandler, PID_0_PIDSupportedGeneric) {
+TEST(OBDHandler, PID_00_PIDSupportedGeneric) {
     const int pidsPerCall = 32;
     int j, k, currentPid;
 
@@ -112,8 +112,7 @@ TEST(OBDHandler, PID_0_PIDSupportedGeneric) {
 }
 
 
-
-TEST(OBDHandler, PID_1_MonitoringStatus) {
+TEST(OBDHandler, PID_01_MonitoringStatus) {
     /*
      *  MIL: on
         dtc count: 113
@@ -177,7 +176,7 @@ TEST(OBDHandler, PID_1_MonitoringStatus) {
 
 
 // make sure that the application can generate the request on its own and does not need can frames to init.
-TEST(OBDHandler, PID_1_Test_MIL) {
+TEST(OBDHandler, PID_01_Test_MIL) {
     OBDHandler *handler = getHandler();
     MonitorStatus &monitoringStatus = handler->getVehicle()->getMonitorStatus();
     // validate object state
@@ -191,7 +190,7 @@ TEST(OBDHandler, PID_1_Test_MIL) {
 }
 
 // make sure that the application can generate the request on its own and does not need can frames to init.
-TEST(OBDHandler, PID_1_MonitoringStatusInitViaVehicle) {
+TEST(OBDHandler, PID_01_MonitoringStatusInitViaVehicle) {
     OBDHandler *handler = getHandler();
     MonitorStatus &monitoringStatus = handler->getVehicle()->getMonitorStatus();
 
@@ -236,7 +235,7 @@ TEST(OBDHandler, PID_1_MonitoringStatusInitViaVehicle) {
     compareResponse(response, val);
 }
 
-TEST(OBDHandler, PID_2_FreezeDTC) {
+TEST(OBDHandler, PID_02_FreezeDTC) {
     const auto pid = (byte) FreezeDTCPid;
     vector<byte> request{(RequestServiceID), pid};
     vector<byte> response{ResponseServiceID, pid, (byte) 0xe5, (byte) 0x00};
@@ -249,7 +248,7 @@ TEST(OBDHandler, PID_2_FreezeDTC) {
     EXPECT_EQ(0xe500, code.getCanId());
 }
 
-TEST(OBDHandler, PID_2_FreezeDTC_Setter) {
+TEST(OBDHandler, PID_02_FreezeDTC_Setter) {
     OBDHandler *handler = getHandler();
     FreezeDTC &freezeDTC = handler->getVehicle()->getFreezeDTC();
 
@@ -268,7 +267,7 @@ TEST(OBDHandler, PID_2_FreezeDTC_Setter) {
 }
 
 
-TEST(OBDHandler, PID_3_FuelSystemState) {
+TEST(OBDHandler, PID_03_FuelSystemState) {
     const auto pid = (byte) FuelSystemStatus;
     vector<byte> request{(RequestServiceID), pid};
     OBDHandler *handler;
@@ -302,7 +301,7 @@ TEST(OBDHandler, PID_3_FuelSystemState) {
     }
 }
 
-TEST(OBDHandler, PID_4_CalculatedEngineLoad) {
+TEST(OBDHandler, PID_04_CalculatedEngineLoad) {
     const auto pid = (byte) CalculatedEngineLoad;
     vector<byte> request{(RequestServiceID), pid};
     vector<byte> response{ResponseServiceID, pid, (byte) 0x6b};
@@ -312,7 +311,7 @@ TEST(OBDHandler, PID_4_CalculatedEngineLoad) {
     EXPECT_EQ(ceil(engine.getLoad().getValue()), 42);
 }
 
-TEST(OBDHandler, PID_4_CalculatedEngineLoadSetter) {
+TEST(OBDHandler, PID_04_CalculatedEngineLoadSetter) {
     // no setting via can frame
     const auto pid = (byte) CalculatedEngineLoad;
     vector<byte> request{(RequestServiceID), pid};
@@ -325,7 +324,7 @@ TEST(OBDHandler, PID_4_CalculatedEngineLoadSetter) {
 }
 
 
-TEST(OBDHandler, PID_5_EngineCooleantTemp) {
+TEST(OBDHandler, PID_05_EngineCooleantTemp) {
     const auto pid = (byte) EngineCoolantTemperature;
     vector<byte> request{(RequestServiceID), pid};
     vector<byte> response{ResponseServiceID, pid, (byte) 0x00};
@@ -335,7 +334,7 @@ TEST(OBDHandler, PID_5_EngineCooleantTemp) {
     EXPECT_EQ(engine.getCoolantTemperature().getValue(), -40);
 }
 
-TEST(OBDHandler, PID_5_EngineCooleantTempSetter) {
+TEST(OBDHandler, PID_05_EngineCooleantTempSetter) {
     // no setting via can frame
     const auto pid = (byte) EngineCoolantTemperature;
     vector<byte> request{(RequestServiceID), pid};
@@ -347,7 +346,7 @@ TEST(OBDHandler, PID_5_EngineCooleantTempSetter) {
     EXPECT_EQ(ceil(engine.getCoolantTemperature().getValue()), -40);
 }
 
-TEST(OBDHandler, PID_6_To_9_FuelTrimBanks) {
+TEST(OBDHandler, PID_06_To_9_FuelTrimBanks) {
     vector<Service1Pids> pids{ShortTermFuelTrimBank1, LongTermFuelTrimBank1,
                               ShortTermFuelTrimBank2, LongTermFuelTrimBank2};
 
@@ -395,7 +394,7 @@ TEST(OBDHandler, PID_6_To_9_FuelTrimBanks) {
     }
 }
 
-TEST(OBDHandler, PID_A_FuelPressure) {
+TEST(OBDHandler, PID_0A_FuelPressure) {
     const auto pid = (byte) FuelPressure;
     vector<byte> request{(RequestServiceID), pid};
     vector<byte> response{ResponseServiceID, pid, (byte) 0xff};
@@ -408,7 +407,7 @@ TEST(OBDHandler, PID_A_FuelPressure) {
     EXPECT_EQ((int) engine.getFuelPressure().getValue(), 30);
 }
 
-TEST(OBDHandler, PID_B_IntakeManifoldAbsolutePressure) {
+TEST(OBDHandler, PID_0B_IntakeManifoldAbsolutePressure) {
     const auto pid = (byte) IntakeManifoldAbsolutePressure;
     vector<byte> request{(RequestServiceID), pid};
     vector<byte> response{ResponseServiceID, pid, (byte) 42};
@@ -421,7 +420,7 @@ TEST(OBDHandler, PID_B_IntakeManifoldAbsolutePressure) {
     EXPECT_EQ((int) engine.getIntakeManifoldAbsolutePressure().getValue(), 84);
 }
 
-TEST(OBDHandler, PID_C_EngineRPM) {
+TEST(OBDHandler, PID_0C_EngineRPM) {
     const auto pid = (byte) EngineRPM;
     vector<byte> request{(RequestServiceID), pid};
     vector<byte> response{ResponseServiceID, pid, (byte) 0xff, (byte) 0xff};
@@ -439,7 +438,7 @@ TEST(OBDHandler, PID_C_EngineRPM) {
 }
 
 
-TEST(OBDHandler, PID_D_TestSpeed) {
+TEST(OBDHandler, PID_0D_TestSpeed) {
     const auto pid = (byte) VehicleSpeed;
     vector<byte> request{(RequestServiceID), pid};
     vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
@@ -452,6 +451,58 @@ TEST(OBDHandler, PID_D_TestSpeed) {
     for (auto const &val: values) {
         vehicle.getSpeed().setValue((byte) val);
         EXPECT_EQ(vehicle.getSpeed().getValue(), (byte) val);
+    }
+}
+
+TEST(OBDHandler, PID_0E_TimingAdvance) {
+    const auto pid = (byte) TimingAdvance;
+    vector<byte> request{(RequestServiceID), pid};
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
+    auto handler = doTest(request, response);
+
+    auto &vehicle = *handler->getVehicle();
+    EXPECT_EQ(vehicle.getEngine().getTimingAdvance().getValue(), 37);
+
+    vector<float> values{-64/*max*/, 63.5/*min*/, 42, 12};
+    for (auto const &val: values) {
+        vehicle.getEngine().getTimingAdvance().setValue(val);
+        EXPECT_FLOAT_EQ(vehicle.getEngine().getTimingAdvance().getValue(), val);
+    }
+}
+
+TEST(OBDHandler, PID_0F_IntakeAirTemperature) {
+    const auto pid = (byte) IntakeAirTemperature;
+    vector<byte> request{(RequestServiceID), pid};
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
+    auto handler = doTest(request, response);
+
+    auto &vehicle = *handler->getVehicle();
+    EXPECT_EQ(vehicle.getEngine().getIntakeAirTemperature().getValue(), 162);
+
+    vector<short> values{215/*max*/, -40/*min*/, 42, 12};
+    for (auto const &val: values) {
+        vehicle.getEngine().getIntakeAirTemperature().setValue(val);
+        EXPECT_EQ(vehicle.getEngine().getIntakeAirTemperature().getValue(), val);
+    }
+}
+
+TEST(OBDHandler, PID_10_MAFAirFlowRate) {
+    const auto pid = (byte) MAFAirFlowRate;
+    vector<byte> request{(RequestServiceID), pid};
+
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xca, (byte) 0xfe};
+    auto handler = doTest(request, response);
+
+    auto &vehicle = *handler->getVehicle();
+    // (256A + B ) / 100
+    EXPECT_FLOAT_EQ(vehicle.getEngine().getMAFAirFlowRate().getValue(), (float) ((256.0 * 0xca + 0xfe) / 100));
+
+
+    // values are special because they have no offset
+    vector<float> values{(float) ((256.0 * 0xff + 0xff) / 100)/*max*/, 0/*min*/, 418.91, 41.12};
+    for (auto const &val: values) {
+        vehicle.getEngine().getMAFAirFlowRate().setValue(val);
+        EXPECT_FLOAT_EQ(vehicle.getEngine().getMAFAirFlowRate().getValue(), val);
     }
 }
 

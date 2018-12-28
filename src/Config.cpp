@@ -66,7 +66,6 @@ void from_json(const json& jsData, Pid& pid) {
     copyToVector(jsData.at("maxValues"), pid.maxValues);
     copyToVector(jsData.at("minValues"), pid.minValues);
     copyToVector(jsData.at("units"), pid.units);
-    copyToVector(jsData.at("formulas"), pid.formulas);
 }
 
 

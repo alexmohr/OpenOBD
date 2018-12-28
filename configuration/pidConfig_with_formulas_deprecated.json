@@ -7,7 +7,7 @@
                 "minValues": [-255],
                 "maxValues": [-255],
                 "units": [""],
-                "dataFields": 1
+            "dataFields": 1
             },
             {
                 "id": 1,
@@ -1540,7 +1540,7 @@
                 "minValues": [],
                 "maxValues": [],
                 "units": [""],
-                "dataFields": 1
+            "dataFields": 1
             },
             {
                 "id": 257,
@@ -1841,7 +1841,7 @@
                 "minValues": [],
                 "maxValues": [],
                 "units": [""],
-                "dataFields": 1
+            "dataFields": 1
             },
             {
                 "id": 1,
@@ -1942,6 +1942,8 @@
                 "units": [""],
                 "dataFields": 1
             }
+
         ]
     }
+
 ]

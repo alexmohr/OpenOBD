@@ -9,7 +9,7 @@ void Pid::updateVehicle(Service service, Vehicle *vehicle, byte *data, int dataS
     switch (service){
         case POWERTRAIN:
         case FREEZE_FRAME:
-            updateService1_2(vehicle, data, size);
+            updateService1_2(vehicle, data, dataSize);
             break;
         case CONFIRMED_DTCS:
             break;
@@ -122,6 +122,15 @@ void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
         case VehicleSpeed:
             vehicle->getSpeed().fromFrame(data, size);
             break;
+        case TimingAdvance:
+            vehicle->getEngine().getTimingAdvance().fromFrame(data, size);
+            break;
+        case IntakeAirTemperature:
+            vehicle->getEngine().getIntakeAirTemperature().fromFrame(data, size);
+            break;
+        case MAFAirFlowRate:
+            vehicle->getEngine().getMAFAirFlowRate().fromFrame(data, size);
+            break;
     }
 }
 
@@ -191,6 +200,15 @@ byte* Pid::readService1_2(Vehicle *vehicle) {
             break;
         case VehicleSpeed:
             data = vehicle->getSpeed().toFrame(data);
+            break;
+        case TimingAdvance:
+            data = vehicle->getEngine().getTimingAdvance().toFrame(data);
+            break;
+        case IntakeAirTemperature:
+            data = vehicle->getEngine().getIntakeAirTemperature().toFrame(data);
+            break;
+        case MAFAirFlowRate:
+            data = vehicle->getEngine().getMAFAirFlowRate().toFrame(data);
             break;
     }
 

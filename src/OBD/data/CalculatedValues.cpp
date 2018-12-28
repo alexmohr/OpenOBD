@@ -56,13 +56,46 @@ unsigned short CalculatedValues::from256APlusBDivided4(float val) {
     // solve for A:
     // A = (4 p)/257
 
+    byte bVal[2];
+    float a = ceil((4 * val) / 257);
+    bVal[0] = (byte) (a);
+    bVal[1] = (byte) ceil(4 * (val - 64 * a));
+
+    return byteArrayToUShort(bVal);
+}
+
+
+float CalculatedValues::to256APlusBDivided100(unsigned short val) {
+    byte *bVal = ushortToByteArray(val);
+    // (256A + B)/100
+    return ((256.0f * (float) bVal[0] + (float) bVal[1]) / 100.0f);
+}
+
+unsigned short CalculatedValues::from256APlusBDivided100(float val) {
+    // A = 1/256 (100 p - B)
+    // B = 100 p - 256 A
+    // A = B = 1/256 (100 p - B)=100 p - 256 A
+    // Solve for B:
+    // B = 65536 A - 25500 p
+    // Insert in A:
+    // A =  1/256 (100 p - (65536 A - 25500 p))
+    // Solve for A:
+    // A = (100 p)/257
 
 
     byte bVal[2];
-    float a = (4 * val) / 257;
+    float a = ceil((100 * val) / 257);
     bVal[0] = (byte) (a);
-    bVal[1] = (byte) (4 * (val - 64 * a));
+    bVal[1] = (byte) ceil(100 * val - 256 * a);
 
     return byteArrayToUShort(bVal);
+}
+
+float CalculatedValues::toADivided2Minus64(byte val) {
+    return (((float) val / 2.0f) - 64);
+}
+
+byte CalculatedValues::fromADivided2Minus64(float val) {
+    return (byte) (2 * (val + 64));
 }
 

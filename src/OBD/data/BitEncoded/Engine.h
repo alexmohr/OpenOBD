@@ -41,9 +41,14 @@ private:
     unique_ptr<CalculatedDataObject<byte, float>> longTermFuelTrimBank2;
 
 
-    unique_ptr<CalculatedDataObject<byte, short>> fuelPressure;
+    unique_ptr<CalculatedDataObject<byte, unsigned short>> fuelPressure;
     unique_ptr<DataObject<byte>> intakeManifoldAbsolutePressure;
     unique_ptr<CalculatedDataObject<unsigned short, float>> engineRPM;
+
+    unique_ptr<CalculatedDataObject<byte, float>> timingAdvance;
+    unique_ptr<CalculatedDataObject<byte, short>> intakeAirTemperature;
+    unique_ptr<CalculatedDataObject<unsigned short, float>> mafAirFlowRate;
+
 
 public:
     Engine();
@@ -87,13 +92,17 @@ public:
 
     CalculatedDataObject<byte, float> &getLongTermFuelTrimBank2();
 
-    CalculatedDataObject<byte, short> &getFuelPressure();
+    CalculatedDataObject<byte, unsigned short> &getFuelPressure();
 
     DataObject<byte> &getIntakeManifoldAbsolutePressure();
 
     CalculatedDataObject<unsigned short, float> &getEngineRPM();
 
+    CalculatedDataObject<byte, float> &getTimingAdvance();
 
+    CalculatedDataObject<byte, short> &getIntakeAirTemperature();
+
+    CalculatedDataObject<unsigned short, float> &getMAFAirFlowRate();
 
 
 };

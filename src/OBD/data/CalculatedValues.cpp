@@ -28,3 +28,11 @@ byte CalculatedValues::fromAMinus40(short val) {
     return (byte) (val + 40);
 }
 
+unsigned short CalculatedValues::to3A(byte val) {
+    return (unsigned short) (3 * (unsigned short) val);
+}
+
+byte CalculatedValues::from3A(unsigned short val) {
+    return (byte) (val / 3);
+}
+

@@ -37,6 +37,14 @@ Engine::Engine() {
 
     longTermFuelTrimBank2 = make_unique<CalculatedDataObject<byte, float>>(
             A, 7, A, 0, CalculatedValues::toPercent128Minus100, CalculatedValues::fromPercent128Minus100);
+
+
+    fuelPressure = make_unique<CalculatedDataObject<byte, short>>(
+            A, 7, A, 0, CalculatedValues::to3A, CalculatedValues::from3A);
+
+    intakeManifoldAbsolutePressure = make_unique<DataObject<byte>>(A, 7, A, 0);
+//    engineRPM = make_unique<CalculatedDataObject<byte *, short>>(
+//            A, 7, A, 0, CalculatedValues::toPercent128Minus100, CalculatedValues::fromPercent128Minus100);
 }
 
 void Engine::fromFrameForMonitoringSystem(byte *frame, int size) {
@@ -146,6 +154,18 @@ CalculatedDataObject<byte, float> &Engine::getShortTermFuelTrimBank2() {
 
 CalculatedDataObject<byte, float> &Engine::getLongTermFuelTrimBank2() {
     return *longTermFuelTrimBank2;
+}
+
+CalculatedDataObject<byte, short> &Engine::getFuelPressure() {
+    return *fuelPressure;
+}
+
+DataObject<byte> &Engine::getIntakeManifoldAbsolutePressure() {
+    return *intakeManifoldAbsolutePressure;
+}
+
+CalculatedDataObject<byte, float> &Engine::getEngineRPM() {
+    return *engineRPM;
 }
 
 

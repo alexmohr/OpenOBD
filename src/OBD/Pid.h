@@ -31,6 +31,9 @@ enum Service1Pids {
     LongTermFuelTrimBank1 = 0x07,
     ShortTermFuelTrimBank2 = 0x08,
     LongTermFuelTrimBank2 = 0x09,
+    FuelPressure = 0x0a,
+    IntakeManifoldAbsolutePressure = 0x0b,
+    EngineRPM = 0x0c,
 };
 
 class Pid {

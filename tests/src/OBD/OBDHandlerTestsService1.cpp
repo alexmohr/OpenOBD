@@ -371,7 +371,7 @@ TEST(OBDHandler, PID_6_To_9_FuelTrimBanks) {
                 EXPECT_EQ(engine.getLongTermFuelTrimBank2().getValue(), -100);
                 break;
         }
-        
+
         handler = getHandler();
         auto &engine2 = handler->getVehicle()->getEngine();
         switch (pid) {
@@ -394,6 +394,33 @@ TEST(OBDHandler, PID_6_To_9_FuelTrimBanks) {
         }
     }
 }
+
+TEST(OBDHandler, PID_A_FuelPressure) {
+    const auto pid = (byte) FuelPressure;
+    vector<byte> request{(RequestServiceID), pid};
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xff};
+    auto handler = doTest(request, response);
+
+    auto &engine = handler->getVehicle()->getEngine();
+    EXPECT_EQ(engine.getFuelPressure().getValue(), (0xff) * 3);
+
+    engine.getFuelPressure().setValue(30);
+    EXPECT_EQ((int) engine.getFuelPressure().getValue(), 30);
+}
+
+TEST(OBDHandler, PID_B_IntakeManifoldAbsolutePressure) {
+    const auto pid = (byte) IntakeManifoldAbsolutePressure;
+    vector<byte> request{(RequestServiceID), pid};
+    vector<byte> response{ResponseServiceID, pid, (byte) 42};
+    auto handler = doTest(request, response);
+
+    auto &engine = handler->getVehicle()->getEngine();
+    EXPECT_EQ((int) engine.getIntakeManifoldAbsolutePressure().getValue(), 42);
+
+    engine.getIntakeManifoldAbsolutePressure().setValue((byte) 84);
+    EXPECT_EQ((int) engine.getIntakeManifoldAbsolutePressure().getValue(), 84);
+}
+
 
 
 

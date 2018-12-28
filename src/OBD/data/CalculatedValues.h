@@ -22,6 +22,10 @@ public:
     static short toAMinus40(byte val);
 
     static byte fromAMinus40(short val);
+
+    static unsigned short to3A(byte val);
+
+    static byte from3A(unsigned short val);
 };
 
 

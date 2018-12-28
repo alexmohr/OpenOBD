@@ -43,8 +43,9 @@ Engine::Engine() {
             A, 7, A, 0, CalculatedValues::to3A, CalculatedValues::from3A);
 
     intakeManifoldAbsolutePressure = make_unique<DataObject<byte>>(A, 7, A, 0);
-//    engineRPM = make_unique<CalculatedDataObject<byte *, short>>(
-//            A, 7, A, 0, CalculatedValues::toPercent128Minus100, CalculatedValues::fromPercent128Minus100);
+
+    engineRPM = make_unique<CalculatedDataObject<unsigned short, float>>(
+            A, 7, B, 0, CalculatedValues::to256APlusBDivided4, CalculatedValues::from256APlusBDivided4);
 }
 
 void Engine::fromFrameForMonitoringSystem(byte *frame, int size) {
@@ -164,7 +165,7 @@ DataObject<byte> &Engine::getIntakeManifoldAbsolutePressure() {
     return *intakeManifoldAbsolutePressure;
 }
 
-CalculatedDataObject<byte, float> &Engine::getEngineRPM() {
+CalculatedDataObject<unsigned short, float> &Engine::getEngineRPM() {
     return *engineRPM;
 }
 

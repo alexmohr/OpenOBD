@@ -26,6 +26,10 @@ public:
     static unsigned short to3A(byte val);
 
     static byte from3A(unsigned short val);
+
+    static float to256APlusBDivided4(unsigned short val);
+
+    static unsigned short from256APlusBDivided4(float val);
 };
 
 

@@ -43,7 +43,7 @@ private:
 
     unique_ptr<CalculatedDataObject<byte, short>> fuelPressure;
     unique_ptr<DataObject<byte>> intakeManifoldAbsolutePressure;
-    unique_ptr<CalculatedDataObject<byte, float>> engineRPM;
+    unique_ptr<CalculatedDataObject<unsigned short, float>> engineRPM;
 
 public:
     Engine();
@@ -91,7 +91,7 @@ public:
 
     DataObject<byte> &getIntakeManifoldAbsolutePressure();
 
-    CalculatedDataObject<byte, float> &getEngineRPM();
+    CalculatedDataObject<unsigned short, float> &getEngineRPM();
 
 
 

@@ -116,6 +116,9 @@ void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
         case IntakeManifoldAbsolutePressure:
             vehicle->getEngine().getIntakeManifoldAbsolutePressure().fromFrame(data, size);
             break;
+        case EngineRPM:
+            vehicle->getEngine().getEngineRPM().fromFrame(data, size);
+            break;
     }
 }
 
@@ -180,9 +183,12 @@ byte* Pid::readService1_2(Vehicle *vehicle) {
         case IntakeManifoldAbsolutePressure:
             data = vehicle->getEngine().getIntakeManifoldAbsolutePressure().toFrame(data);
             break;
+        case EngineRPM:
+            data = vehicle->getEngine().getEngineRPM().toFrame(data);
+            break;
     }
 
-    byte *retVal = toByteArray(data);
+    byte *retVal = uintToByteArray(data);
     return retVal;
 }
 

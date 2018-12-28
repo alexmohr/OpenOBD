@@ -29,7 +29,7 @@ void compareResponseBytes(byte *expectedResponse, byte *actualResponse, int size
 }
 
 void compareResponse(vector<byte> expectedResponse, unsigned int data) {
-    byte *retVal = toByteArray(data);
+    byte *retVal = uintToByteArray(data);
     compareResponseBytes(expectedResponse.data(), retVal, expectedResponse.size());
 }
 

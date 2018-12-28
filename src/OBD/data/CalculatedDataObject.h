@@ -19,13 +19,6 @@ private:
 
 public:
 
-    CalculatedDataObject(ByteIndex startByte, unsigned int startIndex,
-                         ByteIndex stopByte, unsigned stopIndex, function<T(S)> fromFrameFunction) {
-
-    }
-
-
-    //CalculatedDataObject(function<T(S)> toFrameFunction) {}
 
     CalculatedDataObject(ByteIndex startByte, unsigned int startIndex,
                          ByteIndex stopByte, unsigned stopIndex, function<T(S)> fromFrameFunction,
@@ -43,10 +36,10 @@ public:
     void setValue(T value) {
         dataObj->setValue(toFrameFunction(value));
     }
-
-    void setValue(S val) {
-        dataObj->setValue(val);
-    }
+// todo remove this
+//    void setValue(S val) {
+//        dataObj->setValue(val);
+//    }
 
     void fromFrame(byte *data, int size) {
         dataObj->fromFrame(data, size);

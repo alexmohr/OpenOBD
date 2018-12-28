@@ -10,6 +10,10 @@
 
 using namespace std;
 
-byte *toByteArray(unsigned int data);
+unsigned short byteArrayToUShort(byte *data);
+
+byte *ushortToByteArray(unsigned short data);
+
+byte *uintToByteArray(unsigned int data);
 
 #endif //OPEN_OBD2_CONVERSION_H

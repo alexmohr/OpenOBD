@@ -421,6 +421,22 @@ TEST(OBDHandler, PID_B_IntakeManifoldAbsolutePressure) {
     EXPECT_EQ((int) engine.getIntakeManifoldAbsolutePressure().getValue(), 84);
 }
 
+TEST(OBDHandler, PID_C_EngineRPM) {
+    const auto pid = (byte) EngineRPM;
+    vector<byte> request{(RequestServiceID), pid};
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xff, (byte) 0xff};
+    auto handler = doTest(request, response);
+
+    auto &engine = handler->getVehicle()->getEngine();
+    EXPECT_FLOAT_EQ(engine.getEngineRPM().getValue(), 16383.75);
+
+    // values are selected because they fit exactly without offset
+    vector<float> values{16383.75f/*max*/, 0, 385.5, 1799, 9380.5};
+    for (auto const &val: values) {
+        engine.getEngineRPM().setValue(val);
+        EXPECT_FLOAT_EQ(engine.getEngineRPM().getValue(), val);
+    }
+}
 
 
 

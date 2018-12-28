@@ -21,6 +21,10 @@ Engine::Engine() {
     calculatedLoad = make_unique<CalculatedDataObject<byte, float>>(A, 7, A, 0,
                                                                     CalculatedValues::toPercent,
                                                                     CalculatedValues::fromPercent);
+
+    coolantTemperature = make_unique<CalculatedDataObject<byte, short>>(A, 7, A, 0,
+                                                                        CalculatedValues::toAMinus40,
+                                                                        CalculatedValues::fromAMinus40);
 }
 
 void Engine::fromFrameForMonitoringSystem(byte *frame, int size) {
@@ -110,5 +114,9 @@ unsigned int Engine::toFrameForMonitoringSystem(unsigned int &data) {
 
 CalculatedDataObject<byte, float> &Engine::getLoad() {
     return *calculatedLoad;
+}
+
+CalculatedDataObject<byte, short> &Engine::getCoolantTemperature() {
+    return *coolantTemperature;
 }
 

@@ -33,6 +33,7 @@ private:
     unique_ptr<DataObject<EngineType>> type;
 
     unique_ptr<CalculatedDataObject<byte, float>> calculatedLoad;
+    unique_ptr<CalculatedDataObject<byte, short>> coolantTemperature;
 
 public:
     Engine();
@@ -64,6 +65,8 @@ public:
     OBDTest &getEngineSystem8();
 
     CalculatedDataObject<byte, float> &getLoad();
+
+    CalculatedDataObject<byte, short> &getCoolantTemperature();
 };
 
 #endif //OPEN_OBD2_ENGINE_H

@@ -41,7 +41,7 @@ void copyToVector(const json &jsdata, vector<T> &target);
 class Config {
 public:
     template<typename T>
-    bool parseJson(string filename, T& t) {
+    bool parseJson(const string filename, T &t) {
         // read a JSON file
         std::ifstream fs(filename);
         json j;

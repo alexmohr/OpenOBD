@@ -95,6 +95,9 @@ void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
         case CalculatedEngineLoad:
             vehicle->getEngine().getLoad().fromFrame(data, size);
             break;
+        case EngineCoolantTemperature:
+            vehicle->getEngine().getCoolantTemperature().fromFrame(data, size);
+            break;
     }
 }
 
@@ -137,6 +140,10 @@ byte* Pid::readService1_2(Vehicle *vehicle) {
             break;
         case CalculatedEngineLoad:
             data = vehicle->getEngine().getLoad().toFrame(data);
+            break;
+        case EngineCoolantTemperature:
+            data = vehicle->getEngine().getCoolantTemperature().toFrame(data);
+            break;
     }
 
     byte *retVal = toByteArray(data);

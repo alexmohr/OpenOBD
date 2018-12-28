@@ -93,7 +93,7 @@ TEST(OBDHandler, PID_0_PIDSupportedGeneric) {
 
             vector<byte> request = {RequestServiceID, (byte) pid};
             byte *val = handler->createAnswerFrame(request.data());
-            byte *response = (byte *) malloc(sizeof(byte) * 8);
+            auto *response = (byte *) malloc(sizeof(byte) * 8);
             response[0] = ResponseServiceID;
             response[1] = request.at(1);
 
@@ -101,9 +101,9 @@ TEST(OBDHandler, PID_0_PIDSupportedGeneric) {
             data |= 1 << --k;
 
             response[5] = (byte) (data & 0xFF);
-            response[4] = (byte) ((data >> 8) & 0xFF);
-            response[3] = (byte) ((data >> 16) & 0xFF);
-            response[2] = (byte) ((data >> 24) & 0xFF);
+            response[4] = (byte) ((data >> 8U) & 0xFF);
+            response[3] = (byte) ((data >> 16U) & 0xFF);
+            response[2] = (byte) ((data >> 24U) & 0xFF);
 
             compareResponse(response, val, 8);
             vehicle->getPidSupport().setPidSupported(currentPid, false);
@@ -325,9 +325,31 @@ TEST(OBDHandler, PID_4_CalculatedEngineLoadSetter) {
 }
 
 
+TEST(OBDHandler, PID_5_EngineCooleantTemp) {
+    const auto pid = (byte) EngineCoolantTemperature;
+    vector<byte> request{(RequestServiceID), pid};
+    vector<byte> response{ResponseServiceID, pid, (byte) 0x00};
+    auto handler = doTest(request, response);
+
+    auto &engine = handler->getVehicle()->getEngine();
+    EXPECT_EQ(engine.getCoolantTemperature().getValue(), -40);
+}
+
+TEST(OBDHandler, PID_5_EngineCooleantTempSetter) {
+    // no setting via can frame
+    const auto pid = (byte) EngineCoolantTemperature;
+    vector<byte> request{(RequestServiceID), pid};
+    vector<byte> response{ResponseServiceID, pid, (byte) 0x00};
+
+    OBDHandler *handler = getHandler();
+    auto &engine = handler->getVehicle()->getEngine();
+    engine.getCoolantTemperature().setValue(-40);
+    EXPECT_EQ(ceil(engine.getCoolantTemperature().getValue()), -40);
+}
+
 /*
 
-4
+
 5
 6
 7

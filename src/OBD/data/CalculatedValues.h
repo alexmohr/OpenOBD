@@ -14,6 +14,14 @@ public:
     static float toPercent(byte val);
 
     static byte fromPercent(float val);
+
+    static float toPercent128Minus100(byte val);
+
+    static byte fromPercent128Minus100(float val);
+
+    static short toAMinus40(byte val);
+
+    static byte fromAMinus40(short val);
 };
 
 

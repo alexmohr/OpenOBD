@@ -347,6 +347,59 @@ TEST(OBDHandler, PID_5_EngineCooleantTempSetter) {
     EXPECT_EQ(ceil(engine.getCoolantTemperature().getValue()), -40);
 }
 
+TEST(OBDHandler, PID_6_To_9_FuelTrimBanks) {
+    vector<Service1Pids> pids{ShortTermFuelTrimBank1, LongTermFuelTrimBank1,
+                              ShortTermFuelTrimBank2, LongTermFuelTrimBank2};
+
+    for (auto &pid: pids) {
+        vector<byte> request{(RequestServiceID), (byte) pid};
+        vector<byte> response{ResponseServiceID, (byte) pid, (byte) 0x00};
+        auto handler = doTest(request, response);
+
+        auto &engine = handler->getVehicle()->getEngine();
+        switch (pid) {
+            case ShortTermFuelTrimBank1:
+                EXPECT_EQ(engine.getShortTermFuelTrimBank1().getValue(), -100);
+                break;
+            case LongTermFuelTrimBank1:
+                EXPECT_EQ(engine.getLongTermFuelTrimBank1().getValue(), -100);
+                break;
+            case ShortTermFuelTrimBank2:
+                EXPECT_EQ(engine.getShortTermFuelTrimBank2().getValue(), -100);
+                break;
+            case LongTermFuelTrimBank2:
+                EXPECT_EQ(engine.getLongTermFuelTrimBank2().getValue(), -100);
+                break;
+        }
+        
+        handler = getHandler();
+        auto &engine2 = handler->getVehicle()->getEngine();
+        switch (pid) {
+            case ShortTermFuelTrimBank1:
+                engine.getShortTermFuelTrimBank1().setValue(40);
+                EXPECT_EQ(ceil(engine.getShortTermFuelTrimBank1().getValue()), 40);
+                break;
+            case LongTermFuelTrimBank1:
+                engine.getLongTermFuelTrimBank1().setValue(40);
+                EXPECT_EQ(ceil(engine.getLongTermFuelTrimBank1().getValue()), 40);
+                break;
+            case ShortTermFuelTrimBank2:
+                engine.getShortTermFuelTrimBank2().setValue(40);
+                EXPECT_EQ(ceil(engine.getShortTermFuelTrimBank2().getValue()), 40);
+                break;
+            case LongTermFuelTrimBank2:
+                engine.getLongTermFuelTrimBank2().setValue(40);
+                EXPECT_EQ(ceil(engine.getLongTermFuelTrimBank2().getValue()), 40);
+                break;
+        }
+    }
+}
+
+
+
+
+
+
 /*
 
 

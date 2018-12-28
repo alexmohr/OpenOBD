@@ -98,6 +98,18 @@ void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
         case EngineCoolantTemperature:
             vehicle->getEngine().getCoolantTemperature().fromFrame(data, size);
             break;
+        case ShortTermFuelTrimBank1:
+            vehicle->getEngine().getShortTermFuelTrimBank1().fromFrame(data, size);
+            break;
+        case LongTermFuelTrimBank1:
+            vehicle->getEngine().getLongTermFuelTrimBank1().fromFrame(data, size);
+            break;
+        case ShortTermFuelTrimBank2:
+            vehicle->getEngine().getShortTermFuelTrimBank2().fromFrame(data, size);
+            break;
+        case LongTermFuelTrimBank2:
+            vehicle->getEngine().getLongTermFuelTrimBank2().fromFrame(data, size);
+            break;
     }
 }
 
@@ -143,6 +155,18 @@ byte* Pid::readService1_2(Vehicle *vehicle) {
             break;
         case EngineCoolantTemperature:
             data = vehicle->getEngine().getCoolantTemperature().toFrame(data);
+            break;
+        case ShortTermFuelTrimBank1:
+            vehicle->getEngine().getShortTermFuelTrimBank1().toFrame(data);
+            break;
+        case LongTermFuelTrimBank1:
+            vehicle->getEngine().getLongTermFuelTrimBank1().toFrame(data);
+            break;
+        case ShortTermFuelTrimBank2:
+            vehicle->getEngine().getShortTermFuelTrimBank2().toFrame(data);
+            break;
+        case LongTermFuelTrimBank2:
+            vehicle->getEngine().getLongTermFuelTrimBank2().toFrame(data);
             break;
     }
 

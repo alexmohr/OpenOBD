@@ -27,6 +27,10 @@ enum Service1Pids {
     FuelSystemStatus = 0x03,
     CalculatedEngineLoad = 0x04,
     EngineCoolantTemperature = 0x05,
+    ShortTermFuelTrimBank1 = 0x06,
+    LongTermFuelTrimBank1 = 0x07,
+    ShortTermFuelTrimBank2 = 0x08,
+    LongTermFuelTrimBank2 = 0x09,
 };
 
 class Pid {

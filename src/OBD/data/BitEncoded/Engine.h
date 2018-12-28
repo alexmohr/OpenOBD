@@ -35,6 +35,12 @@ private:
     unique_ptr<CalculatedDataObject<byte, float>> calculatedLoad;
     unique_ptr<CalculatedDataObject<byte, short>> coolantTemperature;
 
+    unique_ptr<CalculatedDataObject<byte, float>> shortTermFuelTrimBank1;
+    unique_ptr<CalculatedDataObject<byte, float>> longTermFuelTrimBank1;
+    unique_ptr<CalculatedDataObject<byte, float>> shortTermFuelTrimBank2;
+    unique_ptr<CalculatedDataObject<byte, float>> longTermFuelTrimBank2;
+
+
 public:
     Engine();
 
@@ -67,6 +73,16 @@ public:
     CalculatedDataObject<byte, float> &getLoad();
 
     CalculatedDataObject<byte, short> &getCoolantTemperature();
+
+
+    CalculatedDataObject<byte, float> &getShortTermFuelTrimBank1();
+
+    CalculatedDataObject<byte, float> &getLongTermFuelTrimBank1();
+
+    CalculatedDataObject<byte, float> &getShortTermFuelTrimBank2();
+
+    CalculatedDataObject<byte, float> &getLongTermFuelTrimBank2();
+
 };
 
 #endif //OPEN_OBD2_ENGINE_H

@@ -18,13 +18,25 @@ Engine::Engine() {
     setEngineType(PETROL);
 
 
-    calculatedLoad = make_unique<CalculatedDataObject<byte, float>>(A, 7, A, 0,
-                                                                    CalculatedValues::toPercent,
-                                                                    CalculatedValues::fromPercent);
+    calculatedLoad = make_unique<CalculatedDataObject<byte, float>>(
+            A, 7, A, 0, CalculatedValues::toPercent, CalculatedValues::fromPercent);
 
-    coolantTemperature = make_unique<CalculatedDataObject<byte, short>>(A, 7, A, 0,
-                                                                        CalculatedValues::toAMinus40,
-                                                                        CalculatedValues::fromAMinus40);
+    coolantTemperature = make_unique<CalculatedDataObject<byte, short>>(
+            A, 7, A, 0, CalculatedValues::toAMinus40, CalculatedValues::fromAMinus40);
+
+
+    // Fuel banks
+    shortTermFuelTrimBank1 = make_unique<CalculatedDataObject<byte, float>>(
+            A, 7, A, 0, CalculatedValues::toPercent128Minus100, CalculatedValues::fromPercent128Minus100);
+
+    longTermFuelTrimBank1 = make_unique<CalculatedDataObject<byte, float>>(
+            A, 7, A, 0, CalculatedValues::toPercent128Minus100, CalculatedValues::fromPercent128Minus100);
+
+    shortTermFuelTrimBank2 = make_unique<CalculatedDataObject<byte, float>>(
+            A, 7, A, 0, CalculatedValues::toPercent128Minus100, CalculatedValues::fromPercent128Minus100);
+
+    longTermFuelTrimBank2 = make_unique<CalculatedDataObject<byte, float>>(
+            A, 7, A, 0, CalculatedValues::toPercent128Minus100, CalculatedValues::fromPercent128Minus100);
 }
 
 void Engine::fromFrameForMonitoringSystem(byte *frame, int size) {
@@ -119,4 +131,21 @@ CalculatedDataObject<byte, float> &Engine::getLoad() {
 CalculatedDataObject<byte, short> &Engine::getCoolantTemperature() {
     return *coolantTemperature;
 }
+
+CalculatedDataObject<byte, float> &Engine::getShortTermFuelTrimBank1() {
+    return *shortTermFuelTrimBank1;
+}
+
+CalculatedDataObject<byte, float> &Engine::getLongTermFuelTrimBank1() {
+    return *longTermFuelTrimBank1;
+}
+
+CalculatedDataObject<byte, float> &Engine::getShortTermFuelTrimBank2() {
+    return *shortTermFuelTrimBank2;
+}
+
+CalculatedDataObject<byte, float> &Engine::getLongTermFuelTrimBank2() {
+    return *longTermFuelTrimBank2;
+}
+
 

@@ -67,10 +67,10 @@ set(CPPSRC
         src/OBD/Pid.h src/Service.h
         src/Vehicle.cpp
         src/Vehicle.h
-        )
+        src/OBD/data/BitEncoded/OxygenSystem.cpp src/OBD/data/BitEncoded/OxygenSystem.h src/OBD/data/BitEncoded/BankOxygenSensor.cpp src/OBD/data/BitEncoded/BankOxygenSensor.h)
 
 
-add_executable(open_obd2 ${CPPSRC})
+add_executable(open_obd2 src/main.cpp ${CPPSRC})
 
 add_executable(Test
         tests/src/OBD/OBDHandlerTest.h

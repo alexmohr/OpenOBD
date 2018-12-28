@@ -16,6 +16,8 @@ Vehicle::Vehicle(shared_ptr<map<int, DataTroubleCode>> dtcMap) {
 
     fuelSystem1 = make_unique<DataObject<StateOfFuelSystem>>(A, 7, A, 0);
     fuelSystem2 = make_unique<DataObject<StateOfFuelSystem>>(B, 7, B, 0);
+
+    speed = make_unique<DataObject<byte>>(A, 7, A, 0);
 }
 
 Vehicle::~Vehicle() = default;
@@ -50,6 +52,10 @@ DataObject<StateOfFuelSystem> &Vehicle::getFuelSystem2() {
 
 Engine &Vehicle::getEngine() {
     return *engine;
+}
+
+DataObject<byte> &Vehicle::getSpeed() {
+    return *speed;
 }
 
 

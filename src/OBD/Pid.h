@@ -34,6 +34,7 @@ enum Service1Pids {
     FuelPressure = 0x0a,
     IntakeManifoldAbsolutePressure = 0x0b,
     EngineRPM = 0x0c,
+    VehicleSpeed = 0x0d,
 };
 
 class Pid {

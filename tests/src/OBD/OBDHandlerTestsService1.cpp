@@ -439,6 +439,24 @@ TEST(OBDHandler, PID_C_EngineRPM) {
 }
 
 
+TEST(OBDHandler, PID_D_TestSpeed) {
+    const auto pid = (byte) VehicleSpeed;
+    vector<byte> request{(RequestServiceID), pid};
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
+    auto handler = doTest(request, response);
+
+    auto &vehicle = *handler->getVehicle();
+    EXPECT_EQ(vehicle.getSpeed().getValue(), (byte) 0xca);
+
+    vector<int> values{255, 12, 42, 129};
+    for (auto const &val: values) {
+        vehicle.getSpeed().setValue((byte) val);
+        EXPECT_EQ(vehicle.getSpeed().getValue(), (byte) val);
+    }
+}
+
+
+
 
 
 

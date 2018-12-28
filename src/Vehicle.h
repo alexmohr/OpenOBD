@@ -28,10 +28,7 @@ private:
     unique_ptr<DataObject<StateOfFuelSystem>> fuelSystem1;
     unique_ptr<DataObject<StateOfFuelSystem>> fuelSystem2;
 
-    int speed;
-    int rpm;
-    int coolantTemp;
-
+    unique_ptr<DataObject<byte>> speed;
 
     shared_ptr<map<int, DataTroubleCode>> dtcMap;
 
@@ -55,6 +52,8 @@ public:
     DataObject<StateOfFuelSystem> &getFuelSystem1();
 
     DataObject<StateOfFuelSystem> &getFuelSystem2();
+
+    DataObject<byte> &getSpeed();
 
 
 };

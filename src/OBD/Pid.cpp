@@ -119,6 +119,9 @@ void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
         case EngineRPM:
             vehicle->getEngine().getEngineRPM().fromFrame(data, size);
             break;
+        case VehicleSpeed:
+            vehicle->getSpeed().fromFrame(data, size);
+            break;
     }
 }
 
@@ -185,6 +188,9 @@ byte* Pid::readService1_2(Vehicle *vehicle) {
             break;
         case EngineRPM:
             data = vehicle->getEngine().getEngineRPM().toFrame(data);
+            break;
+        case VehicleSpeed:
+            data = vehicle->getSpeed().toFrame(data);
             break;
     }
 

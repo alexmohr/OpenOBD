@@ -30,6 +30,7 @@ private:
 
     unique_ptr<DataObject<byte>> speed;
 
+    unique_ptr<CalculatedDataObject<byte, float>> throttlePosition;
     shared_ptr<map<int, DataTroubleCode>> dtcMap;
 
 
@@ -54,6 +55,8 @@ public:
     DataObject<StateOfFuelSystem> &getFuelSystem2();
 
     DataObject<byte> &getSpeed();
+
+    CalculatedDataObject<byte, float> &getThrottlePosition();
 
 
 };

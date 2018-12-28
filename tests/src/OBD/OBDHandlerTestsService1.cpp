@@ -309,6 +309,16 @@ TEST(OBDHandler, PID_04_CalculatedEngineLoad) {
 
     auto &engine = handler->getVehicle()->getEngine();
     EXPECT_EQ(ceil(engine.getLoad().getValue()), 42);
+
+    auto &vehicle = *handler->getVehicle();
+    EXPECT_FLOAT_EQ(vehicle.getEngine().getLoad().getValue(), (float) (100.0f / 255 * 0x6b));
+
+    // values are special because they have no offset
+    vector<float> values{100.0/*max*/, 0/*min*/, 41.960785f, 87.84314f, 11.764706f};
+    for (auto const &val: values) {
+        vehicle.getEngine().getLoad().setValue(val);
+        EXPECT_FLOAT_EQ(vehicle.getEngine().getLoad().getValue(), val);
+    }
 }
 
 TEST(OBDHandler, PID_04_CalculatedEngineLoadSetter) {
@@ -497,7 +507,6 @@ TEST(OBDHandler, PID_10_MAFAirFlowRate) {
     // (256A + B ) / 100
     EXPECT_FLOAT_EQ(vehicle.getEngine().getMAFAirFlowRate().getValue(), (float) ((256.0 * 0xca + 0xfe) / 100));
 
-
     // values are special because they have no offset
     vector<float> values{(float) ((256.0 * 0xff + 0xff) / 100)/*max*/, 0/*min*/, 418.91, 41.12};
     for (auto const &val: values) {
@@ -507,26 +516,29 @@ TEST(OBDHandler, PID_10_MAFAirFlowRate) {
 }
 
 
+TEST(OBDHandler, PID_11_ThrottlePosition) {
+    const auto pid = (byte) ThrottlePosition;
+    vector<byte> request{(RequestServiceID), pid};
+
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
+    auto handler = doTest(request, response);
+
+    auto &vehicle = *handler->getVehicle();
+    EXPECT_FLOAT_EQ(vehicle.getThrottlePosition().getValue(), (float) (100.0f / 255 * 0xca));
+
+    // values are special because they have no offset
+    vector<float> values{100.0/*max*/, 0/*min*/, 41.960785f, 87.84314f, 11.764706f};
+    for (auto const &val: values) {
+        vehicle.getThrottlePosition().setValue(val);
+        EXPECT_FLOAT_EQ(vehicle.getThrottlePosition().getValue(), val);
+    }
+}
 
 
 
 
 
 /*
-
-
-5
-6
-7
-8
-9
-0A
-0B
-0C
-0D
-0E
-0F
-10
 11
 12
 13

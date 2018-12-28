@@ -77,7 +77,7 @@ public:
             isBool = true;
         }
 
-        value = (T) 0;
+        value = static_cast<T>(0);
     }
 
 
@@ -100,7 +100,6 @@ public:
 
         size_t targetSize = sizeof(retVal) * 8;
         auto bitSize = abs(stopBitIndex - startBitIndex);
-
 
         size_t shift = targetSize - bitSize - startBitIndex - 1;
         retVal = (unsigned int) value << (shift);

@@ -131,6 +131,9 @@ void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
         case MAFAirFlowRate:
             vehicle->getEngine().getMAFAirFlowRate().fromFrame(data, size);
             break;
+        case ThrottlePosition:
+            vehicle->getThrottlePosition().fromFrame(data, size);
+            break;
     }
 }
 
@@ -209,6 +212,9 @@ byte* Pid::readService1_2(Vehicle *vehicle) {
             break;
         case MAFAirFlowRate:
             data = vehicle->getEngine().getMAFAirFlowRate().toFrame(data);
+            break;
+        case ThrottlePosition:
+            data = vehicle->getThrottlePosition().toFrame(data);
             break;
     }
 

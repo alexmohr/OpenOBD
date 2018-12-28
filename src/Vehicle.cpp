@@ -18,6 +18,9 @@ Vehicle::Vehicle(shared_ptr<map<int, DataTroubleCode>> dtcMap) {
     fuelSystem2 = make_unique<DataObject<StateOfFuelSystem>>(B, 7, B, 0);
 
     speed = make_unique<DataObject<byte>>(A, 7, A, 0);
+
+    throttlePosition = make_unique<CalculatedDataObject<byte, float>>(
+            A, 7, A, 0, CalculatedValues::toPercent, CalculatedValues::fromPercent);
 }
 
 Vehicle::~Vehicle() = default;
@@ -56,6 +59,10 @@ Engine &Vehicle::getEngine() {
 
 DataObject<byte> &Vehicle::getSpeed() {
     return *speed;
+}
+
+CalculatedDataObject<byte, float> &Vehicle::getThrottlePosition() {
+    return *throttlePosition;
 }
 
 

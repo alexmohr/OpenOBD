@@ -38,7 +38,7 @@ enum Service1Pids {
     TimingAdvance = 0x0E,
     IntakeAirTemperature = 0x0F,
     MAFAirFlowRate = 0x10,
-
+    ThrottlePosition = 0x11,
 };
 
 class Pid {

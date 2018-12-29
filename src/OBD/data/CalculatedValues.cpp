@@ -107,3 +107,35 @@ byte CalculatedValues::fromADivided200(float val) {
     return (byte) (200 * val);
 }
 
+float CalculatedValues::to0_079_Times256APlusB(unsigned short val) {
+    // 0.079(256A+B)}
+    byte *bVal = ushortToByteArray(val);
+    return (float) 0.079 * (256 * (int) bVal[0] + (int) bVal[1]);
+}
+
+unsigned short CalculatedValues::from0_079_Times256APlusB(float val) {
+    // A = (125 p)/2528 - B/256
+    // B = (1000 p)/79 - 256 A
+    // A = B:
+    // (125 p)/2528 - B/256 = (1000 p)/79 - 256 A
+    // Solve for B:
+    // B = 65536 A - (255000 p)/79
+    // Insert in A
+    // A = (125 p)/2528 - ( 65536 A - (255000 p)/79)/256
+    // Solve for A
+    // A = (1000 p)/20303
+    double a = ((1000.0 * val) / 20303);
+    byte bVal[2];
+    bVal[0] = (byte) (a);
+    bVal[1] = (byte) ceil((1000.0f * val) / 79.0f - 256 * a);
+    return byteArrayToUShort(bVal);
+}
+
+unsigned int CalculatedValues::toUShortTimes10(unsigned short val) {
+   return (unsigned int)val*10;
+}
+
+unsigned short CalculatedValues::fromUShortTimes10(unsigned int val) {
+    return (unsigned short)(val/10);
+}
+

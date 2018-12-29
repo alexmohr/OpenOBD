@@ -535,7 +535,7 @@ TEST(OBDHandler, PID_11_ThrottlePosition) {
     }
 }
 
-TEST(OBDHandlelyonerr, PID_12_CommandedSecondaryAirStatus) {
+TEST(OBDHandler, PID_12_CommandedSecondaryAirStatus) {
     const auto pid = (byte) CommandedSecondaryAirStatus;
     vector<byte> request{(RequestServiceID), pid};
 
@@ -543,7 +543,7 @@ TEST(OBDHandlelyonerr, PID_12_CommandedSecondaryAirStatus) {
     auto handler = doTest(request, response);
 
     auto &vehicle = *handler->getVehicle();
-    auto system = vehicle.getCommandedSecondaryAirStatus();
+    auto &system = vehicle.getCommandedSecondaryAirStatus();
     EXPECT_FLOAT_EQ(system.getValue(), ClosedLoopUsingOxygenSensor);
 
     vector<StateOfCommandedSecondaryAir> values{CommandedSecondaryAirStatusDoesNotExist,
@@ -791,7 +791,90 @@ TEST(OBDHandler, PID_1C_Supported_Standards) {
 
 }
 
+TEST(OBDHandler, PID_1F_RunTimeSinceEngineStart) {
+    const auto pid = (byte) RunTimeSinceEngineStart;
+    vector<byte> request{(RequestServiceID), pid};
 
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xca, (byte) 0xfe};
+    auto handler = doTest(request, response);
+
+    auto &vehicle = *handler->getVehicle();
+    auto &system = vehicle.getRunTimeSinceEngineStart();
+
+    EXPECT_EQ(system.getValue(), 0xca * 256 + 0xfe);
+
+    vector<unsigned short> values{65535/*max*/, 0, 420, 58, 9999};
+
+    for (auto const &val: values) {
+        system.setValue(val);
+        EXPECT_FLOAT_EQ(system.getValue(), val);
+    }
+}
+
+TEST(OBDHandler, PID_21_DistanceTraveledWithMilOn) {
+    const auto pid = (byte) DistanceTraveledWithMilOn;
+    vector<byte> request{(RequestServiceID), pid};
+
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xca, (byte) 0xfe};
+    auto handler = doTest(request, response);
+
+    auto &vehicle = *handler->getVehicle();
+    auto &system = vehicle.getDistanceTraveledWithMilOn();
+
+    EXPECT_EQ(system.getValue(), 0xca * 256 + 0xfe);
+
+    vector<unsigned short> values{65535/*max*/, 0, 420, 58, 9999};
+
+    for (auto const &val: values) {
+        system.setValue(val);
+        EXPECT_FLOAT_EQ(system.getValue(), val);
+    }
+}
+
+TEST(OBDHandler, PID_22_FuelRailPressure) {
+    const auto pid = (byte) FuelRailPressure;
+    vector<byte> request{(RequestServiceID), pid};
+
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xca, (byte) 0xfe};
+    auto handler = doTest(request, response);
+
+    auto &vehicle = *handler->getVehicle();
+    auto &system = vehicle.getFuelRailPressure();
+
+    // 0.079(256A + B)
+    auto expected = static_cast<float>(0.079 * (256 * 0xca + 0xfe));
+    EXPECT_FLOAT_EQ(system.getValue(), expected);
+
+    vector<float> values{5177.265/*max*/, 0, 426.28403f, 60.830002f, 4141.7334f};
+    for (auto const &val: values) {
+        system.setValue(val);
+        EXPECT_FLOAT_EQ(system.getValue(), val);
+    }
+}
+
+
+TEST(OBDHandler, PID_23_FuelRailGaugePressure) {
+    const auto pid = (byte) FuelRailGaugePressure;
+    vector<byte> request{(RequestServiceID), pid};
+
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xca, (byte) 0xfe};
+    auto handler = doTest(request, response);
+
+    auto &vehicle = *handler->getVehicle();
+    auto &system = vehicle.getFuelRailGaugePressure();
+
+    // 10(256A+B)}
+    auto expected = static_cast<float>(10 * (256 * 0xca + 0xfe));
+    EXPECT_EQ(system.getValue(), expected);
+
+    vector<unsigned int> values{655350/*max*/, 0, 4200, 8190, 641690};
+    for (auto const &val: values) {
+        system.setValue(val);
+        EXPECT_EQ(system.getValue(), val);
+    }
+}
+
+// = 0x23,
 
 
 

@@ -142,7 +142,7 @@ unsigned int PidSupport::getPidSupportedRange(PidRange pid, unsigned int &data) 
 
 
 unsigned int PidSupport::getPids(vector<DataObject<bool>> &pids, unsigned int &data) {
-    for (auto pid: pids) {
+    for (auto &pid: pids) {
         data |= pid.toFrame(data);
     }
     return data;

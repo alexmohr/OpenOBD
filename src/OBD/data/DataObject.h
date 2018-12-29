@@ -11,6 +11,7 @@
 #include <cstddef>
 #include <cmath>
 #include "easylogging++.h"
+#include "DataObjectDescription.h"
 
 using namespace std;
 
@@ -42,6 +43,7 @@ private:
     unsigned int stopIndex;
     T value;
     bool isBool = false;
+    unique_ptr<DataObjectDescription> description;
 
     int getBitIndexRead(int byteVal, int idx, int sByte) const {
         if (sByte == A) {
@@ -60,9 +62,16 @@ private:
     }
 
 public:
-    DataObject(ByteIndex startByte, unsigned int startIndex) : DataObject(startByte, startIndex,
-                                                                 startByte, startIndex) {
+    DataObject(ByteIndex startByte, unsigned int startIndex) :
+            DataObject(startByte, startIndex, startByte, startIndex) {}
 
+    DataObject(ByteIndex startByte, unsigned int startIndex, unique_ptr<DataObjectDescription> description) :
+            DataObject(startByte, startIndex, startByte, startIndex, description) {}
+
+    DataObject(ByteIndex startByte, unsigned int startIndex,
+               ByteIndex stopByte, unsigned stopIndex, unique_ptr<DataObjectDescription> description) :
+            DataObject(startByte, startIndex, startIndex, stopIndex) {
+        this->description = move(description);
     }
 
     DataObject(ByteIndex startByte, unsigned int startIndex,
@@ -72,6 +81,7 @@ public:
         this->stopByte= stopByte;
         int offset = (stopByte - startByte + 1);
         this->stopIndex = stopIndex;
+        this->description = make_unique<DataObjectDescription>("", "");
 
         if (startByte == stopByte && stopIndex == startIndex) {
             isBool = true;
@@ -149,6 +159,12 @@ public:
 
         return 1;
     }
+
+
+    DataObjectDescription &getDescription() {
+        return *description;
+    }
+
 };
 
 

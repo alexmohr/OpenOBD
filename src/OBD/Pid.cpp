@@ -167,6 +167,18 @@ void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
         case OBDStandardsVehicleConformsTo:
             vehicle->getOBDCompliance().fromFrame(data, size);
             break;
+        case RunTimeSinceEngineStart:
+            vehicle->getRunTimeSinceEngineStart().fromFrame(data, size);
+            break;
+        case DistanceTraveledWithMilOn:
+            vehicle->getDistanceTraveledWithMilOn().fromFrame(data, size);
+            break;
+        case FuelRailPressure:
+            vehicle->getFuelRailPressure().fromFrame(data, size);
+            break;
+        case FuelRailGaugePressure:
+            vehicle->getFuelRailGaugePressure().fromFrame(data, size);
+            break;
     }
 }
 
@@ -279,6 +291,19 @@ byte* Pid::readService1_2(Vehicle *vehicle) {
             break;
         case OBDStandardsVehicleConformsTo:
             data = vehicle->getOBDCompliance().toFrame(data);
+            break;
+        case RunTimeSinceEngineStart:
+            data = vehicle->getRunTimeSinceEngineStart().toFrame(data);
+            break;
+        case DistanceTraveledWithMilOn:
+            data = vehicle->getDistanceTraveledWithMilOn().toFrame(data);
+            break;
+        case FuelRailPressure:
+            data = vehicle->getFuelRailPressure().toFrame(data);
+            break;
+        case FuelRailGaugePressure:
+            data = vehicle->getFuelRailGaugePressure().toFrame(data);
+            break;
     }
 
     byte *retVal = uintToByteArray(data);

@@ -42,6 +42,15 @@ public:
     static float toADivided200(byte val);
 
     static byte fromADivided200(float val);
+
+
+    static float to0_079_Times256APlusB(unsigned short val);
+
+    static unsigned short from0_079_Times256APlusB(float val);
+
+    static unsigned int toUShortTimes10(unsigned short val);
+
+    static unsigned short fromUShortTimes10(unsigned int val);
 };
 
 

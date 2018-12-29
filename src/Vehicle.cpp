@@ -26,6 +26,18 @@ Vehicle::Vehicle(shared_ptr<map<int, DataTroubleCode>> dtcMap) {
 
     oxygenSystem = make_unique<OxygenSystem>();
     obdCompliance = make_unique<OBDCompliance>();
+
+    auxiliaryInputStatus = make_unique<DataObject<bool>>(A, 0);
+    runTimeSinceEngineStart = make_unique<DataObject<unsigned short>>(A, 7, B, 0);
+
+    distanceTraveledWithMilOn = make_unique<DataObject<unsigned short>>(A, 7, B, 0);
+
+    fuelRailPressure = make_unique<CalculatedDataObject<unsigned short, float>>(
+            A, 7, B, 0, CalculatedValues::to0_079_Times256APlusB, CalculatedValues::from0_079_Times256APlusB);
+
+    fuelRailGaugePressure = make_unique<CalculatedDataObject<unsigned short, unsigned int>>(
+            A, 7, B, 0, CalculatedValues::toUShortTimes10, CalculatedValues::fromUShortTimes10);
+
 }
 
 Vehicle::~Vehicle() = default;
@@ -82,6 +94,25 @@ OBDCompliance &Vehicle::getOBDCompliance() {
     return *obdCompliance;
 }
 
+DataObject<bool> &Vehicle::getAuxiliaryInputStatus() {
+    return *auxiliaryInputStatus;
+}
+
+DataObject<unsigned short> &Vehicle::getRunTimeSinceEngineStart() {
+    return *runTimeSinceEngineStart;
+}
+
+DataObject<unsigned short> &Vehicle::getDistanceTraveledWithMilOn() {
+    return *distanceTraveledWithMilOn;
+}
+
+CalculatedDataObject<unsigned short, float> &Vehicle::getFuelRailPressure() {
+    return *fuelRailPressure;
+}
+
+CalculatedDataObject<unsigned short, unsigned int> &Vehicle::getFuelRailGaugePressure() {
+    return *fuelRailGaugePressure;
+}
 
 
 

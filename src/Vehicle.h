@@ -36,6 +36,12 @@ private:
     unique_ptr<OxygenSystem> oxygenSystem;
     unique_ptr<OBDCompliance> obdCompliance;
 
+    unique_ptr<DataObject<bool>> auxiliaryInputStatus;
+    unique_ptr<DataObject<unsigned short>> runTimeSinceEngineStart;
+    unique_ptr<DataObject<unsigned short>> distanceTraveledWithMilOn;
+    unique_ptr<CalculatedDataObject<unsigned short, float>> fuelRailPressure;
+    unique_ptr<CalculatedDataObject<unsigned short, unsigned int>> fuelRailGaugePressure;
+
     shared_ptr<map<int, DataTroubleCode>> dtcMap;
 
 
@@ -68,6 +74,17 @@ public:
     OxygenSystem &getOxygenSystem();
 
     OBDCompliance &getOBDCompliance();
+
+
+    DataObject<bool> &getAuxiliaryInputStatus();
+
+    DataObject<unsigned short> &getRunTimeSinceEngineStart();
+
+    DataObject<unsigned short> &getDistanceTraveledWithMilOn();
+
+    CalculatedDataObject<unsigned short, float> &getFuelRailPressure();
+
+    CalculatedDataObject<unsigned short, unsigned int> &getFuelRailGaugePressure();
 };
 
 

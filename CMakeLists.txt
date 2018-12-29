@@ -60,6 +60,9 @@ set(CPPSRC
         src/OBD/data/CalculatedDataObject.h
         src/OBD/data/CalculatedValues.cpp
         src/OBD/data/CalculatedValues.h
+        src/OBD/data/DataObjectDescription.cpp
+        src/OBD/data/DataObjectDescription.cpp
+        src/OBD/data/DataObjectDescription.h
         src/OBD/data/DataObject.h
         src/OBD/data/Enumerated/StateOfCommandedSecondaryAir.h
         src/OBD/data/Enumerated/StateOfFuelSystem.h
@@ -70,7 +73,8 @@ set(CPPSRC
         src/OBD/OBDHandler.cpp
         src/OBD/OBDHandler.h
         src/OBD/Pid.cpp
-        src/OBD/Pid.h src/Service.h
+        src/OBD/Pid.h
+        src/Service.h
         src/Vehicle.cpp
         src/Vehicle.h)
 

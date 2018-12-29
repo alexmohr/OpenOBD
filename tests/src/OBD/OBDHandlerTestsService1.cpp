@@ -544,7 +544,7 @@ TEST(OBDHandler, PID_12_CommandedSecondaryAirStatus) {
     auto &vehicle = *handler->getVehicle();
     auto system = vehicle.getCommandedSecondaryAirStatus();
     EXPECT_FLOAT_EQ(system.getValue(), ClosedLoopUsingOxygenSensor);
-    
+
     vector<StateOfCommandedSecondaryAir> values{CommandedSecondaryAirStatusDoesNotExist,
                                                 Upstream,
                                                 DownstreamOfCatalyticConverter,
@@ -555,6 +555,37 @@ TEST(OBDHandler, PID_12_CommandedSecondaryAirStatus) {
         EXPECT_FLOAT_EQ(system.getValue(), val);
     }
 }
+
+TEST(OBDHandler, PID_13_OxygenSensorsPresent) {
+    const auto pid = (byte) OxygenSensorsPresent;
+    vector<byte> request{(RequestServiceID), pid};
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
+    auto handler = doTest(request, response);
+
+
+    auto &vehicle = *handler->getVehicle();
+    auto &system = vehicle.getOxygenSystem();
+
+
+    // 	[A0..A3] == Bank 1, Sensors 1-4.
+    // 	[A4..A7] == Bank 2, Sensors 1-4.
+    // BitIndex 76543210
+    // 0xca =   11001010
+    EXPECT_EQ(system.getBank1Sensor1present().getValue(), false);
+    EXPECT_EQ(system.getBank1Sensor2present().getValue(), true);
+    EXPECT_EQ(system.getBank1Sensor3present().getValue(), false);
+    EXPECT_EQ(system.getBank1Sensor4present().getValue(), true);
+    EXPECT_EQ(system.getBank2Sensor1present().getValue(), false);
+    EXPECT_EQ(system.getBank2Sensor2present().getValue(), false);
+    EXPECT_EQ(system.getBank2Sensor3present().getValue(), true);
+    EXPECT_EQ(system.getBank2Sensor4present().getValue(), true);
+}
+
+TEST(OBDHandler, PID_14_to_0x1B_BankOxygenSensor1_to_8) {
+    //BankOxygenSensor1 = 0x14,
+}
+
+
 
 
 

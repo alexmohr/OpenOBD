@@ -40,6 +40,15 @@ enum Service1Pids {
     MAFAirFlowRate = 0x10,
     ThrottlePosition = 0x11,
     CommandedSecondaryAirStatus = 0x12,
+    OxygenSensorsPresent = 0x13,
+    BankOxygenSensor1 = 0x14,
+    BankOxygenSensor2 = 0x15,
+    BankOxygenSensor3 = 0x16,
+    BankOxygenSensor4 = 0x17,
+    BankOxygenSensor5 = 0x18,
+    BankOxygenSensor6 = 0x19,
+    BankOxygenSensor7 = 0x1A,
+    BankOxygenSensor8 = 0x1B,
 };
 
 class Pid {

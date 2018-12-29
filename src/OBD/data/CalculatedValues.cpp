@@ -99,3 +99,11 @@ byte CalculatedValues::fromADivided2Minus64(float val) {
     return (byte) (2 * (val + 64));
 }
 
+float CalculatedValues::toADivided200(byte val) {
+    return (float) val / 200.0f;
+}
+
+byte CalculatedValues::fromADivided200(float val) {
+    return (byte) (200 * val);
+}
+

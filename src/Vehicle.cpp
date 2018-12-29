@@ -23,6 +23,8 @@ Vehicle::Vehicle(shared_ptr<map<int, DataTroubleCode>> dtcMap) {
 
     throttlePosition = make_unique<CalculatedDataObject<byte, float>>(
             A, 7, A, 0, CalculatedValues::toPercent, CalculatedValues::fromPercent);
+
+    oxygenSystem = make_unique<OxygenSystem>();
 }
 
 Vehicle::~Vehicle() = default;
@@ -69,6 +71,10 @@ CalculatedDataObject<byte, float> &Vehicle::getThrottlePosition() {
 
 DataObject<StateOfCommandedSecondaryAir> &Vehicle::getCommandedSecondaryAirStatus() {
     return *commandedSecondaryAirStatus;
+}
+
+OxygenSystem &Vehicle::getOxygenSystem() {
+    return *oxygenSystem;
 }
 
 

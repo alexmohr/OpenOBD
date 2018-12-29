@@ -12,6 +12,7 @@
 #include "OBD/data/BitEncoded/PidSupport.h"
 #include "OBD/data/Enumerated/StateOfFuelSystem.h"
 #include "OBD/data/Enumerated/StateOfCommandedSecondaryAir.h"
+#include "OBD/data/BitEncoded/OxygenSystem.h"
 
 
 using namespace std;
@@ -33,6 +34,8 @@ private:
     unique_ptr<DataObject<byte>> speed;
 
     unique_ptr<CalculatedDataObject<byte, float>> throttlePosition;
+    unique_ptr<OxygenSystem> oxygenSystem;
+
     shared_ptr<map<int, DataTroubleCode>> dtcMap;
 
 
@@ -62,6 +65,7 @@ public:
 
     DataObject<StateOfCommandedSecondaryAir> &getCommandedSecondaryAirStatus();
 
+    OxygenSystem &getOxygenSystem();
 };
 
 

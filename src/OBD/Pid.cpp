@@ -137,10 +137,35 @@ void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
         case CommandedSecondaryAirStatus:
             vehicle->getCommandedSecondaryAirStatus().fromFrame(data, size);
             break;
+        case OxygenSensorsPresent:
+            vehicle->getOxygenSystem().bankSensorsPresentFromFrame(data, size);
+            break;
+        case BankOxygenSensor1:
+            vehicle->getOxygenSystem().getBankOxygenSensor1().fromFrame(data, size);
+            break;
+        case BankOxygenSensor2:
+            vehicle->getOxygenSystem().getBankOxygenSensor2().fromFrame(data, size);
+            break;
+        case BankOxygenSensor3:
+            vehicle->getOxygenSystem().getBankOxygenSensor3().fromFrame(data, size);
+            break;
+        case BankOxygenSensor4:
+            vehicle->getOxygenSystem().getBankOxygenSensor4().fromFrame(data, size);
+            break;
+        case BankOxygenSensor5:
+            vehicle->getOxygenSystem().getBankOxygenSensor5().fromFrame(data, size);
+            break;
+        case BankOxygenSensor6:
+            vehicle->getOxygenSystem().getBankOxygenSensor6().fromFrame(data, size);
+            break;
+        case BankOxygenSensor7:
+            vehicle->getOxygenSystem().getBankOxygenSensor7().fromFrame(data, size);
+            break;
+        case BankOxygenSensor8:
+            vehicle->getOxygenSystem().getBankOxygenSensor8().fromFrame(data, size);
+            break;
     }
 }
-
-
 
 byte* Pid::readService1_2(Vehicle *vehicle) {
     unsigned int data = 0;
@@ -221,6 +246,33 @@ byte* Pid::readService1_2(Vehicle *vehicle) {
             break;
         case CommandedSecondaryAirStatus:
             data = vehicle->getCommandedSecondaryAirStatus().toFrame(data);
+            break;
+        case OxygenSensorsPresent:
+            data = vehicle->getOxygenSystem().bankSensorsPresentToFrame(data);
+            break;
+        case BankOxygenSensor1:
+            data = vehicle->getOxygenSystem().getBankOxygenSensor1().toFrame(data);
+            break;
+        case BankOxygenSensor2:
+            data = vehicle->getOxygenSystem().getBankOxygenSensor2().toFrame(data);
+            break;
+        case BankOxygenSensor3:
+            data = vehicle->getOxygenSystem().getBankOxygenSensor3().toFrame(data);
+            break;
+        case BankOxygenSensor4:
+            data = vehicle->getOxygenSystem().getBankOxygenSensor4().toFrame(data);
+            break;
+        case BankOxygenSensor5:
+            data = vehicle->getOxygenSystem().getBankOxygenSensor5().toFrame(data);
+            break;
+        case BankOxygenSensor6:
+            data = vehicle->getOxygenSystem().getBankOxygenSensor6().toFrame(data);
+            break;
+        case BankOxygenSensor7:
+            data = vehicle->getOxygenSystem().getBankOxygenSensor7().toFrame(data);
+            break;
+        case BankOxygenSensor8:
+            data = vehicle->getOxygenSystem().getBankOxygenSensor8().toFrame(data);
             break;
     }
 

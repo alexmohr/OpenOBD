@@ -38,6 +38,10 @@ public:
     static float toADivided2Minus64(byte val);
 
     static byte fromADivided2Minus64(float val);
+
+    static float toADivided200(byte val);
+
+    static byte fromADivided200(float val);
 };
 
 

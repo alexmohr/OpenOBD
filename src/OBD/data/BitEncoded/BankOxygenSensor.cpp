@@ -15,7 +15,7 @@ BankOxygenSensor::BankOxygenSensor() {
 
 
 bool BankOxygenSensor::isSensorUsedInTrimCalc() {
-    return shortTermFuelTrim->getValue() == 0xff;
+    return shortTermFuelTrim->getValue() != 0xff;
 }
 
 CalculatedDataObject<byte, float> &BankOxygenSensor::getVoltage() {
@@ -32,7 +32,8 @@ unsigned int BankOxygenSensor::toFrame(unsigned int &data) {
     return data;
 }
 
-unsigned int BankOxygenSensor::fromFrame(byte *data, int size) {
-    return 0;
+void BankOxygenSensor::fromFrame(byte *data, int size) {
+    voltage->fromFrame(data, size);
+    shortTermFuelTrim->fromFrame(data, size);
 }
 

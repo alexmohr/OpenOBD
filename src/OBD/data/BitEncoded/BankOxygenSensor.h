@@ -24,7 +24,7 @@ public:
 
     unsigned int toFrame(unsigned int &data);
 
-    unsigned int fromFrame(byte *data, int size);
+    void fromFrame(byte *data, int size);
 
 };
 

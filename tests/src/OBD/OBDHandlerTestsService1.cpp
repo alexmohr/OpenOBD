@@ -534,7 +534,7 @@ TEST(OBDHandler, PID_11_ThrottlePosition) {
     }
 }
 
-TEST(OBDHandler, PID_12_CommandedSecondaryAirStatus) {
+TEST(OBDHandlelyonerr, PID_12_CommandedSecondaryAirStatus) {
     const auto pid = (byte) CommandedSecondaryAirStatus;
     vector<byte> request{(RequestServiceID), pid};
 
@@ -562,13 +562,11 @@ TEST(OBDHandler, PID_13_OxygenSensorsPresent) {
     vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
     auto handler = doTest(request, response);
 
-
     auto &vehicle = *handler->getVehicle();
     auto &system = vehicle.getOxygenSystem();
 
-
-    // 	[A0..A3] == Bank 1, Sensors 1-4.
-    // 	[A4..A7] == Bank 2, Sensors 1-4.
+    // [A0..A3] == Bank 1, Sensors 1-4.
+    // [A4..A7] == Bank 2, Sensors 1-4.
     // BitIndex 76543210
     // 0xca =   11001010
     EXPECT_EQ(system.getBank1Sensor1present().getValue(), false);
@@ -581,8 +579,87 @@ TEST(OBDHandler, PID_13_OxygenSensorsPresent) {
     EXPECT_EQ(system.getBank2Sensor4present().getValue(), true);
 }
 
+TEST(OBDHandler, PID_13_OxygenSensorsPresentSetter) {
+    auto handler = getHandler();
+
+    auto &vehicle = *handler->getVehicle();
+    auto &system = vehicle.getOxygenSystem();
+
+    system.getBank1Sensor1present().setValue(false);
+    system.getBank1Sensor2present().setValue(true);
+    system.getBank1Sensor3present().setValue(false);
+    system.getBank1Sensor4present().setValue(true);
+    system.getBank2Sensor1present().setValue(false);
+    system.getBank2Sensor2present().setValue(false);
+    system.getBank2Sensor3present().setValue(true);
+    system.getBank2Sensor4present().setValue(true);
+
+
+    EXPECT_EQ(system.getBank1Sensor1present().getValue(), false);
+    EXPECT_EQ(system.getBank1Sensor2present().getValue(), true);
+    EXPECT_EQ(system.getBank1Sensor3present().getValue(), false);
+    EXPECT_EQ(system.getBank1Sensor4present().getValue(), true);
+    EXPECT_EQ(system.getBank2Sensor1present().getValue(), false);
+    EXPECT_EQ(system.getBank2Sensor2present().getValue(), false);
+    EXPECT_EQ(system.getBank2Sensor3present().getValue(), true);
+    EXPECT_EQ(system.getBank2Sensor4present().getValue(), true);
+}
+
 TEST(OBDHandler, PID_14_to_0x1B_BankOxygenSensor1_to_8) {
-    //BankOxygenSensor1 = 0x14,
+    // tested together because same logic with other pids
+    const vector<Service1Pids> pids = {
+            BankOxygenSensor1, BankOxygenSensor2, BankOxygenSensor3, BankOxygenSensor4,
+            BankOxygenSensor5, BankOxygenSensor6, BankOxygenSensor7, BankOxygenSensor8};
+
+    for (const auto &pid: pids) {
+        vector<byte> request{(RequestServiceID), (byte) pid};
+        vector<byte> response{ResponseServiceID, (byte) pid, (byte) 0xca, (byte) 0xfe};
+        auto handler = doTest(request, response);
+
+
+        auto &oxygenSystem = handler->getVehicle()->getOxygenSystem();
+        BankOxygenSensor *sensor;
+        switch (pid) {
+            case BankOxygenSensor1:
+                sensor = &oxygenSystem.getBankOxygenSensor1();
+                break;
+            case BankOxygenSensor2:
+                sensor = &oxygenSystem.getBankOxygenSensor2();
+                break;
+            case BankOxygenSensor3:
+                sensor = &oxygenSystem.getBankOxygenSensor3();
+                break;
+            case BankOxygenSensor4:
+                sensor = &oxygenSystem.getBankOxygenSensor4();
+                break;
+            case BankOxygenSensor5:
+                sensor = &oxygenSystem.getBankOxygenSensor5();
+                break;
+            case BankOxygenSensor6:
+                sensor = &oxygenSystem.getBankOxygenSensor6();
+                break;
+            case BankOxygenSensor7:
+                sensor = &oxygenSystem.getBankOxygenSensor7();
+                break;
+            case BankOxygenSensor8:
+                sensor = &oxygenSystem.getBankOxygenSensor8();
+                break;
+            default:
+                EXPECT_EQ(false, true);
+                continue;
+        }
+
+        EXPECT_FLOAT_EQ(sensor->getVoltage().getValue(), (float) 0xca / 200);
+        EXPECT_TRUE(sensor->isSensorUsedInTrimCalc());
+        EXPECT_FLOAT_EQ(sensor->getShortTermFuelTrim().getValue(), (100.0f / 128.0f) * 0xfe - 100);
+
+        sensor->getVoltage().setValue(1.275);
+        EXPECT_FLOAT_EQ(sensor->getVoltage().getValue(), 1.275);
+
+        sensor->getShortTermFuelTrim().setValue(-42.1875);
+        EXPECT_FLOAT_EQ(sensor->getShortTermFuelTrim().getValue(), -42.1875);
+    }
+
 }
 
 

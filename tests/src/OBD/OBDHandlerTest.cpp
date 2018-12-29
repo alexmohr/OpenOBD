@@ -16,8 +16,9 @@ OBDHandler *getHandler() {
     config.parseJson("../configuration/dtcConfig.json", dtcMap);
 
     auto *vehicle = new Vehicle(make_unique<map<int, DataTroubleCode>>(dtcMap));
+    auto *vehicleFF = new Vehicle(make_unique<map<int, DataTroubleCode>>(dtcMap));
 
-    auto handler = new OBDHandler(vehicle, make_unique<map<Service, PidCollection>>(pcMap));
+    auto handler = new OBDHandler(vehicle, vehicleFF, make_unique<map<Service, PidCollection>>(pcMap));
     return handler;
 }
 

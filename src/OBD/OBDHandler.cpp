@@ -6,10 +6,11 @@
 #include "easylogging++.h"
 
 
-OBDHandler::OBDHandler(Vehicle *vehicle, unique_ptr<map<Service, PidCollection>> pidConfig){
+OBDHandler::OBDHandler(Vehicle *vehicle, Vehicle *vehicleFreezeFrame,
+                       unique_ptr<map<Service, PidCollection>> pidConfig) {
     this->vehicle = vehicle;
+    this->vehicleFreezeFrame = vehicleFreezeFrame;
     this->pidConfig = move(pidConfig);
-    vehicleFreezeFrame = new Vehicle(*vehicle);
 
 }
 
@@ -57,7 +58,12 @@ void OBDHandler::updateFromFrame(byte *frame, int frameSize) {
     int dataSize = frameSize -2;
     byte* data = (byte*)malloc(sizeof(byte)*dataSize);
     memcpy(data, frame+startByte, static_cast<size_t>(dataSize));
-    pid.updateVehicle(service, vehicle, data, dataSize);
+
+    Vehicle *updateVehicle = vehicle;
+    if (FREEZE_FRAME == service) {
+        updateVehicle = vehicleFreezeFrame;
+    }
+    pid.updateVehicle(service, updateVehicle, data, dataSize);
 }
 
 void OBDHandler::getFrameInfo(const byte *frame, int serviceId, Pid &pid, Service &service) {

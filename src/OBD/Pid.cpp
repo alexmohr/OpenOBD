@@ -164,6 +164,9 @@ void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
         case BankOxygenSensor8:
             vehicle->getOxygenSystem().getBankOxygenSensor8().fromFrame(data, size);
             break;
+        case OBDStandardsVehicleConformsTo:
+            vehicle->getOBDCompliance().fromFrame(data, size);
+            break;
     }
 }
 
@@ -274,6 +277,8 @@ byte* Pid::readService1_2(Vehicle *vehicle) {
         case BankOxygenSensor8:
             data = vehicle->getOxygenSystem().getBankOxygenSensor8().toFrame(data);
             break;
+        case OBDStandardsVehicleConformsTo:
+            data = vehicle->getOBDCompliance().toFrame(data);
     }
 
     byte *retVal = uintToByteArray(data);

@@ -25,14 +25,15 @@ Vehicle::Vehicle(shared_ptr<map<int, DataTroubleCode>> dtcMap) {
             A, 7, A, 0, CalculatedValues::toPercent, CalculatedValues::fromPercent);
 
     oxygenSystem = make_unique<OxygenSystem>();
+    obdCompliance = make_unique<OBDCompliance>();
 }
 
 Vehicle::~Vehicle() = default;
 
 
-Vehicle::Vehicle(Vehicle &vehicle) {
-
-}
+//Vehicle::Vehicle(Vehicle &vehicle) {
+//
+//}
 
 
 MonitorStatus &Vehicle::getMonitorStatus() {
@@ -75,6 +76,10 @@ DataObject<StateOfCommandedSecondaryAir> &Vehicle::getCommandedSecondaryAirStatu
 
 OxygenSystem &Vehicle::getOxygenSystem() {
     return *oxygenSystem;
+}
+
+OBDCompliance &Vehicle::getOBDCompliance() {
+    return *obdCompliance;
 }
 
 

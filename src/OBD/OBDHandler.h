@@ -16,7 +16,7 @@ private:
     Vehicle *vehicleFreezeFrame;
     unique_ptr<map<Service, PidCollection>> pidConfig;
 public:
-    OBDHandler(Vehicle *vehicle, unique_ptr<map<Service, PidCollection>> pidConfig);
+    OBDHandler(Vehicle *vehicle, Vehicle *vehicleFreezeFrame, unique_ptr<map<Service, PidCollection>> pidConfig);
 
     /**
      * Create a response for a request

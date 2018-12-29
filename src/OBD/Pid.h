@@ -49,6 +49,7 @@ enum Service1Pids {
     BankOxygenSensor6 = 0x19,
     BankOxygenSensor7 = 0x1A,
     BankOxygenSensor8 = 0x1B,
+    OBDStandardsVehicleConformsTo = 0x1C
 };
 
 class Pid {

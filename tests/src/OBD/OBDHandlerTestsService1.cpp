@@ -9,6 +9,7 @@
 #include "OBDHandlerTest.h"
 #include "../../../src/common/endian.h"
 #include "gtest/gtest.h"
+#include <random>
 
 const byte RequestServiceID = (byte) 0x01;
 const byte ResponseServiceID = (byte) 0x41;
@@ -662,7 +663,133 @@ TEST(OBDHandler, PID_14_to_0x1B_BankOxygenSensor1_to_8) {
 
 }
 
+void PID_1C_Supported_Standards_Setter(bool value, OBDCompliance &compliance) {
+    compliance.getOBD_II_CARB().setValue(value);
+    EXPECT_EQ(compliance.getOBD_II_CARB().getValue(), value);
 
+
+    compliance.getOBD_EPA().setValue(value);
+    EXPECT_EQ(compliance.getOBD_EPA().getValue(), value);
+
+
+    compliance.getOBD_and_OBD_II().setValue(value);
+    EXPECT_EQ(compliance.getOBD_and_OBD_II().getValue(), value);
+
+
+    compliance.getOBD_I().setValue(value);
+    EXPECT_EQ(compliance.getOBD_I().getValue(), value);
+
+
+    compliance.getNotOBDcompliant().setValue(value);
+    EXPECT_EQ(compliance.getNotOBDcompliant().getValue(), value);
+
+
+    compliance.getEOBD().setValue(value);
+    EXPECT_EQ(compliance.getEOBD().getValue(), value);
+
+
+    compliance.getEOBDandOBD_II().setValue(value);
+    EXPECT_EQ(compliance.getEOBDandOBD_II().getValue(), value);
+
+
+    compliance.getEOBDandOBD().setValue(value);
+    EXPECT_EQ(compliance.getEOBDandOBD().getValue(), value);
+
+
+    compliance.getEOBD_OBD_and_OBDII().setValue(value);
+    EXPECT_EQ(compliance.getEOBD_OBD_and_OBDII().getValue(), value);
+
+
+    compliance.getJOBD().setValue(value);
+    EXPECT_EQ(compliance.getJOBD().getValue(), value);
+
+
+    compliance.getJOBDandOBDII().setValue(value);
+    EXPECT_EQ(compliance.getJOBDandOBDII().getValue(), value);
+
+
+    compliance.getJOBDandEOBD().setValue(value);
+    EXPECT_EQ(compliance.getJOBDandEOBD().getValue(), value);
+
+
+    compliance.getJOBD_EOBD_and_OBDII().setValue(value);
+    EXPECT_EQ(compliance.getJOBD_EOBD_and_OBDII().getValue(), value);
+
+
+    compliance.getEngineManufacturerDiagnostics().setValue(value);
+    EXPECT_EQ(compliance.getEngineManufacturerDiagnostics().getValue(), value);
+
+
+    compliance.getEngineManufacturerDiagnosticsEnhanced().setValue(value);
+    EXPECT_EQ(compliance.getEngineManufacturerDiagnosticsEnhanced().getValue(), value);
+
+
+    compliance.getHeavyDutyOn_BoardDiagnostics_OBD_C().setValue(value);
+    EXPECT_EQ(compliance.getHeavyDutyOn_BoardDiagnostics_OBD_C().getValue(), value);
+
+
+    compliance.getHeavyDutyOn_BoardDiagnostics().setValue(value);
+    EXPECT_EQ(compliance.getHeavyDutyOn_BoardDiagnostics().getValue(), value);
+
+
+    compliance.getWorldWideHarmonizedOBD().setValue(value);
+    EXPECT_EQ(compliance.getWorldWideHarmonizedOBD().getValue(), value);
+
+
+    compliance.getHeavyDutyEuroOBDStageIwithoutNOxcontrol().setValue(value);
+    EXPECT_EQ(compliance.getHeavyDutyEuroOBDStageIwithoutNOxcontrol().getValue(), value);
+
+
+    compliance.getHeavyDutyEuroOBDStageIwithNOxcontrol().setValue(value);
+    EXPECT_EQ(compliance.getHeavyDutyEuroOBDStageIwithNOxcontrol().getValue(), value);
+
+
+    compliance.getHeavyDutyEuroOBDStageIIwithoutNOxcontrol().setValue(value);
+    EXPECT_EQ(compliance.getHeavyDutyEuroOBDStageIIwithoutNOxcontrol().getValue(), value);
+
+
+    compliance.getHeavyDutyEuroOBDStageIIwithNOxcontrol().setValue(value);
+    EXPECT_EQ(compliance.getHeavyDutyEuroOBDStageIIwithNOxcontrol().getValue(), value);
+
+
+    compliance.getBrazilOBDPhase1().setValue(value);
+    EXPECT_EQ(compliance.getBrazilOBDPhase1().getValue(), value);
+
+
+    compliance.getBrazilOBDPhase2().setValue(value);
+    EXPECT_EQ(compliance.getBrazilOBDPhase2().getValue(), value);
+
+
+    compliance.getKoreanOBD().setValue(value);
+    EXPECT_EQ(compliance.getKoreanOBD().getValue(), value);
+
+
+    compliance.getIndiaOBDI().setValue(value);
+    EXPECT_EQ(compliance.getIndiaOBDI().getValue(), value);
+
+
+    compliance.getIndiaOBDII().setValue(value);
+    EXPECT_EQ(compliance.getIndiaOBDII().getValue(), value);
+
+
+    compliance.getHeavyDutyEuroOBDStageVI().setValue(value);
+    EXPECT_EQ(compliance.getHeavyDutyEuroOBDStageVI().getValue(), value);
+}
+
+TEST(OBDHandler, PID_1C_Supported_Standards) {
+    const auto pid = (byte) OBDStandardsVehicleConformsTo;
+    vector<byte> request{(RequestServiceID), pid};
+
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
+    auto handler = doTest(request, response);
+
+    auto &vehicle = *handler->getVehicle();
+    auto &compliance = vehicle.getOBDCompliance();
+
+    PID_1C_Supported_Standards_Setter(false, compliance);
+    PID_1C_Supported_Standards_Setter(true, compliance);
+
+}
 
 
 

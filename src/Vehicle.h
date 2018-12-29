@@ -13,11 +13,10 @@
 #include "OBD/data/Enumerated/StateOfFuelSystem.h"
 #include "OBD/data/Enumerated/StateOfCommandedSecondaryAir.h"
 #include "OBD/data/BitEncoded/OxygenSystem.h"
+#include "OBD/data/BitEncoded/OBDCompliance.h"
 
 
 using namespace std;
-
-
 
 
 class Vehicle {
@@ -35,15 +34,16 @@ private:
 
     unique_ptr<CalculatedDataObject<byte, float>> throttlePosition;
     unique_ptr<OxygenSystem> oxygenSystem;
+    unique_ptr<OBDCompliance> obdCompliance;
 
     shared_ptr<map<int, DataTroubleCode>> dtcMap;
 
 
-
 public:
-    Vehicle(shared_ptr<map<int, DataTroubleCode>> dtcMap);
+    explicit Vehicle(shared_ptr<map<int, DataTroubleCode>> dtcMap);
+
     ~Vehicle();
-    Vehicle(Vehicle &vehicle);
+    // Vehicle(Vehicle &vehicle);
     // services
 public:
 
@@ -66,6 +66,8 @@ public:
     DataObject<StateOfCommandedSecondaryAir> &getCommandedSecondaryAirStatus();
 
     OxygenSystem &getOxygenSystem();
+
+    OBDCompliance &getOBDCompliance();
 };
 
 

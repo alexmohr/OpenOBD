@@ -42,7 +42,8 @@ set(CPPSRC
         src/common/conversion.h
         src/common/endian.h
         src/Config.cpp src/Config.h
-        src/OBD/data/Enumerated/StateOfCommandedSecondaryAir.h
+        src/OBD/data/BitEncoded/BankOxygenSensor.cpp
+        src/OBD/data/BitEncoded/BankOxygenSensor.h
         src/OBD/data/BitEncoded/Engine.cpp
         src/OBD/data/BitEncoded/Engine.cpp
         src/OBD/data/BitEncoded/Engine.h
@@ -50,12 +51,17 @@ set(CPPSRC
         src/OBD/data/BitEncoded/FreezeDTC.h
         src/OBD/data/BitEncoded/MonitorStatus.cpp
         src/OBD/data/BitEncoded/MonitorStatus.h
+        src/OBD/data/BitEncoded/OBDCompliance.cpp
+        src/OBD/data/BitEncoded/OBDCompliance.h
+        src/OBD/data/BitEncoded/OxygenSystem.cpp
+        src/OBD/data/BitEncoded/OxygenSystem.h
         src/OBD/data/BitEncoded/PidSupport.cpp
         src/OBD/data/BitEncoded/PidSupport.h
         src/OBD/data/CalculatedDataObject.h
         src/OBD/data/CalculatedValues.cpp
         src/OBD/data/CalculatedValues.h
         src/OBD/data/DataObject.h
+        src/OBD/data/Enumerated/StateOfCommandedSecondaryAir.h
         src/OBD/data/Enumerated/StateOfFuelSystem.h
         src/OBD/data/OBDTest.cpp
         src/OBD/data/OBDTest.h
@@ -66,8 +72,7 @@ set(CPPSRC
         src/OBD/Pid.cpp
         src/OBD/Pid.h src/Service.h
         src/Vehicle.cpp
-        src/Vehicle.h
-        src/OBD/data/BitEncoded/OxygenSystem.cpp src/OBD/data/BitEncoded/OxygenSystem.h src/OBD/data/BitEncoded/BankOxygenSensor.cpp src/OBD/data/BitEncoded/BankOxygenSensor.h)
+        src/Vehicle.h)
 
 
 add_executable(open_obd2 src/main.cpp ${CPPSRC})

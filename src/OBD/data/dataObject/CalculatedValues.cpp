@@ -157,3 +157,14 @@ unsigned short CalculatedValues::from8Divided65536Times256PlusB(float val) {
     return (unsigned short) (8192 * val);
 }
 
+
+float CalculatedValues::to256APlusBDivided4TwoComplement(unsigned short val) {
+    return getTwoComplement(val) / 4.0f;
+}
+
+unsigned short CalculatedValues::from256APlusBDivided4TwoComplement(float val) {
+    auto ival = (unsigned short) (val * 4);
+    return static_cast<unsigned short>(getTwoComplement(ival));
+}
+
+

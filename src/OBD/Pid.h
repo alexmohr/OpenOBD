@@ -64,6 +64,14 @@ enum Service1Pids {
     FuelRailOxygenSensor6 = 0x29,
     FuelRailOxygenSensor7 = 0x2A,
     FuelRailOxygenSensor8 = 0x2B,
+    CommandedEGR = 0x2C,
+    EGRError = 0x2D,
+    CommandedEvaporativePurge = 0x2E,
+    FuelTankLevelInput = 0x2F,
+    WarmUpsSinceCodesCleared = 0x30,
+    DistanceTraveledSinceCodesCleared = 0x31,
+    EvaporativePurgeSystemVaporPressure = 0x32,
+    AbsoluteBarometricPressure = 0x33,
 
 
 

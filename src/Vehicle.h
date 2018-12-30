@@ -42,6 +42,29 @@ private:
     unique_ptr<CalculatedDataObject<unsigned short, float>> fuelRailPressure;
     unique_ptr<CalculatedDataObject<unsigned short, unsigned int>> fuelRailGaugePressure;
 
+
+    /*
+
+    2C	1	Commanded EGR	0	100	%	100 255 A {\displaystyle {\tfrac {100}{255}}A}
+    2D	1	EGR Error	-100	99.2	%	100 128 A − 100 {\displaystyle {\tfrac {100}{128}}A-100}
+    2E	1	Commanded evaporative purge	0	100	%	100 255 A {\displaystyle {\tfrac {100}{255}}A}
+    2F	1	Fuel Tank Level Input	0	100	%	100 255 A {\displaystyle {\tfrac {100}{255}}A}
+    30	1	Warm-ups since codes cleared	0	255	count	A {\displaystyle A}
+    31	2	Distance traveled since codes cleared	0	65535	km	256 A + B {\displaystyle 256A+B}
+    32	2	Evap. System Vapor Pressure	-8192	8191.75	Pa	256 A + B 4 {\displaystyle {\frac {256A+B}{4}}}  (AB is two's complement signed)[1]
+    33	1	Absolute Barometric Pressure	0	255	kPa	A {\displaystyle A}
+
+     */
+
+    unique_ptr<CalculatedDataObject<byte, float>> commandedEGR;
+    unique_ptr<CalculatedDataObject<byte, float>> egrError;
+    unique_ptr<CalculatedDataObject<byte, float>> commandedEvaporativePurge;
+    unique_ptr<CalculatedDataObject<byte, float>> fuelTankLevelInput;
+    unique_ptr<DataObject<byte>> warmUpsSinceCodesCleared;
+    unique_ptr<DataObject<unsigned short>> distanceTraveledSinceCodesCleared;
+    unique_ptr<CalculatedDataObject<unsigned short, float>> evaporativePurgeSystemVaporPressure;
+    unique_ptr<DataObject<byte>> absoluteBarometricPressure;
+
     shared_ptr<map<int, DataTroubleCode>> dtcMap;
 
 
@@ -85,6 +108,23 @@ public:
     CalculatedDataObject<unsigned short, float> &getFuelRailPressure();
 
     CalculatedDataObject<unsigned short, unsigned int> &getFuelRailGaugePressure();
+
+    CalculatedDataObject<byte, float> &getCommandedEGR();
+
+    CalculatedDataObject<byte, float> &getEGRError();
+
+    CalculatedDataObject<byte, float> &getCommandedEvaporativePurge();
+
+    CalculatedDataObject<byte, float> &getFuelTankLevelInput();
+
+    DataObject<byte> &getWarmUpsSinceCodesCleared();
+
+    DataObject<unsigned short> &getDistanceTraveledSinceCodesCleared();
+
+    CalculatedDataObject<unsigned short, float> &getEvaporativePurgeSystemVaporPressure();
+
+    DataObject<byte> &getAbsoluteBarometricPressure();
+
 };
 
 

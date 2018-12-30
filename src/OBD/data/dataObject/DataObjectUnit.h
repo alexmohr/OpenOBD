@@ -67,6 +67,8 @@ const static DataObjectUnit unit_kph = DataObjectUnit("Kilometer/Hour", "kph", &
 const static DataObjectUnit unit_seconds = DataObjectUnit("Seconds", "s", &si_none);
 const static DataObjectUnit unit_percent = DataObjectUnit("Percent", "%", &si_none);
 const static DataObjectUnit unit_ratio = DataObjectUnit("Ratio", "", &si_none);
+const static DataObjectUnit unit_count = DataObjectUnit("Count", "", &si_none);
+const static DataObjectUnit unit_km = DataObjectUnit("Kilometre", "km", &si_kilo);
 
 
 #endif //OPEN_OBD2_DATAOBJECTUNIT_H

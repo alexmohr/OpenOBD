@@ -39,8 +39,45 @@ Vehicle::Vehicle(shared_ptr<map<int, DataTroubleCode>> dtcMap) {
 
     fuelRailGaugePressure = make_unique<CalculatedDataObject<unsigned short, unsigned int>>(
             A, 7, B, 0, CalculatedValues::toUShortTimes10, CalculatedValues::fromUShortTimes10,
-            unit_kPa, 0.0f, 655350);
+            unit_kPa, 0, 655350);
 
+
+    commandedEGR = make_unique<CalculatedDataObject<byte, float>>(
+            A, 7, A, 0,
+            CalculatedValues::toPercent, CalculatedValues::fromPercent,
+            unit_percent, 0.0f, 100.0f);
+
+    egrError = make_unique<CalculatedDataObject<byte, float>>(
+            A, 7, A, 0,
+            CalculatedValues::toPercent128Minus100, CalculatedValues::fromPercent128Minus100,
+            unit_percent, -100.0f, 99.2);
+
+    commandedEvaporativePurge = make_unique<CalculatedDataObject<byte, float>>(
+            A, 7, A, 0,
+            CalculatedValues::toPercent, CalculatedValues::fromPercent,
+            unit_percent, 0, 100);
+
+    fuelTankLevelInput = make_unique<CalculatedDataObject<byte, float>>(
+            A, 7, A, 0,
+            CalculatedValues::toPercent, CalculatedValues::fromPercent,
+            unit_percent, 0.0f, 100.0f);
+
+    warmUpsSinceCodesCleared = make_unique<DataObject<byte>>(
+            A, 7, A, 0,
+            unit_count, (byte) 0, (byte) 255);
+
+    distanceTraveledSinceCodesCleared = make_unique<DataObject<unsigned short>>(
+            A, 7, B, 0,
+            unit_km, 0, 65535);
+
+    evaporativePurgeSystemVaporPressure = make_unique<CalculatedDataObject<unsigned short, float>>(
+            A, 7, B, 0,
+            CalculatedValues::to256APlusBDivided4TwoComplement, CalculatedValues::from256APlusBDivided4TwoComplement,
+            unit_percent, -8192, 8191.75);
+
+    absoluteBarometricPressure = make_unique<DataObject<byte>>(
+            A, 7, A, 0,
+            unit_kPa, (byte) 0, (byte) 255);
 }
 
 Vehicle::~Vehicle() = default;
@@ -117,7 +154,37 @@ CalculatedDataObject<unsigned short, unsigned int> &Vehicle::getFuelRailGaugePre
     return *fuelRailGaugePressure;
 }
 
+CalculatedDataObject<byte, float> &Vehicle::getCommandedEGR() {
+    return *commandedEGR;
+}
 
+CalculatedDataObject<byte, float> &Vehicle::getEGRError() {
+    return *egrError;
+}
+
+CalculatedDataObject<byte, float> &Vehicle::getCommandedEvaporativePurge() {
+    return *commandedEvaporativePurge;
+}
+
+CalculatedDataObject<byte, float> &Vehicle::getFuelTankLevelInput() {
+    return *fuelTankLevelInput;
+}
+
+DataObject<byte> &Vehicle::getWarmUpsSinceCodesCleared() {
+    return *warmUpsSinceCodesCleared;
+}
+
+DataObject<unsigned short> &Vehicle::getDistanceTraveledSinceCodesCleared() {
+    return *distanceTraveledSinceCodesCleared;
+}
+
+CalculatedDataObject<unsigned short, float> &Vehicle::getEvaporativePurgeSystemVaporPressure() {
+    return *evaporativePurgeSystemVaporPressure;
+}
+
+DataObject<byte> &Vehicle::getAbsoluteBarometricPressure() {
+    return *absoluteBarometricPressure;
+}
 
 
 

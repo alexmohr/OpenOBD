@@ -1015,159 +1015,197 @@ TEST(OBDHandler, PID_24_to_0x2B_FuelRailOxygenSensor1_to_8) {
     }
 }
 
+TEST(OBDHandler, PID_2C_CommandedEGR) {
+    const auto pid = (byte) CommandedEGR;
+    vector<byte> request{(RequestServiceID), pid};
+
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
+    auto handler = doTest(request, response);
+
+    auto &vehicle = *handler->getVehicle();
+    auto &system = vehicle.getCommandedEGR();
+
+    EXPECT_FLOAT_EQ(system.getValue(), 100.0 / 255.0 * 0xca);
+
+    vector<float> values{
+            system.getDescription().getMin(),
+            system.getDescription().getMax(),
+            49.803921f};
+
+    for (auto const &val: values) {
+        system.setValue(val);
+        EXPECT_FLOAT_EQ(system.getValue(), val);
+    }
+}
+
+TEST(OBDHandler, PID_2D_EGRError) {
+    const auto pid = (byte) EGRError;
+    vector<byte> request{(RequestServiceID), pid};
+
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
+    auto handler = doTest(request, response);
+
+    auto &vehicle = *handler->getVehicle();
+    auto &system = vehicle.getEGRError();
+
+    EXPECT_FLOAT_EQ(system.getValue(), 100.0 / 128 * 0xca - 100);
+
+    vector<float> values{
+            system.getDescription().getMin(),
+            system.getDescription().getMax(),
+            -42,
+            42,
+            49.5};
+
+    for (auto const &val: values) {
+        system.setValue(val);
+        EXPECT_NEAR(system.getValue(), val, 1.0f);
+    }
+}
+
+TEST(OBDHandler, PID_2E_CommandedEvaporativePurge) {
+    const auto pid = (byte) CommandedEvaporativePurge;
+    vector<byte> request{(RequestServiceID), pid};
+
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
+    auto handler = doTest(request, response);
+
+    auto &vehicle = *handler->getVehicle();
+    auto &system = vehicle.getCommandedEvaporativePurge();
+
+    EXPECT_FLOAT_EQ(system.getValue(), 100.0 / 255.0 * 0xca);
+
+    vector<float> values{
+            system.getDescription().getMin(),
+            system.getDescription().getMax(),
+            49.803921f};
+
+    for (auto const &val: values) {
+        system.setValue(val);
+        EXPECT_FLOAT_EQ(system.getValue(), val);
+    }
+}
+
+TEST(OBDHandler, PID_2F_FuelTankLevelInput) {
+    const auto pid = (byte) FuelTankLevelInput;
+    vector<byte> request{(RequestServiceID), pid};
+
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
+    auto handler = doTest(request, response);
+
+    auto &vehicle = *handler->getVehicle();
+    auto &system = vehicle.getFuelTankLevelInput();
+
+    EXPECT_FLOAT_EQ(system.getValue(), 100.0 / 255.0 * 0xca);
+
+    vector<float> values{
+            system.getDescription().getMin(),
+            system.getDescription().getMax(),
+            49.803921f};
+
+    for (auto const &val: values) {
+        system.setValue(val);
+        EXPECT_FLOAT_EQ(system.getValue(), val);
+    }
+}
+
+TEST(OBDHandler, PID_30_WarmUpsSinceCodesCleared) {
+    const auto pid = (byte) WarmUpsSinceCodesCleared;
+    vector<byte> request{(RequestServiceID), pid};
+
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
+    auto handler = doTest(request, response);
+
+    auto &vehicle = *handler->getVehicle();
+    auto &system = vehicle.getWarmUpsSinceCodesCleared();
+
+    EXPECT_EQ(system.getValue(), (byte) 0xca);
+
+    vector<byte> values{
+            system.getDescription().getMin(),
+            system.getDescription().getMax(),
+            (byte) 49};
+
+    for (auto const &val: values) {
+        system.setValue(val);
+        EXPECT_EQ(system.getValue(), val);
+    }
+}
+
+TEST(OBDHandler, PID_31_DistanceTraveledSinceCodesCleared) {
+    const auto pid = (byte) DistanceTraveledSinceCodesCleared;
+    vector<byte> request{(RequestServiceID), pid};
+
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xca, (byte) 0xfe};
+    auto handler = doTest(request, response);
+
+    auto &vehicle = *handler->getVehicle();
+    auto &system = vehicle.getDistanceTraveledSinceCodesCleared();
+
+    EXPECT_EQ(system.getValue(), 0xcafe);
+
+    vector<unsigned short> values{
+            system.getDescription().getMin(),
+            system.getDescription().getMax(),
+            0xbabe};
+
+    for (auto const &val: values) {
+        system.setValue(val);
+        EXPECT_EQ(system.getValue(), val);
+    }
+}
+
+TEST(OBDHandler, PID_32_EvaporativePurgeSystemVaporPressure) {
+    const auto pid = (byte) EvaporativePurgeSystemVaporPressure;
+    vector<byte> request{(RequestServiceID), pid};
+
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xca, (byte) 0xfe};
+    auto handler = doTest(request, response);
+
+    auto &vehicle = *handler->getVehicle();
+    auto &system = vehicle.getEvaporativePurgeSystemVaporPressure();
+
+    unsigned short val = 0xcafe;
+
+    EXPECT_FLOAT_EQ(system.getValue(), getTwoComplement(0xcafe) / 4.0f);
+
+    vector<float> values{
+            system.getDescription().getMin(),
+            system.getDescription().getMax(),
+            -4221.0f,
+            4222.0f,
+            3963.25,
+    };
+
+    for (auto const &val: values) {
+        system.setValue(val);
+        EXPECT_FLOAT_EQ(system.getValue(), val);
+    }
+}
+
+TEST(OBDHandler, PID_33_AbsoluteBarometricPressure) {
+    const auto pid = (byte) AbsoluteBarometricPressure;
+    vector<byte> request{(RequestServiceID), pid};
+
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
+    auto handler = doTest(request, response);
+
+    auto &vehicle = *handler->getVehicle();
+    auto &system = vehicle.getAbsoluteBarometricPressure();
+
+    EXPECT_EQ(system.getValue(), (byte) 0xca);
+
+    vector<byte> values{
+            system.getDescription().getMin(),
+            system.getDescription().getMax(),
+            (byte) 49};
+
+    for (auto const &val: values) {
+        system.setValue(val);
+        EXPECT_EQ(system.getValue(), val);
+    }
+}
 
 
 
-/*
-11
-12
-13
-14
-15
-16
-17
-18
-19
-1A
-1B
-1C
-1D
-1E
-1F
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-2A
-2B
-2C
-2D
-2E
-2F
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-3A
-3B
-3C
-3D
-3E
-3F
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-4A
-4B
-4C
-4D
-4E
-4F
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-5A
-5B
-5C
-5D
-5E
-5F
-60
-61
-62
-63
-64
-65
-66
-67
-68
-69
-6A
-6B
-6C
-6D
-6E
-6F
-70
-71
-72
-73
-74
-75
-76
-77
-78
-79
-7A
-7B
-7C
-7D
-7E
-7F
-80
-81
-82
-83
-84
-85
-86
-87
-88
-89
-8A
-8B
-8C
-8D
-8E
-8F
-90
-91
-92
-93
-94
-98
-99
-9A
-9B
-9C
-9D
-9E
-9F
-A0
-A1
-A2
-A3
-A4
-A5
-A6
-C0
-C3
-C4
-*/
 #pragma clang diagnostic pop

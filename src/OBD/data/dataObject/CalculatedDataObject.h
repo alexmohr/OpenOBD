@@ -47,6 +47,11 @@ public:
     }
 
     void setValue(T value) {
+        if (value < description->getMin() || value > description->getMax()) {
+            string msg = "Value: " + to_string((long) value) + " is out of bounds.";
+            throw std::invalid_argument(msg.c_str());
+        }
+
         dataObj->setValue(toFrameFunction(value));
     }
 

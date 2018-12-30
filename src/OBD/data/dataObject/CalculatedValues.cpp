@@ -139,3 +139,21 @@ unsigned short CalculatedValues::fromUShortTimes10(unsigned int val) {
     return (unsigned short)(val/10);
 }
 
+
+float CalculatedValues::to2Divided65536Times256PlusB(unsigned short val) {
+    return 2.0f / 65536 * (val);
+}
+
+
+unsigned short CalculatedValues::from2Divided65536Times256PlusB(float val) {
+    return (unsigned short) (32768 * val);
+}
+
+float CalculatedValues::to8Divided65536Times256PlusB(unsigned short val) {
+    return 8.0f / 65536 * (val);
+}
+
+unsigned short CalculatedValues::from8Divided65536Times256PlusB(float val) {
+    return (unsigned short) (8192 * val);
+}
+

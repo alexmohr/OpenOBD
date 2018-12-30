@@ -51,6 +51,14 @@ public:
     static unsigned int toUShortTimes10(unsigned short val);
 
     static unsigned short fromUShortTimes10(unsigned int val);
+
+    static float to2Divided65536Times256PlusB(unsigned short val);
+
+    static unsigned short from2Divided65536Times256PlusB(float val);
+
+    static float to8Divided65536Times256PlusB(unsigned short val);
+
+    static unsigned short from8Divided65536Times256PlusB(float val);
 };
 
 

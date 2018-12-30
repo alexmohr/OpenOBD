@@ -9,11 +9,19 @@
 
 class FuelRailOxygenSensor {
 private:
-    unique_ptr<CalculatedDataObject<byte, float>> fuelAirEquivalenceRatio;
-    unique_ptr<CalculatedDataObject<byte, float>> voltage;
+    unique_ptr<CalculatedDataObject<unsigned short, float>> fuelAirEquivalenceRatio;
+    unique_ptr<CalculatedDataObject<unsigned short, float>> voltage;
 
 public:
-    explicit FuelRailOxygenSensor();
+    FuelRailOxygenSensor();
+
+    CalculatedDataObject<unsigned short, float> &getFuelAirEquivalenceRatio();
+
+    CalculatedDataObject<unsigned short, float> &getVoltage();
+
+    unsigned int toFrame(unsigned int &data);
+
+    void fromFrame(byte *data, int size);
 };
 
 

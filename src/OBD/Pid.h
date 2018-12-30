@@ -50,10 +50,22 @@ enum Service1Pids {
     BankOxygenSensor7 = 0x1A,
     BankOxygenSensor8 = 0x1B,
     OBDStandardsVehicleConformsTo = 0x1C,
+    OxygenSensorsPresent4Banks = 0x1D,
+    AuxiliaryInputStatus = 0x1E,
     RunTimeSinceEngineStart = 0x1F,
     DistanceTraveledWithMilOn = 0x21,
     FuelRailPressure = 0x22,
     FuelRailGaugePressure = 0x23,
+    FuelRailOxygenSensor1 = 0x24,
+    FuelRailOxygenSensor2 = 0x25,
+    FuelRailOxygenSensor3 = 0x26,
+    FuelRailOxygenSensor4 = 0x27,
+    FuelRailOxygenSensor5 = 0x28,
+    FuelRailOxygenSensor6 = 0x29,
+    FuelRailOxygenSensor7 = 0x2A,
+    FuelRailOxygenSensor8 = 0x2B,
+
+
 
 };
 

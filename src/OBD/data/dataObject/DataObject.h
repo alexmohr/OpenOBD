@@ -116,7 +116,8 @@ public:
     void setValue(T val) {
         if (nullptr != this->description) {
             if (val > this->description->getMax() || val < this->description->getMin()) {
-                throw std::invalid_argument("Argument is out of bounds.");
+                string msg = "Value: " + to_string((long) val) + " is out of bounds.";
+                throw std::invalid_argument(msg.c_str());
             }
         }
         value = val;

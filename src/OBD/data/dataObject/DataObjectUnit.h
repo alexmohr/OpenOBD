@@ -64,8 +64,9 @@ const static DataObjectUnit unit_rpm = DataObjectUnit("Revolutions per Minute", 
 const static DataObjectUnit unit_degree = DataObjectUnit("Degree", "°", &si_none);
 const static DataObjectUnit unit_gramSec = DataObjectUnit("Grams/Seconds", "g/s", &si_none);
 const static DataObjectUnit unit_kph = DataObjectUnit("Kilometer/Hour", "kph", &si_none);
-
+const static DataObjectUnit unit_seconds = DataObjectUnit("Seconds", "s", &si_none);
 const static DataObjectUnit unit_percent = DataObjectUnit("Percent", "%", &si_none);
+const static DataObjectUnit unit_ratio = DataObjectUnit("Ratio", "", &si_none);
 
 
 #endif //OPEN_OBD2_DATAOBJECTUNIT_H

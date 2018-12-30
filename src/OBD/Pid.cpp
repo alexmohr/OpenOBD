@@ -138,7 +138,7 @@ void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
             vehicle->getCommandedSecondaryAirStatus().fromFrame(data, size);
             break;
         case OxygenSensorsPresent:
-            vehicle->getOxygenSystem().bankSensorsPresentFromFrame(data, size);
+            vehicle->getOxygenSystem().getBankSensorsPresentFromFrame(data, size);
             break;
         case BankOxygenSensor1:
             vehicle->getOxygenSystem().getBankOxygenSensor1().fromFrame(data, size);
@@ -167,6 +167,12 @@ void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
         case OBDStandardsVehicleConformsTo:
             vehicle->getOBDCompliance().fromFrame(data, size);
             break;
+        case OxygenSensorsPresent4Banks:
+            vehicle->getOxygenSystem().getBankSensorsPresentIn4BanksFromFrame(data, size);
+            break;
+        case AuxiliaryInputStatus:
+            vehicle->getAuxiliaryInputStatus().fromFrame(data, size);
+            break;
         case RunTimeSinceEngineStart:
             vehicle->getRunTimeSinceEngineStart().fromFrame(data, size);
             break;
@@ -178,6 +184,30 @@ void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
             break;
         case FuelRailGaugePressure:
             vehicle->getFuelRailGaugePressure().fromFrame(data, size);
+            break;
+        case FuelRailOxygenSensor1:
+            vehicle->getOxygenSystem().getFuelRailOxygenSensor1().fromFrame(data, size);
+            break;
+        case FuelRailOxygenSensor2:
+            vehicle->getOxygenSystem().getFuelRailOxygenSensor2().fromFrame(data, size);
+            break;
+        case FuelRailOxygenSensor3:
+            vehicle->getOxygenSystem().getFuelRailOxygenSensor3().fromFrame(data, size);
+            break;
+        case FuelRailOxygenSensor4:
+            vehicle->getOxygenSystem().getFuelRailOxygenSensor4().fromFrame(data, size);
+            break;
+        case FuelRailOxygenSensor5:
+            vehicle->getOxygenSystem().getFuelRailOxygenSensor5().fromFrame(data, size);
+            break;
+        case FuelRailOxygenSensor6:
+            vehicle->getOxygenSystem().getFuelRailOxygenSensor6().fromFrame(data, size);
+            break;
+        case FuelRailOxygenSensor7:
+            vehicle->getOxygenSystem().getFuelRailOxygenSensor7().fromFrame(data, size);
+            break;
+        case FuelRailOxygenSensor8:
+            vehicle->getOxygenSystem().getFuelRailOxygenSensor8().fromFrame(data, size);
             break;
     }
 }
@@ -263,7 +293,7 @@ byte* Pid::readService1_2(Vehicle *vehicle) {
             data = vehicle->getCommandedSecondaryAirStatus().toFrame(data);
             break;
         case OxygenSensorsPresent:
-            data = vehicle->getOxygenSystem().bankSensorsPresentToFrame(data);
+            data = vehicle->getOxygenSystem().getBankSensorsPresentToFrame(data);
             break;
         case BankOxygenSensor1:
             data = vehicle->getOxygenSystem().getBankOxygenSensor1().toFrame(data);
@@ -292,6 +322,12 @@ byte* Pid::readService1_2(Vehicle *vehicle) {
         case OBDStandardsVehicleConformsTo:
             data = vehicle->getOBDCompliance().toFrame(data);
             break;
+        case OxygenSensorsPresent4Banks:
+            data = vehicle->getOxygenSystem().getBankSensorsPresentIn4BanksToFrame(data);
+            break;
+        case AuxiliaryInputStatus:
+            data = vehicle->getAuxiliaryInputStatus().toFrame(data);
+            break;
         case RunTimeSinceEngineStart:
             data = vehicle->getRunTimeSinceEngineStart().toFrame(data);
             break;
@@ -303,6 +339,30 @@ byte* Pid::readService1_2(Vehicle *vehicle) {
             break;
         case FuelRailGaugePressure:
             data = vehicle->getFuelRailGaugePressure().toFrame(data);
+            break;
+        case FuelRailOxygenSensor1:
+            data = vehicle->getOxygenSystem().getFuelRailOxygenSensor1().toFrame(data);
+            break;
+        case FuelRailOxygenSensor2:
+            data = vehicle->getOxygenSystem().getFuelRailOxygenSensor2().toFrame(data);
+            break;
+        case FuelRailOxygenSensor3:
+            data = vehicle->getOxygenSystem().getFuelRailOxygenSensor3().toFrame(data);
+            break;
+        case FuelRailOxygenSensor4:
+            data = vehicle->getOxygenSystem().getFuelRailOxygenSensor4().toFrame(data);
+            break;
+        case FuelRailOxygenSensor5:
+            data = vehicle->getOxygenSystem().getFuelRailOxygenSensor5().toFrame(data);
+            break;
+        case FuelRailOxygenSensor6:
+            data = vehicle->getOxygenSystem().getFuelRailOxygenSensor6().toFrame(data);
+            break;
+        case FuelRailOxygenSensor7:
+            data = vehicle->getOxygenSystem().getFuelRailOxygenSensor7().toFrame(data);
+            break;
+        case FuelRailOxygenSensor8:
+            data = vehicle->getOxygenSystem().getFuelRailOxygenSensor8().toFrame(data);
             break;
     }
 

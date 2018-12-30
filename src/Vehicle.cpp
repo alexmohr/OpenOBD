@@ -29,7 +29,7 @@ Vehicle::Vehicle(shared_ptr<map<int, DataTroubleCode>> dtcMap) {
     obdCompliance = make_unique<OBDCompliance>();
 
     auxiliaryInputStatus = make_unique<DataObject<bool>>(A, 0);
-    runTimeSinceEngineStart = make_unique<DataObject<unsigned short>>(A, 7, B, 0);
+    runTimeSinceEngineStart = make_unique<DataObject<unsigned short>>(A, 7, B, 0, unit_seconds, 0, 65535);
 
     distanceTraveledWithMilOn = make_unique<DataObject<unsigned short>>(A, 7, B, 0);
 

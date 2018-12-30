@@ -57,13 +57,11 @@ set(CPPSRC
         src/OBD/data/BitEncoded/OxygenSystem.h
         src/OBD/data/BitEncoded/PidSupport.cpp
         src/OBD/data/BitEncoded/PidSupport.h
-        src/OBD/data/CalculatedDataObject.h
-        src/OBD/data/CalculatedValues.cpp
-        src/OBD/data/CalculatedValues.h
-        src/OBD/data/DataObjectDescription.cpp
-        src/OBD/data/DataObjectDescription.cpp
-        src/OBD/data/DataObjectDescription.h
-        src/OBD/data/DataObject.h
+        src/OBD/data/dataObject/CalculatedDataObject.h
+        src/OBD/data/dataObject/CalculatedValues.cpp
+        src/OBD/data/dataObject/CalculatedValues.h
+        src/OBD/data/dataObject/DataObjectDescription.h
+        src/OBD/data/dataObject/DataObject.h
         src/OBD/data/Enumerated/StateOfCommandedSecondaryAir.h
         src/OBD/data/Enumerated/StateOfFuelSystem.h
         src/OBD/data/OBDTest.cpp
@@ -76,7 +74,7 @@ set(CPPSRC
         src/OBD/Pid.h
         src/Service.h
         src/Vehicle.cpp
-        src/Vehicle.h)
+        src/Vehicle.h src/OBD/data/BitEncoded/FuelRailOxygenSensor.cpp src/OBD/data/BitEncoded/FuelRailOxygenSensor.h src/OBD/data/dataObject/DataObjectUnit.h src/OBD/data/dataObject/DataObjectDescriptionText.h src/OBD/data/dataObject/DataObjectDescriptionText.cpp)
 
 
 add_executable(open_obd2 src/main.cpp ${CPPSRC})

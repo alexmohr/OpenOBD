@@ -5,7 +5,7 @@
 #ifndef OPEN_OBD2_OXYGENSYSTEM_H
 #define OPEN_OBD2_OXYGENSYSTEM_H
 
-#include "../DataObject.h"
+#include "../dataObject/DataObject.h"
 #include "BankOxygenSensor.h"
 
 class OxygenSystem {

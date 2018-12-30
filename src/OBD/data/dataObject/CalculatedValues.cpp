@@ -4,7 +4,7 @@
 
 #include "CalculatedValues.h"
 #include "DataObject.h"
-#include "../../common/conversion.h"
+#include "../../../common/conversion.h"
 
 float CalculatedValues::toPercent(byte val) {
     return (float) (100.0 / 255.0 * (int) val);

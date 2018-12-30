@@ -6,7 +6,7 @@
 #define OPEN_OBD2_OBDTEST_H
 
 #include <string>
-#include "DataObject.h"
+#include "dataObject/DataObject.h"
 
 using namespace std;
 

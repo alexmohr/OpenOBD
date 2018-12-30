@@ -10,14 +10,16 @@
 OBDTest::OBDTest(string name, ByteIndex availableByte, unsigned int availableIndex, ByteIndex incompleteByte,
                  unsigned int incompleteIndex) {
     this->name = std::move(name);
-    this->available = make_unique<DataObject<bool>>(availableByte, availableIndex);
-    this->incomplete = make_unique<DataObject<bool>>(incompleteByte, incompleteIndex);
+    string description = DataObjectDescriptionText::OBDTest + this->name;
+    this->available = make_unique<DataObject<bool>>(availableByte, availableIndex,
+                                                    description + DataObjectDescriptionText::OBDTestAvailable);
+    this->incomplete = make_unique<DataObject<bool>>(incompleteByte, incompleteIndex,
+                                                     DataObjectDescriptionText::OBDTestIncomplete);
     available->setValue(false);
 }
 
 
-OBDTest::~OBDTest() {
-}
+OBDTest::~OBDTest() = default;
 
 
 void OBDTest::fromFrame(byte *frame, int size) {

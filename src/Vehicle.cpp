@@ -9,7 +9,7 @@
 Vehicle::Vehicle(shared_ptr<map<int, DataTroubleCode>> dtcMap) {
     this->dtcMap = dtcMap;
     engine = make_shared<Engine>();
-    monitorStatus = make_unique<MonitorStatus>(engine);
+    monitorStatus = make_unique<MonitorStatus>(&engine);
     pidSupport = make_unique<PidSupport>();
     freezeDTC = make_unique<FreezeDTC>(dtcMap);
 
@@ -19,10 +19,11 @@ Vehicle::Vehicle(shared_ptr<map<int, DataTroubleCode>> dtcMap) {
 
     commandedSecondaryAirStatus = make_unique<DataObject<StateOfCommandedSecondaryAir>>(A, 7, A, 0);
 
-    speed = make_unique<DataObject<byte>>(A, 7, A, 0);
+    speed = make_unique<DataObject<byte>>(A, 7, A, 0, unit_kph, (byte) 0, (byte) 255);
 
     throttlePosition = make_unique<CalculatedDataObject<byte, float>>(
-            A, 7, A, 0, CalculatedValues::toPercent, CalculatedValues::fromPercent);
+            A, 7, A, 0, CalculatedValues::toPercent, CalculatedValues::fromPercent,
+            unit_percent, 0.0f, 100.0);
 
     oxygenSystem = make_unique<OxygenSystem>();
     obdCompliance = make_unique<OBDCompliance>();
@@ -33,10 +34,12 @@ Vehicle::Vehicle(shared_ptr<map<int, DataTroubleCode>> dtcMap) {
     distanceTraveledWithMilOn = make_unique<DataObject<unsigned short>>(A, 7, B, 0);
 
     fuelRailPressure = make_unique<CalculatedDataObject<unsigned short, float>>(
-            A, 7, B, 0, CalculatedValues::to0_079_Times256APlusB, CalculatedValues::from0_079_Times256APlusB);
+            A, 7, B, 0, CalculatedValues::to0_079_Times256APlusB, CalculatedValues::from0_079_Times256APlusB,
+            unit_kPa, 0.0f, 5177.265f);
 
     fuelRailGaugePressure = make_unique<CalculatedDataObject<unsigned short, unsigned int>>(
-            A, 7, B, 0, CalculatedValues::toUShortTimes10, CalculatedValues::fromUShortTimes10);
+            A, 7, B, 0, CalculatedValues::toUShortTimes10, CalculatedValues::fromUShortTimes10,
+            unit_kPa, 0.0f, 655350);
 
 }
 

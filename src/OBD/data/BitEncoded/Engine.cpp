@@ -19,43 +19,56 @@ Engine::Engine() {
 
 
     calculatedLoad = make_unique<CalculatedDataObject<byte, float>>(
-            A, 7, A, 0, CalculatedValues::toPercent, CalculatedValues::fromPercent);
+            A, 7, A, 0, CalculatedValues::toPercent, CalculatedValues::fromPercent,
+            unit_percent, 0, 100);
 
     coolantTemperature = make_unique<CalculatedDataObject<byte, short>>(
-            A, 7, A, 0, CalculatedValues::toAMinus40, CalculatedValues::fromAMinus40);
+            A, 7, A, 0, CalculatedValues::toAMinus40, CalculatedValues::fromAMinus40,
+            unit_celsius, -40, 215);
 
 
     // Fuel banks
     shortTermFuelTrimBank1 = make_unique<CalculatedDataObject<byte, float>>(
-            A, 7, A, 0, CalculatedValues::toPercent128Minus100, CalculatedValues::fromPercent128Minus100);
+            A, 7, A, 0, CalculatedValues::toPercent128Minus100, CalculatedValues::fromPercent128Minus100, unit_percent,
+            -100, 99.2);
 
     longTermFuelTrimBank1 = make_unique<CalculatedDataObject<byte, float>>(
-            A, 7, A, 0, CalculatedValues::toPercent128Minus100, CalculatedValues::fromPercent128Minus100);
+            A, 7, A, 0, CalculatedValues::toPercent128Minus100, CalculatedValues::fromPercent128Minus100, unit_percent,
+            -100, 99.2);
 
     shortTermFuelTrimBank2 = make_unique<CalculatedDataObject<byte, float>>(
-            A, 7, A, 0, CalculatedValues::toPercent128Minus100, CalculatedValues::fromPercent128Minus100);
+            A, 7, A, 0, CalculatedValues::toPercent128Minus100, CalculatedValues::fromPercent128Minus100, unit_percent,
+            -100, 99.2);
 
     longTermFuelTrimBank2 = make_unique<CalculatedDataObject<byte, float>>(
-            A, 7, A, 0, CalculatedValues::toPercent128Minus100, CalculatedValues::fromPercent128Minus100);
+            A, 7, A, 0, CalculatedValues::toPercent128Minus100, CalculatedValues::fromPercent128Minus100, unit_percent,
+            -100, 99.2);
 
 
     fuelPressure = make_unique<CalculatedDataObject<byte, unsigned short>>(
-            A, 7, A, 0, CalculatedValues::to3A, CalculatedValues::from3A);
+            A, 7, A, 0, CalculatedValues::to3A, CalculatedValues::from3A,
+            unit_kPa, 0, 765);
 
-    intakeManifoldAbsolutePressure = make_unique<DataObject<byte>>(A, 7, A, 0);
+    intakeManifoldAbsolutePressure = make_unique<DataObject<byte>>(
+            A, 7, A, 0,
+            unit_kPa, (byte) 0, (byte) 255);
 
     engineRPM = make_unique<CalculatedDataObject<unsigned short, float>>(
-            A, 7, B, 0, CalculatedValues::to256APlusBDivided4, CalculatedValues::from256APlusBDivided4);
+            A, 7, B, 0, CalculatedValues::to256APlusBDivided4, CalculatedValues::from256APlusBDivided4,
+            unit_rpm, 0, 16383.75);
 
 
     timingAdvance = make_unique<CalculatedDataObject<byte, float>>(
-            A, 7, A, 0, CalculatedValues::toADivided2Minus64, CalculatedValues::fromADivided2Minus64);
+            A, 7, A, 0, CalculatedValues::toADivided2Minus64, CalculatedValues::fromADivided2Minus64,
+            unit_degree, -64, 63.5);
 
     intakeAirTemperature = make_unique<CalculatedDataObject<byte, short>>(
-            A, 7, A, 0, CalculatedValues::toAMinus40, CalculatedValues::fromAMinus40);
+            A, 7, A, 0, CalculatedValues::toAMinus40, CalculatedValues::fromAMinus40,
+            unit_celsius, -40, 215);
 
     mafAirFlowRate = make_unique<CalculatedDataObject<unsigned short, float>>(
-            A, 7, B, 0, CalculatedValues::to256APlusBDivided100, CalculatedValues::from256APlusBDivided100);
+            A, 7, B, 0, CalculatedValues::to256APlusBDivided100, CalculatedValues::from256APlusBDivided100,
+            unit_gramSec, 0, 655.35);
 }
 
 void Engine::fromFrameForMonitoringSystem(byte *frame, int size) {

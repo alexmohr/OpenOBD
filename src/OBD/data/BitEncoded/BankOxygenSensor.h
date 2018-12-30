@@ -5,7 +5,7 @@
 #ifndef OPEN_OBD2_BANKOXYGENSENSOR_H
 #define OPEN_OBD2_BANKOXYGENSENSOR_H
 
-#include "../CalculatedDataObject.h"
+#include "../dataObject/CalculatedDataObject.h"
 
 class BankOxygenSensor {
 private:

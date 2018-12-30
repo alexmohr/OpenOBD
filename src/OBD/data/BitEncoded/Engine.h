@@ -9,7 +9,7 @@
 
 #include <string>
 #include "../OBDTest.h"
-#include "../CalculatedDataObject.h"
+#include "../dataObject/CalculatedDataObject.h"
 
 using namespace std;
 
@@ -51,7 +51,7 @@ private:
 
 
 public:
-    Engine();
+    explicit Engine();
 
     ~Engine() = default;
 

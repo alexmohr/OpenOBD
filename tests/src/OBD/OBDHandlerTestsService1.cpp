@@ -874,8 +874,6 @@ TEST(OBDHandler, PID_23_FuelRailGaugePressure) {
     }
 }
 
-// = 0x23,
-
 
 
 

@@ -6,7 +6,7 @@
 
 #include "gtest/gtest.h"
 #include <vector>
-#include "../../../../src/OBD/data/DataObject.h"
+#include "../../../../src/OBD/data/dataObject/DataObject.h"
 #include "../../../../src/common/conversion.h"
 
 using namespace std;

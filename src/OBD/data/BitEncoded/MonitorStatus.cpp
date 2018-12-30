@@ -1,8 +1,26 @@
+#include <utility>
+
 //
 // Created by me on 13/12/18.
 //
 
 #include "MonitorStatus.h"
+
+
+MonitorStatus::MonitorStatus(shared_ptr<Engine> *engine) {
+    this->engine = *engine;
+
+    mil = make_unique<DataObject<bool>>(A, 7, DataObjectDescriptionText::MonitorStatusMIL);
+
+    dtcCount = make_unique<DataObject<unsigned short>>(A, 6, A, 0, unit_none, 0, 128,
+                                                       DataObjectDescriptionText::MonitorStatusDTC);
+
+    components = make_unique<OBDTest>("Components", B, 2, B, 6);
+    fuelSystem = make_unique<OBDTest>("FuelSystem", B, 1, B, 5);
+    misfire = make_unique<OBDTest>("Misfire", B, 0, B, 4);
+
+}
+
 
 unsigned int MonitorStatus::toFrame() {
     unsigned int data = 0;
@@ -14,11 +32,6 @@ unsigned int MonitorStatus::toFrame() {
     data |= fuelSystem->toFrame(data);
     data |= engine->toFrameForMonitoringSystem(data);
     return data;
-}
-
-MonitorStatus::MonitorStatus(shared_ptr<Engine> engine) {
-    this->engine = engine;
-
 }
 
 void MonitorStatus::fromFrame(byte *frame, int size) {

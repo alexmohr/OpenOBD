@@ -1,5 +1,5 @@
 # OpenOBD
-[![Build Status](https://travis-ci.com/alexmohr/OpenOBD.svg?branch=master)](https://travis-ci.com/alexmohr/OpenOBD)
+[![Build Status](https://travis-ci.org/alexmohr/OpenOBD.svg?branch=master)](https://travis-ci.com/alexmohr/OpenOBD)
 
 This is an open implementation of the OBD protocol. It utilizes socket can for communication on Linux ( windows not supported at the moment ).
 

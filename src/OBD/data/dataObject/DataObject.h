@@ -43,7 +43,7 @@ private:
     unsigned int stopIndex;
     T value;
     bool isBool = false;
-    unique_ptr<DataObjectDescription> description;
+    unique_ptr<DataObjectDescription<T>> description;
 
     int getBitIndexRead(int byteVal, int idx, int sByte) const {
         if (sByte == A) {
@@ -62,26 +62,44 @@ private:
     }
 
 public:
-    DataObject(ByteIndex startByte, unsigned int startIndex) :
-            DataObject(startByte, startIndex, startByte, startIndex) {}
+    // boolean C'tor
+    DataObject(ByteIndex startByte, unsigned int startIndex, const string description) :
+            DataObject(startByte, startIndex, startByte, startIndex, unit_bool, false, true, description) {
+    }
 
-    DataObject(ByteIndex startByte, unsigned int startIndex, unique_ptr<DataObjectDescription> description) :
-            DataObject(startByte, startIndex, startByte, startIndex, description) {}
+    // boolean C'tor
+    DataObject(ByteIndex startByte, unsigned int startIndex, const DataObjectUnit &unit, const string description) :
+            DataObject(startByte, startIndex, startByte, startIndex, unit, false, true, description) {
 
-    DataObject(ByteIndex startByte, unsigned int startIndex,
-               ByteIndex stopByte, unsigned stopIndex, unique_ptr<DataObjectDescription> description) :
-            DataObject(startByte, startIndex, startIndex, stopIndex) {
-        this->description = move(description);
     }
 
     DataObject(ByteIndex startByte, unsigned int startIndex,
-               ByteIndex stopByte, unsigned stopIndex) {
+               ByteIndex stopByte, unsigned int stopIndex, const DataObjectUnit &unit, T min, T max) :
+            DataObject(startByte, startIndex, stopByte, stopIndex) {
+        this->description = make_unique<DataObjectDescription<T>>(unit, min, max, "");
+    }
+
+    DataObject(ByteIndex startByte, unsigned int startIndex,
+               ByteIndex stopByte, unsigned int stopIndex, const DataObjectUnit &unit, T min, T max,
+               const string &description) :
+            DataObject(startByte, startIndex, stopByte, stopIndex) {
+        this->description = make_unique<DataObjectDescription<T>>(unit, min, max, description);
+    }
+
+    // c'tors without description
+public:
+    // boolean C'tor
+    DataObject(ByteIndex startByte, unsigned int startIndex) :
+            DataObject(startByte, startIndex, startByte, startIndex) {}
+
+    DataObject(ByteIndex startByte, unsigned int startIndex,
+               ByteIndex stopByte, unsigned int stopIndex) {
         this->startByte = startByte;
         this->startIndex = startIndex;
         this->stopByte= stopByte;
         int offset = (stopByte - startByte + 1);
         this->stopIndex = stopIndex;
-        this->description = make_unique<DataObjectDescription>("", "");
+        this->description = nullptr;
 
         if (startByte == stopByte && stopIndex == startIndex) {
             isBool = true;
@@ -90,12 +108,17 @@ public:
         value = static_cast<T>(0);
     }
 
-
+public:
     T getValue() {
         return value;
     }
 
     void setValue(T val) {
+        if (nullptr != this->description) {
+            if (val > this->description->getMax() || val < this->description->getMin()) {
+                throw std::invalid_argument("Argument is out of bounds.");
+            }
+        }
         value = val;
     }
 
@@ -159,9 +182,12 @@ public:
 
         return 1;
     }
+//
+//    void setDescription(unique_ptr<DataObjectDescription<T>> description) {
+//        this->description = move(description);
+//    }
 
-
-    DataObjectDescription &getDescription() {
+    DataObjectDescription<T> &getDescription() {
         return *description;
     }
 

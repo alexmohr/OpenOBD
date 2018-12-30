@@ -5,7 +5,7 @@
 #ifndef OPEN_OBD2_OBDCOMPLIANCE_H
 #define OPEN_OBD2_OBDCOMPLIANCE_H
 
-#include"../DataObject.h"
+#include"../dataObject/DataObject.h"
 
 class OBDCompliance {
 private:

@@ -12,7 +12,7 @@
 #include "OBD/data/BitEncoded/PidSupport.h"
 #include "OBD/data/Enumerated/StateOfFuelSystem.h"
 #include "OBD/data/Enumerated/StateOfCommandedSecondaryAir.h"
-#include "OBD/data/BitEncoded/OxygenSystem.h"
+#include "OBD/data/BitEncoded/Oxygen/OxygenSystem.h"
 #include "OBD/data/BitEncoded/OBDCompliance.h"
 
 

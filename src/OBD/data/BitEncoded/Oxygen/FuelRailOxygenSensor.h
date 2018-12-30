@@ -5,7 +5,7 @@
 #ifndef OPEN_OBD2_FUELRAILOXYGENSENSOR_H
 #define OPEN_OBD2_FUELRAILOXYGENSENSOR_H
 
-#include "../dataObject/CalculatedDataObject.h"
+#include "../../dataObject/CalculatedDataObject.h"
 
 class FuelRailOxygenSensor {
 private:

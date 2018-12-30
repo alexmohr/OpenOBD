@@ -16,7 +16,7 @@ BankOxygenSensor::BankOxygenSensor() {
 
     shortTermFuelTrim = make_unique<CalculatedDataObject<byte, float>>(
             B, 7, B, 0, CalculatedValues::toPercent128Minus100, CalculatedValues::fromPercent128Minus100,
-            unit_percent, 0.0f, 99.2f, DataObjectDescriptionText::BankOxygenSensorShortFuelTrim);
+            unit_percent, -100.0f, 99.2f, DataObjectDescriptionText::BankOxygenSensorShortFuelTrim);
 }
 
 

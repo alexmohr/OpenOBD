@@ -209,6 +209,30 @@ void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
         case FuelRailOxygenSensor8:
             vehicle->getOxygenSystem().getFuelRailOxygenSensor8().fromFrame(data, size);
             break;
+        case CommandedEGR:
+            vehicle->getCommandedEGR().fromFrame(data, size);
+            break;
+        case EGRError:
+            vehicle->getEGRError().fromFrame(data, size);
+            break;
+        case CommandedEvaporativePurge:
+            vehicle->getCommandedEvaporativePurge().fromFrame(data, size);
+            break;
+        case FuelTankLevelInput:
+            vehicle->getFuelTankLevelInput().fromFrame(data, size);
+            break;
+        case WarmUpsSinceCodesCleared:
+            vehicle->getWarmUpsSinceCodesCleared().fromFrame(data, size);
+            break;
+        case DistanceTraveledSinceCodesCleared:
+            vehicle->getDistanceTraveledSinceCodesCleared().fromFrame(data, size);
+            break;
+        case EvaporativePurgeSystemVaporPressure:
+            vehicle->getEvaporativePurgeSystemVaporPressure().fromFrame(data, size);
+            break;
+        case AbsoluteBarometricPressure:
+            vehicle->getAbsoluteBarometricPressure().fromFrame(data, size);
+            break;
     }
 }
 
@@ -363,6 +387,30 @@ byte* Pid::readService1_2(Vehicle *vehicle) {
             break;
         case FuelRailOxygenSensor8:
             data = vehicle->getOxygenSystem().getFuelRailOxygenSensor8().toFrame(data);
+            break;
+        case CommandedEGR:
+            data = vehicle->getCommandedEGR().toFrame(data);
+            break;
+        case EGRError:
+            data = vehicle->getEGRError().toFrame(data);
+            break;
+        case CommandedEvaporativePurge:
+            data = vehicle->getCommandedEvaporativePurge().toFrame(data);
+            break;
+        case FuelTankLevelInput:
+            data = vehicle->getFuelTankLevelInput().toFrame(data);
+            break;
+        case WarmUpsSinceCodesCleared:
+            data = vehicle->getWarmUpsSinceCodesCleared().toFrame(data);
+            break;
+        case DistanceTraveledSinceCodesCleared:
+            data = vehicle->getDistanceTraveledSinceCodesCleared().toFrame(data);
+            break;
+        case EvaporativePurgeSystemVaporPressure:
+            data = vehicle->getEvaporativePurgeSystemVaporPressure().toFrame(data);
+            break;
+        case AbsoluteBarometricPressure:
+            data = vehicle->getAbsoluteBarometricPressure().toFrame(data);
             break;
     }
 

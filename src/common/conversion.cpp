@@ -27,3 +27,13 @@ byte *uintToByteArray(unsigned int data) {
     return retVal;
 }
 
+int getTwoComplement(unsigned short val) {
+    /*
+     * if first bit is 1, it is a negative number with all other bits in 2's complement
+     * extract negative part by subtracting off the 0x8000
+     * otherwise the lower bits are just the positive integer value
+     */
+    return (0x8000 & val ? (int) (0x7FFF & val) - 0x8000 : val);
+}
+
+

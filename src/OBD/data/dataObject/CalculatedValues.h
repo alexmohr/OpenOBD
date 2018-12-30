@@ -43,7 +43,6 @@ public:
 
     static byte fromADivided200(float val);
 
-
     static float to0_079_Times256APlusB(unsigned short val);
 
     static unsigned short from0_079_Times256APlusB(float val);
@@ -59,6 +58,11 @@ public:
     static float to8Divided65536Times256PlusB(unsigned short val);
 
     static unsigned short from8Divided65536Times256PlusB(float val);
+
+    static float to256APlusBDivided4TwoComplement(unsigned short val);
+
+    static unsigned short from256APlusBDivided4TwoComplement(float val);
+
 };
 
 

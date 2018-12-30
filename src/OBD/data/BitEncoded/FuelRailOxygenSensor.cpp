@@ -6,8 +6,8 @@
 
 FuelRailOxygenSensor::FuelRailOxygenSensor() {
     fuelAirEquivalenceRatio = make_unique<CalculatedDataObject<unsigned short, float>>(
-            A, 7, B, 0, CalculatedValues::to2Divided65536Times256PlusB,
-            CalculatedValues::from2Divided65536Times256PlusB,
+            A, 7, B, 0,
+            CalculatedValues::to2Divided65536Times256PlusB, CalculatedValues::from2Divided65536Times256PlusB,
             unit_ratio, 0.0f, 1.9999f);
 
     voltage = make_unique<CalculatedDataObject<unsigned short, float>>(

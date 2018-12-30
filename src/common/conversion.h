@@ -8,6 +8,9 @@
 
 #include <cstddef>
 
+#include <type_traits>
+
+
 using namespace std;
 
 unsigned short byteArrayToUShort(byte *data);
@@ -15,5 +18,7 @@ unsigned short byteArrayToUShort(byte *data);
 byte *ushortToByteArray(unsigned short data);
 
 byte *uintToByteArray(unsigned int data);
+
+int getTwoComplement(unsigned short val);
 
 #endif //OPEN_OBD2_CONVERSION_H

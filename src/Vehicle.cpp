@@ -9,7 +9,10 @@
 Vehicle::Vehicle(shared_ptr<map<int, DataTroubleCode>> dtcMap) {
     this->dtcMap = dtcMap;
     engine = make_shared<Engine>();
-    monitorStatus = make_unique<MonitorStatus>(&engine);
+    monitorStatusSinceDTCsCleared = make_unique<MonitorStatus>(&engine);
+    monitorStatusThisDriveCycle = make_unique<MonitorStatus>(&engine);
+
+
     pidSupport = make_unique<PidSupport>();
     freezeDTC = make_unique<FreezeDTC>(dtcMap);
 
@@ -90,10 +93,13 @@ Vehicle::~Vehicle() = default;
 //}
 
 
-MonitorStatus &Vehicle::getMonitorStatus() {
-    return *monitorStatus;
+MonitorStatus &Vehicle::getMonitorStatusSinceDTCsCleared() {
+    return *monitorStatusSinceDTCsCleared;
 }
 
+MonitorStatus &Vehicle::getMonitorStatusThisDriveCycle() {
+    return *monitorStatusThisDriveCycle;
+}
 
 PidSupport &Vehicle::getPidSupport() {
     return *pidSupport;

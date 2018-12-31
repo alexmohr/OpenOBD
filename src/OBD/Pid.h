@@ -22,7 +22,7 @@ enum Service1Pids {
     SupportedPidA1_C0 = 0xA0,
     SupportedPidC1_E0 = 0xC0,
 
-    MonitoringStatus = 0x01,
+    MonitoringStatusSinceDTCsCleared = 0x01,
     FreezeDTCPid = 0x02,
     FuelSystemStatus = 0x03,
     CalculatedEngineLoad = 0x04,
@@ -84,6 +84,7 @@ enum Service1Pids {
     CatalystTemperatureBank2Sensor1 = 0x3D,
     CatalystTemperatureBank1Sensor2 = 0x3E,
     CatalystTemperatureBank2Sensor2 = 0x3F,
+    MonitorStatusThisDriveCycle = 0x41,
 
 };
 

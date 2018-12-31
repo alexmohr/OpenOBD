@@ -113,7 +113,7 @@ TEST(OBDHandler, PID_00_PIDSupportedGeneric) {
 }
 
 
-TEST(OBDHandler, PID_01_MonitoringStatus) {
+TEST(OBDHandler, PID_01_AND_40_MonitoringStatus) {
     /*
      *  MIL: on
         dtc count: 113
@@ -133,53 +133,61 @@ TEST(OBDHandler, PID_01_MonitoringStatus) {
         cata   1    1
 
      */
-    const auto pid = (byte) 0x01;
-    vector<byte> request{(RequestServiceID), pid};
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xf1, (byte) 0x67, (byte) 0xe3, (byte) 0xf1};
-    // do test will check the can response.
-    auto handler = doTest(request, response);
-    MonitorStatus &monitoringStatus = handler->getVehicle()->getMonitorStatus();
+    const vector<Service1Pids> pids = {MonitoringStatusSinceDTCsCleared, MonitorStatusThisDriveCycle};
 
-    // validate object state
-    EXPECT_EQ(monitoringStatus.getMil(), true);
-    EXPECT_EQ(monitoringStatus.getDtcCount(), 113);
+    for (const auto &pid: pids) {
+        vector<byte> request{(RequestServiceID), (byte) pid};
+        vector<byte> response{ResponseServiceID, (byte) pid, (byte) 0xf1, (byte) 0x67, (byte) 0xe3, (byte) 0xf1};
+        // do test will check the can response.
+        auto handler = doTest(request, response);
+        MonitorStatus *monitoringStatus = nullptr;
+        if (pid == MonitoringStatusSinceDTCsCleared) {
+            monitoringStatus = &handler->getVehicle()->getMonitorStatusSinceDTCsCleared();
+        } else {
+            monitoringStatus = &handler->getVehicle()->getMonitorStatusThisDriveCycle();
+        }
 
-    EXPECT_EQ(monitoringStatus.getComponents().getAvailable().getValue(), true);
-    EXPECT_EQ(monitoringStatus.getComponents().getIncomplete().getValue(), true);
+        // validate object state
+        EXPECT_EQ(monitoringStatus->getMil(), true);
+        EXPECT_EQ(monitoringStatus->getDtcCount(), 113);
 
-    EXPECT_EQ(monitoringStatus.getFuelSystem().getAvailable().getValue(), true);
-    EXPECT_EQ(monitoringStatus.getFuelSystem().getIncomplete().getValue(), true);
+        EXPECT_EQ(monitoringStatus->getComponents().getAvailable().getValue(), true);
+        EXPECT_EQ(monitoringStatus->getComponents().getIncomplete().getValue(), true);
 
-    EXPECT_EQ(monitoringStatus.getMisfire().getAvailable().getValue(), true);
-    EXPECT_EQ(monitoringStatus.getMisfire().getIncomplete().getValue(), false);
+        EXPECT_EQ(monitoringStatus->getFuelSystem().getAvailable().getValue(), true);
+        EXPECT_EQ(monitoringStatus->getFuelSystem().getIncomplete().getValue(), true);
 
-    Engine &engine = monitoringStatus.getEngine();
-    EXPECT_EQ(engine.getEngineType(), PETROL);
+        EXPECT_EQ(monitoringStatus->getMisfire().getAvailable().getValue(), true);
+        EXPECT_EQ(monitoringStatus->getMisfire().getIncomplete().getValue(), false);
 
-    EXPECT_EQ(engine.getEngineSystem1().getAvailable().getValue(), true);
-    EXPECT_EQ(engine.getEngineSystem2().getAvailable().getValue(), true);
-    EXPECT_EQ(engine.getEngineSystem3().getAvailable().getValue(), true);
-    EXPECT_EQ(engine.getEngineSystem4().getAvailable().getValue(), false);
-    EXPECT_EQ(engine.getEngineSystem5().getAvailable().getValue(), false);
-    EXPECT_EQ(engine.getEngineSystem6().getAvailable().getValue(), false);
-    EXPECT_EQ(engine.getEngineSystem7().getAvailable().getValue(), true);
-    EXPECT_EQ(engine.getEngineSystem8().getAvailable().getValue(), true);
+        Engine &engine = monitoringStatus->getEngine();
+        EXPECT_EQ(engine.getEngineType(), PETROL);
 
-    EXPECT_EQ(engine.getEngineSystem1().getIncomplete().getValue(), true);
-    EXPECT_EQ(engine.getEngineSystem2().getIncomplete().getValue(), true);
-    EXPECT_EQ(engine.getEngineSystem3().getIncomplete().getValue(), true);
-    EXPECT_EQ(engine.getEngineSystem4().getIncomplete().getValue(), true);
-    EXPECT_EQ(engine.getEngineSystem5().getIncomplete().getValue(), false);
-    EXPECT_EQ(engine.getEngineSystem6().getIncomplete().getValue(), false);
-    EXPECT_EQ(engine.getEngineSystem7().getIncomplete().getValue(), false);
-    EXPECT_EQ(engine.getEngineSystem8().getIncomplete().getValue(), true);
+        EXPECT_EQ(engine.getEngineSystem1().getAvailable().getValue(), true);
+        EXPECT_EQ(engine.getEngineSystem2().getAvailable().getValue(), true);
+        EXPECT_EQ(engine.getEngineSystem3().getAvailable().getValue(), true);
+        EXPECT_EQ(engine.getEngineSystem4().getAvailable().getValue(), false);
+        EXPECT_EQ(engine.getEngineSystem5().getAvailable().getValue(), false);
+        EXPECT_EQ(engine.getEngineSystem6().getAvailable().getValue(), false);
+        EXPECT_EQ(engine.getEngineSystem7().getAvailable().getValue(), true);
+        EXPECT_EQ(engine.getEngineSystem8().getAvailable().getValue(), true);
+
+        EXPECT_EQ(engine.getEngineSystem1().getIncomplete().getValue(), true);
+        EXPECT_EQ(engine.getEngineSystem2().getIncomplete().getValue(), true);
+        EXPECT_EQ(engine.getEngineSystem3().getIncomplete().getValue(), true);
+        EXPECT_EQ(engine.getEngineSystem4().getIncomplete().getValue(), true);
+        EXPECT_EQ(engine.getEngineSystem5().getIncomplete().getValue(), false);
+        EXPECT_EQ(engine.getEngineSystem6().getIncomplete().getValue(), false);
+        EXPECT_EQ(engine.getEngineSystem7().getIncomplete().getValue(), false);
+        EXPECT_EQ(engine.getEngineSystem8().getIncomplete().getValue(), true);
+    }
 }
 
 
 // make sure that the application can generate the request on its own and does not need can frames to init.
 TEST(OBDHandler, PID_01_Test_MIL) {
     OBDHandler *handler = getHandler();
-    MonitorStatus &monitoringStatus = handler->getVehicle()->getMonitorStatus();
+    MonitorStatus &monitoringStatus = handler->getVehicle()->getMonitorStatusSinceDTCsCleared();
     // validate object state
     monitoringStatus.setMil(true);
     const auto pid = (byte) 0x01;
@@ -193,7 +201,7 @@ TEST(OBDHandler, PID_01_Test_MIL) {
 // make sure that the application can generate the request on its own and does not need can frames to init.
 TEST(OBDHandler, PID_01_MonitoringStatusInitViaVehicle) {
     OBDHandler *handler = getHandler();
-    MonitorStatus &monitoringStatus = handler->getVehicle()->getMonitorStatus();
+    MonitorStatus &monitoringStatus = handler->getVehicle()->getMonitorStatusSinceDTCsCleared();
 
     // validate object state
     monitoringStatus.setMil(true);

@@ -20,7 +20,9 @@ using namespace std;
 
 class Vehicle {
 private:
-    unique_ptr<MonitorStatus> monitorStatus;
+    unique_ptr<MonitorStatus> monitorStatusSinceDTCsCleared;
+    unique_ptr<MonitorStatus> monitorStatusThisDriveCycle;
+
     unique_ptr<PidSupport> pidSupport;
     unique_ptr<FreezeDTC> freezeDTC;
     shared_ptr<Engine> engine;
@@ -64,7 +66,9 @@ public:
     // services
 public:
 
-    MonitorStatus &getMonitorStatus();
+    MonitorStatus &getMonitorStatusSinceDTCsCleared();
+
+    MonitorStatus &getMonitorStatusThisDriveCycle();
 
     PidSupport &getPidSupport();
 

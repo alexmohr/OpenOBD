@@ -82,8 +82,8 @@ void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
         case SupportedPidC1_E0:
             vehicle->getPidSupport().setPidSupportedFromFrame(PidC1_E0, data, size);
             break;
-        case MonitoringStatus:
-            vehicle->getMonitorStatus().fromFrame(data, size);
+        case MonitoringStatusSinceDTCsCleared:
+            vehicle->getMonitorStatusSinceDTCsCleared().fromFrame(data, size);
             break;
         case FreezeDTCPid:
             vehicle->getFreezeDTC().fromFrame(data, size);
@@ -269,6 +269,9 @@ void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
         case CatalystTemperatureBank2Sensor2:
             vehicle->getCatalyst().getTemperatureBank2Sensor2().fromFrame(data, size);
             break;
+        case MonitorStatusThisDriveCycle:
+            vehicle->getMonitorStatusThisDriveCycle().fromFrame(data, size);
+            break;
     }
 }
 
@@ -297,8 +300,8 @@ byte* Pid::readService1_2(Vehicle *vehicle) {
         case SupportedPidC1_E0:
             data = vehicle->getPidSupport().getPidSupportedRange(PidC1_E0, data);
             break;
-        case MonitoringStatus:
-            data = vehicle->getMonitorStatus().toFrame();
+        case MonitoringStatusSinceDTCsCleared:
+            data = vehicle->getMonitorStatusSinceDTCsCleared().toFrame();
             break;
         case FreezeDTCPid:
             data = vehicle->getFreezeDTC().toFrame(data);
@@ -483,6 +486,9 @@ byte* Pid::readService1_2(Vehicle *vehicle) {
             break;
         case CatalystTemperatureBank2Sensor2:
             data = vehicle->getCatalyst().getTemperatureBank2Sensor2().toFrame(data);
+            break;
+        case MonitorStatusThisDriveCycle:
+            data = vehicle->getMonitorStatusThisDriveCycle().toFrame();
             break;
     }
 

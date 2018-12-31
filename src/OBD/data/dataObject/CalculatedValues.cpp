@@ -193,4 +193,15 @@ unsigned short CalculatedValues::fromAPlusBDivided256Minus128(float val) {
 }
 
 
+float CalculatedValues::to256APlusBDivided10Minus40(unsigned short val) {
+    return ((float) val / 10) - 40;
+}
+
+
+unsigned short CalculatedValues::from256APlusBDivided10Minus40(float val) {
+    return static_cast<unsigned short>(10 * (val + 40));
+
+}
+
+
 

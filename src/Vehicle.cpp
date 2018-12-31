@@ -78,6 +78,8 @@ Vehicle::Vehicle(shared_ptr<map<int, DataTroubleCode>> dtcMap) {
     absoluteBarometricPressure = make_unique<DataObject<byte>>(
             A, 7, A, 0,
             unit_kPa, (byte) 0, (byte) 255);
+
+    catalyst = make_unique<Catalyst>();
 }
 
 Vehicle::~Vehicle() = default;
@@ -186,7 +188,9 @@ DataObject<byte> &Vehicle::getAbsoluteBarometricPressure() {
     return *absoluteBarometricPressure;
 }
 
-
+Catalyst &Vehicle::getCatalyst() {
+    return *catalyst;
+}
 
 
 

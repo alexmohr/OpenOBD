@@ -1293,8 +1293,59 @@ TEST(OBDHandler, PID_34_to_0x3B_ExtendedRangeOxygenSensor1_to_8) {
         value = -40;
         sensor->getCurrent().setValue(value);
         EXPECT_NEAR(sensor->getCurrent().getValue(), value, 1.0f);
+    }
+}
 
-        return;
+
+TEST(OBDHandler, PID_3F_to_0x3F_CatalystTemp) {
+    // tested together because same logic with other pids
+    const vector<Service1Pids> pids = {
+            CatalystTemperatureBank1Sensor1, CatalystTemperatureBank2Sensor1, CatalystTemperatureBank1Sensor2,
+            CatalystTemperatureBank2Sensor2};
+
+    for (const auto &pid: pids) {
+        vector<byte> request{(RequestServiceID), (byte) pid};
+        vector<byte> response{ResponseServiceID, (byte) pid, (byte) 0xca, (byte) 0xfe};
+        auto handler = doTest(request, response);
+
+        LOG(INFO) << "Testing Cataylst Temp Sensor " << pid;
+        auto &catalyst = handler->getVehicle()->getCatalyst();
+        CalculatedDataObject<unsigned short, float> *sensor;
+        switch (pid) {
+            case CatalystTemperatureBank1Sensor1:
+                sensor = &catalyst.getTemperatureBank1Sensor1();
+                break;
+            case CatalystTemperatureBank2Sensor1:
+                sensor = &catalyst.getTemperatureBank2Sensor1();
+                break;
+            case CatalystTemperatureBank1Sensor2:
+                sensor = &catalyst.getTemperatureBank1Sensor2();
+                break;
+            case CatalystTemperatureBank2Sensor2:
+                sensor = &catalyst.getTemperatureBank2Sensor2();
+                break;
+            default:
+                EXPECT_EQ(false, true);
+                continue;
+        }
+
+        sensor->setValue(sensor->getDescription().getMin());
+        EXPECT_FLOAT_EQ(sensor->getValue(), sensor->getDescription().getMin());
+
+        sensor->setValue(sensor->getDescription().getMax());
+        EXPECT_FLOAT_EQ(sensor->getValue(), sensor->getDescription().getMax());
+
+        float val = 420.0f;
+        sensor->setValue(val);
+        EXPECT_FLOAT_EQ(sensor->getValue(), val);
+
+        val = -23.5f;
+        sensor->setValue(val);
+        EXPECT_FLOAT_EQ(sensor->getValue(), val);
+
+        val = 3502.3f;
+        sensor->setValue(val);
+        EXPECT_FLOAT_EQ(sensor->getValue(), val);
     }
 }
 

@@ -257,6 +257,18 @@ void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
         case ExtendedRangeOxygenSensor8:
             vehicle->getOxygenSystem().getExtendedRangeOxygenSensor8().fromFrame(data, size);
             break;
+        case CatalystTemperatureBank1Sensor1:
+            vehicle->getCatalyst().getTemperatureBank1Sensor1().fromFrame(data, size);
+            break;
+        case CatalystTemperatureBank2Sensor1:
+            vehicle->getCatalyst().getTemperatureBank2Sensor1().fromFrame(data, size);
+            break;
+        case CatalystTemperatureBank1Sensor2:
+            vehicle->getCatalyst().getTemperatureBank1Sensor2().fromFrame(data, size);
+            break;
+        case CatalystTemperatureBank2Sensor2:
+            vehicle->getCatalyst().getTemperatureBank2Sensor2().fromFrame(data, size);
+            break;
     }
 }
 
@@ -459,6 +471,18 @@ byte* Pid::readService1_2(Vehicle *vehicle) {
             break;
         case ExtendedRangeOxygenSensor8:
             data = vehicle->getOxygenSystem().getExtendedRangeOxygenSensor8().toFrame(data);
+            break;
+        case CatalystTemperatureBank1Sensor1:
+            data = vehicle->getCatalyst().getTemperatureBank1Sensor1().toFrame(data);
+            break;
+        case CatalystTemperatureBank2Sensor1:
+            data = vehicle->getCatalyst().getTemperatureBank2Sensor1().toFrame(data);
+            break;
+        case CatalystTemperatureBank1Sensor2:
+            data = vehicle->getCatalyst().getTemperatureBank1Sensor2().toFrame(data);
+            break;
+        case CatalystTemperatureBank2Sensor2:
+            data = vehicle->getCatalyst().getTemperatureBank2Sensor2().toFrame(data);
             break;
     }
 

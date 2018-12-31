@@ -80,6 +80,11 @@ enum Service1Pids {
     ExtendedRangeOxygenSensor6 = 0x39,
     ExtendedRangeOxygenSensor7 = 0x3A,
     ExtendedRangeOxygenSensor8 = 0x3B,
+    CatalystTemperatureBank1Sensor1 = 0x3C,
+    CatalystTemperatureBank2Sensor1 = 0x3D,
+    CatalystTemperatureBank1Sensor2 = 0x3E,
+    CatalystTemperatureBank2Sensor2 = 0x3F,
+
 };
 
 class Pid {

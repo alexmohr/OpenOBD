@@ -67,6 +67,10 @@ public:
 
     static unsigned short fromAPlusBDivided256Minus128(float val);
 
+    static float to256APlusBDivided10Minus40(unsigned short val);
+
+    static unsigned short from256APlusBDivided10Minus40(float val);
+
 };
 
 

@@ -74,7 +74,7 @@ set(CPPSRC
         src/OBD/Pid.h
         src/OBD/Service.h
         src/Vehicle.cpp
-        src/Vehicle.h src/OBD/data/BitEncoded/Oxygen/FuelRailOxygenSensor.cpp src/OBD/data/BitEncoded/Oxygen/FuelRailOxygenSensor.h src/OBD/data/dataObject/DataObjectUnit.h src/OBD/data/dataObject/DataObjectDescriptionText.h src/OBD/data/dataObject/DataObjectDescriptionText.cpp src/OBD/data/BitEncoded/Oxygen/ExtendedRangeOxygenSensor.cpp src/OBD/data/BitEncoded/Oxygen/ExtendedRangeOxygenSensor.h)
+        src/Vehicle.h src/OBD/data/BitEncoded/Oxygen/FuelRailOxygenSensor.cpp src/OBD/data/BitEncoded/Oxygen/FuelRailOxygenSensor.h src/OBD/data/dataObject/DataObjectUnit.h src/OBD/data/dataObject/DataObjectDescriptionText.h src/OBD/data/dataObject/DataObjectDescriptionText.cpp src/OBD/data/BitEncoded/Oxygen/ExtendedRangeOxygenSensor.cpp src/OBD/data/BitEncoded/Oxygen/ExtendedRangeOxygenSensor.h src/OBD/data/BitEncoded/Catalyst.cpp src/OBD/data/BitEncoded/Catalyst.h)
 
 
 add_executable(open_obd2 src/main.cpp ${CPPSRC})

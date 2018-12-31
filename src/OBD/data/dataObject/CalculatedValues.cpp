@@ -167,4 +167,30 @@ unsigned short CalculatedValues::from256APlusBDivided4TwoComplement(float val) {
     return static_cast<unsigned short>(getTwoComplement(ival));
 }
 
+float CalculatedValues::toAPlusBDivided256Minus128(unsigned short val) {
+    byte *bVal = ushortToByteArray(val);
+    return (float) (bVal[0]) + ((float) bVal[1] / 256) - 128;
+
+}
+
+unsigned short CalculatedValues::fromAPlusBDivided256Minus128(float val) {
+    // p=A+(B/256)-128
+    // A = -B/256 + p + 128
+    // B = -256 (A - p - 128)
+    // A = B
+    // -B/256 + p + 128= -256 (A - p - 128)
+    // Solve for B
+    // B = 256 (256 A - 255 (p + 128))
+    // Insert into A
+    // A = -(256 (256 A - 255 (p + 128)))/256 + p + 128
+    // A = (256 (p + 128))/257
+    // B = -256 (((256 (p + 128))/257) - p - 128)
+    // B = (256 (p + 128))/257
+    byte bVal[2];
+    bVal[0] = (byte) ((256 * (val + 128)) / 257);
+    bVal[1] = (byte) ((256 * (val + 128)) / 257);
+    return byteArrayToUShort(bVal);
+}
+
+
 

@@ -1207,5 +1207,99 @@ TEST(OBDHandler, PID_33_AbsoluteBarometricPressure) {
 }
 
 
+TEST(OBDHandler, PID_34_to_0x3B_ExtendedRangeOxygenSensor1_to_8) {
+    // tested together because same logic with other pids
+    const vector<Service1Pids> pids = {
+            ExtendedRangeOxygenSensor1, ExtendedRangeOxygenSensor2, ExtendedRangeOxygenSensor3,
+            ExtendedRangeOxygenSensor4, ExtendedRangeOxygenSensor5, ExtendedRangeOxygenSensor6,
+            ExtendedRangeOxygenSensor7, ExtendedRangeOxygenSensor8};
+
+    for (const auto &pid: pids) {
+        vector<byte> request{(RequestServiceID), (byte) pid};
+        vector<byte> response{ResponseServiceID, (byte) pid, (byte) 0xca, (byte) 0xfe,
+                              (byte) 0xba, (byte) 0xbe};
+        auto handler = doTest(request, response);
+
+
+        auto &oxygenSystem = handler->getVehicle()->getOxygenSystem();
+        ExtendedRangeOxygenSensor *sensor;
+        switch (pid) {
+            case ExtendedRangeOxygenSensor1:
+                sensor = &oxygenSystem.getExtendedRangeOxygenSensor1();
+                break;
+            case ExtendedRangeOxygenSensor2:
+                sensor = &oxygenSystem.getExtendedRangeOxygenSensor2();
+                break;
+            case ExtendedRangeOxygenSensor3:
+                sensor = &oxygenSystem.getExtendedRangeOxygenSensor3();
+                break;
+            case ExtendedRangeOxygenSensor4:
+                sensor = &oxygenSystem.getExtendedRangeOxygenSensor4();
+                break;
+            case ExtendedRangeOxygenSensor5:
+                sensor = &oxygenSystem.getExtendedRangeOxygenSensor5();
+                break;
+            case ExtendedRangeOxygenSensor6:
+                sensor = &oxygenSystem.getExtendedRangeOxygenSensor6();
+                break;
+            case ExtendedRangeOxygenSensor7:
+                sensor = &oxygenSystem.getExtendedRangeOxygenSensor7();
+                break;
+            case ExtendedRangeOxygenSensor8:
+                sensor = &oxygenSystem.getExtendedRangeOxygenSensor8();
+                break;
+            default:
+                EXPECT_EQ(false, true);
+                continue;
+        }
+
+        EXPECT_FLOAT_EQ(sensor->getFuelAirEquivalenceRatio().getValue(), (2.0f / 65536) * (256 * 0xca + 0xfe));
+
+        // A+D/256-128
+        EXPECT_NEAR(sensor->getCurrent().getValue(), (short) (0xba + 0xbe / 256 - 128), 1.0f);
+
+        // min
+        sensor->getFuelAirEquivalenceRatio().setValue(sensor->getFuelAirEquivalenceRatio().getDescription().getMin());
+        EXPECT_FLOAT_EQ(sensor->getFuelAirEquivalenceRatio().getValue(),
+                        sensor->getFuelAirEquivalenceRatio().getDescription().getMin());
+
+        sensor->getCurrent().setValue(sensor->getCurrent().getDescription().getMin());
+        EXPECT_EQ(sensor->getCurrent().getValue(), sensor->getCurrent().getDescription().getMin());
+
+        // max
+        sensor->getFuelAirEquivalenceRatio().setValue(sensor->getFuelAirEquivalenceRatio().getDescription().getMax());
+        EXPECT_NEAR(sensor->getFuelAirEquivalenceRatio().getValue(),
+                    sensor->getFuelAirEquivalenceRatio().getDescription().getMax(), 0.1f);
+
+        sensor->getCurrent().setValue(sensor->getCurrent().getDescription().getMax());
+        EXPECT_NEAR(sensor->getCurrent().getValue(), sensor->getCurrent().getDescription().getMax(), 0.1f);
+
+
+        float value = 1.2f;
+        sensor->getFuelAirEquivalenceRatio().setValue(value);
+        EXPECT_NEAR(sensor->getFuelAirEquivalenceRatio().getValue(), value, 0.1f);
+        sensor->getCurrent().setValue(value);
+        sensor->getCurrent().setValue(value);
+        EXPECT_NEAR(sensor->getCurrent().getValue(), value, 1.0f);
+
+        value = 0;
+        sensor->getCurrent().setValue(value);
+        EXPECT_NEAR(sensor->getCurrent().getValue(), value, 1.0f);
+
+        value = 40;
+        sensor->getCurrent().setValue(value);
+        EXPECT_NEAR(sensor->getCurrent().getValue(), value, 1.0f);
+
+        value = -40;
+        sensor->getCurrent().setValue(value);
+        EXPECT_NEAR(sensor->getCurrent().getValue(), value, 1.0f);
+
+        return;
+    }
+}
+
+
+
+
 
 #pragma clang diagnostic pop

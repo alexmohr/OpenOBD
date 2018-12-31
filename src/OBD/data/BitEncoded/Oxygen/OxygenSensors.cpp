@@ -2,7 +2,7 @@
 // Created by me on 28/12/18.
 //
 
-#include "OxygenSystem.h"
+#include "OxygenSensors.h"
 
 OxygenSystem::OxygenSystem() {
     bank1Sensor1present = make_unique<DataObject<bool>>(A, 0);
@@ -40,6 +40,15 @@ OxygenSystem::OxygenSystem() {
     fuelRailOxygenSensor6 = make_unique<FuelRailOxygenSensor>();
     fuelRailOxygenSensor7 = make_unique<FuelRailOxygenSensor>();
     fuelRailOxygenSensor8 = make_unique<FuelRailOxygenSensor>();
+
+    extendedRangeOxygenSensor1 = make_unique<ExtendedRangeOxygenSensor>();
+    extendedRangeOxygenSensor2 = make_unique<ExtendedRangeOxygenSensor>();
+    extendedRangeOxygenSensor3 = make_unique<ExtendedRangeOxygenSensor>();
+    extendedRangeOxygenSensor4 = make_unique<ExtendedRangeOxygenSensor>();
+    extendedRangeOxygenSensor5 = make_unique<ExtendedRangeOxygenSensor>();
+    extendedRangeOxygenSensor6 = make_unique<ExtendedRangeOxygenSensor>();
+    extendedRangeOxygenSensor7 = make_unique<ExtendedRangeOxygenSensor>();
+    extendedRangeOxygenSensor8 = make_unique<ExtendedRangeOxygenSensor>();
 }
 
 
@@ -222,3 +231,35 @@ FuelRailOxygenSensor &OxygenSystem::getFuelRailOxygenSensor8() {
     return *fuelRailOxygenSensor8;
 }
 
+
+ExtendedRangeOxygenSensor &OxygenSystem::getExtendedRangeOxygenSensor1() {
+    return *extendedRangeOxygenSensor1;
+}
+
+ExtendedRangeOxygenSensor &OxygenSystem::getExtendedRangeOxygenSensor2() {
+    return *extendedRangeOxygenSensor2;
+}
+
+ExtendedRangeOxygenSensor &OxygenSystem::getExtendedRangeOxygenSensor3() {
+    return *extendedRangeOxygenSensor3;
+}
+
+ExtendedRangeOxygenSensor &OxygenSystem::getExtendedRangeOxygenSensor4() {
+    return *extendedRangeOxygenSensor4;
+}
+
+ExtendedRangeOxygenSensor &OxygenSystem::getExtendedRangeOxygenSensor5() {
+    return *extendedRangeOxygenSensor5;
+}
+
+ExtendedRangeOxygenSensor &OxygenSystem::getExtendedRangeOxygenSensor6() {
+    return *extendedRangeOxygenSensor6;
+}
+
+ExtendedRangeOxygenSensor &OxygenSystem::getExtendedRangeOxygenSensor7() {
+    return *extendedRangeOxygenSensor7;
+}
+
+ExtendedRangeOxygenSensor &OxygenSystem::getExtendedRangeOxygenSensor8() {
+    return *extendedRangeOxygenSensor8;
+}

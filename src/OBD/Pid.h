@@ -72,9 +72,14 @@ enum Service1Pids {
     DistanceTraveledSinceCodesCleared = 0x31,
     EvaporativePurgeSystemVaporPressure = 0x32,
     AbsoluteBarometricPressure = 0x33,
-
-
-
+    ExtendedRangeOxygenSensor1 = 0x34,
+    ExtendedRangeOxygenSensor2 = 0x35,
+    ExtendedRangeOxygenSensor3 = 0x36,
+    ExtendedRangeOxygenSensor4 = 0x37,
+    ExtendedRangeOxygenSensor5 = 0x38,
+    ExtendedRangeOxygenSensor6 = 0x39,
+    ExtendedRangeOxygenSensor7 = 0x3A,
+    ExtendedRangeOxygenSensor8 = 0x3B,
 };
 
 class Pid {

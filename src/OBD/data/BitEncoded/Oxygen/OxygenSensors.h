@@ -8,6 +8,8 @@
 #include "../../dataObject/DataObject.h"
 #include "BankOxygenSensor.h"
 #include "FuelRailOxygenSensor.h"
+#include "ExtendedRangeOxygenSensor.h"
+
 class OxygenSystem {
 private:
     unique_ptr<DataObject<bool>> bank1Sensor1present;
@@ -45,6 +47,16 @@ private:
     unique_ptr<FuelRailOxygenSensor> fuelRailOxygenSensor6;
     unique_ptr<FuelRailOxygenSensor> fuelRailOxygenSensor7;
     unique_ptr<FuelRailOxygenSensor> fuelRailOxygenSensor8;
+
+
+    unique_ptr<ExtendedRangeOxygenSensor> extendedRangeOxygenSensor1;
+    unique_ptr<ExtendedRangeOxygenSensor> extendedRangeOxygenSensor2;
+    unique_ptr<ExtendedRangeOxygenSensor> extendedRangeOxygenSensor3;
+    unique_ptr<ExtendedRangeOxygenSensor> extendedRangeOxygenSensor4;
+    unique_ptr<ExtendedRangeOxygenSensor> extendedRangeOxygenSensor5;
+    unique_ptr<ExtendedRangeOxygenSensor> extendedRangeOxygenSensor6;
+    unique_ptr<ExtendedRangeOxygenSensor> extendedRangeOxygenSensor7;
+    unique_ptr<ExtendedRangeOxygenSensor> extendedRangeOxygenSensor8;
 
 public:
 
@@ -122,6 +134,22 @@ public:
 
     FuelRailOxygenSensor &getFuelRailOxygenSensor8();
 
+
+    ExtendedRangeOxygenSensor &getExtendedRangeOxygenSensor1();
+
+    ExtendedRangeOxygenSensor &getExtendedRangeOxygenSensor2();
+
+    ExtendedRangeOxygenSensor &getExtendedRangeOxygenSensor3();
+
+    ExtendedRangeOxygenSensor &getExtendedRangeOxygenSensor4();
+
+    ExtendedRangeOxygenSensor &getExtendedRangeOxygenSensor5();
+
+    ExtendedRangeOxygenSensor &getExtendedRangeOxygenSensor6();
+
+    ExtendedRangeOxygenSensor &getExtendedRangeOxygenSensor7();
+
+    ExtendedRangeOxygenSensor &getExtendedRangeOxygenSensor8();
 
 };
 

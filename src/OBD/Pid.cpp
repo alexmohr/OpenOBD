@@ -233,6 +233,30 @@ void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
         case AbsoluteBarometricPressure:
             vehicle->getAbsoluteBarometricPressure().fromFrame(data, size);
             break;
+        case ExtendedRangeOxygenSensor1:
+            vehicle->getOxygenSystem().getExtendedRangeOxygenSensor1().fromFrame(data, size);
+            break;
+        case ExtendedRangeOxygenSensor2:
+            vehicle->getOxygenSystem().getExtendedRangeOxygenSensor2().fromFrame(data, size);
+            break;
+        case ExtendedRangeOxygenSensor3:
+            vehicle->getOxygenSystem().getExtendedRangeOxygenSensor3().fromFrame(data, size);
+            break;
+        case ExtendedRangeOxygenSensor4:
+            vehicle->getOxygenSystem().getExtendedRangeOxygenSensor4().fromFrame(data, size);
+            break;
+        case ExtendedRangeOxygenSensor5:
+            vehicle->getOxygenSystem().getExtendedRangeOxygenSensor5().fromFrame(data, size);
+            break;
+        case ExtendedRangeOxygenSensor6:
+            vehicle->getOxygenSystem().getExtendedRangeOxygenSensor6().fromFrame(data, size);
+            break;
+        case ExtendedRangeOxygenSensor7:
+            vehicle->getOxygenSystem().getExtendedRangeOxygenSensor7().fromFrame(data, size);
+            break;
+        case ExtendedRangeOxygenSensor8:
+            vehicle->getOxygenSystem().getExtendedRangeOxygenSensor8().fromFrame(data, size);
+            break;
     }
 }
 
@@ -411,6 +435,30 @@ byte* Pid::readService1_2(Vehicle *vehicle) {
             break;
         case AbsoluteBarometricPressure:
             data = vehicle->getAbsoluteBarometricPressure().toFrame(data);
+            break;
+        case ExtendedRangeOxygenSensor1:
+            data = vehicle->getOxygenSystem().getExtendedRangeOxygenSensor1().toFrame(data);
+            break;
+        case ExtendedRangeOxygenSensor2:
+            data = vehicle->getOxygenSystem().getExtendedRangeOxygenSensor2().toFrame(data);
+            break;
+        case ExtendedRangeOxygenSensor3:
+            data = vehicle->getOxygenSystem().getExtendedRangeOxygenSensor3().toFrame(data);
+            break;
+        case ExtendedRangeOxygenSensor4:
+            data = vehicle->getOxygenSystem().getExtendedRangeOxygenSensor4().toFrame(data);
+            break;
+        case ExtendedRangeOxygenSensor5:
+            data = vehicle->getOxygenSystem().getExtendedRangeOxygenSensor5().toFrame(data);
+            break;
+        case ExtendedRangeOxygenSensor6:
+            data = vehicle->getOxygenSystem().getExtendedRangeOxygenSensor6().toFrame(data);
+            break;
+        case ExtendedRangeOxygenSensor7:
+            data = vehicle->getOxygenSystem().getExtendedRangeOxygenSensor7().toFrame(data);
+            break;
+        case ExtendedRangeOxygenSensor8:
+            data = vehicle->getOxygenSystem().getExtendedRangeOxygenSensor8().toFrame(data);
             break;
     }
 

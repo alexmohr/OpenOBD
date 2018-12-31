@@ -51,7 +51,7 @@ private:
 
 
 public:
-    explicit Engine();
+    Engine();
 
     ~Engine() = default;
 

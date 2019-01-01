@@ -85,6 +85,12 @@ enum Service1Pids {
     CatalystTemperatureBank1Sensor2 = 0x3E,
     CatalystTemperatureBank2Sensor2 = 0x3F,
     MonitorStatusThisDriveCycle = 0x41,
+    ControlModuleVoltage = 0x42,
+    AbsoluteLoadValue = 0x43,
+    FuelAirCommandedEquivalenceRatio = 0x44,
+    RelativeThrottlePosition = 0x45,
+    AmbientAirTemperature = 0x46,
+
 
 };
 

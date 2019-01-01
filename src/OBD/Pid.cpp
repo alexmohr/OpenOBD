@@ -94,7 +94,7 @@ IFrameObject &Pid::getFrameObject(Vehicle *vehicle) {
         case MAFAirFlowRate:
             return vehicle->getEngine().getMAFAirFlowRate();
         case ThrottlePosition:
-            return vehicle->getThrottlePosition();
+            return vehicle->getThrottle().getThrottlePosition();
         case CommandedSecondaryAirStatus:
             return vehicle->getCommandedSecondaryAirStatus();
         case OxygenSensorsPresent:
@@ -187,6 +187,17 @@ IFrameObject &Pid::getFrameObject(Vehicle *vehicle) {
             return vehicle->getCatalyst().getTemperatureBank2Sensor2();
         case MonitorStatusThisDriveCycle:
             return vehicle->getMonitorStatusThisDriveCycle();
+        case ControlModuleVoltage:
+            return vehicle->getControlModuleVoltage();
+        case AbsoluteLoadValue:
+            return vehicle->getAbsoluteLoadValue();
+        case FuelAirCommandedEquivalenceRatio:
+            return vehicle->getFuelAirCommandedEquivalenceRatio();
+        case RelativeThrottlePosition:
+            return vehicle->getThrottle().getRelativeThrottlePosition();
+        case AmbientAirTemperature:
+            return vehicle->getAmbientAirTemperature();
+
     }
 
     throw invalid_argument("pid: " + to_string(pid) + " not implemented");

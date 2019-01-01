@@ -9,24 +9,25 @@
 Vehicle::Vehicle(shared_ptr<map<int, DataTroubleCode>> dtcMap) {
     this->dtcMap = dtcMap;
     engine = make_shared<Engine>();
+
     monitorStatusSinceDTCsCleared = make_unique<MonitorStatus>(&engine);
     monitorStatusThisDriveCycle = make_unique<MonitorStatus>(&engine);
 
 
     pidSupport = make_unique<PidSupport>();
     freezeDTC = make_unique<FreezeDTC>(dtcMap);
+    oxygenSystem = make_unique<OxygenSensors>();
+    obdCompliance = make_unique<OBDCompliance>();
+    catalyst = make_unique<Catalyst>();
+    fuelSystemStates = make_unique<FuelSystemStates>();
+    throttle = make_unique<Throttle>();
 
 
     commandedSecondaryAirStatus = make_unique<DataObject<StateOfCommandedSecondaryAir>>(A, 7, A, 0);
 
     speed = make_unique<DataObject<byte>>(A, 7, A, 0, unit_kph, (byte) 0, (byte) 255);
 
-    throttlePosition = make_unique<CalculatedDataObject<byte, float>>(
-            A, 7, A, 0, CalculatedValues::toPercent, CalculatedValues::fromPercent,
-            unit_percent, 0.0f, 100.0);
 
-    oxygenSystem = make_unique<OxygenSensors>();
-    obdCompliance = make_unique<OBDCompliance>();
 
     auxiliaryInputStatus = make_unique<DataObject<bool>>(A, 0);
     runTimeSinceEngineStart = make_unique<DataObject<unsigned short>>(A, 7, B, 0, unit_seconds, 0, 65535);
@@ -79,8 +80,27 @@ Vehicle::Vehicle(shared_ptr<map<int, DataTroubleCode>> dtcMap) {
             A, 7, A, 0,
             unit_kPa, (byte) 0, (byte) 255);
 
-    catalyst = make_unique<Catalyst>();
-    fuelSystemStates = make_unique<FuelSystemStates>();
+
+    controlModuleVoltage = make_unique<CalculatedDataObject<unsigned short, float>>(
+            A, 7, B, 0,
+            CalculatedValues::to256APlusBDivided1000, CalculatedValues::from256APlusBDivided1000,
+            unit_volt, 0, 65.535f);
+
+    absoluteLoadValue = make_unique<CalculatedDataObject<unsigned short, unsigned short>>(
+            A, 7, B, 0,
+            CalculatedValues::to100Divided255Times256APlusB, CalculatedValues::from100Divided255Times256APlusB,
+            unit_percent, 0, 25700);
+
+    fuelAirCommandedEquivalenceRatio = make_unique<CalculatedDataObject<unsigned short, float>>(
+            A, 7, B, 0,
+            CalculatedValues::to2Divided65536Times256PlusB, CalculatedValues::from2Divided65536Times256PlusB,
+            unit_ratio, 0, 1.9999f);
+
+
+    ambientAirTemperature = make_unique<CalculatedDataObject<byte, short>>(
+            A, 7, A, 0,
+            CalculatedValues::toAMinus40, CalculatedValues::fromAMinus40,
+            unit_celsius, -40, 215);
 }
 
 Vehicle::~Vehicle() = default;
@@ -117,9 +137,6 @@ DataObject<byte> &Vehicle::getSpeed() {
     return *speed;
 }
 
-CalculatedDataObject<byte, float> &Vehicle::getThrottlePosition() {
-    return *throttlePosition;
-}
 
 DataObject<StateOfCommandedSecondaryAir> &Vehicle::getCommandedSecondaryAirStatus() {
     return *commandedSecondaryAirStatus;
@@ -193,7 +210,25 @@ FuelSystemStates &Vehicle::getFuelSystemStates() {
     return *fuelSystemStates;
 }
 
+CalculatedDataObject<unsigned short, float> &Vehicle::getControlModuleVoltage() {
+    return *controlModuleVoltage;
+}
 
+CalculatedDataObject<unsigned short, unsigned short> &Vehicle::getAbsoluteLoadValue() {
+    return *absoluteLoadValue;
+}
+
+CalculatedDataObject<unsigned short, float> &Vehicle::getFuelAirCommandedEquivalenceRatio() {
+    return *fuelAirCommandedEquivalenceRatio;
+}
+
+CalculatedDataObject<byte, short> &Vehicle::getAmbientAirTemperature() {
+    return *ambientAirTemperature;
+}
+
+Throttle &Vehicle::getThrottle() {
+    return *throttle;
+}
 
 
 

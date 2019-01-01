@@ -16,6 +16,7 @@
 #include "OBD/data/BitEncoded/OBDCompliance.h"
 #include "OBD/data/BitEncoded/Catalyst.h"
 #include "OBD/data/Enumerated/FuelSystemStates.h"
+#include "OBD/data/BitEncoded/Throttle.h"
 
 using namespace std;
 
@@ -32,8 +33,6 @@ private:
     unique_ptr<DataObject<StateOfCommandedSecondaryAir>> commandedSecondaryAirStatus;
 
     unique_ptr<DataObject<byte>> speed;
-
-    unique_ptr<CalculatedDataObject<byte, float>> throttlePosition;
     unique_ptr<OxygenSensors> oxygenSystem;
     unique_ptr<OBDCompliance> obdCompliance;
 
@@ -53,9 +52,17 @@ private:
     unique_ptr<CalculatedDataObject<unsigned short, float>> evaporativePurgeSystemVaporPressure;
     unique_ptr<DataObject<byte>> absoluteBarometricPressure;
 
+
+    unique_ptr<CalculatedDataObject<unsigned short, float>> controlModuleVoltage;
+    unique_ptr<CalculatedDataObject<unsigned short, unsigned short>> absoluteLoadValue;
+    unique_ptr<CalculatedDataObject<unsigned short, float>> fuelAirCommandedEquivalenceRatio;
+    unique_ptr<CalculatedDataObject<byte, short>> ambientAirTemperature;
+
+
     unique_ptr<Catalyst> catalyst;
 
     unique_ptr<FuelSystemStates> fuelSystemStates;
+    unique_ptr<Throttle> throttle;
 
     shared_ptr<map<int, DataTroubleCode>> dtcMap;
 
@@ -79,8 +86,6 @@ public:
     Engine &getEngine();
 
     DataObject<byte> &getSpeed();
-
-    CalculatedDataObject<byte, float> &getThrottlePosition();
 
     DataObject<StateOfCommandedSecondaryAir> &getCommandedSecondaryAirStatus();
 
@@ -118,6 +123,16 @@ public:
     Catalyst &getCatalyst();
 
     FuelSystemStates &getFuelSystemStates();
+
+    CalculatedDataObject<unsigned short, float> &getControlModuleVoltage();
+
+    CalculatedDataObject<unsigned short, unsigned short> &getAbsoluteLoadValue();
+
+    CalculatedDataObject<unsigned short, float> &getFuelAirCommandedEquivalenceRatio();
+
+    CalculatedDataObject<byte, short> &getAmbientAirTemperature();
+
+    Throttle &getThrottle();
 };
 
 

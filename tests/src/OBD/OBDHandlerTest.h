@@ -14,6 +14,9 @@
 #include "../../../src/OBD/OBDHandler.h"
 #include "../../../src/CAN/CanIsoTP.h"
 
+const byte RequestServiceID = (byte) 0x01;
+const byte ResponseServiceID = (byte) 0x41;
+
 
 OBDHandler *getHandler();
 

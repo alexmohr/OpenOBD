@@ -64,6 +64,13 @@ private:
     }
 
 public:
+
+//    // boolean C'tor
+//    DataObject(ByteIndex startByte, unsigned int startIndex) :
+//            DataObject(startByte, startIndex, startByte, startIndex, unit_bool, false, true, "") {
+//    }
+//
+
     // boolean C'tor
     DataObject(ByteIndex startByte, unsigned int startIndex, const string description) :
             DataObject(startByte, startIndex, startByte, startIndex, unit_bool, false, true, description) {
@@ -185,8 +192,8 @@ public:
         }
     }
 
-    DataObjectDescription<T> &getDescription() {
-        return *description;
+    DataObjectDescription<T> *getDescription() {
+        return description.get();
     }
 
     string getPrintableData() override {

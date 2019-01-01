@@ -11,1354 +11,412 @@
 #include "gtest/gtest.h"
 #include <random>
 
-const byte RequestServiceID = (byte) 0x01;
-const byte ResponseServiceID = (byte) 0x41;
+template<class T, class S>
+void TestCalculatedData(Service1Pids pid,
+                        function<CalculatedDataObject<T, S> *(Vehicle &vehicle)> dataCallback,
+                        float offset, function<S(int)> dataConversion) {
+    vector<byte> request{(RequestServiceID), (byte) pid};
 
-TEST(OBDHandler, PID_00_PIDSupported01_20) {
-    auto const pid = (byte) 0x00;
-    vector<byte> request{RequestServiceID, pid};
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xbe, (byte) 0x7e, (byte) 0xb8, (byte) 0x13};
-    doTest(request, response);
-}
 
-TEST(OBDHandler, PID_00_PIDSupported01_20_Single) {
-    auto const pid = (byte) 0x00;
-    vector<byte> request{RequestServiceID, pid};
-    vector<byte> response{ResponseServiceID, pid, (byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00};
-
-    OBDHandler *handler = getHandler();
-
-    vector<int> supported{0x01};
-
-    for (auto const &value: supported) {
-        handler->getVehicle()->getPidSupport().setPidSupported(value, true);
-    }
-
-    for (auto const &value: supported) {
-        EXPECT_TRUE(handler->getVehicle()->getPidSupport().getPidSupported(value));
-    }
-
-    byte *val = handler->createAnswerFrame(request.data());
-    compareResponse(response, val);
-}
-
-TEST(OBDHandler, PID_00_PIDSupported01_20_Setter) {
-    auto const pid = (byte) 0x00;
-    vector<byte> request{RequestServiceID, pid};
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xbe, (byte) 0x1f, (byte) 0xa8, (byte) 0x13};
-
-    OBDHandler *handler = getHandler();
-
-    vector<int> supported{0x01, 0x03, 0x04, 0x05, 0x06, 0x07, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x13, 0x15, 0x1C,
-                          0x1F, 0x20};
-
-    for (auto const &value: supported) {
-        handler->getVehicle()->getPidSupport().setPidSupported(value, true);
-    }
-
-    for (auto const &value: supported) {
-        EXPECT_TRUE(handler->getVehicle()->getPidSupport().getPidSupported(value));
+    vector<byte> response;
+    unsigned int value = 0;
+    if (sizeof(T) == sizeof(byte)) {
+        response = {ResponseServiceID, (byte) pid, (byte) 0xca};
+        value = 0xca;
+    } else if (sizeof(T) == sizeof(short)) {
+        response = {ResponseServiceID, (byte) pid, (byte) 0xca, (byte) 0xfe};
+        value = 0xcafe;
+    } else if (sizeof(T) == sizeof(int)) {
+        response = {ResponseServiceID, (byte) pid, (byte) 0xca, (byte) 0xfe, (byte) 0xba, (byte) 0xbe};
+        value = 0xcafebabe;
     }
 
 
-    byte *val = handler->createAnswerFrame(request.data());
-    compareResponse(response, val);
-}
-
-TEST(OBDHandler, PID_00_PIDSupportedGeneric) {
-    const int pidsPerCall = 32;
-    int j, k, currentPid;
-
-    vector<Service1Pids> pids = {
-            SupportedPid01_20,
-            SupportedPid21_40,
-            SupportedPid41_60,
-            SupportedPid61_80,
-            SupportedPid81_A0,
-            SupportedPidA1_C0,
-            SupportedPidC1_E0};
-
-
-    OBDHandler *handler = getHandler();
-    auto vehicle = handler->getVehicle();
-    currentPid = 0;
-
-    for (const auto &pid: pids) {
-        k = pidsPerCall;
-        for (j = 1; j <= pidsPerCall; j++) {
-            currentPid++;
-            EXPECT_FALSE(vehicle->getPidSupport().getPidSupported(currentPid));
-
-            vehicle->getPidSupport().setPidSupported(currentPid, true);
-            EXPECT_TRUE(vehicle->getPidSupport().getPidSupported(currentPid));
-
-            vector<byte> request = {RequestServiceID, (byte) pid};
-            byte *val = handler->createAnswerFrame(request.data());
-            auto *response = (byte *) malloc(sizeof(byte) * 8);
-            response[0] = ResponseServiceID;
-            response[1] = request.at(1);
-
-            unsigned int data = 0;
-            data |= 1 << --k;
-
-            response[5] = (byte) (data & 0xFF);
-            response[4] = (byte) ((data >> 8U) & 0xFF);
-            response[3] = (byte) ((data >> 16U) & 0xFF);
-            response[2] = (byte) ((data >> 24U) & 0xFF);
-
-            compareResponse(response, val, 8);
-            vehicle->getPidSupport().setPidSupported(currentPid, false);
-        }
-    }
-}
-
-
-TEST(OBDHandler, PID_01_AND_40_MonitoringStatus) {
-    /*
-     *  MIL: on
-        dtc count: 113
-        B7 = 0
-        Engine = petrol
-        components avail: 1 incomplete 1
-        fuel avail: 1 incomplete 1
-        misfire avail 1 incomplete 0
-        test   A    i
-        egr    1    0
-        ox     1    1
-        oxheat 1    1
-        ac     1    1
-        seca   1    0
-        eva    0    0
-        heatct 0    0
-        cata   1    1
-
-     */
-    const vector<Service1Pids> pids = {MonitoringStatusSinceDTCsCleared, MonitorStatusThisDriveCycle};
-
-    for (const auto &pid: pids) {
-        vector<byte> request{(RequestServiceID), (byte) pid};
-        vector<byte> response{ResponseServiceID, (byte) pid, (byte) 0xf1, (byte) 0x67, (byte) 0xe3, (byte) 0xf1};
-        // do test will check the can response.
-        auto handler = doTest(request, response);
-        MonitorStatus *monitoringStatus = nullptr;
-        if (pid == MonitoringStatusSinceDTCsCleared) {
-            monitoringStatus = &handler->getVehicle()->getMonitorStatusSinceDTCsCleared();
-        } else {
-            monitoringStatus = &handler->getVehicle()->getMonitorStatusThisDriveCycle();
-        }
-
-        // validate object state
-        EXPECT_EQ(monitoringStatus->getMil(), true);
-        EXPECT_EQ(monitoringStatus->getDtcCount(), 113);
-
-        EXPECT_EQ(monitoringStatus->getComponents().getAvailable().getValue(), true);
-        EXPECT_EQ(monitoringStatus->getComponents().getIncomplete().getValue(), true);
-
-        EXPECT_EQ(monitoringStatus->getFuelSystem().getAvailable().getValue(), true);
-        EXPECT_EQ(monitoringStatus->getFuelSystem().getIncomplete().getValue(), true);
-
-        EXPECT_EQ(monitoringStatus->getMisfire().getAvailable().getValue(), true);
-        EXPECT_EQ(monitoringStatus->getMisfire().getIncomplete().getValue(), false);
-
-        Engine &engine = monitoringStatus->getEngine();
-        EXPECT_EQ(engine.getEngineType(), PETROL);
-
-        EXPECT_EQ(engine.getEngineSystem1().getAvailable().getValue(), true);
-        EXPECT_EQ(engine.getEngineSystem2().getAvailable().getValue(), true);
-        EXPECT_EQ(engine.getEngineSystem3().getAvailable().getValue(), true);
-        EXPECT_EQ(engine.getEngineSystem4().getAvailable().getValue(), false);
-        EXPECT_EQ(engine.getEngineSystem5().getAvailable().getValue(), false);
-        EXPECT_EQ(engine.getEngineSystem6().getAvailable().getValue(), false);
-        EXPECT_EQ(engine.getEngineSystem7().getAvailable().getValue(), true);
-        EXPECT_EQ(engine.getEngineSystem8().getAvailable().getValue(), true);
-
-        EXPECT_EQ(engine.getEngineSystem1().getIncomplete().getValue(), true);
-        EXPECT_EQ(engine.getEngineSystem2().getIncomplete().getValue(), true);
-        EXPECT_EQ(engine.getEngineSystem3().getIncomplete().getValue(), true);
-        EXPECT_EQ(engine.getEngineSystem4().getIncomplete().getValue(), true);
-        EXPECT_EQ(engine.getEngineSystem5().getIncomplete().getValue(), false);
-        EXPECT_EQ(engine.getEngineSystem6().getIncomplete().getValue(), false);
-        EXPECT_EQ(engine.getEngineSystem7().getIncomplete().getValue(), false);
-        EXPECT_EQ(engine.getEngineSystem8().getIncomplete().getValue(), true);
-    }
-}
-
-
-// make sure that the application can generate the request on its own and does not need can frames to init.
-TEST(OBDHandler, PID_01_Test_MIL) {
-    OBDHandler *handler = getHandler();
-    MonitorStatus &monitoringStatus = handler->getVehicle()->getMonitorStatusSinceDTCsCleared();
-    // validate object state
-    monitoringStatus.setMil(true);
-    const auto pid = (byte) 0x01;
-    vector<byte> request{(RequestServiceID), pid};
-    byte *val = handler->createAnswerFrame(request.data());
-    vector<byte> response{ResponseServiceID, pid, (byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00};
-    compareResponse(response, val);
-
-}
-
-// make sure that the application can generate the request on its own and does not need can frames to init.
-TEST(OBDHandler, PID_01_MonitoringStatusInitViaVehicle) {
-    OBDHandler *handler = getHandler();
-    MonitorStatus &monitoringStatus = handler->getVehicle()->getMonitorStatusSinceDTCsCleared();
-
-    // validate object state
-    monitoringStatus.setMil(true);
-    monitoringStatus.setDtcCount(113);
-
-    monitoringStatus.getComponents().getAvailable().setValue(true);
-    monitoringStatus.getComponents().getIncomplete().setValue(true);
-
-    monitoringStatus.getFuelSystem().getAvailable().setValue(true);
-    monitoringStatus.getFuelSystem().getIncomplete().setValue(true);
-
-    monitoringStatus.getMisfire().getAvailable().setValue(true);
-    monitoringStatus.getMisfire().getIncomplete().setValue(false);
-
-    Engine &engine = monitoringStatus.getEngine();
-    engine.setEngineType(DIESEL);
-
-    engine.getEngineSystem1().getAvailable().setValue(true);
-    engine.getEngineSystem2().getAvailable().setValue(true);
-    engine.getEngineSystem3().getAvailable().setValue(true);
-    engine.getEngineSystem4().getAvailable().setValue(false);
-    engine.getEngineSystem5().getAvailable().setValue(false);
-    engine.getEngineSystem6().getAvailable().setValue(false);
-    engine.getEngineSystem7().getAvailable().setValue(true);
-    engine.getEngineSystem8().getAvailable().setValue(true);
-
-    engine.getEngineSystem1().getIncomplete().setValue(true);
-    engine.getEngineSystem2().getIncomplete().setValue(true);
-    engine.getEngineSystem3().getIncomplete().setValue(true);
-    engine.getEngineSystem4().getIncomplete().setValue(true);
-    engine.getEngineSystem5().getIncomplete().setValue(false);
-    engine.getEngineSystem6().getIncomplete().setValue(false);
-    engine.getEngineSystem7().getIncomplete().setValue(false);
-    engine.getEngineSystem8().getIncomplete().setValue(true);
-
-    const auto pid = (byte) 0x01;
-    vector<byte> request{(RequestServiceID), pid};
-    byte *val = handler->createAnswerFrame(request.data());
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xf1, (byte) 0x6f, (byte) 0xe3, (byte) 0xf1};
-    compareResponse(response, val);
-}
-
-TEST(OBDHandler, PID_02_FreezeDTC) {
-    const auto pid = (byte) FreezeDTCPid;
-    vector<byte> request{(RequestServiceID), pid};
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xe5, (byte) 0x00};
     auto handler = doTest(request, response);
-
-    auto code = handler->getVehicle()->getFreezeDTC().getValue();
-
-    EXPECT_EQ("U2500", code.getSaeId());
-    EXPECT_EQ("(CAN) Lack of Acknowledgement From Engine Management", code.getDescription());
-    EXPECT_EQ(0xe500, code.getCanId());
-}
-
-TEST(OBDHandler, PID_02_FreezeDTC_Setter) {
-    OBDHandler *handler = getHandler();
-    FreezeDTC &freezeDTC = handler->getVehicle()->getFreezeDTC();
-
-    const int codeID = 0x5751;
-    freezeDTC.setValue(codeID);
-
-    DataTroubleCode code = freezeDTC.getValue();
-    EXPECT_EQ(codeID, code.getCanId());
-    EXPECT_EQ("C1751", code.getSaeId());
-    EXPECT_EQ("Vehicle Speed Sensor # 1 Output Circuit Short to Vbatt", code.getDescription());
-
-    const auto pid = (byte) FreezeDTCPid;
-    vector<byte> request{(RequestServiceID), pid};
-    vector<byte> response{ResponseServiceID, pid, (byte) 0x57, (byte) 0x51};
-    doTest(request, response);
-}
-
-
-TEST(OBDHandler, PID_03_FuelSystemState) {
-    const auto pid = (byte) FuelSystemStatus;
-    vector<byte> request{(RequestServiceID), pid};
-    OBDHandler *handler;
-    int i;
-    for (i = -1; i <= 4; i++) {
-        StateOfFuelSystem state;
-        if (-1 == i) {
-            state = StateOfFuelSystemDoesNotExist;
-        } else {
-            state = StateOfFuelSystem(pow(2, i));
-        }
-
-        vector<byte> response{ResponseServiceID, pid, (byte) state, (byte) state};
-        handler = doTest(request, response);
-        EXPECT_EQ(handler->getVehicle()->getFuelSystemStates().getFuelSystem1().getValue(), state);
-        EXPECT_EQ(handler->getVehicle()->getFuelSystemStates().getFuelSystem2().getValue(), state);
-
-        vector<byte> response2{ResponseServiceID, pid, (byte) state, (byte) 0};
-        handler = doTest(request, response2);
-        EXPECT_EQ(handler->getVehicle()->getFuelSystemStates().getFuelSystem1().getValue(), state);
-        EXPECT_EQ(handler->getVehicle()->getFuelSystemStates().getFuelSystem2().getValue(),
-                  StateOfFuelSystemDoesNotExist);
-        handler->getVehicle()->getFuelSystemStates().getFuelSystem2().setValue(state);
-        doTest(request, response);
-
-        vector<byte> response3{ResponseServiceID, pid, (byte) 0, (byte) state};
-        handler = doTest(request, response3);
-        EXPECT_EQ(handler->getVehicle()->getFuelSystemStates().getFuelSystem1().getValue(),
-                  StateOfFuelSystemDoesNotExist);
-        EXPECT_EQ(handler->getVehicle()->getFuelSystemStates().getFuelSystem2().getValue(), state);
-        handler->getVehicle()->getFuelSystemStates().getFuelSystem1().setValue(state);
-        doTest(request, response);
-    }
-}
-
-TEST(OBDHandler, PID_04_CalculatedEngineLoad) {
-    const auto pid = (byte) CalculatedEngineLoad;
-    vector<byte> request{(RequestServiceID), pid};
-    vector<byte> response{ResponseServiceID, pid, (byte) 0x6b};
-    auto handler = doTest(request, response);
-
-    auto &engine = handler->getVehicle()->getEngine();
-    EXPECT_EQ(ceil(engine.getLoad().getValue()), 42);
 
     auto &vehicle = *handler->getVehicle();
-    EXPECT_FLOAT_EQ(vehicle.getEngine().getLoad().getValue(), (float) (100.0f / 255 * 0x6b));
+    auto system = dataCallback(vehicle);
+    if (nullptr != dataConversion) {
+        EXPECT_FLOAT_EQ(system->getValue(), dataConversion(value));
+    }
 
-    // values are special because they have no offset
-    vector<float> values{100.0/*max*/, 0/*min*/, 41.960785f, 87.84314f, 11.764706f};
+    vector<S> values{
+            (S) ((S) system->getDescription().getMin()),
+            (S) ((S) system->getDescription().getMax()),
+            (S) ((S) system->getDescription().getMax() / 2),
+            (S) ((S) system->getDescription().getMax() / 3),
+            (S) ((S) system->getDescription().getMax() / 4),
+            (S) ((S) system->getDescription().getMax() / 5),
+    };
+
     for (auto const &val: values) {
-        vehicle.getEngine().getLoad().setValue(val);
-        EXPECT_FLOAT_EQ(vehicle.getEngine().getLoad().getValue(), val);
+        system->setValue(val);
+        EXPECT_NEAR(system->getValue(), val, offset);
     }
 }
 
-TEST(OBDHandler, PID_04_CalculatedEngineLoadSetter) {
-    // no setting via can frame
-    const auto pid = (byte) CalculatedEngineLoad;
-    vector<byte> request{(RequestServiceID), pid};
-    vector<byte> response{ResponseServiceID, pid, (byte) 0x6b};
 
-    OBDHandler *handler = getHandler();
-    auto &engine = handler->getVehicle()->getEngine();
-    engine.getLoad().setValue(42);
-    EXPECT_EQ(ceil(engine.getLoad().getValue()), 42);
-}
+template<class T>
+void TestDataObject(Service1Pids pid,
+                    function<DataObject<T> *(Vehicle &vehicle)> dataCallback,
+                    float offset = 0, function<T(int)> dataConversion = nullptr) {
+    vector<byte> request{(RequestServiceID), (byte) pid};
+
+    vector<byte> response;
+    unsigned int value = 0;
+    if (sizeof(T) == sizeof(byte)) {
+        response = {ResponseServiceID, (byte) pid, (byte) 0xca};
+        value = 0xca;
+    } else if (sizeof(T) == sizeof(short)) {
+        response = {ResponseServiceID, (byte) pid, (byte) 0xca, (byte) 0xfe};
+        value = 0xcafe;
+    } else if (sizeof(T) == sizeof(int)) {
+        response = {ResponseServiceID, (byte) pid, (byte) 0xca, (byte) 0xfe, (byte) 0xba, (byte) 0xbe};
+        value = 0xcafebabe;
+    }
 
 
-TEST(OBDHandler, PID_05_EngineCooleantTemp) {
-    const auto pid = (byte) EngineCoolantTemperature;
-    vector<byte> request{(RequestServiceID), pid};
-    vector<byte> response{ResponseServiceID, pid, (byte) 0x00};
     auto handler = doTest(request, response);
 
-    auto &engine = handler->getVehicle()->getEngine();
-    EXPECT_EQ(engine.getCoolantTemperature().getValue(), -40);
-}
+    auto &vehicle = *handler->getVehicle();
+    auto system = dataCallback(vehicle);
+    if (nullptr != dataConversion) {
+        EXPECT_EQ(system->getValue(), dataConversion(value));
+    }
 
-TEST(OBDHandler, PID_05_EngineCooleantTempSetter) {
-    // no setting via can frame
-    const auto pid = (byte) EngineCoolantTemperature;
-    vector<byte> request{(RequestServiceID), pid};
-    vector<byte> response{ResponseServiceID, pid, (byte) 0x00};
+    vector<T> values;
 
-    OBDHandler *handler = getHandler();
-    auto &engine = handler->getVehicle()->getEngine();
-    engine.getCoolantTemperature().setValue(-40);
-    EXPECT_EQ(ceil(engine.getCoolantTemperature().getValue()), -40);
-}
-
-TEST(OBDHandler, PID_06_To_9_FuelTrimBanks) {
-    vector<Service1Pids> pids{ShortTermFuelTrimBank1, LongTermFuelTrimBank1,
-                              ShortTermFuelTrimBank2, LongTermFuelTrimBank2};
-
-    for (auto &pid: pids) {
-        vector<byte> request{(RequestServiceID), (byte) pid};
-        vector<byte> response{ResponseServiceID, (byte) pid, (byte) 0x00};
-        auto handler = doTest(request, response);
-
-        auto &engine = handler->getVehicle()->getEngine();
-        switch (pid) {
-            case ShortTermFuelTrimBank1:
-                EXPECT_EQ(engine.getShortTermFuelTrimBank1().getValue(), -100);
-                break;
-            case LongTermFuelTrimBank1:
-                EXPECT_EQ(engine.getLongTermFuelTrimBank1().getValue(), -100);
-                break;
-            case ShortTermFuelTrimBank2:
-                EXPECT_EQ(engine.getShortTermFuelTrimBank2().getValue(), -100);
-                break;
-            case LongTermFuelTrimBank2:
-                EXPECT_EQ(engine.getLongTermFuelTrimBank2().getValue(), -100);
-                break;
-        }
-
-        handler = getHandler();
-        auto &engine2 = handler->getVehicle()->getEngine();
-        switch (pid) {
-            case ShortTermFuelTrimBank1:
-                engine.getShortTermFuelTrimBank1().setValue(40);
-                EXPECT_EQ(ceil(engine.getShortTermFuelTrimBank1().getValue()), 40);
-                break;
-            case LongTermFuelTrimBank1:
-                engine.getLongTermFuelTrimBank1().setValue(40);
-                EXPECT_EQ(ceil(engine.getLongTermFuelTrimBank1().getValue()), 40);
-                break;
-            case ShortTermFuelTrimBank2:
-                engine.getShortTermFuelTrimBank2().setValue(40);
-                EXPECT_EQ(ceil(engine.getShortTermFuelTrimBank2().getValue()), 40);
-                break;
-            case LongTermFuelTrimBank2:
-                engine.getLongTermFuelTrimBank2().setValue(40);
-                EXPECT_EQ(ceil(engine.getLongTermFuelTrimBank2().getValue()), 40);
-                break;
+    if (nullptr != system->getDescription()) {
+        values = {
+                (T) (system->getDescription()->getMin()),
+                (T) (system->getDescription()->getMax()),
+                (T) (system->getDescription()->getMax() / (T) 2),
+                (T) (system->getDescription()->getMax() / (T) 3),
+                (T) (system->getDescription()->getMax() / (T) 4),
+                (T) (system->getDescription()->getMax() / (T) 5)};
+        for (auto const &val: values) {
+            system->setValue(val);
+            EXPECT_NEAR((double) system->getValue(), (double) val, offset);
         }
     }
 }
+
+template<>
+void TestDataObject<byte>(Service1Pids pid,
+                          function<DataObject<byte> *(Vehicle &vehicle)> dataCallback,
+                          float offset, function<byte(int)> dataConversion) {
+    vector<byte> request{(RequestServiceID), (byte) pid};
+
+    vector<byte> response = {ResponseServiceID, (byte) pid, (byte) 0xca};;
+    unsigned int value = 0xca;;
+
+
+    auto handler = doTest(request, response);
+
+    auto &vehicle = *handler->getVehicle();
+    auto system = dataCallback(vehicle);
+    if (nullptr != dataConversion) {
+        EXPECT_EQ(system->getValue(), dataConversion(value));
+    }
+
+    vector<byte> values{
+            (system->getDescription()->getMin()),
+            (byte) (system->getDescription()->getMax()),
+            (byte) ((int) system->getDescription()->getMax() / 2),
+            (byte) ((int) system->getDescription()->getMax() / 3),
+            (byte) ((int) system->getDescription()->getMax() / 4),
+            (byte) ((int) system->getDescription()->getMax() / 5)};
+    for (auto const &val: values) {
+        system->setValue(val);
+        EXPECT_NEAR((double) system->getValue(), (double) val, offset);
+    }
+}
+
+template<>
+void TestDataObject<bool>(Service1Pids pid,
+                          function<DataObject<bool> *(Vehicle &vehicle)> dataCallback,
+                          float offset, function<bool(int)> dataConversion) {
+    vector<byte> request{(RequestServiceID), (byte) pid};
+
+    vector<byte> response = {ResponseServiceID, (byte) pid, (byte) 0xca};;
+    unsigned int value = 0xca;;
+
+
+    auto handler = doTest(request, response);
+
+    auto &vehicle = *handler->getVehicle();
+    auto system = dataCallback(vehicle);
+    if (nullptr != dataConversion) {
+        EXPECT_EQ(system->getValue(), dataConversion(value));
+    }
+
+    vector<bool> values{
+            false,
+            true,
+            false,
+            true};
+    for (auto const &val: values) {
+        system->setValue(val);
+        EXPECT_NEAR((double) system->getValue(), (double) val, offset);
+    }
+}
+
+
 
 TEST(OBDHandler, PID_0A_FuelPressure) {
-    const auto pid = (byte) FuelPressure;
-    vector<byte> request{(RequestServiceID), pid};
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xff};
-    auto handler = doTest(request, response);
 
-    auto &engine = handler->getVehicle()->getEngine();
-    EXPECT_EQ(engine.getFuelPressure().getValue(), (0xff) * 3);
+    function<CalculatedDataObject<byte, unsigned short> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getEngine().getFuelPressure(); };
 
-    engine.getFuelPressure().setValue(30);
-    EXPECT_EQ((int) engine.getFuelPressure().getValue(), 30);
+    function<unsigned short(int)> dc = [](int value) { return value * 3; };
+
+    TestCalculatedData(FuelPressure, cb, 3, dc);
 }
 
 TEST(OBDHandler, PID_0B_IntakeManifoldAbsolutePressure) {
-    const auto pid = (byte) IntakeManifoldAbsolutePressure;
-    vector<byte> request{(RequestServiceID), pid};
-    vector<byte> response{ResponseServiceID, pid, (byte) 42};
-    auto handler = doTest(request, response);
+    function<DataObject<byte> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getEngine().getIntakeManifoldAbsolutePressure(); };
 
-    auto &engine = handler->getVehicle()->getEngine();
-    EXPECT_EQ((int) engine.getIntakeManifoldAbsolutePressure().getValue(), 42);
+    function<byte(int)> dc = [](int value) { return (byte) value; };
 
-    engine.getIntakeManifoldAbsolutePressure().setValue((byte) 84);
-    EXPECT_EQ((int) engine.getIntakeManifoldAbsolutePressure().getValue(), 84);
+    TestDataObject(IntakeManifoldAbsolutePressure, cb, 0, dc);
 }
 
 TEST(OBDHandler, PID_0C_EngineRPM) {
-    const auto pid = (byte) EngineRPM;
-    vector<byte> request{(RequestServiceID), pid};
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xff, (byte) 0xff};
-    auto handler = doTest(request, response);
+    function<CalculatedDataObject<unsigned short, float> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getEngine().getEngineRPM(); };
 
-    auto &engine = handler->getVehicle()->getEngine();
-    EXPECT_FLOAT_EQ(engine.getEngineRPM().getValue(), 16383.75);
+    function<float(int)> dc = [](int value) { return (float) value / 4; };
 
-    // values are selected because they fit exactly without offset
-    vector<float> values{16383.75f/*max*/, 0, 385.5, 1799, 9380.5};
-    for (auto const &val: values) {
-        engine.getEngineRPM().setValue(val);
-        EXPECT_FLOAT_EQ(engine.getEngineRPM().getValue(), val);
-    }
+    TestCalculatedData(EngineRPM, cb, 4, dc);
 }
 
 
 TEST(OBDHandler, PID_0D_TestSpeed) {
-    const auto pid = (byte) VehicleSpeed;
-    vector<byte> request{(RequestServiceID), pid};
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
-    auto handler = doTest(request, response);
+    function<DataObject<byte> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getSpeed(); };
 
-    auto &vehicle = *handler->getVehicle();
-    EXPECT_EQ(vehicle.getSpeed().getValue(), (byte) 0xca);
+    function<byte(int)> dc = [](int value) { return (byte) 0xca; };
 
-    vector<int> values{255, 12, 42, 129};
-    for (auto const &val: values) {
-        vehicle.getSpeed().setValue((byte) val);
-        EXPECT_EQ(vehicle.getSpeed().getValue(), (byte) val);
-    }
+    TestDataObject(VehicleSpeed, cb, 0, dc);
 }
 
 TEST(OBDHandler, PID_0E_TimingAdvance) {
-    const auto pid = (byte) TimingAdvance;
-    vector<byte> request{(RequestServiceID), pid};
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
-    auto handler = doTest(request, response);
 
-    auto &vehicle = *handler->getVehicle();
-    EXPECT_EQ(vehicle.getEngine().getTimingAdvance().getValue(), 37);
+    function<CalculatedDataObject<byte, float> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getEngine().getTimingAdvance(); };
 
-    vector<float> values{-64/*max*/, 63.5/*min*/, 42, 12};
-    for (auto const &val: values) {
-        vehicle.getEngine().getTimingAdvance().setValue(val);
-        EXPECT_FLOAT_EQ(vehicle.getEngine().getTimingAdvance().getValue(), val);
-    }
+    function<float(int)> dc = [](int value) { return 37; };
+
+    TestCalculatedData(TimingAdvance, cb, 1, dc);
 }
 
 TEST(OBDHandler, PID_0F_IntakeAirTemperature) {
-    const auto pid = (byte) IntakeAirTemperature;
-    vector<byte> request{(RequestServiceID), pid};
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
-    auto handler = doTest(request, response);
+    function<CalculatedDataObject<byte, short> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getEngine().getIntakeAirTemperature(); };
 
-    auto &vehicle = *handler->getVehicle();
-    EXPECT_EQ(vehicle.getEngine().getIntakeAirTemperature().getValue(), 162);
+    function<short(int)> dc = [](int value) { return 162; };
 
-    vector<short> values{215/*max*/, -40/*min*/, 42, 12};
-    for (auto const &val: values) {
-        vehicle.getEngine().getIntakeAirTemperature().setValue(val);
-        EXPECT_EQ(vehicle.getEngine().getIntakeAirTemperature().getValue(), val);
-    }
+    TestCalculatedData(IntakeAirTemperature, cb, 0, dc);
 }
 
 TEST(OBDHandler, PID_10_MAFAirFlowRate) {
-    const auto pid = (byte) MAFAirFlowRate;
-    vector<byte> request{(RequestServiceID), pid};
+    function<CalculatedDataObject<unsigned short, float> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getEngine().getMAFAirFlowRate(); };
 
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xca, (byte) 0xfe};
-    auto handler = doTest(request, response);
+    function<float(int)> dc = [](int value) { return ((float) value / 100); };
 
-    auto &vehicle = *handler->getVehicle();
-    // (256A + B ) / 100
-    EXPECT_FLOAT_EQ(vehicle.getEngine().getMAFAirFlowRate().getValue(), (float) ((256.0 * 0xca + 0xfe) / 100));
-
-    // values are special because they have no offset
-    vector<float> values{(float) ((256.0 * 0xff + 0xff) / 100)/*max*/, 0/*min*/, 418.91, 41.12};
-    for (auto const &val: values) {
-        vehicle.getEngine().getMAFAirFlowRate().setValue(val);
-        EXPECT_FLOAT_EQ(vehicle.getEngine().getMAFAirFlowRate().getValue(), val);
-    }
+    TestCalculatedData(MAFAirFlowRate, cb, 2, dc);
 }
 
 
 TEST(OBDHandler, PID_11_ThrottlePosition) {
-    const auto pid = (byte) ThrottlePosition;
-    vector<byte> request{(RequestServiceID), pid};
+    function<CalculatedDataObject<byte, float> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getThrottle().getThrottlePosition(); };
 
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
-    auto handler = doTest(request, response);
+    function<float(int)> dc = [](int value) { return 100.0f / 255 * value; };
 
-    auto &vehicle = *handler->getVehicle();
-    EXPECT_FLOAT_EQ(vehicle.getThrottlePosition().getValue(), (float) (100.0f / 255 * 0xca));
-
-    // values are special because they have no offset
-    vector<float> values{100.0/*max*/, 0/*min*/, 41.960785f, 87.84314f, 11.764706f};
-    for (auto const &val: values) {
-        vehicle.getThrottlePosition().setValue(val);
-        EXPECT_FLOAT_EQ(vehicle.getThrottlePosition().getValue(), val);
-    }
+    TestCalculatedData(ThrottlePosition, cb, 0.5, dc);
 }
 
-TEST(OBDHandler, PID_12_CommandedSecondaryAirStatus) {
-    const auto pid = (byte) CommandedSecondaryAirStatus;
-    vector<byte> request{(RequestServiceID), pid};
 
-    vector<byte> response{ResponseServiceID, pid, (byte) 0x02};
-    auto handler = doTest(request, response);
+TEST(OBDHandler, PID_04_CalculatedEngineLoad) {
 
-    auto &vehicle = *handler->getVehicle();
-    auto &system = vehicle.getCommandedSecondaryAirStatus();
-    EXPECT_FLOAT_EQ(system.getValue(), ClosedLoopUsingOxygenSensor);
+    function<CalculatedDataObject<byte, float> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getEngine().getLoad(); };
 
-    vector<StateOfCommandedSecondaryAir> values{CommandedSecondaryAirStatusDoesNotExist,
-                                                Upstream,
-                                                DownstreamOfCatalyticConverter,
-                                                FromTheOutsideAtmosphereOrOff,
-                                                PumpCommandedOnForDiagnostics};
-    for (auto const &val: values) {
-        system.setValue(val);
-        EXPECT_FLOAT_EQ(system.getValue(), val);
-    }
-}
+    function<float(int)> dc = [](int value) { return 100.0 / 255.0 * value; };
 
-TEST(OBDHandler, PID_13_OxygenSensorsPresent) {
-    const auto pid = (byte) OxygenSensorsPresent;
-    vector<byte> request{(RequestServiceID), pid};
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
-    auto handler = doTest(request, response);
-
-    auto &vehicle = *handler->getVehicle();
-    auto &system = vehicle.getOxygenSystem().getBankOxygenSensorsCollection();
-
-    // [A0..A3] == Bank 1, Sensors 1-4.
-    // [A4..A7] == Bank 2, Sensors 1-4.
-    // BitIndex 76543210
-    // 0xca =   11001010
-    EXPECT_EQ(system.getBank1Sensor1present().getValue(), false);
-    EXPECT_EQ(system.getBank1Sensor2present().getValue(), true);
-    EXPECT_EQ(system.getBank1Sensor3present().getValue(), false);
-    EXPECT_EQ(system.getBank1Sensor4present().getValue(), true);
-    EXPECT_EQ(system.getBank2Sensor1present().getValue(), false);
-    EXPECT_EQ(system.getBank2Sensor2present().getValue(), false);
-    EXPECT_EQ(system.getBank2Sensor3present().getValue(), true);
-    EXPECT_EQ(system.getBank2Sensor4present().getValue(), true);
-}
-
-TEST(OBDHandler, PID_13_OxygenSensorsPresentSetter) {
-    auto handler = getHandler();
-
-    auto &vehicle = *handler->getVehicle();
-    auto &system = vehicle.getOxygenSystem().getBankOxygenSensorsCollection();
-
-    system.getBank1Sensor1present().setValue(false);
-    system.getBank1Sensor2present().setValue(true);
-    system.getBank1Sensor3present().setValue(false);
-    system.getBank1Sensor4present().setValue(true);
-    system.getBank2Sensor1present().setValue(false);
-    system.getBank2Sensor2present().setValue(false);
-    system.getBank2Sensor3present().setValue(true);
-    system.getBank2Sensor4present().setValue(true);
-
-
-    EXPECT_EQ(system.getBank1Sensor1present().getValue(), false);
-    EXPECT_EQ(system.getBank1Sensor2present().getValue(), true);
-    EXPECT_EQ(system.getBank1Sensor3present().getValue(), false);
-    EXPECT_EQ(system.getBank1Sensor4present().getValue(), true);
-    EXPECT_EQ(system.getBank2Sensor1present().getValue(), false);
-    EXPECT_EQ(system.getBank2Sensor2present().getValue(), false);
-    EXPECT_EQ(system.getBank2Sensor3present().getValue(), true);
-    EXPECT_EQ(system.getBank2Sensor4present().getValue(), true);
-}
-
-TEST(OBDHandler, PID_14_to_0x1B_BankOxygenSensor1_to_8) {
-    // tested together because same logic with other pids
-    const vector<Service1Pids> pids = {
-            BankOxygenSensor1, BankOxygenSensor2, BankOxygenSensor3, BankOxygenSensor4,
-            BankOxygenSensor5, BankOxygenSensor6, BankOxygenSensor7, BankOxygenSensor8};
-
-    for (const auto &pid: pids) {
-        vector<byte> request{(RequestServiceID), (byte) pid};
-        vector<byte> response{ResponseServiceID, (byte) pid, (byte) 0xca, (byte) 0xfe};
-        auto handler = doTest(request, response);
-
-
-        auto &oxygenSystem = handler->getVehicle()->getOxygenSystem();
-        BankOxygenSensor *sensor;
-        switch (pid) {
-            case BankOxygenSensor1:
-                sensor = &oxygenSystem.getBankOxygenSensor1();
-                break;
-            case BankOxygenSensor2:
-                sensor = &oxygenSystem.getBankOxygenSensor2();
-                break;
-            case BankOxygenSensor3:
-                sensor = &oxygenSystem.getBankOxygenSensor3();
-                break;
-            case BankOxygenSensor4:
-                sensor = &oxygenSystem.getBankOxygenSensor4();
-                break;
-            case BankOxygenSensor5:
-                sensor = &oxygenSystem.getBankOxygenSensor5();
-                break;
-            case BankOxygenSensor6:
-                sensor = &oxygenSystem.getBankOxygenSensor6();
-                break;
-            case BankOxygenSensor7:
-                sensor = &oxygenSystem.getBankOxygenSensor7();
-                break;
-            case BankOxygenSensor8:
-                sensor = &oxygenSystem.getBankOxygenSensor8();
-                break;
-            default:
-                EXPECT_EQ(false, true);
-                continue;
-        }
-
-        EXPECT_FLOAT_EQ(sensor->getVoltage().getValue(), (float) 0xca / 200);
-        EXPECT_TRUE(sensor->isSensorUsedInTrimCalc());
-        EXPECT_FLOAT_EQ(sensor->getShortTermFuelTrim().getValue(), (100.0f / 128.0f) * 0xfe - 100);
-
-        sensor->getVoltage().setValue(1.275);
-        EXPECT_FLOAT_EQ(sensor->getVoltage().getValue(), 1.275);
-
-        sensor->getShortTermFuelTrim().setValue(-42.1875f);
-        EXPECT_FLOAT_EQ(sensor->getShortTermFuelTrim().getValue(), -42.1875);
-    }
-}
-
-void PID_1C_Supported_Standards_Setter(bool value, OBDCompliance &compliance) {
-    compliance.getOBD_II_CARB().setValue(value);
-    EXPECT_EQ(compliance.getOBD_II_CARB().getValue(), value);
-
-
-    compliance.getOBD_EPA().setValue(value);
-    EXPECT_EQ(compliance.getOBD_EPA().getValue(), value);
-
-
-    compliance.getOBD_and_OBD_II().setValue(value);
-    EXPECT_EQ(compliance.getOBD_and_OBD_II().getValue(), value);
-
-
-    compliance.getOBD_I().setValue(value);
-    EXPECT_EQ(compliance.getOBD_I().getValue(), value);
-
-
-    compliance.getNotOBDcompliant().setValue(value);
-    EXPECT_EQ(compliance.getNotOBDcompliant().getValue(), value);
-
-
-    compliance.getEOBD().setValue(value);
-    EXPECT_EQ(compliance.getEOBD().getValue(), value);
-
-
-    compliance.getEOBDandOBD_II().setValue(value);
-    EXPECT_EQ(compliance.getEOBDandOBD_II().getValue(), value);
-
-
-    compliance.getEOBDandOBD().setValue(value);
-    EXPECT_EQ(compliance.getEOBDandOBD().getValue(), value);
-
-
-    compliance.getEOBD_OBD_and_OBDII().setValue(value);
-    EXPECT_EQ(compliance.getEOBD_OBD_and_OBDII().getValue(), value);
-
-
-    compliance.getJOBD().setValue(value);
-    EXPECT_EQ(compliance.getJOBD().getValue(), value);
-
-
-    compliance.getJOBDandOBDII().setValue(value);
-    EXPECT_EQ(compliance.getJOBDandOBDII().getValue(), value);
-
-
-    compliance.getJOBDandEOBD().setValue(value);
-    EXPECT_EQ(compliance.getJOBDandEOBD().getValue(), value);
-
-
-    compliance.getJOBD_EOBD_and_OBDII().setValue(value);
-    EXPECT_EQ(compliance.getJOBD_EOBD_and_OBDII().getValue(), value);
-
-
-    compliance.getEngineManufacturerDiagnostics().setValue(value);
-    EXPECT_EQ(compliance.getEngineManufacturerDiagnostics().getValue(), value);
-
-
-    compliance.getEngineManufacturerDiagnosticsEnhanced().setValue(value);
-    EXPECT_EQ(compliance.getEngineManufacturerDiagnosticsEnhanced().getValue(), value);
-
-
-    compliance.getHeavyDutyOn_BoardDiagnostics_OBD_C().setValue(value);
-    EXPECT_EQ(compliance.getHeavyDutyOn_BoardDiagnostics_OBD_C().getValue(), value);
-
-
-    compliance.getHeavyDutyOn_BoardDiagnostics().setValue(value);
-    EXPECT_EQ(compliance.getHeavyDutyOn_BoardDiagnostics().getValue(), value);
-
-
-    compliance.getWorldWideHarmonizedOBD().setValue(value);
-    EXPECT_EQ(compliance.getWorldWideHarmonizedOBD().getValue(), value);
-
-
-    compliance.getHeavyDutyEuroOBDStageIwithoutNOxcontrol().setValue(value);
-    EXPECT_EQ(compliance.getHeavyDutyEuroOBDStageIwithoutNOxcontrol().getValue(), value);
-
-
-    compliance.getHeavyDutyEuroOBDStageIwithNOxcontrol().setValue(value);
-    EXPECT_EQ(compliance.getHeavyDutyEuroOBDStageIwithNOxcontrol().getValue(), value);
-
-
-    compliance.getHeavyDutyEuroOBDStageIIwithoutNOxcontrol().setValue(value);
-    EXPECT_EQ(compliance.getHeavyDutyEuroOBDStageIIwithoutNOxcontrol().getValue(), value);
-
-
-    compliance.getHeavyDutyEuroOBDStageIIwithNOxcontrol().setValue(value);
-    EXPECT_EQ(compliance.getHeavyDutyEuroOBDStageIIwithNOxcontrol().getValue(), value);
-
-
-    compliance.getBrazilOBDPhase1().setValue(value);
-    EXPECT_EQ(compliance.getBrazilOBDPhase1().getValue(), value);
-
-
-    compliance.getBrazilOBDPhase2().setValue(value);
-    EXPECT_EQ(compliance.getBrazilOBDPhase2().getValue(), value);
-
-
-    compliance.getKoreanOBD().setValue(value);
-    EXPECT_EQ(compliance.getKoreanOBD().getValue(), value);
-
-
-    compliance.getIndiaOBDI().setValue(value);
-    EXPECT_EQ(compliance.getIndiaOBDI().getValue(), value);
-
-
-    compliance.getIndiaOBDII().setValue(value);
-    EXPECT_EQ(compliance.getIndiaOBDII().getValue(), value);
-
-
-    compliance.getHeavyDutyEuroOBDStageVI().setValue(value);
-    EXPECT_EQ(compliance.getHeavyDutyEuroOBDStageVI().getValue(), value);
-}
-
-TEST(OBDHandler, PID_1C_Supported_Standards) {
-    const auto pid = (byte) OBDStandardsVehicleConformsTo;
-    vector<byte> request{(RequestServiceID), pid};
-
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
-    auto handler = doTest(request, response);
-
-    auto &vehicle = *handler->getVehicle();
-    auto &compliance = vehicle.getOBDCompliance();
-
-    PID_1C_Supported_Standards_Setter(false, compliance);
-    PID_1C_Supported_Standards_Setter(true, compliance);
+    TestCalculatedData(CalculatedEngineLoad, cb, 0.5f, dc);
 
 }
 
 
-TEST(OBDHandler, PID_1D_OxygenSensorsPresent4Banks) {
-    const auto pid = (byte) OxygenSensorsPresent4Banks;
-    vector<byte> request{(RequestServiceID), pid};
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
-    auto handler = doTest(request, response);
+TEST(OBDHandler, PID_05_EngineCooleantTemp) {
 
-    auto &vehicle = *handler->getVehicle();
-    auto &system = vehicle.getOxygenSystem().getBankOxygenSensor4BankCollection();
+    function<CalculatedDataObject<byte, short> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getEngine().getCoolantTemperature(); };
 
-    // [A0..A3] == Bank 1, Sensors 1-4.
-    // [A4..A7] == Bank 2, Sensors 1-4.
-    // BitIndex 76543210
-    // 0xca =   11001010
-    EXPECT_EQ(system.getBank1Sensor1presentIn4Banks().getValue(), false);
-    EXPECT_EQ(system.getBank1Sensor2presentIn4Banks().getValue(), true);
-    EXPECT_EQ(system.getBank2Sensor1presentIn4Banks().getValue(), false);
-    EXPECT_EQ(system.getBank2Sensor2presentIn4Banks().getValue(), true);
-    EXPECT_EQ(system.getBank3Sensor1presentIn4Banks().getValue(), false);
-    EXPECT_EQ(system.getBank3Sensor2presentIn4Banks().getValue(), false);
-    EXPECT_EQ(system.getBank4Sensor1presentIn4Banks().getValue(), true);
-    EXPECT_EQ(system.getBank4Sensor2presentIn4Banks().getValue(), true);
+    function<short(int)> dc = [](int value) { return value - 40; };
+
+    TestCalculatedData(EngineCoolantTemperature, cb, 0, dc);
 }
-
-TEST(OBDHandler, PID_1D_OxygenSensorsPresent4Banks_Setter) {
-    auto handler = getHandler();
-
-    auto &vehicle = *handler->getVehicle();
-    auto &system = vehicle.getOxygenSystem().getBankOxygenSensor4BankCollection();
-
-    system.getBank1Sensor1presentIn4Banks().setValue(false);
-    system.getBank1Sensor2presentIn4Banks().setValue(true);
-    system.getBank2Sensor1presentIn4Banks().setValue(false);
-    system.getBank2Sensor2presentIn4Banks().setValue(true);
-    system.getBank3Sensor1presentIn4Banks().setValue(false);
-    system.getBank3Sensor2presentIn4Banks().setValue(false);
-    system.getBank4Sensor1presentIn4Banks().setValue(true);
-    system.getBank4Sensor2presentIn4Banks().setValue(true);
-
-
-    EXPECT_EQ(system.getBank1Sensor1presentIn4Banks().getValue(), false);
-    EXPECT_EQ(system.getBank1Sensor2presentIn4Banks().getValue(), true);
-    EXPECT_EQ(system.getBank2Sensor1presentIn4Banks().getValue(), false);
-    EXPECT_EQ(system.getBank2Sensor2presentIn4Banks().getValue(), true);
-    EXPECT_EQ(system.getBank3Sensor1presentIn4Banks().getValue(), false);
-    EXPECT_EQ(system.getBank3Sensor2presentIn4Banks().getValue(), false);
-    EXPECT_EQ(system.getBank4Sensor1presentIn4Banks().getValue(), true);
-    EXPECT_EQ(system.getBank4Sensor2presentIn4Banks().getValue(), true);
-}
-
-
-TEST(OBDHandler, PID_1E_AuxiliaryInputStatus) {
-    const auto pid = (byte) AuxiliaryInputStatus;
-    vector<byte> request{(RequestServiceID), pid};
-
-    vector<byte> response{ResponseServiceID, pid, (byte) 0x01};
-    auto handler = doTest(request, response);
-
-    auto &vehicle = *handler->getVehicle();
-    auto &system = vehicle.getAuxiliaryInputStatus();
-    EXPECT_TRUE(system.getValue());
-
-    system.setValue(false);
-    EXPECT_FALSE(system.getValue());
-
-    system.setValue(true);
-    EXPECT_TRUE(system.getValue());
-}
-
 
 
 TEST(OBDHandler, PID_1F_RunTimeSinceEngineStart) {
-    const auto pid = (byte) RunTimeSinceEngineStart;
-    vector<byte> request{(RequestServiceID), pid};
+    function<DataObject<unsigned short> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getRunTimeSinceEngineStart(); };
 
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xca, (byte) 0xfe};
-    auto handler = doTest(request, response);
-
-    auto &vehicle = *handler->getVehicle();
-    auto &system = vehicle.getRunTimeSinceEngineStart();
-
-    EXPECT_EQ(system.getValue(), 0xca * 256 + 0xfe);
-
-    vector<unsigned short> values{65535/*max*/, 0, 420, 58, 9999};
-
-    for (auto const &val: values) {
-        system.setValue(val);
-        EXPECT_FLOAT_EQ(system.getValue(), val);
-    }
+    TestDataObject(RunTimeSinceEngineStart, cb);
 }
 
 TEST(OBDHandler, PID_21_DistanceTraveledWithMilOn) {
-    const auto pid = (byte) DistanceTraveledWithMilOn;
-    vector<byte> request{(RequestServiceID), pid};
+    function<DataObject<unsigned short> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getDistanceTraveledWithMilOn(); };
 
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xca, (byte) 0xfe};
-    auto handler = doTest(request, response);
-
-    auto &vehicle = *handler->getVehicle();
-    auto &system = vehicle.getDistanceTraveledWithMilOn();
-
-    EXPECT_EQ(system.getValue(), 0xca * 256 + 0xfe);
-
-    vector<unsigned short> values{65535/*max*/, 0, 420, 58, 9999};
-
-    for (auto const &val: values) {
-        system.setValue(val);
-        EXPECT_FLOAT_EQ(system.getValue(), val);
-    }
+    TestDataObject(DistanceTraveledWithMilOn, cb);
 }
 
 TEST(OBDHandler, PID_22_FuelRailPressure) {
-    const auto pid = (byte) FuelRailPressure;
-    vector<byte> request{(RequestServiceID), pid};
 
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xca, (byte) 0xfe};
-    auto handler = doTest(request, response);
+    function<CalculatedDataObject<unsigned short, float> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getFuelRailPressure(); };
 
-    auto &vehicle = *handler->getVehicle();
-    auto &system = vehicle.getFuelRailPressure();
+    function<float(int)> dc = [](int value) {
+        return (float) (0.079 * value);
+    };
 
-    // 0.079(256A + B)
-    auto expected = static_cast<float>(0.079 * (256 * 0xca + 0xfe));
-    EXPECT_FLOAT_EQ(system.getValue(), expected);
-
-    vector<float> values{5177.265/*max*/, 0, 426.28403f, 60.830002f, 4141.7334f};
-    for (auto const &val: values) {
-        system.setValue(val);
-        EXPECT_FLOAT_EQ(system.getValue(), val);
-    }
+    TestCalculatedData(FuelRailPressure, cb, 20, dc);
 }
 
 
 TEST(OBDHandler, PID_23_FuelRailGaugePressure) {
-    const auto pid = (byte) FuelRailGaugePressure;
-    vector<byte> request{(RequestServiceID), pid};
 
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xca, (byte) 0xfe};
-    auto handler = doTest(request, response);
+    function<CalculatedDataObject<unsigned short, unsigned int> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getFuelRailGaugePressure(); };
 
-    auto &vehicle = *handler->getVehicle();
-    auto &system = vehicle.getFuelRailGaugePressure();
+    function<unsigned int(int)> dc = [](int value) {
+        return (unsigned int) (10 * value);
+    };
 
-    // 10(256A+B)}
-    auto expected = static_cast<float>(10 * (256 * 0xca + 0xfe));
-    EXPECT_EQ(system.getValue(), expected);
-
-    vector<unsigned int> values{655350/*max*/, 0, 4200, 8190, 641690};
-    for (auto const &val: values) {
-        system.setValue(val);
-        EXPECT_EQ(system.getValue(), val);
-    }
-}
-
-TEST(OBDHandler, PID_24_to_0x2B_FuelRailOxygenSensor1_to_8) {
-    // tested together because same logic with other pids
-    const vector<Service1Pids> pids = {
-            FuelRailOxygenSensor1, FuelRailOxygenSensor2, FuelRailOxygenSensor3, FuelRailOxygenSensor4,
-            FuelRailOxygenSensor5, FuelRailOxygenSensor6, FuelRailOxygenSensor7, FuelRailOxygenSensor8};
-
-    for (const auto &pid: pids) {
-        vector<byte> request{(RequestServiceID), (byte) pid};
-        vector<byte> response{ResponseServiceID, (byte) pid, (byte) 0xca, (byte) 0xfe, (byte) 0xba, (byte) 0xbe};
-        auto handler = doTest(request, response);
-
-
-        auto &oxygenSystem = handler->getVehicle()->getOxygenSystem();
-        FuelRailOxygenSensor *sensor;
-        switch (pid) {
-            case FuelRailOxygenSensor1:
-                sensor = &oxygenSystem.getFuelRailOxygenSensor1();
-                break;
-            case FuelRailOxygenSensor2:
-                sensor = &oxygenSystem.getFuelRailOxygenSensor2();
-                break;
-            case FuelRailOxygenSensor3:
-                sensor = &oxygenSystem.getFuelRailOxygenSensor3();
-                break;
-            case FuelRailOxygenSensor4:
-                sensor = &oxygenSystem.getFuelRailOxygenSensor4();
-                break;
-            case FuelRailOxygenSensor5:
-                sensor = &oxygenSystem.getFuelRailOxygenSensor5();
-                break;
-            case FuelRailOxygenSensor6:
-                sensor = &oxygenSystem.getFuelRailOxygenSensor6();
-                break;
-            case FuelRailOxygenSensor7:
-                sensor = &oxygenSystem.getFuelRailOxygenSensor7();
-                break;
-            case FuelRailOxygenSensor8:
-                sensor = &oxygenSystem.getFuelRailOxygenSensor8();
-                break;
-            default:
-                EXPECT_EQ(false, true);
-                continue;
-        }
-
-        EXPECT_FLOAT_EQ(sensor->getFuelAirEquivalenceRatio().getValue(), (2.0f / 65536) * (256 * 0xca + 0xfe));
-        EXPECT_FLOAT_EQ(sensor->getVoltage().getValue(), (8.0f / 65536) * (256 * 0xba + 0xbe));
-
-        // min
-        float value = 0.0f;
-        sensor->getFuelAirEquivalenceRatio().setValue(value);
-        EXPECT_FLOAT_EQ(sensor->getFuelAirEquivalenceRatio().getValue(), value);
-        sensor->getVoltage().setValue(value);
-        EXPECT_FLOAT_EQ(sensor->getVoltage().getValue(), value);
-
-        value = 1.2f;
-        sensor->getFuelAirEquivalenceRatio().setValue(value);
-        EXPECT_NEAR(sensor->getFuelAirEquivalenceRatio().getValue(), value, 0.1);
-        sensor->getVoltage().setValue(value);
-        EXPECT_NEAR(sensor->getVoltage().getValue(), value, 0.1f);
-
-        // max
-        value = 1.9999f;
-        sensor->getFuelAirEquivalenceRatio().setValue(value);
-        EXPECT_NEAR(sensor->getFuelAirEquivalenceRatio().getValue(), value, 0.1f);
-
-        value = 7.9999f;
-        sensor->getVoltage().setValue(value);
-        EXPECT_NEAR(sensor->getVoltage().getValue(), value, 0.1f);
-    }
+    TestCalculatedData(FuelRailGaugePressure, cb, 10, dc);
 }
 
 TEST(OBDHandler, PID_2C_CommandedEGR) {
-    const auto pid = (byte) CommandedEGR;
-    vector<byte> request{(RequestServiceID), pid};
 
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
-    auto handler = doTest(request, response);
+    function<CalculatedDataObject<byte, float> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getCommandedEGR(); };
 
-    auto &vehicle = *handler->getVehicle();
-    auto &system = vehicle.getCommandedEGR();
+    function<float(int)> dc = [](int value) { return 100.0 / 255.0 * 0xca; };
 
-    EXPECT_FLOAT_EQ(system.getValue(), 100.0 / 255.0 * 0xca);
-
-    vector<float> values{
-            system.getDescription().getMin(),
-            system.getDescription().getMax(),
-            49.803921f};
-
-    for (auto const &val: values) {
-        system.setValue(val);
-        EXPECT_FLOAT_EQ(system.getValue(), val);
-    }
+    TestCalculatedData(CommandedEGR, cb, 0.5, dc);
 }
 
 TEST(OBDHandler, PID_2D_EGRError) {
-    const auto pid = (byte) EGRError;
-    vector<byte> request{(RequestServiceID), pid};
+    function<CalculatedDataObject<byte, float> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getEGRError(); };
 
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
-    auto handler = doTest(request, response);
+    function<float(int)> dc = [](int value) { return 100.0 / 128 * 0xca - 100; };
 
-    auto &vehicle = *handler->getVehicle();
-    auto &system = vehicle.getEGRError();
-
-    EXPECT_FLOAT_EQ(system.getValue(), 100.0 / 128 * 0xca - 100);
-
-    vector<float> values{
-            system.getDescription().getMin(),
-            system.getDescription().getMax(),
-            -42,
-            42,
-            49.5};
-
-    for (auto const &val: values) {
-        system.setValue(val);
-        EXPECT_NEAR(system.getValue(), val, 1.0f);
-    }
+    TestCalculatedData(EGRError, cb, 0.8, dc);
 }
 
 TEST(OBDHandler, PID_2E_CommandedEvaporativePurge) {
-    const auto pid = (byte) CommandedEvaporativePurge;
-    vector<byte> request{(RequestServiceID), pid};
+    function<CalculatedDataObject<byte, float> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getCommandedEvaporativePurge(); };
 
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
-    auto handler = doTest(request, response);
+    function<float(int)> dc = [](int value) { return 100.0 / 255.0 * 0xca; };
 
-    auto &vehicle = *handler->getVehicle();
-    auto &system = vehicle.getCommandedEvaporativePurge();
-
-    EXPECT_FLOAT_EQ(system.getValue(), 100.0 / 255.0 * 0xca);
-
-    vector<float> values{
-            system.getDescription().getMin(),
-            system.getDescription().getMax(),
-            49.803921f};
-
-    for (auto const &val: values) {
-        system.setValue(val);
-        EXPECT_FLOAT_EQ(system.getValue(), val);
-    }
+    TestCalculatedData(CommandedEvaporativePurge, cb, 0.5, dc);
 }
 
 TEST(OBDHandler, PID_2F_FuelTankLevelInput) {
-    const auto pid = (byte) FuelTankLevelInput;
-    vector<byte> request{(RequestServiceID), pid};
+    function<CalculatedDataObject<byte, float> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getFuelTankLevelInput(); };
 
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
-    auto handler = doTest(request, response);
+    function<float(int)> dc = [](int value) { return 100.0 / 255.0 * 0xca; };
 
-    auto &vehicle = *handler->getVehicle();
-    auto &system = vehicle.getFuelTankLevelInput();
-
-    EXPECT_FLOAT_EQ(system.getValue(), 100.0 / 255.0 * 0xca);
-
-    vector<float> values{
-            system.getDescription().getMin(),
-            system.getDescription().getMax(),
-            49.803921f};
-
-    for (auto const &val: values) {
-        system.setValue(val);
-        EXPECT_FLOAT_EQ(system.getValue(), val);
-    }
+    TestCalculatedData(FuelTankLevelInput, cb, 0.5, dc);
 }
 
 TEST(OBDHandler, PID_30_WarmUpsSinceCodesCleared) {
-    const auto pid = (byte) WarmUpsSinceCodesCleared;
-    vector<byte> request{(RequestServiceID), pid};
 
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
-    auto handler = doTest(request, response);
+    function<DataObject<byte> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getWarmUpsSinceCodesCleared(); };
 
-    auto &vehicle = *handler->getVehicle();
-    auto &system = vehicle.getWarmUpsSinceCodesCleared();
-
-    EXPECT_EQ(system.getValue(), (byte) 0xca);
-
-    vector<byte> values{
-            system.getDescription().getMin(),
-            system.getDescription().getMax(),
-            (byte) 49};
-
-    for (auto const &val: values) {
-        system.setValue(val);
-        EXPECT_EQ(system.getValue(), val);
-    }
+    TestDataObject(WarmUpsSinceCodesCleared, cb);
 }
 
 TEST(OBDHandler, PID_31_DistanceTraveledSinceCodesCleared) {
-    const auto pid = (byte) DistanceTraveledSinceCodesCleared;
-    vector<byte> request{(RequestServiceID), pid};
+    function<DataObject<unsigned short> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getDistanceTraveledSinceCodesCleared(); };
 
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xca, (byte) 0xfe};
-    auto handler = doTest(request, response);
-
-    auto &vehicle = *handler->getVehicle();
-    auto &system = vehicle.getDistanceTraveledSinceCodesCleared();
-
-    EXPECT_EQ(system.getValue(), 0xcafe);
-
-    vector<unsigned short> values{
-            system.getDescription().getMin(),
-            system.getDescription().getMax(),
-            0xbabe};
-
-    for (auto const &val: values) {
-        system.setValue(val);
-        EXPECT_EQ(system.getValue(), val);
-    }
+    TestDataObject(DistanceTraveledSinceCodesCleared, cb);
 }
 
 TEST(OBDHandler, PID_32_EvaporativePurgeSystemVaporPressure) {
-    const auto pid = (byte) EvaporativePurgeSystemVaporPressure;
-    vector<byte> request{(RequestServiceID), pid};
+    function<CalculatedDataObject<unsigned short, float> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getEvaporativePurgeSystemVaporPressure(); };
 
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xca, (byte) 0xfe};
-    auto handler = doTest(request, response);
-
-    auto &vehicle = *handler->getVehicle();
-    auto &system = vehicle.getEvaporativePurgeSystemVaporPressure();
-
-    unsigned short val = 0xcafe;
-
-    EXPECT_FLOAT_EQ(system.getValue(), getTwoComplement(0xcafe) / 4.0f);
-
-    vector<float> values{
-            system.getDescription().getMin(),
-            system.getDescription().getMax(),
-            -4221.0f,
-            4222.0f,
-            3963.25,
+    function<float(int)> dc = [](int value) {
+        return getTwoComplement(value) / 4.0f;
     };
 
-    for (auto const &val: values) {
-        system.setValue(val);
-        EXPECT_FLOAT_EQ(system.getValue(), val);
-    }
+    TestCalculatedData(EvaporativePurgeSystemVaporPressure, cb, 0.2, dc);
 }
 
 TEST(OBDHandler, PID_33_AbsoluteBarometricPressure) {
-    const auto pid = (byte) AbsoluteBarometricPressure;
-    vector<byte> request{(RequestServiceID), pid};
-
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
-    auto handler = doTest(request, response);
-
-    auto &vehicle = *handler->getVehicle();
-    auto &system = vehicle.getAbsoluteBarometricPressure();
-
-    EXPECT_EQ(system.getValue(), (byte) 0xca);
-
-    vector<byte> values{
-            system.getDescription().getMin(),
-            system.getDescription().getMax(),
-            (byte) 49};
-
-    for (auto const &val: values) {
-        system.setValue(val);
-        EXPECT_EQ(system.getValue(), val);
+    function<DataObject<byte> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getAbsoluteBarometricPressure(); };
+    TestDataObject(AbsoluteBarometricPressure, cb);
     }
+
+
+TEST(OBDHandler, PID_42_ControlModuleVoltage) {
+    function<CalculatedDataObject<unsigned short, float> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getControlModuleVoltage(); };
+
+    function<float(int)> dc = [](int value) { return (float) value / 1000; };
+
+    TestCalculatedData(ControlModuleVoltage, cb, 0.2, dc);
 }
 
 
-TEST(OBDHandler, PID_34_to_0x3B_ExtendedRangeOxygenSensor1_to_8) {
-    // tested together because same logic with other pids
-    const vector<Service1Pids> pids = {
-            ExtendedRangeOxygenSensor1, ExtendedRangeOxygenSensor2, ExtendedRangeOxygenSensor3,
-            ExtendedRangeOxygenSensor4, ExtendedRangeOxygenSensor5, ExtendedRangeOxygenSensor6,
-            ExtendedRangeOxygenSensor7, ExtendedRangeOxygenSensor8};
+TEST(OBDHandler, PID_43_AbsoluteLoadValue) {
+    function<CalculatedDataObject<unsigned short, unsigned short> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getAbsoluteLoadValue(); };
 
-    for (const auto &pid: pids) {
-        vector<byte> request{(RequestServiceID), (byte) pid};
-        vector<byte> response{ResponseServiceID, (byte) pid, (byte) 0xca, (byte) 0xfe,
-                              (byte) 0xba, (byte) 0xbe};
-        auto handler = doTest(request, response);
+    function<unsigned short(int)> dc = [](int value) { return (unsigned short) value * (100.0f / 255.0f); };
 
-
-        auto &oxygenSystem = handler->getVehicle()->getOxygenSystem();
-        ExtendedRangeOxygenSensor *sensor;
-        switch (pid) {
-            case ExtendedRangeOxygenSensor1:
-                sensor = &oxygenSystem.getExtendedRangeOxygenSensor1();
-                break;
-            case ExtendedRangeOxygenSensor2:
-                sensor = &oxygenSystem.getExtendedRangeOxygenSensor2();
-                break;
-            case ExtendedRangeOxygenSensor3:
-                sensor = &oxygenSystem.getExtendedRangeOxygenSensor3();
-                break;
-            case ExtendedRangeOxygenSensor4:
-                sensor = &oxygenSystem.getExtendedRangeOxygenSensor4();
-                break;
-            case ExtendedRangeOxygenSensor5:
-                sensor = &oxygenSystem.getExtendedRangeOxygenSensor5();
-                break;
-            case ExtendedRangeOxygenSensor6:
-                sensor = &oxygenSystem.getExtendedRangeOxygenSensor6();
-                break;
-            case ExtendedRangeOxygenSensor7:
-                sensor = &oxygenSystem.getExtendedRangeOxygenSensor7();
-                break;
-            case ExtendedRangeOxygenSensor8:
-                sensor = &oxygenSystem.getExtendedRangeOxygenSensor8();
-                break;
-            default:
-                EXPECT_EQ(false, true);
-                continue;
-        }
-
-        EXPECT_FLOAT_EQ(sensor->getFuelAirEquivalenceRatio().getValue(), (2.0f / 65536) * (256 * 0xca + 0xfe));
-
-        // A+D/256-128
-        EXPECT_NEAR(sensor->getCurrent().getValue(), (short) (0xba + 0xbe / 256 - 128), 1.0f);
-
-        // min
-        sensor->getFuelAirEquivalenceRatio().setValue(sensor->getFuelAirEquivalenceRatio().getDescription().getMin());
-        EXPECT_FLOAT_EQ(sensor->getFuelAirEquivalenceRatio().getValue(),
-                        sensor->getFuelAirEquivalenceRatio().getDescription().getMin());
-
-        sensor->getCurrent().setValue(sensor->getCurrent().getDescription().getMin());
-        EXPECT_EQ(sensor->getCurrent().getValue(), sensor->getCurrent().getDescription().getMin());
-
-        // max
-        sensor->getFuelAirEquivalenceRatio().setValue(sensor->getFuelAirEquivalenceRatio().getDescription().getMax());
-        EXPECT_NEAR(sensor->getFuelAirEquivalenceRatio().getValue(),
-                    sensor->getFuelAirEquivalenceRatio().getDescription().getMax(), 0.1f);
-
-        sensor->getCurrent().setValue(sensor->getCurrent().getDescription().getMax());
-        EXPECT_NEAR(sensor->getCurrent().getValue(), sensor->getCurrent().getDescription().getMax(), 0.1f);
-
-
-        float value = 1.2f;
-        sensor->getFuelAirEquivalenceRatio().setValue(value);
-        EXPECT_NEAR(sensor->getFuelAirEquivalenceRatio().getValue(), value, 0.1f);
-        sensor->getCurrent().setValue(value);
-        sensor->getCurrent().setValue(value);
-        EXPECT_NEAR(sensor->getCurrent().getValue(), value, 1.0f);
-
-        value = 0;
-        sensor->getCurrent().setValue(value);
-        EXPECT_NEAR(sensor->getCurrent().getValue(), value, 1.0f);
-
-        value = 40;
-        sensor->getCurrent().setValue(value);
-        EXPECT_NEAR(sensor->getCurrent().getValue(), value, 1.0f);
-
-        value = -40;
-        sensor->getCurrent().setValue(value);
-        EXPECT_NEAR(sensor->getCurrent().getValue(), value, 1.0f);
-    }
+    TestCalculatedData(AbsoluteLoadValue, cb, 1, dc);
 }
 
+TEST(OBDHandler, PID_44_FuelAirCommandedEquivalenceRatio) {
+    function<CalculatedDataObject<unsigned short, float> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getFuelAirCommandedEquivalenceRatio(); };
 
-TEST(OBDHandler, PID_3F_to_0x3F_CatalystTemp) {
-    // tested together because same logic with other pids
-    const vector<Service1Pids> pids = {
-            CatalystTemperatureBank1Sensor1, CatalystTemperatureBank2Sensor1, CatalystTemperatureBank1Sensor2,
-            CatalystTemperatureBank2Sensor2};
+    function<float(int)> dc = [](int value) { return (float) value * 2 / (pow(2, 16)); };
 
-    for (const auto &pid: pids) {
-        vector<byte> request{(RequestServiceID), (byte) pid};
-        vector<byte> response{ResponseServiceID, (byte) pid, (byte) 0xca, (byte) 0xfe};
-        auto handler = doTest(request, response);
-
-        LOG(INFO) << "Testing Cataylst Temp Sensor " << pid;
-        auto &catalyst = handler->getVehicle()->getCatalyst();
-        CalculatedDataObject<unsigned short, float> *sensor;
-        switch (pid) {
-            case CatalystTemperatureBank1Sensor1:
-                sensor = &catalyst.getTemperatureBank1Sensor1();
-                break;
-            case CatalystTemperatureBank2Sensor1:
-                sensor = &catalyst.getTemperatureBank2Sensor1();
-                break;
-            case CatalystTemperatureBank1Sensor2:
-                sensor = &catalyst.getTemperatureBank1Sensor2();
-                break;
-            case CatalystTemperatureBank2Sensor2:
-                sensor = &catalyst.getTemperatureBank2Sensor2();
-                break;
-            default:
-                EXPECT_EQ(false, true);
-                continue;
-        }
-
-        sensor->setValue(sensor->getDescription().getMin());
-        EXPECT_FLOAT_EQ(sensor->getValue(), sensor->getDescription().getMin());
-
-        sensor->setValue(sensor->getDescription().getMax());
-        EXPECT_FLOAT_EQ(sensor->getValue(), sensor->getDescription().getMax());
-
-        float val = 420.0f;
-        sensor->setValue(val);
-        EXPECT_FLOAT_EQ(sensor->getValue(), val);
-
-        val = -23.5f;
-        sensor->setValue(val);
-        EXPECT_FLOAT_EQ(sensor->getValue(), val);
-
-        val = 3502.3f;
-        sensor->setValue(val);
-        EXPECT_FLOAT_EQ(sensor->getValue(), val);
-    }
+    TestCalculatedData(FuelAirCommandedEquivalenceRatio, cb, 1, dc);
 }
 
+TEST(OBDHandler, PID_45_RelativeThrottlePosition) {
+    function<CalculatedDataObject<byte, float> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getThrottle().getRelativeThrottlePosition(); };
+
+    function<float(int)> dc = [](int value) { return (value * (100.0f / 255.0f)); };
+
+    TestCalculatedData(RelativeThrottlePosition, cb, 1, dc);
+}
+
+TEST(OBDHandler, PID_46_AmbientAirTemperature) {
+    function<CalculatedDataObject<byte, short> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getAmbientAirTemperature(); };
+
+    function<short(int)> dc = [](int value) { return value - 40; };
+
+    TestCalculatedData(AmbientAirTemperature, cb, 1, dc);
+}
 
 
 

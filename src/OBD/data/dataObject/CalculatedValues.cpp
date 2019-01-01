@@ -39,56 +39,21 @@ byte CalculatedValues::from3A(unsigned short val) {
 }
 
 float CalculatedValues::to256APlusBDivided4(unsigned short val) {
-    byte *bVal = ushortToByteArray(val);
-    // (256A + B)/4
-    return ((256.0f * (float) bVal[0] + (float) bVal[1]) / 4.0f);
+    return (float) val / 4.0f;
 }
 
 unsigned short CalculatedValues::from256APlusBDivided4(float val) {
-    // A = 1/256 (4 p - B)
-    // B = 4 (p - 64 A)
-
-    // A = B = 1/256 (4 p - B)=4 (p - 64 A)
-    // Solve for B:
-    // B = 65536 A - 1020 p
-    // insert in A:
-    // A = 1/256 (4 p - (65536 A - 1020 p))
-    // solve for A:
-    // A = (4 p)/257
-
-    byte bVal[2];
-    float a = ceil((4 * val) / 257);
-    bVal[0] = (byte) (a);
-    bVal[1] = (byte) ceil(4 * (val - 64 * a));
-
-    return byteArrayToUShort(bVal);
+    return (unsigned short) (val * 4);
 }
 
 
 float CalculatedValues::to256APlusBDivided100(unsigned short val) {
-    byte *bVal = ushortToByteArray(val);
     // (256A + B)/100
-    return ((256.0f * (float) bVal[0] + (float) bVal[1]) / 100.0f);
+    return ((float) val / 100.0f);
 }
 
 unsigned short CalculatedValues::from256APlusBDivided100(float val) {
-    // A = 1/256 (100 p - B)
-    // B = 100 p - 256 A
-    // A = B = 1/256 (100 p - B)=100 p - 256 A
-    // Solve for B:
-    // B = 65536 A - 25500 p
-    // Insert in A:
-    // A =  1/256 (100 p - (65536 A - 25500 p))
-    // Solve for A:
-    // A = (100 p)/257
-
-
-    byte bVal[2];
-    float a = ceil((100 * val) / 257);
-    bVal[0] = (byte) (a);
-    bVal[1] = (byte) ceil(100 * val - 256 * a);
-
-    return byteArrayToUShort(bVal);
+    return (unsigned short) (val * 100);
 }
 
 float CalculatedValues::toADivided2Minus64(byte val) {
@@ -200,6 +165,23 @@ float CalculatedValues::to256APlusBDivided10Minus40(unsigned short val) {
 
 unsigned short CalculatedValues::from256APlusBDivided10Minus40(float val) {
     return static_cast<unsigned short>(10 * (val + 40));
+
+}
+
+float CalculatedValues::to256APlusBDivided1000(unsigned short val) {
+    return (float) val / 1000;
+}
+
+unsigned short CalculatedValues::from256APlusBDivided1000(float val) {
+    return (unsigned short) (val * 1000);
+}
+
+unsigned short CalculatedValues::to100Divided255Times256APlusB(unsigned short val) {
+    return static_cast<unsigned short>(val * (100.0f / 255.0f));
+}
+
+unsigned short CalculatedValues::from100Divided255Times256APlusB(unsigned short val) {
+    return static_cast<unsigned short>((51 * val) / 20.0f);
 
 }
 

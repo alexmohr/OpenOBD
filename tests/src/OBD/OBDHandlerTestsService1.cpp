@@ -291,21 +291,23 @@ TEST(OBDHandler, PID_03_FuelSystemState) {
 
         vector<byte> response{ResponseServiceID, pid, (byte) state, (byte) state};
         handler = doTest(request, response);
-        EXPECT_EQ(handler->getVehicle()->getFuelSystem1().getValue(), state);
-        EXPECT_EQ(handler->getVehicle()->getFuelSystem2().getValue(), state);
+        EXPECT_EQ(handler->getVehicle()->getFuelSystemStates().getFuelSystem1().getValue(), state);
+        EXPECT_EQ(handler->getVehicle()->getFuelSystemStates().getFuelSystem2().getValue(), state);
 
         vector<byte> response2{ResponseServiceID, pid, (byte) state, (byte) 0};
         handler = doTest(request, response2);
-        EXPECT_EQ(handler->getVehicle()->getFuelSystem1().getValue(), state);
-        EXPECT_EQ(handler->getVehicle()->getFuelSystem2().getValue(), StateOfFuelSystemDoesNotExist);
-        handler->getVehicle()->getFuelSystem2().setValue(state);
+        EXPECT_EQ(handler->getVehicle()->getFuelSystemStates().getFuelSystem1().getValue(), state);
+        EXPECT_EQ(handler->getVehicle()->getFuelSystemStates().getFuelSystem2().getValue(),
+                  StateOfFuelSystemDoesNotExist);
+        handler->getVehicle()->getFuelSystemStates().getFuelSystem2().setValue(state);
         doTest(request, response);
 
         vector<byte> response3{ResponseServiceID, pid, (byte) 0, (byte) state};
         handler = doTest(request, response3);
-        EXPECT_EQ(handler->getVehicle()->getFuelSystem1().getValue(), StateOfFuelSystemDoesNotExist);
-        EXPECT_EQ(handler->getVehicle()->getFuelSystem2().getValue(), state);
-        handler->getVehicle()->getFuelSystem1().setValue(state);
+        EXPECT_EQ(handler->getVehicle()->getFuelSystemStates().getFuelSystem1().getValue(),
+                  StateOfFuelSystemDoesNotExist);
+        EXPECT_EQ(handler->getVehicle()->getFuelSystemStates().getFuelSystem2().getValue(), state);
+        handler->getVehicle()->getFuelSystemStates().getFuelSystem1().setValue(state);
         doTest(request, response);
     }
 }
@@ -572,7 +574,7 @@ TEST(OBDHandler, PID_13_OxygenSensorsPresent) {
     auto handler = doTest(request, response);
 
     auto &vehicle = *handler->getVehicle();
-    auto &system = vehicle.getOxygenSystem();
+    auto &system = vehicle.getOxygenSystem().getBankOxygenSensorsCollection();
 
     // [A0..A3] == Bank 1, Sensors 1-4.
     // [A4..A7] == Bank 2, Sensors 1-4.
@@ -592,7 +594,7 @@ TEST(OBDHandler, PID_13_OxygenSensorsPresentSetter) {
     auto handler = getHandler();
 
     auto &vehicle = *handler->getVehicle();
-    auto &system = vehicle.getOxygenSystem();
+    auto &system = vehicle.getOxygenSystem().getBankOxygenSensorsCollection();
 
     system.getBank1Sensor1present().setValue(false);
     system.getBank1Sensor2present().setValue(true);
@@ -806,7 +808,7 @@ TEST(OBDHandler, PID_1D_OxygenSensorsPresent4Banks) {
     auto handler = doTest(request, response);
 
     auto &vehicle = *handler->getVehicle();
-    auto &system = vehicle.getOxygenSystem();
+    auto &system = vehicle.getOxygenSystem().getBankOxygenSensor4BankCollection();
 
     // [A0..A3] == Bank 1, Sensors 1-4.
     // [A4..A7] == Bank 2, Sensors 1-4.
@@ -826,7 +828,7 @@ TEST(OBDHandler, PID_1D_OxygenSensorsPresent4Banks_Setter) {
     auto handler = getHandler();
 
     auto &vehicle = *handler->getVehicle();
-    auto &system = vehicle.getOxygenSystem();
+    auto &system = vehicle.getOxygenSystem().getBankOxygenSensor4BankCollection();
 
     system.getBank1Sensor1presentIn4Banks().setValue(false);
     system.getBank1Sensor2presentIn4Banks().setValue(true);

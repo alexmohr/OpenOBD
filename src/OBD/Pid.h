@@ -89,6 +89,9 @@ enum Service1Pids {
 };
 
 class Pid {
+private:
+    IFrameObject &getFrameObject(Vehicle *vehicle);
+
 public:
     // todo refactor to getter / setter methods
     int id;
@@ -101,6 +104,10 @@ public:
 
     void updateVehicle(Service service, Vehicle *vehicle, byte *data, int dataSize);
     byte* getVehicleData(Service service, Vehicle *vehicle);
+
+    // string getVehicleDataByText(Service service, Vehicle *vehicle);
+
+
 
     void updateService1_2(Vehicle *vehicle, byte *data, int size);
     byte* readService1_2(Vehicle *vehicle);

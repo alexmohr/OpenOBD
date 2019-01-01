@@ -15,7 +15,7 @@
 using namespace std;
 
 
-class MonitorStatus{
+class MonitorStatus : public IFrameObject {
 private:
     /**
      * Off or On, indicates if the CEL/MIL is on (or should be on)
@@ -43,17 +43,6 @@ private:
 public:
     explicit MonitorStatus(shared_ptr<Engine> *engine);
 
-    /**
-     * Converts this object into frame data.
-     */
-    unsigned int toFrame();
-
-    /**
-     * Update the status with frame data.
-     * @param frame The frame data.
-     */
-    void fromFrame(byte *frame, int size);
-
 
     bool getMil();
 
@@ -70,6 +59,23 @@ public:
     OBDTest &getFuelSystem();
 
     OBDTest &getMisfire();
+
+public:
+
+    /**
+     * Converts this object into frame data.
+     */
+    unsigned int toFrame(unsigned int &data) override;
+
+
+    /**
+     * Update the status with frame data.
+     * @param frame The frame data.
+     */
+    void fromFrame(byte *frame, int size) override;
+
+    string getPrintableData() override;
+
 };
 
 #endif //OPEN_OBD2_MONITORSTATUS_H

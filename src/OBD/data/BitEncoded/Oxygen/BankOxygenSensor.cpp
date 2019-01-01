@@ -43,3 +43,8 @@ void BankOxygenSensor::fromFrame(byte *data, int size) {
     shortTermFuelTrim->fromFrame(data, size);
 }
 
+string BankOxygenSensor::getPrintableData() {
+    return "voltage: " + voltage->getPrintableData() +
+           "\nshortTermFuelTrim: " + shortTermFuelTrim->getPrintableData();
+}
+

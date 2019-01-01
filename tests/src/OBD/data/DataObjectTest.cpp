@@ -12,12 +12,12 @@
 using namespace std;
 
 void byteTest(DataObject<byte> *obj, vector<byte> data) {
-    EXPECT_EQ(1, obj->fromFrame(data.data(), data.size()));
+    obj->fromFrame(data.data(), data.size());
     EXPECT_EQ((byte) 0x42, obj->getValue());
 }
 
 void testBool(DataObject<bool> *obj, vector<byte> data, bool expected) {
-    EXPECT_EQ(1, obj->fromFrame(data.data(), data.size()));
+    obj->fromFrame(data.data(), data.size());
     EXPECT_EQ(expected, obj->getValue());
 }
 
@@ -159,7 +159,7 @@ TEST(DataObjectTest, TestDecodeShortLeft) {
 TEST(DataObjectTest, TestDecodeShortMiddle) {
     auto *obj = new DataObject<unsigned short>(B, 7, C, 0);
     vector<byte> data{(byte) 0x00, (byte) 0xca, (byte) 0xfe, (byte) 0x00};
-    EXPECT_EQ(1, obj->fromFrame(data.data(), data.size()));
+    obj->fromFrame(data.data(), data.size());
     EXPECT_EQ(0xcafe, obj->getValue());
     compareResponse(data, obj);
 }
@@ -168,7 +168,7 @@ TEST(DataObjectTest, TestDecodeShortMiddle) {
 TEST(DataObjectTest, TestDecodeShortRight) {
     auto *obj = new DataObject<unsigned short>(C, 7, D, 0);
     vector<byte> data{(byte) 0x00, (byte) 0x00, (byte) 0xca, (byte) 0xfe};
-    EXPECT_EQ(1, obj->fromFrame(data.data(), data.size()));
+    obj->fromFrame(data.data(), data.size());
     EXPECT_EQ(0xcafe, obj->getValue());
     compareResponse(data, obj);
 }
@@ -176,7 +176,7 @@ TEST(DataObjectTest, TestDecodeShortRight) {
 TEST(DataObjectTest, TestDecodeShortOdd) {
     auto *obj = new DataObject<unsigned short>(A, 6, A, 0);
     vector<byte> data{(byte) 0xf1, (byte) 0x00, (byte) 0x00, (byte) 0x00};
-    EXPECT_EQ(1, obj->fromFrame(data.data(), data.size()));
+    obj->fromFrame(data.data(), data.size());
     EXPECT_EQ(0x71, obj->getValue());
 
     vector<byte> response{(byte) 0x71, (byte) 0x00, (byte) 0x00, (byte) 0x00};
@@ -268,7 +268,7 @@ TEST(DataObjectTest, TestDecode2BitMSB) {
 TEST(DataObjectTest, TestDecodeInt) {
     auto *obj = new DataObject<unsigned int>(A, 7, D, 0);
     vector<byte> data{(byte) 0xca, (byte) 0xfe, (byte) 0xba, (byte) 0xbe,};
-    EXPECT_EQ(1, obj->fromFrame(data.data(), data.size()));
+    obj->fromFrame(data.data(), data.size());
     EXPECT_EQ(0xcafebabe, obj->getValue());
     compareResponseInt(data, obj);
 }

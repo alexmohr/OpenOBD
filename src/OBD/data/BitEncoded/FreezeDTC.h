@@ -7,7 +7,7 @@
 
 #include "../../DataTroubleCode.h"
 
-class FreezeDTC {
+class FreezeDTC : public IFrameObject {
 private:
     DataTroubleCode *dtc;
     unique_ptr<DataObject<unsigned short>> dataObj;
@@ -18,13 +18,17 @@ public:
 
     ~FreezeDTC();
 
-    void fromFrame(byte *data, int size);
-
-    unsigned int toFrame(unsigned int &data);
-
     void setValue(unsigned short value);
 
     DataTroubleCode getValue();
+
+public:// IFrameObject
+
+    void fromFrame(byte *data, int size) override;
+
+    unsigned int toFrame(unsigned int &data) override;
+
+    string getPrintableData() override;
 
 };
 

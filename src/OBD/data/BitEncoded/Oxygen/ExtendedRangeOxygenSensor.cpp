@@ -35,3 +35,8 @@ unsigned int ExtendedRangeOxygenSensor::toFrame(unsigned int &data) {
             current->toFrame(data);
     return data;
 }
+
+string ExtendedRangeOxygenSensor::getPrintableData() {
+    return "fuelAirEquivalenceRatio: " + fuelAirEquivalenceRatio->getPrintableData() +
+           "\ncurrent: " + current->getPrintableData();
+}

@@ -11,7 +11,7 @@
 using namespace std;
 
 
-class OBDTest {
+class OBDTest : IFrameObject {
 private:
     unique_ptr<DataObject<bool>> available;
     unique_ptr<DataObject<bool>> incomplete;
@@ -23,9 +23,11 @@ public:
 
     ~OBDTest();
 
-    void fromFrame(byte* frame, int size);
+    void fromFrame(byte *frame, int size) override;
 
-    unsigned int toFrame(unsigned int &data);
+    unsigned int toFrame(unsigned int &data) override;
+
+    string getPrintableData() override;
 
     void setName(string name);
 

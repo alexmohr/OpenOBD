@@ -210,3 +210,34 @@ unsigned int OBDCompliance::toFrame(unsigned int &data) {
             heavyDutyEuroOBDStageVI->toFrame(data);
     return data;
 }
+
+string OBDCompliance::getPrintableData() {
+    return "OBD_II_CARB" + oBD_II_CARB->getPrintableData() +
+           "\nOBD_EPA" + oBD_EPA->getPrintableData() +
+           "\nOBD_and_OBD_II" + oBD_and_OBD_II->getPrintableData() +
+           "\nOBD_I" + oBD_I->getPrintableData() +
+           "\nNotOBDcompliant" + notOBDcompliant->getPrintableData() +
+           "\nEOBD" + eOBD->getPrintableData() +
+           "\nEOBDandOBD_II" + eOBDandOBD_II->getPrintableData() +
+           "\nEOBDandOBD" + eOBDandOBD->getPrintableData() +
+           "\nEOBD_OBD_and_OBDII" + eOBD_OBD_and_OBDII->getPrintableData() +
+           "\nJOBD" + jOBD->getPrintableData() +
+           "\nJOBDandOBDII" + jOBDandOBDII->getPrintableData() +
+           "\nJOBDandEOBD" + jOBDandEOBD->getPrintableData() +
+           "\nJOBD_EOBD_and_OBDII" + jOBD_EOBD_and_OBDII->getPrintableData() +
+           "\nEngineManufacturerDiagnostics" + engineManufacturerDiagnostics->getPrintableData() +
+           "\nEngineManufacturerDiagnosticsEnhanced" + engineManufacturerDiagnosticsEnhanced->getPrintableData() +
+           "\nHeavyDutyOn_BoardDiagnostics_OBD_C" + heavyDutyOn_BoardDiagnostics_OBD_C->getPrintableData() +
+           "\nHeavyDutyOn_BoardDiagnostics" + heavyDutyOn_BoardDiagnostics->getPrintableData() +
+           "\nWorldWideHarmonizedOBD" + worldWideHarmonizedOBD->getPrintableData() +
+           "\nHeavyDutyEuroOBDStageIwithoutNOxcontrol" + heavyDutyEuroOBDStageIwithoutNOxcontrol->getPrintableData() +
+           "\nHeavyDutyEuroOBDStageIwithNOxcontrol" + heavyDutyEuroOBDStageIwithNOxcontrol->getPrintableData() +
+           "\nHeavyDutyEuroOBDStageIIwithoutNOxcontrol" + heavyDutyEuroOBDStageIIwithoutNOxcontrol->getPrintableData() +
+           "\nHeavyDutyEuroOBDStageIIwithNOxcontrol" + heavyDutyEuroOBDStageIIwithNOxcontrol->getPrintableData() +
+           "\nBrazilOBDPhase1" + brazilOBDPhase1->getPrintableData() +
+           "\nBrazilOBDPhase2" + brazilOBDPhase2->getPrintableData() +
+           "\nKoreanOBD" + koreanOBD->getPrintableData() +
+           "\nIndiaOBDI" + indiaOBDI->getPrintableData() +
+           "\nIndiaOBDII" + indiaOBDII->getPrintableData() +
+           "\nHeavyDutyEuroOBDStageVI" + heavyDutyEuroOBDStageVI->getPrintableData();
+}

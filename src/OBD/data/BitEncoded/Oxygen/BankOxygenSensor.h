@@ -7,7 +7,7 @@
 
 #include "../../dataObject/CalculatedDataObject.h"
 
-class BankOxygenSensor {
+class BankOxygenSensor : public IFrameObject {
 private:
     unique_ptr<CalculatedDataObject<byte, float>> voltage;
     unique_ptr<CalculatedDataObject<byte, float>> shortTermFuelTrim;
@@ -22,9 +22,12 @@ public:
 
     CalculatedDataObject<byte, float> &getShortTermFuelTrim();
 
-    unsigned int toFrame(unsigned int &data);
+public: // IFrameObject
+    unsigned int toFrame(unsigned int &data) override;
 
-    void fromFrame(byte *data, int size);
+    void fromFrame(byte *data, int size) override;
+
+    string getPrintableData() override;
 
 };
 

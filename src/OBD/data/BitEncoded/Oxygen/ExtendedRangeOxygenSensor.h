@@ -7,7 +7,7 @@
 
 #include "../../dataObject/CalculatedDataObject.h"
 
-class ExtendedRangeOxygenSensor {
+class ExtendedRangeOxygenSensor : public IFrameObject {
 private:
     unique_ptr<CalculatedDataObject<unsigned short, float>> fuelAirEquivalenceRatio;
     unique_ptr<CalculatedDataObject<unsigned short, float>> current;
@@ -18,9 +18,13 @@ public:
 
     CalculatedDataObject<unsigned short, float> &getCurrent();
 
-    void fromFrame(byte *frame, int size);
+public:// IFrameObject
 
-    unsigned int toFrame(unsigned int &data);
+    void fromFrame(byte *frame, int size) override;
+
+    unsigned int toFrame(unsigned int &data) override;
+
+    string getPrintableData() override;
 };
 
 

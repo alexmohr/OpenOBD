@@ -9,8 +9,9 @@
 #include "CalculatedValues.h"
 #include <functional>
 
+
 template<typename S, typename T>
-class CalculatedDataObject {
+class CalculatedDataObject : public IFrameObject {
 private:
     unique_ptr<DataObject<S>> dataObj;
     unique_ptr<DataObjectDescription<T>> description;
@@ -55,12 +56,21 @@ public:
         dataObj->setValue(toFrameFunction(value));
     }
 
-    void fromFrame(byte *data, int size) {
+    void fromFrame(byte *data, int size) override {
         dataObj->fromFrame(data, size);
     }
 
-    unsigned int toFrame(unsigned int &data) {
+    unsigned int toFrame(unsigned int &data) override {
         return dataObj->toFrame(data);
+    }
+
+    string getPrintableData() {
+        string unit = "";
+        if (nullptr != description) {
+            unit = description->getUnit().toShortString();
+        }
+
+        return to_string(getValue()) + unit;
     }
 
     DataObjectDescription<T> &getDescription() {

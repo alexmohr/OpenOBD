@@ -7,7 +7,7 @@
 #define OPEN_OBD2_CONVERSION_H
 
 #include <cstddef>
-
+#include <string>
 #include <type_traits>
 
 
@@ -20,5 +20,8 @@ byte *ushortToByteArray(unsigned short data);
 byte *uintToByteArray(unsigned int data);
 
 int getTwoComplement(unsigned short val);
+
+string to_string(byte val);
+
 
 #endif //OPEN_OBD2_CONVERSION_H

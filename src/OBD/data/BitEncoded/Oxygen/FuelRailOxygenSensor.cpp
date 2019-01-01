@@ -33,3 +33,8 @@ void FuelRailOxygenSensor::fromFrame(byte *data, int size) {
     fuelAirEquivalenceRatio->fromFrame(data, size);
     voltage->fromFrame(data, size);
 }
+
+string FuelRailOxygenSensor::getPrintableData() {
+    return "fuelAirEquivalenceRatio: " + fuelAirEquivalenceRatio->getPrintableData() +
+           "\nvoltage: " + voltage->getPrintableData();
+}

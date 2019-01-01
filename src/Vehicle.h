@@ -15,6 +15,7 @@
 #include "OBD/data/BitEncoded/Oxygen/OxygenSensors.h"
 #include "OBD/data/BitEncoded/OBDCompliance.h"
 #include "OBD/data/BitEncoded/Catalyst.h"
+#include "OBD/data/Enumerated/FuelSystemStates.h"
 
 using namespace std;
 
@@ -27,14 +28,13 @@ private:
     unique_ptr<FreezeDTC> freezeDTC;
     shared_ptr<Engine> engine;
 
-    unique_ptr<DataObject<StateOfFuelSystem>> fuelSystem1;
-    unique_ptr<DataObject<StateOfFuelSystem>> fuelSystem2;
+
     unique_ptr<DataObject<StateOfCommandedSecondaryAir>> commandedSecondaryAirStatus;
 
     unique_ptr<DataObject<byte>> speed;
 
     unique_ptr<CalculatedDataObject<byte, float>> throttlePosition;
-    unique_ptr<OxygenSystem> oxygenSystem;
+    unique_ptr<OxygenSensors> oxygenSystem;
     unique_ptr<OBDCompliance> obdCompliance;
 
     unique_ptr<DataObject<bool>> auxiliaryInputStatus;
@@ -54,6 +54,8 @@ private:
     unique_ptr<DataObject<byte>> absoluteBarometricPressure;
 
     unique_ptr<Catalyst> catalyst;
+
+    unique_ptr<FuelSystemStates> fuelSystemStates;
 
     shared_ptr<map<int, DataTroubleCode>> dtcMap;
 
@@ -76,17 +78,13 @@ public:
 
     Engine &getEngine();
 
-    DataObject<StateOfFuelSystem> &getFuelSystem1();
-
-    DataObject<StateOfFuelSystem> &getFuelSystem2();
-
     DataObject<byte> &getSpeed();
 
     CalculatedDataObject<byte, float> &getThrottlePosition();
 
     DataObject<StateOfCommandedSecondaryAir> &getCommandedSecondaryAirStatus();
 
-    OxygenSystem &getOxygenSystem();
+    OxygenSensors &getOxygenSystem();
 
     OBDCompliance &getOBDCompliance();
 
@@ -119,6 +117,7 @@ public:
 
     Catalyst &getCatalyst();
 
+    FuelSystemStates &getFuelSystemStates();
 };
 
 

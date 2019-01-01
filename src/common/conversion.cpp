@@ -36,4 +36,9 @@ int getTwoComplement(unsigned short val) {
     return (0x8000 & val ? (int) (0x7FFF & val) - 0x8000 : val);
 }
 
+string to_string(std::byte val){
+    return to_string((unsigned short)val);
+}
+
+
 

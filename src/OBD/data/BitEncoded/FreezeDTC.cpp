@@ -33,4 +33,8 @@ DataTroubleCode FreezeDTC::getValue() {
     return *dtc;
 }
 
+string FreezeDTC::getPrintableData() {
+    return "FreezeDTC :" + dataObj->getPrintableData();
+}
+
 

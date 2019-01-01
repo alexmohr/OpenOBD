@@ -43,3 +43,9 @@ DataObject<bool> &OBDTest::getAvailable() {
 DataObject<bool> &OBDTest::getIncomplete() {
     return *incomplete;
 }
+
+string OBDTest::getPrintableData() {
+return "OBDTest: " + name +
+"\nAvailable: " + available->getPrintableData() +
+"\nIncomplete: " + incomplete->getPrintableData();
+}

@@ -7,7 +7,7 @@
 
 #include "../../dataObject/CalculatedDataObject.h"
 
-class FuelRailOxygenSensor {
+class FuelRailOxygenSensor : public IFrameObject {
 private:
     unique_ptr<CalculatedDataObject<unsigned short, float>> fuelAirEquivalenceRatio;
     unique_ptr<CalculatedDataObject<unsigned short, float>> voltage;
@@ -19,9 +19,13 @@ public:
 
     CalculatedDataObject<unsigned short, float> &getVoltage();
 
-    unsigned int toFrame(unsigned int &data);
+public:// IFrameObject
 
-    void fromFrame(byte *data, int size);
+    unsigned int toFrame(unsigned int &data) override;
+
+    void fromFrame(byte *data, int size) override;
+
+    string getPrintableData() override;
 };
 
 

@@ -17,9 +17,6 @@ Vehicle::Vehicle(shared_ptr<map<int, DataTroubleCode>> dtcMap) {
     freezeDTC = make_unique<FreezeDTC>(dtcMap);
 
 
-    fuelSystem1 = make_unique<DataObject<StateOfFuelSystem>>(A, 7, A, 0);
-    fuelSystem2 = make_unique<DataObject<StateOfFuelSystem>>(B, 7, B, 0);
-
     commandedSecondaryAirStatus = make_unique<DataObject<StateOfCommandedSecondaryAir>>(A, 7, A, 0);
 
     speed = make_unique<DataObject<byte>>(A, 7, A, 0, unit_kph, (byte) 0, (byte) 255);
@@ -28,7 +25,7 @@ Vehicle::Vehicle(shared_ptr<map<int, DataTroubleCode>> dtcMap) {
             A, 7, A, 0, CalculatedValues::toPercent, CalculatedValues::fromPercent,
             unit_percent, 0.0f, 100.0);
 
-    oxygenSystem = make_unique<OxygenSystem>();
+    oxygenSystem = make_unique<OxygenSensors>();
     obdCompliance = make_unique<OBDCompliance>();
 
     auxiliaryInputStatus = make_unique<DataObject<bool>>(A, 0);
@@ -83,6 +80,7 @@ Vehicle::Vehicle(shared_ptr<map<int, DataTroubleCode>> dtcMap) {
             unit_kPa, (byte) 0, (byte) 255);
 
     catalyst = make_unique<Catalyst>();
+    fuelSystemStates = make_unique<FuelSystemStates>();
 }
 
 Vehicle::~Vehicle() = default;
@@ -110,13 +108,6 @@ FreezeDTC &Vehicle::getFreezeDTC() {
     return *freezeDTC;
 }
 
-DataObject<StateOfFuelSystem> &Vehicle::getFuelSystem1() {
-    return *fuelSystem1;
-}
-
-DataObject<StateOfFuelSystem> &Vehicle::getFuelSystem2() {
-    return *fuelSystem2;
-}
 
 Engine &Vehicle::getEngine() {
     return *engine;
@@ -134,7 +125,7 @@ DataObject<StateOfCommandedSecondaryAir> &Vehicle::getCommandedSecondaryAirStatu
     return *commandedSecondaryAirStatus;
 }
 
-OxygenSystem &Vehicle::getOxygenSystem() {
+OxygenSensors &Vehicle::getOxygenSystem() {
     return *oxygenSystem;
 }
 
@@ -196,6 +187,10 @@ DataObject<byte> &Vehicle::getAbsoluteBarometricPressure() {
 
 Catalyst &Vehicle::getCatalyst() {
     return *catalyst;
+}
+
+FuelSystemStates &Vehicle::getFuelSystemStates() {
+    return *fuelSystemStates;
 }
 
 

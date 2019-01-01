@@ -6,29 +6,18 @@
 #define OPEN_OBD2_OXYGENSYSTEM_H
 
 #include "../../dataObject/DataObject.h"
+#include "BankOxygenSensorsCollection.h"
+#include "BankOxygenSensors4BankCollection.h"
 #include "BankOxygenSensor.h"
 #include "FuelRailOxygenSensor.h"
 #include "ExtendedRangeOxygenSensor.h"
 
-class OxygenSystem {
+class OxygenSensors {
 private:
-    unique_ptr<DataObject<bool>> bank1Sensor1present;
-    unique_ptr<DataObject<bool>> bank1Sensor2present;
-    unique_ptr<DataObject<bool>> bank1Sensor3present;
-    unique_ptr<DataObject<bool>> bank1Sensor4present;
-    unique_ptr<DataObject<bool>> bank2Sensor1present;
-    unique_ptr<DataObject<bool>> bank2Sensor2present;
-    unique_ptr<DataObject<bool>> bank2Sensor3present;
-    unique_ptr<DataObject<bool>> bank2Sensor4present;
 
-    unique_ptr<DataObject<bool>> bank1Sensor1presentIn4Banks;
-    unique_ptr<DataObject<bool>> bank1Sensor2presentIn4Banks;
-    unique_ptr<DataObject<bool>> bank2Sensor1presentIn4Banks;
-    unique_ptr<DataObject<bool>> bank2Sensor2presentIn4Banks;
-    unique_ptr<DataObject<bool>> bank3Sensor1presentIn4Banks;
-    unique_ptr<DataObject<bool>> bank3Sensor2presentIn4Banks;
-    unique_ptr<DataObject<bool>> bank4Sensor1presentIn4Banks;
-    unique_ptr<DataObject<bool>> bank4Sensor2presentIn4Banks;
+    unique_ptr<BankOxygenSensorsCollection> bankOxygenSensorCollection;
+    unique_ptr<BankOxygenSensors4BankCollection> bankOxygenSensor4BankCollection;
+
 
     unique_ptr<BankOxygenSensor> bankOxygenSensor1;
     unique_ptr<BankOxygenSensor> bankOxygenSensor2;
@@ -60,47 +49,9 @@ private:
 
 public:
 
-    OxygenSystem();
+    OxygenSensors();
 
-    DataObject<bool> &getBank1Sensor1present();
 
-    DataObject<bool> &getBank1Sensor2present();
-
-    DataObject<bool> &getBank1Sensor3present();
-
-    DataObject<bool> &getBank1Sensor4present();
-
-    DataObject<bool> &getBank2Sensor1present();
-
-    DataObject<bool> &getBank2Sensor2present();
-
-    DataObject<bool> &getBank2Sensor3present();
-
-    DataObject<bool> &getBank2Sensor4present();
-
-    unsigned int getBankSensorsPresentToFrame(unsigned int &data);
-
-    void getBankSensorsPresentFromFrame(byte *frame, int size);
-
-    DataObject<bool> &getBank1Sensor1presentIn4Banks();
-
-    DataObject<bool> &getBank1Sensor2presentIn4Banks();
-
-    DataObject<bool> &getBank2Sensor1presentIn4Banks();
-
-    DataObject<bool> &getBank2Sensor2presentIn4Banks();
-
-    DataObject<bool> &getBank3Sensor1presentIn4Banks();
-
-    DataObject<bool> &getBank3Sensor2presentIn4Banks();
-
-    DataObject<bool> &getBank4Sensor1presentIn4Banks();
-
-    DataObject<bool> &getBank4Sensor2presentIn4Banks();
-
-    unsigned int getBankSensorsPresentIn4BanksToFrame(unsigned int &data);
-
-    void getBankSensorsPresentIn4BanksFromFrame(byte *frame, int size);
 
     BankOxygenSensor &getBankOxygenSensor1();
 
@@ -134,7 +85,6 @@ public:
 
     FuelRailOxygenSensor &getFuelRailOxygenSensor8();
 
-
     ExtendedRangeOxygenSensor &getExtendedRangeOxygenSensor1();
 
     ExtendedRangeOxygenSensor &getExtendedRangeOxygenSensor2();
@@ -150,6 +100,10 @@ public:
     ExtendedRangeOxygenSensor &getExtendedRangeOxygenSensor7();
 
     ExtendedRangeOxygenSensor &getExtendedRangeOxygenSensor8();
+
+    BankOxygenSensorsCollection &getBankOxygenSensorsCollection();
+
+    BankOxygenSensors4BankCollection &getBankOxygenSensor4BankCollection();
 
 };
 

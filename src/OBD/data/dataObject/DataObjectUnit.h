@@ -25,6 +25,10 @@ public:
         this->symbol = std::move(symbol);
         this->factor = factor;
     }
+
+    string getSymbol() const {
+        return symbol;
+    }
 };
 
 
@@ -40,12 +44,8 @@ public:
         this->prefix = prefix;
     }
 
-    string getName() {
-        return name;
-    }
-
-    const SiPrefix *getPrefix() {
-        return prefix;
+    string toShortString() const {
+        return shortName + prefix->getSymbol();
     }
 };
 

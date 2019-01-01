@@ -22,8 +22,7 @@ MonitorStatus::MonitorStatus(shared_ptr<Engine> *engine) {
 }
 
 
-unsigned int MonitorStatus::toFrame() {
-    unsigned int data = 0;
+unsigned int MonitorStatus::toFrame(unsigned int &data) {
 
     data = mil->toFrame(data);
     data |= dtcCount->toFrame(data);
@@ -76,4 +75,21 @@ OBDTest &MonitorStatus::getFuelSystem() {
 
 OBDTest &MonitorStatus::getMisfire() {
     return *misfire;
+}
+
+string MonitorStatus::getPrintableData() {
+    return "mil" + mil->getPrintableData() +
+           "\ndtcCount" + dtcCount->getPrintableData() +
+           "\ncomponents" + components->getPrintableData() +
+           "\nmisfire" + misfire->getPrintableData() +
+           "\nfuelSystem" + fuelSystem->getPrintableData() +
+           "\nEngineSystem1" + engine->getEngineSystem1().getPrintableData() +
+           "\nEngineSystem2" + engine->getEngineSystem2().getPrintableData() +
+           "\nEngineSystem3" + engine->getEngineSystem3().getPrintableData() +
+           "\nEngineSystem4" + engine->getEngineSystem4().getPrintableData() +
+           "\nEngineSystem5" + engine->getEngineSystem5().getPrintableData() +
+           "\nEngineSystem6" + engine->getEngineSystem6().getPrintableData() +
+           "\nEngineSystem7" + engine->getEngineSystem7().getPrintableData() +
+           "\nEngineSystem8" + engine->getEngineSystem8().getPrintableData() +
+           "\nEngineType" + to_string(engine->getEngineType());
 }

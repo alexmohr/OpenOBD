@@ -7,7 +7,7 @@
 
 #include"../dataObject/DataObject.h"
 
-class OBDCompliance {
+class OBDCompliance : public IFrameObject {
 private:
     unique_ptr<DataObject<bool>> oBD_II_CARB;
     unique_ptr<DataObject<bool>> oBD_EPA;
@@ -96,9 +96,13 @@ public:
 
     DataObject<bool> &getHeavyDutyEuroOBDStageVI();
 
-    void fromFrame(byte *data, int size);
+public:// IFrameObject
 
-    unsigned int toFrame(unsigned int &data);
+    void fromFrame(byte *data, int size) override;
+
+    unsigned int toFrame(unsigned int &data) override;
+
+    string getPrintableData() override;
 };
 
 

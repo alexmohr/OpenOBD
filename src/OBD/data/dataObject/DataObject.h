@@ -12,6 +12,8 @@
 #include <cmath>
 #include "easylogging++.h"
 #include "DataObjectDescription.h"
+#include "IFrameObject.h"
+#include "../../../common/conversion.h"
 
 using namespace std;
 
@@ -35,7 +37,7 @@ enum ByteIndex{
 
 
 template <class T>
-class DataObject {
+class DataObject : public IFrameObject {
 private:
     ByteIndex startByte;
     unsigned int startIndex;
@@ -123,7 +125,7 @@ public:
         value = val;
     }
 
-    unsigned int toFrame(unsigned int &data) {
+    unsigned int toFrame(unsigned int &data) override {
         auto startByteValue = -BITS_PER_BYTE + ((startByte + 1) * BITS_PER_BYTE);
         auto stopByteValue = -BITS_PER_BYTE + ((stopByte + 1) * BITS_PER_BYTE);
 
@@ -140,12 +142,13 @@ public:
         return retVal;
     }
 
-    int fromFrame(byte *frame, int bufferSize) {
+    void fromFrame(byte *frame, int bufferSize) override {
         int i;
         unsigned int data = 0;
         const int size = stopByte - startByte + 1;
         if (size > bufferSize || stopByte > bufferSize) {
-            return -1;
+            //return -1;
+            throw std::invalid_argument("Buffer overflow");
         }
 
         auto dataBytes = (byte *) malloc((size_t) size);
@@ -180,16 +183,19 @@ public:
                 value = (T) ((data << startBitIndex) - 1 & mask);
             }
         }
-
-        return 1;
     }
-//
-//    void setDescription(unique_ptr<DataObjectDescription<T>> description) {
-//        this->description = move(description);
-//    }
 
     DataObjectDescription<T> &getDescription() {
         return *description;
+    }
+
+    string getPrintableData() override {
+        string unit = "";
+        if (nullptr != description) {
+            unit = description->getUnit().toShortString();
+        }
+
+        return to_string(getValue()) + unit;
     }
 
 };

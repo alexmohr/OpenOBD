@@ -5,30 +5,28 @@
 #include "OBDHandler.h"
 #include "easylogging++.h"
 
+OBDHandler::OBDHandler(unique_ptr<map<Service, PidCollection>> pidConfig, map<int, DataTroubleCode> dtcMap) {
+    vehicle = make_unique<Vehicle>(make_unique<map<int, DataTroubleCode>>(dtcMap));
+    vehicleFreezeFrame = make_unique<Vehicle>(make_unique<map<int, DataTroubleCode>>(dtcMap));
 
-OBDHandler::OBDHandler(Vehicle *vehicle, Vehicle *vehicleFreezeFrame,
-                       unique_ptr<map<Service, PidCollection>> pidConfig) {
-    this->vehicle = vehicle;
-    this->vehicleFreezeFrame = vehicleFreezeFrame;
     this->pidConfig = move(pidConfig);
-
 }
 
-byte *OBDHandler::createAnswerFrame(byte *frame) {
-    // Example frame
+byte *OBDHandler::createAnswerFrame(byte *request, int &size) {
+    // Example request
     // size service pid ....
     // 0x02 0x01 0x00 0x00 0x00 0x00 0x00 0x00
 
     Service service;
     Pid pid;
-    getFrameInfo(frame, (int)frame[0], pid, service);
+    getFrameInfo(request, (int) request[0], pid, service);
 
-
-    byte* data = pid.getVehicleData(service, vehicle);
-    int dataSize = 0;
-    if (data != nullptr) {
-        dataSize = (sizeof(data)/2); // todo fix division
-    }
+    unsigned int dataSize = 0;
+    byte *data = pid.getVehicleData(service, vehicle.get(), dataSize);
+//
+//    if (data != nullptr) {
+//        dataSize = (sizeof(data)/2); // todo fix division
+//    }
 
     byte* result = (byte*)malloc(dataSize + 2);
 
@@ -36,6 +34,7 @@ byte *OBDHandler::createAnswerFrame(byte *frame) {
     result[1] = (byte)(pid.id);
 
     memcpy(result+2, data, static_cast<size_t>(dataSize));
+    size = dataSize + 2;
     return result;
 }
 
@@ -59,9 +58,9 @@ void OBDHandler::updateFromFrame(byte *frame, int frameSize) {
     byte* data = (byte*)malloc(sizeof(byte)*dataSize);
     memcpy(data, frame+startByte, static_cast<size_t>(dataSize));
 
-    Vehicle *updateVehicle = vehicle;
+    Vehicle *updateVehicle = vehicle.get();
     if (FREEZE_FRAME == service) {
-        updateVehicle = vehicleFreezeFrame;
+        updateVehicle = vehicleFreezeFrame.get();
     }
     pid.updateVehicle(service, updateVehicle, data, dataSize);
 }
@@ -76,5 +75,11 @@ void OBDHandler::getFrameInfo(const byte *frame, int serviceId, Pid &pid, Servic
 
 
 Vehicle * OBDHandler::getVehicle() {
-    return vehicle;
+    return vehicle.get();
 }
+
+Vehicle *OBDHandler::getVehicleFreezeFrame() {
+    return vehicleFreezeFrame.get();
+}
+
+

@@ -18,9 +18,9 @@ DataObject<StateOfFuelSystem> &FuelSystemStates::getFuelSystem2() {
     return *fuelSystem2;
 }
 
-unsigned int FuelSystemStates::toFrame(unsigned int &data) {
-    data = fuelSystem1->toFrame(data) |
-           fuelSystem2->toFrame(data);
+unsigned int FuelSystemStates::toFrame(unsigned int &data, unsigned int &size) {
+    data = fuelSystem1->toFrame(data, size) |
+           fuelSystem2->toFrame(data, size);
     return data;
 }
 

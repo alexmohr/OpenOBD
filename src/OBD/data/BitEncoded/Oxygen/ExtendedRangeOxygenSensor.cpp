@@ -22,9 +22,9 @@ void ExtendedRangeOxygenSensor::fromFrame(byte *frame, int size) {
     current->fromFrame(frame, size);
 }
 
-unsigned int ExtendedRangeOxygenSensor::toFrame(unsigned int &data) {
-    data |= fuelAirEquivalenceRatio->toFrame(data) |
-            current->toFrame(data);
+unsigned int ExtendedRangeOxygenSensor::toFrame(unsigned int &data, unsigned int &size) {
+    data |= fuelAirEquivalenceRatio->toFrame(data, size) |
+            current->toFrame(data, size);
     return data;
 }
 

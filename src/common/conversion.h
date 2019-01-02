@@ -23,5 +23,7 @@ int getTwoComplement(unsigned short val);
 
 string to_string(byte val);
 
+unsigned int getBytes(int bits);
+
 
 #endif //OPEN_OBD2_CONVERSION_H

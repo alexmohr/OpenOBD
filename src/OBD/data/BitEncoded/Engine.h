@@ -57,7 +57,7 @@ public:
 
     ~Engine() = default;
 
-    unsigned int toFrameForMonitoringSystem(unsigned int &data);
+    unsigned int toFrameForMonitoringSystem(unsigned int &data, unsigned int &size);
 
     void fromFrameForMonitoringSystem(byte *frame, int size);
 

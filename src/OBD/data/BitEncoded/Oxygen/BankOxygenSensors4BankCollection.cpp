@@ -63,16 +63,16 @@ void BankOxygenSensors4BankCollection::fromFrame(byte *frame, int size) {
     bank4Sensor2presentIn4Banks->fromFrame(frame, size);
 }
 
-unsigned int BankOxygenSensors4BankCollection::toFrame(unsigned int &data) {
+unsigned int BankOxygenSensors4BankCollection::toFrame(unsigned int &data, unsigned int &size) {
     data |= bank1Sensor1presentIn4Banks->getValue() |
-            bank1Sensor2presentIn4Banks->toFrame(data) |
-            bank2Sensor1presentIn4Banks->toFrame(data) |
-            bank2Sensor2presentIn4Banks->toFrame(data) |
-            bank3Sensor1presentIn4Banks->toFrame(data) |
-            bank3Sensor2presentIn4Banks->toFrame(data) |
-            bank4Sensor1presentIn4Banks->toFrame(data) |
-            bank4Sensor2presentIn4Banks->toFrame(data);
-
+            bank1Sensor2presentIn4Banks->toFrame(data, size) |
+            bank2Sensor1presentIn4Banks->toFrame(data, size) |
+            bank2Sensor2presentIn4Banks->toFrame(data, size) |
+            bank3Sensor1presentIn4Banks->toFrame(data, size) |
+            bank3Sensor2presentIn4Banks->toFrame(data, size) |
+            bank4Sensor1presentIn4Banks->toFrame(data, size) |
+            bank4Sensor2presentIn4Banks->toFrame(data, size);
+    size = 1;
     return data;
 }
 

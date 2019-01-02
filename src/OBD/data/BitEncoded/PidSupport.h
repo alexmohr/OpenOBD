@@ -39,11 +39,11 @@ public:
 
     void setPidSupportedFromFrame(PidRange pid, byte *data, int size);
 
-    unsigned int getPidSupportedRange(PidRange pid, unsigned int &data);
+    unsigned int getPidSupportedRange(PidRange pid, unsigned int &data, unsigned int &size);
 
     void setPids(vector<DataObject<bool>> &pids, byte *data, int size);
 
-    unsigned int getPids(vector<DataObject<bool>> &pids, unsigned int &data);
+    unsigned int getPids(vector<DataObject<bool>> &pids, unsigned int &data, unsigned int &size);
 };
 
 

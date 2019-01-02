@@ -114,16 +114,16 @@ OBDTest& Engine::getEngineSystem8() {
     return *engineSystem8;
 }
 
-unsigned int Engine::toFrameForMonitoringSystem(unsigned int &data) {
-    data = engineSystem1->toFrame(data) |
-           engineSystem2->toFrame(data) |
-           engineSystem3->toFrame(data) |
-           engineSystem4->toFrame(data) |
-           engineSystem5->toFrame(data) |
-           engineSystem6->toFrame(data) |
-           engineSystem7->toFrame(data) |
-           engineSystem8->toFrame(data) |
-           type->toFrame(data);
+unsigned int Engine::toFrameForMonitoringSystem(unsigned int &data, unsigned int &size) {
+    data = engineSystem1->toFrame(data, size) |
+           engineSystem2->toFrame(data, size) |
+           engineSystem3->toFrame(data, size) |
+           engineSystem4->toFrame(data, size) |
+           engineSystem5->toFrame(data, size) |
+           engineSystem6->toFrame(data, size) |
+           engineSystem7->toFrame(data, size) |
+           engineSystem8->toFrame(data, size) |
+           type->toFrame(data, size);
     return data;
 }
 

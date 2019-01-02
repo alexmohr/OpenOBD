@@ -15,8 +15,8 @@ FreezeDTC::~FreezeDTC() {
     delete dtc;
 }
 
-unsigned int FreezeDTC::toFrame(unsigned int &data) {
-    return dataObj->toFrame(data);
+unsigned int FreezeDTC::toFrame(unsigned int &data, unsigned int &size) {
+    return dataObj->toFrame(data, size);
 }
 
 void FreezeDTC::fromFrame(byte *data, int size) {

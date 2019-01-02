@@ -22,14 +22,14 @@ MonitorStatus::MonitorStatus(shared_ptr<Engine> *engine) {
 }
 
 
-unsigned int MonitorStatus::toFrame(unsigned int &data) {
+unsigned int MonitorStatus::toFrame(unsigned int &data, unsigned int &size) {
 
-    data = mil->toFrame(data);
-    data |= dtcCount->toFrame(data);
-    data |= components->toFrame(data);
-    data |= misfire->toFrame(data);
-    data |= fuelSystem->toFrame(data);
-    data |= engine->toFrameForMonitoringSystem(data);
+    data = mil->toFrame(data, size);
+    data |= dtcCount->toFrame(data, size);
+    data |= components->toFrame(data, size);
+    data |= misfire->toFrame(data, size);
+    data |= fuelSystem->toFrame(data, size);
+    data |= engine->toFrameForMonitoringSystem(data, size);
     return data;
 }
 

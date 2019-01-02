@@ -48,16 +48,16 @@ DataObject<bool> &BankOxygenSensorsCollection::getBank2Sensor4present() {
     return *bank2Sensor4present;
 }
 
-unsigned int BankOxygenSensorsCollection::toFrame(unsigned int &data) {
+unsigned int BankOxygenSensorsCollection::toFrame(unsigned int &data, unsigned int &size) {
     data |= bank1Sensor1present->getValue() |
-            bank1Sensor2present->toFrame(data) |
-            bank1Sensor3present->toFrame(data) |
-            bank1Sensor4present->toFrame(data) |
-            bank2Sensor1present->toFrame(data) |
-            bank2Sensor2present->toFrame(data) |
-            bank2Sensor3present->toFrame(data) |
-            bank2Sensor4present->toFrame(data);
-
+            bank1Sensor2present->toFrame(data, size) |
+            bank1Sensor3present->toFrame(data, size) |
+            bank1Sensor4present->toFrame(data, size) |
+            bank2Sensor1present->toFrame(data, size) |
+            bank2Sensor2present->toFrame(data, size) |
+            bank2Sensor3present->toFrame(data, size) |
+            bank2Sensor4present->toFrame(data, size);
+    size = 1;
     return data;
 }
 

@@ -122,7 +122,9 @@ TEST(OBDHandler, PID_00_PIDSupported01_20_Single) {
         EXPECT_TRUE(handler->getVehicle()->getPidSupport().getPidSupported(value));
     }
 
-    byte *val = handler->createAnswerFrame(request.data());
+    int dataSize = 0;
+    byte *val = handler->createAnswerFrame(request.data(), dataSize);
+    EXPECT_EQ(dataSize, response.size());
     compareResponse(response, val);
 }
 
@@ -144,8 +146,9 @@ TEST(OBDHandler, PID_00_PIDSupported01_20_Setter) {
         EXPECT_TRUE(handler->getVehicle()->getPidSupport().getPidSupported(value));
     }
 
-
-    byte *val = handler->createAnswerFrame(request.data());
+    int dataSize = 0;
+    byte *val = handler->createAnswerFrame(request.data(), dataSize);
+    EXPECT_EQ(dataSize, response.size());
     compareResponse(response, val);
 }
 
@@ -177,7 +180,8 @@ TEST(OBDHandler, PID_00_PIDSupportedGeneric) {
             EXPECT_TRUE(vehicle->getPidSupport().getPidSupported(currentPid));
 
             vector<byte> request = {RequestServiceID, (byte) pid};
-            byte *val = handler->createAnswerFrame(request.data());
+            int dataSize = 0;
+            byte *val = handler->createAnswerFrame(request.data(), dataSize);
             auto *response = (byte *) malloc(sizeof(byte) * 8);
             response[0] = ResponseServiceID;
             response[1] = request.at(1);
@@ -275,7 +279,8 @@ TEST(OBDHandler, PID_01_Test_MIL) {
     monitoringStatus.setMil(true);
     const auto pid = (byte) 0x01;
     vector<byte> request{(RequestServiceID), pid};
-    byte *val = handler->createAnswerFrame(request.data());
+    int dataSize = 0;
+    byte *val = handler->createAnswerFrame(request.data(), dataSize);
     vector<byte> response{ResponseServiceID, pid, (byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00};
     compareResponse(response, val);
 
@@ -322,8 +327,10 @@ TEST(OBDHandler, PID_01_MonitoringStatusInitViaVehicle) {
 
     const auto pid = (byte) 0x01;
     vector<byte> request{(RequestServiceID), pid};
-    byte *val = handler->createAnswerFrame(request.data());
+    int dataSize;
+    byte *val = handler->createAnswerFrame(request.data(), dataSize);
     vector<byte> response{ResponseServiceID, pid, (byte) 0xf1, (byte) 0x6f, (byte) 0xe3, (byte) 0xf1};
+    EXPECT_EQ(dataSize, response.size());
     compareResponse(response, val);
 }
 
@@ -625,7 +632,7 @@ TEST(OBDHandler, PID_1C_Supported_Standards) {
     const auto pid = (byte) OBDStandardsVehicleConformsTo;
     vector<byte> request{(RequestServiceID), pid};
 
-    vector<byte> response{ResponseServiceID, pid, (byte) 0xca};
+    vector<byte> response{ResponseServiceID, pid, (byte) 0xca, (byte) 0x00, (byte) 0x00, (byte) 0x00};
     auto handler = doTest(request, response);
 
     auto &vehicle = *handler->getVehicle();

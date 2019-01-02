@@ -21,7 +21,7 @@ public:
 
 public:// IFrameObject
 
-    unsigned int toFrame(unsigned int &data) override;
+    unsigned int toFrame(unsigned int &data, unsigned int &size) override;
 
     void fromFrame(byte *data, int size) override;
 

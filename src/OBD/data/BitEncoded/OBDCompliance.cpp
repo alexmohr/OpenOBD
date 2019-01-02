@@ -178,36 +178,36 @@ void OBDCompliance::fromFrame(byte *data, int size) {
     heavyDutyEuroOBDStageVI->fromFrame(data, size);
 }
 
-unsigned int OBDCompliance::toFrame(unsigned int &data) {
+unsigned int OBDCompliance::toFrame(unsigned int &data, unsigned int &size) {
     data |=
-            oBD_II_CARB->toFrame(data) |
-            oBD_EPA->toFrame(data) |
-            oBD_and_OBD_II->toFrame(data) |
-            oBD_I->toFrame(data) |
-            notOBDcompliant->toFrame(data) |
-            eOBD->toFrame(data) |
-            eOBDandOBD_II->toFrame(data) |
-            eOBDandOBD->toFrame(data) |
-            eOBD_OBD_and_OBDII->toFrame(data) |
-            jOBD->toFrame(data) |
-            jOBDandOBDII->toFrame(data) |
-            jOBDandEOBD->toFrame(data) |
-            jOBD_EOBD_and_OBDII->toFrame(data) |
-            engineManufacturerDiagnostics->toFrame(data) |
-            engineManufacturerDiagnosticsEnhanced->toFrame(data) |
-            heavyDutyOn_BoardDiagnostics_OBD_C->toFrame(data) |
-            heavyDutyOn_BoardDiagnostics->toFrame(data) |
-            worldWideHarmonizedOBD->toFrame(data) |
-            heavyDutyEuroOBDStageIwithoutNOxcontrol->toFrame(data) |
-            heavyDutyEuroOBDStageIwithNOxcontrol->toFrame(data) |
-            heavyDutyEuroOBDStageIIwithoutNOxcontrol->toFrame(data) |
-            heavyDutyEuroOBDStageIIwithNOxcontrol->toFrame(data) |
-            brazilOBDPhase1->toFrame(data) |
-            brazilOBDPhase2->toFrame(data) |
-            koreanOBD->toFrame(data) |
-            indiaOBDI->toFrame(data) |
-            indiaOBDII->toFrame(data) |
-            heavyDutyEuroOBDStageVI->toFrame(data);
+            oBD_II_CARB->toFrame(data, size) |
+            oBD_EPA->toFrame(data, size) |
+            oBD_and_OBD_II->toFrame(data, size) |
+            oBD_I->toFrame(data, size) |
+            notOBDcompliant->toFrame(data, size) |
+            eOBD->toFrame(data, size) |
+            eOBDandOBD_II->toFrame(data, size) |
+            eOBDandOBD->toFrame(data, size) |
+            eOBD_OBD_and_OBDII->toFrame(data, size) |
+            jOBD->toFrame(data, size) |
+            jOBDandOBDII->toFrame(data, size) |
+            jOBDandEOBD->toFrame(data, size) |
+            jOBD_EOBD_and_OBDII->toFrame(data, size) |
+            engineManufacturerDiagnostics->toFrame(data, size) |
+            engineManufacturerDiagnosticsEnhanced->toFrame(data, size) |
+            heavyDutyOn_BoardDiagnostics_OBD_C->toFrame(data, size) |
+            heavyDutyOn_BoardDiagnostics->toFrame(data, size) |
+            worldWideHarmonizedOBD->toFrame(data, size) |
+            heavyDutyEuroOBDStageIwithoutNOxcontrol->toFrame(data, size) |
+            heavyDutyEuroOBDStageIwithNOxcontrol->toFrame(data, size) |
+            heavyDutyEuroOBDStageIIwithoutNOxcontrol->toFrame(data, size) |
+            heavyDutyEuroOBDStageIIwithNOxcontrol->toFrame(data, size) |
+            brazilOBDPhase1->toFrame(data, size) |
+            brazilOBDPhase2->toFrame(data, size) |
+            koreanOBD->toFrame(data, size) |
+            indiaOBDI->toFrame(data, size) |
+            indiaOBDII->toFrame(data, size) |
+            heavyDutyEuroOBDStageVI->toFrame(data, size);
     return data;
 }
 

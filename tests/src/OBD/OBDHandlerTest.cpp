@@ -15,10 +15,7 @@ OBDHandler *getHandler() {
     auto dtcMap = map<int, DataTroubleCode>();
     config.parseJson("../configuration/dtcConfig.json", dtcMap);
 
-    auto *vehicle = new Vehicle(make_unique<map<int, DataTroubleCode>>(dtcMap));
-    auto *vehicleFF = new Vehicle(make_unique<map<int, DataTroubleCode>>(dtcMap));
-
-    auto handler = new OBDHandler(vehicle, vehicleFF, make_unique<map<Service, PidCollection>>(pcMap));
+    auto handler = new OBDHandler(make_unique<map<Service, PidCollection>>(pcMap), dtcMap);
     return handler;
 }
 
@@ -38,7 +35,11 @@ void compareResponse(vector<byte> expectedResponse, byte *actualResponse) {
 OBDHandler* doTest(vector<byte> request, vector<byte> response) {
     OBDHandler *handler = getHandler();
     handler->updateFromFrame(response.data(), static_cast<int>(response.size()));
-    byte *val = handler->createAnswerFrame(request.data());
+
+    int dataSize = 0;
+    byte *val = handler->createAnswerFrame(request.data(), dataSize);
+
+    EXPECT_EQ(dataSize, response.size());
 
     compareResponse(response, val);
 

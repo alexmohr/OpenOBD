@@ -132,7 +132,8 @@ public:
         value = val;
     }
 
-    unsigned int toFrame(unsigned int &data) override {
+
+    unsigned int toFrame(unsigned int &data, unsigned int &size) override {
         auto startByteValue = -BITS_PER_BYTE + ((startByte + 1) * BITS_PER_BYTE);
         auto stopByteValue = -BITS_PER_BYTE + ((stopByte + 1) * BITS_PER_BYTE);
 
@@ -146,6 +147,14 @@ public:
 
         size_t shift = targetSize - bitSize - startBitIndex - 1;
         retVal = (unsigned int) value << (shift);
+        unsigned ts = size * 8;
+        if (0 == bitSize) {
+            bitSize++;
+        }
+        size += bitSize;
+        //size += getBytes(ts);
+        //size += getBytes(shift);
+
         return retVal;
     }
 

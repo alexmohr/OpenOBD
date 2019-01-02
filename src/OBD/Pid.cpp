@@ -31,12 +31,12 @@ void Pid::updateVehicle(Service service, Vehicle *vehicle, byte *data, int dataS
 
 }
 
-byte* Pid::getVehicleData(Service service, Vehicle *vehicle) {
+byte *Pid::getVehicleData(Service service, Vehicle *vehicle, unsigned int &size) {
     byte* data = nullptr;
     switch (service){
         case POWERTRAIN:
         case FREEZE_FRAME:
-            data = readService1_2(vehicle);
+            data = readService1_2(vehicle, size);
             break;
         case CONFIRMED_DTCS:
             break;
@@ -232,35 +232,36 @@ void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
     }
 }
 
-byte* Pid::readService1_2(Vehicle *vehicle) {
+byte *Pid::readService1_2(Vehicle *vehicle, unsigned int &size) {
     unsigned int data = 0;
     auto pid = (Service1Pids) id;
     switch (pid) {
         case SupportedPid01_20:
-            data = vehicle->getPidSupport().getPidSupportedRange(Pid01_20, data);
+            data = vehicle->getPidSupport().getPidSupportedRange(Pid01_20, data, size);
             break;
         case SupportedPid21_40:
-            data = vehicle->getPidSupport().getPidSupportedRange(Pid21_40, data);
+            data = vehicle->getPidSupport().getPidSupportedRange(Pid21_40, data, size);
             break;
         case SupportedPid41_60:
-            data = vehicle->getPidSupport().getPidSupportedRange(Pid41_60, data);
+            data = vehicle->getPidSupport().getPidSupportedRange(Pid41_60, data, size);
             break;
         case SupportedPid61_80:
-            data = vehicle->getPidSupport().getPidSupportedRange(Pid61_80, data);
+            data = vehicle->getPidSupport().getPidSupportedRange(Pid61_80, data, size);
             break;
         case SupportedPid81_A0:
-            data = vehicle->getPidSupport().getPidSupportedRange(Pid81_A0, data);
+            data = vehicle->getPidSupport().getPidSupportedRange(Pid81_A0, data, size);
             break;
         case SupportedPidA1_C0:
-            data = vehicle->getPidSupport().getPidSupportedRange(PidA1_C0, data);
+            data = vehicle->getPidSupport().getPidSupportedRange(PidA1_C0, data, size);
             break;
         case SupportedPidC1_E0:
-            data = vehicle->getPidSupport().getPidSupportedRange(PidC1_E0, data);
+            data = vehicle->getPidSupport().getPidSupportedRange(PidC1_E0, data, size);
             break;
         default:
-            data = getFrameObject(vehicle).toFrame(data);
+            data = getFrameObject(vehicle).toFrame(data, size);
     }
 
+    size = getBytes(size);
     byte *retVal = uintToByteArray(data);
     return retVal;
 }

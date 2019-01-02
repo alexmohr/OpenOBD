@@ -90,11 +90,13 @@ set(CPPSRC
         src/OBD/data/Enumerated/FuelSystemStates.h
         src/OBD/data/BitEncoded/Oxygen/BankOxygenSensorsCollection.cpp
         src/OBD/data/BitEncoded/Oxygen/BankOxygenSensorsCollection.h
+        src/cli/CliHandling.cpp src/cli/CliHandling.h
         src/OBD/data/BitEncoded/Oxygen/BankOxygenSensors4BankCollection.cpp
-        src/OBD/data/BitEncoded/Oxygen/BankOxygenSensors4BankCollection.h src/OBD/data/BitEncoded/Throttle.cpp src/OBD/data/BitEncoded/Throttle.h src/OBD/data/dataObject/CalculatedDataObjectFactory.cpp src/OBD/data/dataObject/CalculatedDataObjectFactory.h)
+        src/OBD/data/BitEncoded/Oxygen/BankOxygenSensors4BankCollection.h src/OBD/data/BitEncoded/Throttle.cpp src/OBD/data/BitEncoded/Throttle.h src/OBD/data/dataObject/CalculatedDataObjectFactory.cpp src/OBD/data/dataObject/CalculatedDataObjectFactory.h src/cli/CommandHandler.cpp src/cli/CommandHandler.h)
 
 
 add_executable(open_obd2 src/main.cpp ${CPPSRC})
+target_link_libraries(open_obd2 pthread)
 
 add_executable(Test
         tests/src/OBD/OBDHandlerTest.h

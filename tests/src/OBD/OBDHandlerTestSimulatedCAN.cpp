@@ -10,7 +10,6 @@
 
 
 TEST(OBDHandler, PIDSupported01_20_With_VirtualCAN) {
-
     // these data has uds structure removed because it is added by the kernel driver.
     vector<byte> request{(byte) 0x01, (byte) 0x00};
     vector<byte> response{(byte) 0x41, (byte) 0x00, (byte) 0xbe, (byte) 0x7e, (byte) 0xb8, (byte) 0x13};
@@ -36,7 +35,9 @@ TEST(OBDHandler, PIDSupported01_20_With_VirtualCAN) {
     testerCAN->send(request.data(), static_cast<int>(request.size()));
     vehicleCAN->receive(buf, static_cast<int>(request.size()), readSize);
 
-    byte *val = handler->createAnswerFrame(buf);
+    int dataSize = 0;
+    byte *val = handler->createAnswerFrame(buf, dataSize);
+    EXPECT_EQ(dataSize, response.size());
     compareResponse(response, val);
 }
 

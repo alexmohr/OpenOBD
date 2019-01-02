@@ -25,7 +25,7 @@ public:
 
     void fromFrame(byte *frame, int size) override;
 
-    unsigned int toFrame(unsigned int &data) override;
+    unsigned int toFrame(unsigned int &data, unsigned int &size) override;
 
     string getPrintableData() override;
 

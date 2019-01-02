@@ -21,29 +21,32 @@ void testBool(DataObject<bool> *obj, vector<byte> data, bool expected) {
     EXPECT_EQ(expected, obj->getValue());
 }
 
-void compareResponseBytes(byte *expectedResponse, byte *actualResponse, int size) {
+void compareResponseBytes(byte *expectedResponse, byte *actualResponse, int actualSize, int expectedSize) {
     int i;
-    for (i = 0; i < size; i++) {
+    // EXPECT_EQ(getBytes(actualSize), expectedSize);
+    for (i = 0; i < expectedSize; i++) {
         EXPECT_EQ(actualResponse[i], expectedResponse[i]);
     }
 }
 
-void compareResponse(vector<byte> expectedResponse, unsigned int data) {
+void compareResponse(vector<byte> expectedResponse, unsigned int data, unsigned int size) {
     byte *retVal = uintToByteArray(data);
-    compareResponseBytes(expectedResponse.data(), retVal, expectedResponse.size());
+    compareResponseBytes(expectedResponse.data(), retVal, size, expectedResponse.size());
 }
 
 void compareResponseInt(vector<byte> expectedResponse, DataObject<unsigned int> *actualResponse) {
     unsigned int data = 0;
-    data = actualResponse->toFrame(data);
-    compareResponse(expectedResponse, data);
+    unsigned int size = 0;
+    data = actualResponse->toFrame(data, size);
+    compareResponse(expectedResponse, data, size);
 }
 
 
 void compareResponse(vector<byte> expectedResponse, DataObject<unsigned short> *actualResponse) {
     unsigned int data = 0;
-    data = actualResponse->toFrame(data);
-    compareResponse(expectedResponse, data);
+    unsigned int size = 0;
+    data = actualResponse->toFrame(data, size);
+    compareResponse(expectedResponse, data, size);
 }
 
 
@@ -158,7 +161,7 @@ TEST(DataObjectTest, TestDecodeShortLeft) {
 
 TEST(DataObjectTest, TestDecodeShortMiddle) {
     auto *obj = new DataObject<unsigned short>(B, 7, C, 0);
-    vector<byte> data{(byte) 0x00, (byte) 0xca, (byte) 0xfe, (byte) 0x00};
+    vector<byte> data{(byte) 0x00, (byte) 0xca, (byte) 0xfe};
     obj->fromFrame(data.data(), data.size());
     EXPECT_EQ(0xcafe, obj->getValue());
     compareResponse(data, obj);

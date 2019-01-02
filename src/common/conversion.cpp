@@ -41,4 +41,18 @@ string to_string(std::byte val){
 }
 
 
+unsigned int getBytes(int bits) {
+    if (bits <= 8) {
+        return 1;
+    } else if (bits <= 16) {
+        return 2;
+    } else if (bits <= 32) {
+        return 4;
+    }
+
+    return 8;
+
+}
+
+
 

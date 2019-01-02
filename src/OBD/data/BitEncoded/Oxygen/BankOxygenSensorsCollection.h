@@ -5,7 +5,7 @@
 #ifndef OPEN_OBD2_BANKOXYGENSENSORSCOLLECTION_H
 #define OPEN_OBD2_BANKOXYGENSENSORSCOLLECTION_H
 
-#include "../../dataObject/CalculatedDataObject.h"
+#include "../../dataObject/DataObject.h"
 
 class BankOxygenSensorsCollection : public IFrameObject {
 private:

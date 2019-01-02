@@ -9,7 +9,8 @@
 
 #include <string>
 #include "../OBDTest.h"
-#include "../dataObject/CalculatedDataObject.h"
+#include "../dataObject/CalculatedDataObjectFactory.h"
+
 
 using namespace std;
 
@@ -32,6 +33,8 @@ private:
 
     unique_ptr<DataObject<EngineType>> type;
 
+    unique_ptr<DataObject<byte>> intakeManifoldAbsolutePressure;
+
     unique_ptr<CalculatedDataObject<byte, float>> calculatedLoad;
     unique_ptr<CalculatedDataObject<byte, short>> coolantTemperature;
 
@@ -42,7 +45,6 @@ private:
 
 
     unique_ptr<CalculatedDataObject<byte, unsigned short>> fuelPressure;
-    unique_ptr<DataObject<byte>> intakeManifoldAbsolutePressure;
     unique_ptr<CalculatedDataObject<unsigned short, float>> engineRPM;
 
     unique_ptr<CalculatedDataObject<byte, float>> timingAdvance;

@@ -9,18 +9,20 @@
 #include "CalculatedValues.h"
 #include <functional>
 
+class CalculatedDataObjectFactory;
 
 template<typename S, typename T>
 class CalculatedDataObject : public IFrameObject {
 private:
+
     unique_ptr<DataObject<S>> dataObj;
     unique_ptr<DataObjectDescription<T>> description;
     function<T(S)> fromFrameFunction;
     function<S(T)> toFrameFunction;
 
 
-public:
-
+public: // todo refactor this to private;
+    friend class CalculatedDataObjectFactory;
     CalculatedDataObject(ByteIndex startByte, unsigned int startIndex,
                          ByteIndex stopByte, unsigned stopIndex, function<T(S)> fromFrameFunction,
                          function<S(T)> toFrameFunction, const DataObjectUnit &unit, T min, T max)
@@ -38,6 +40,8 @@ public:
         this->fromFrameFunction = fromFrameFunction;
     }
 
+
+public:
     S getRawValue() {
         return dataObj->getValue();
     }
@@ -64,7 +68,7 @@ public:
         return dataObj->toFrame(data);
     }
 
-    string getPrintableData() {
+    string getPrintableData() override {
         string unit = "";
         if (nullptr != description) {
             unit = description->getUnit().toShortString();
@@ -77,5 +81,6 @@ public:
         return *description;
     }
 };
+
 
 #endif //OPEN_OBD2_CALCULATEDDATAOBJECT_H

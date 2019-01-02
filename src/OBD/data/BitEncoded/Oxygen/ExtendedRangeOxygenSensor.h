@@ -5,7 +5,7 @@
 #ifndef OPEN_OBD2_EXTENDEDRANGEOXYGENSENSOR_H
 #define OPEN_OBD2_EXTENDEDRANGEOXYGENSENSOR_H
 
-#include "../../dataObject/CalculatedDataObject.h"
+#include "../../dataObject/CalculatedDataObjectFactory.h"
 
 class ExtendedRangeOxygenSensor : public IFrameObject {
 private:

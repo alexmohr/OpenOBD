@@ -91,7 +91,7 @@ set(CPPSRC
         src/OBD/data/BitEncoded/Oxygen/BankOxygenSensorsCollection.cpp
         src/OBD/data/BitEncoded/Oxygen/BankOxygenSensorsCollection.h
         src/OBD/data/BitEncoded/Oxygen/BankOxygenSensors4BankCollection.cpp
-        src/OBD/data/BitEncoded/Oxygen/BankOxygenSensors4BankCollection.h src/OBD/data/BitEncoded/Throttle.cpp src/OBD/data/BitEncoded/Throttle.h)
+        src/OBD/data/BitEncoded/Oxygen/BankOxygenSensors4BankCollection.h src/OBD/data/BitEncoded/Throttle.cpp src/OBD/data/BitEncoded/Throttle.h src/OBD/data/dataObject/CalculatedDataObjectFactory.cpp src/OBD/data/dataObject/CalculatedDataObjectFactory.h)
 
 
 add_executable(open_obd2 src/main.cpp ${CPPSRC})
@@ -106,7 +106,8 @@ add_executable(Test
         tests/src/OBD/data/DataObjectTest.cpp
         tests/src/OBD/DataTroubleCodeTest.cpp
         tests/src/ConfigTest.cpp
-        ${CPPSRC} tests/src/OBD/OBDHandlerTestService1Explicit.cpp tests/src/OBD/OBDHandlerTestService1Explicit.h)
+        tests/src/OBD/OBDHandlerTestService1Explicit.cpp
+        ${CPPSRC})
 
 target_link_libraries(Test gtest_main)
 add_test(NAME obdtest COMMAND Test)

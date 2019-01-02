@@ -5,7 +5,7 @@
 #ifndef OPEN_OBD2_THROTTLE_H
 #define OPEN_OBD2_THROTTLE_H
 
-#include "../dataObject/CalculatedDataObject.h"
+#include "../dataObject/CalculatedDataObjectFactory.h"
 
 class Throttle {
 private:

@@ -5,25 +5,10 @@
 #include "Catalyst.h"
 
 Catalyst::Catalyst() {
-    temperatureBank1Sensor1 = make_unique<CalculatedDataObject<unsigned short, float>>(
-            A, 7, B, 0,
-            CalculatedValues::to256APlusBDivided10Minus40, CalculatedValues::from256APlusBDivided10Minus40,
-            unit_celsius, -40, 6513.5);
-
-    temperatureBank2Sensor1 = make_unique<CalculatedDataObject<unsigned short, float>>(
-            A, 7, B, 0,
-            CalculatedValues::to256APlusBDivided10Minus40, CalculatedValues::from256APlusBDivided10Minus40,
-            unit_celsius, -40, 6513.5);
-
-    temperatureBank1Sensor2 = make_unique<CalculatedDataObject<unsigned short, float>>(
-            A, 7, B, 0,
-            CalculatedValues::to256APlusBDivided10Minus40, CalculatedValues::from256APlusBDivided10Minus40,
-            unit_celsius, -40, 6513.5);
-
-    temperatureBank2Sensor2 = make_unique<CalculatedDataObject<unsigned short, float>>(
-            A, 7, B, 0,
-            CalculatedValues::to256APlusBDivided10Minus40, CalculatedValues::from256APlusBDivided10Minus40,
-            unit_celsius, -40, 6513.5);
+    temperatureBank1Sensor1 = CalculatedDataObjectFactory::celsius_Divided10Minus40();
+    temperatureBank2Sensor1 = CalculatedDataObjectFactory::celsius_Divided10Minus40();
+    temperatureBank1Sensor2 = CalculatedDataObjectFactory::celsius_Divided10Minus40();
+    temperatureBank2Sensor2 = CalculatedDataObjectFactory::celsius_Divided10Minus40();
 
 }
 

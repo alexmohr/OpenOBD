@@ -5,14 +5,8 @@
 #include "Throttle.h"
 
 Throttle::Throttle() {
-    relativeThrottlePosition = make_unique<CalculatedDataObject<byte, float>>(
-            A, 7, A, 0, CalculatedValues::toPercent, CalculatedValues::fromPercent,
-            unit_percent, 0, 100);
-
-    throttlePosition = make_unique<CalculatedDataObject<byte, float>>(
-            A, 7, A, 0, CalculatedValues::toPercent, CalculatedValues::fromPercent,
-            unit_percent, 0.0f, 100.0);
-
+    relativeThrottlePosition = CalculatedDataObjectFactory::percent();
+    throttlePosition =  CalculatedDataObjectFactory::percent();
 }
 
 

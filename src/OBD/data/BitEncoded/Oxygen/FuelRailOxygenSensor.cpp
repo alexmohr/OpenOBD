@@ -5,15 +5,10 @@
 #include "FuelRailOxygenSensor.h"
 
 FuelRailOxygenSensor::FuelRailOxygenSensor() {
-    fuelAirEquivalenceRatio = make_unique<CalculatedDataObject<unsigned short, float>>(
-            A, 7, B, 0,
-            CalculatedValues::to2Divided65536Times256PlusB, CalculatedValues::from2Divided65536Times256PlusB,
-            unit_ratio, 0.0f, 1.9999f);
+    fuelAirEquivalenceRatio = CalculatedDataObjectFactory::ratio_2Divided2Pow16TimesValue();
 
-    voltage = make_unique<CalculatedDataObject<unsigned short, float>>(
-            C, 7, D, 0, CalculatedValues::to8Divided65536Times256PlusB,
-            CalculatedValues::from8Divided65536Times256PlusB,
-            unit_ratio, 0.0f, 7.9999f);
+
+    voltage = CalculatedDataObjectFactory::ratio_8Divided2Pow16TimesValue();
 }
 
 CalculatedDataObject<unsigned short, float> &FuelRailOxygenSensor::getFuelAirEquivalenceRatio() {

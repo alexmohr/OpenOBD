@@ -5,7 +5,7 @@
 #ifndef OPEN_OBD2_CATALYST_H
 #define OPEN_OBD2_CATALYST_H
 
-#include "../dataObject/CalculatedDataObject.h"
+#include "../dataObject/CalculatedDataObjectFactory.h"
 
 class Catalyst {
 private:

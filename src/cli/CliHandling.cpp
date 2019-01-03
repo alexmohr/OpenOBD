@@ -32,8 +32,8 @@ void CliHandling::display_help(char *progname) {
     fprintf(stderr, "Usage: %s <options>\n", progname);
     fprintf(stderr, "Options:\n"
                     "  -h             Display this help and exit.\n"
-                    "  -d CAN_DEVICE  Select the can device which is used.\n"
-                    "  -t ecu|tester  Define if the software is used as tester or simulates a ECU.\n"
+                    "  -d CAN_DEVICE  Select the can device which is used. Defaults to can0.\n"
+                    "  -t ecu|tester  Define if the software is used as tester or simulates a ECU. Defaults to ecu.\n"
                     "\n");
 }
 
@@ -51,9 +51,9 @@ int CliHandling::getCommandLineArgs(int argc, char **argv, char &canAdapter, CLI
                 strcpy(&canAdapter, optarg);
                 break;
             case 't':
-                if (typeTester == optarg) {
+                if (strncmp(typeTester, optarg, sizeof(&typeTester)) == 0) {
                     type = TESTER;
-                } else if (typeEcu == optarg) {
+                } else if (strncmp(typeEcu, optarg, sizeof(&typeEcu)) == 0) {
                     type = ECU;
                 } else {
                     fprintf(stderr, "Specified type %s is invalid.\n", optarg);

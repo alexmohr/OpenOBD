@@ -111,5 +111,7 @@ add_executable(Test
         tests/src/OBD/OBDHandlerTestService1Explicit.cpp
         ${CPPSRC})
 
+install(TARGETS open_obd2 EXPORT open_obd2 DESTINATION bin)
+
 target_link_libraries(Test gtest_main)
 add_test(NAME obdtest COMMAND Test)

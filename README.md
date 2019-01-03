@@ -5,7 +5,7 @@ This is an open implementation of the OBD protocol. It utilizes socket can for c
 
 Supported OS: Linux 
 
-## Features ( most features are not done yet because this is a work in progress )
+## Features
 ### Simualte a vehicle
 With the vehicle simulation an OBD dongle can be used without an actual vehicle. This can be used for testing new implementations. 
 
@@ -27,6 +27,10 @@ Any other compiler than g++-8 with C++17 support should work as well but is not 
 mkdir build
 cd build
 cmake ../
-cmake --build .
-# there is currently no install script because no usable front end exists yet 
+make
+sudo make install
 ````
+## CLI
+The CLI is a terminal like frontend which allows setting and reading values. It can act as a tester or as an ecu. 
+At the moment it is very basic and does only support Service 1 and a small subset of pids.
+![CLI Example](https://github.com/alexmohr/OpenOBD/blob/master/doc/cli_example.png)

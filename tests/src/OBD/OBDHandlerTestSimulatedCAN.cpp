@@ -80,18 +80,6 @@ TEST(OBDHandler, AmbientTemperature_46_With_VirtualCAN) {
     compareResponse(response, val);
 }
 
-TEST(OBDHandler, Test_timeout) {
-
-    auto vehicleCAN = new CanIsoTP();
-
-    vehicleCAN->openIsoTp(TESTER_ID, VEHICLE_ID, const_cast<char *>(CAN_INTERFACE));
-
-    byte *buf;
-    int readSize;
-    vehicleCAN->receive(buf, 255, readSize);
-    EXPECT_EQ(readSize, 0);
-}
-
 
 
 #pragma clang diagnostic pop

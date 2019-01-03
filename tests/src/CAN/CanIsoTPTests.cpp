@@ -55,3 +55,16 @@ TEST(CanIsoTp, MultiFrameMessageVirtualCAN) { // NOLINT(cert-err58-cpp)
 
     doTest(request);
 }
+
+
+TEST(OBDHandler, Test_timeout) {
+
+    auto vehicleCAN = new CanIsoTP();
+
+    vehicleCAN->openIsoTp(TESTER_ID, VEHICLE_ID, const_cast<char *>(CAN_INTERFACE));
+
+    byte *buf;
+    int readSize;
+    vehicleCAN->receive(buf, 255, readSize);
+    EXPECT_EQ(readSize, 0);
+}

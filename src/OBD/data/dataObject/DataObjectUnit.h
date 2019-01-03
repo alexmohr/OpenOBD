@@ -45,7 +45,7 @@ public:
     }
 
     string toShortString() const {
-        return shortName + prefix->getSymbol();
+        return " " + prefix->getSymbol() + shortName;
     }
 };
 

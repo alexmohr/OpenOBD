@@ -52,6 +52,8 @@ void TestCalculatedData(Service1Pids pid,
     for (auto const &val: values) {
         system->setValue(val);
         EXPECT_NEAR(system->getValue(), val, offset);
+        system->setValueFromString(to_string(val));
+        EXPECT_NEAR(system->getValue(), val, offset);
     }
 }
 
@@ -88,8 +90,8 @@ void TestDataObject(Service1Pids pid,
 
     if (nullptr != system->getDescription()) {
         values = {
-                (T) (system->getDescription()->getMin()),
-                (T) (system->getDescription()->getMax()),
+                (system->getDescription()->getMin()),
+                (system->getDescription()->getMax()),
                 (T) (system->getDescription()->getMax() / (T) 2),
                 (T) (system->getDescription()->getMax() / (T) 3),
                 (T) (system->getDescription()->getMax() / (T) 4),
@@ -97,6 +99,8 @@ void TestDataObject(Service1Pids pid,
         for (auto const &val: values) {
             system->setValue(val);
             EXPECT_NEAR((double) system->getValue(), (double) val, offset);
+            system->setValueFromString(to_string(val));
+            EXPECT_NEAR(system->getValue(), val, offset);
         }
     }
 }
@@ -121,13 +125,15 @@ void TestDataObject<byte>(Service1Pids pid,
 
     vector<byte> values{
             (system->getDescription()->getMin()),
-            (byte) (system->getDescription()->getMax()),
+            (system->getDescription()->getMax()),
             (byte) ((int) system->getDescription()->getMax() / 2),
             (byte) ((int) system->getDescription()->getMax() / 3),
             (byte) ((int) system->getDescription()->getMax() / 4),
             (byte) ((int) system->getDescription()->getMax() / 5)};
     for (auto const &val: values) {
         system->setValue(val);
+        EXPECT_NEAR((double) system->getValue(), (double) val, offset);
+        system->setValueFromString(to_string(val));
         EXPECT_NEAR((double) system->getValue(), (double) val, offset);
     }
 }
@@ -158,6 +164,8 @@ void TestDataObject<bool>(Service1Pids pid,
     for (auto const &val: values) {
         system->setValue(val);
         EXPECT_NEAR((double) system->getValue(), (double) val, offset);
+        system->setValueFromString(to_string(val));
+        EXPECT_NEAR(system->getValue(), val, offset);
     }
 }
 

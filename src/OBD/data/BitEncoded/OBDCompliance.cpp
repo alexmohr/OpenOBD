@@ -241,3 +241,40 @@ string OBDCompliance::getPrintableData() {
            "\nIndiaOBDII" + indiaOBDII->getPrintableData() +
            "\nHeavyDutyEuroOBDStageVI" + heavyDutyEuroOBDStageVI->getPrintableData();
 }
+
+void OBDCompliance::setValueFromString(string data) {
+    auto parts = splitString(const_cast<char *>(data.c_str()));
+    if (parts.empty()) {
+        LOG(ERROR) << "Insufficient parameter count expected 28";
+    }
+
+
+    oBD_II_CARB->setValueFromString(parts.at(0));
+    oBD_EPA->setValueFromString(parts.at(1));
+    oBD_and_OBD_II->setValueFromString(parts.at(2));
+    oBD_I->setValueFromString(parts.at(3));
+    notOBDcompliant->setValueFromString(parts.at(4));
+    eOBD->setValueFromString(parts.at(5));
+    eOBDandOBD_II->setValueFromString(parts.at(6));
+    eOBDandOBD->setValueFromString(parts.at(7));
+    eOBD_OBD_and_OBDII->setValueFromString(parts.at(8));
+    jOBD->setValueFromString(parts.at(9));
+    jOBDandOBDII->setValueFromString(parts.at(10));
+    jOBDandEOBD->setValueFromString(parts.at(11));
+    jOBD_EOBD_and_OBDII->setValueFromString(parts.at(12));
+    engineManufacturerDiagnostics->setValueFromString(parts.at(13));
+    engineManufacturerDiagnosticsEnhanced->setValueFromString(parts.at(14));
+    heavyDutyOn_BoardDiagnostics_OBD_C->setValueFromString(parts.at(15));
+    heavyDutyOn_BoardDiagnostics->setValueFromString(parts.at(16));
+    worldWideHarmonizedOBD->setValueFromString(parts.at(17));
+    heavyDutyEuroOBDStageIwithoutNOxcontrol->setValueFromString(parts.at(18));
+    heavyDutyEuroOBDStageIwithNOxcontrol->setValueFromString(parts.at(19));
+    heavyDutyEuroOBDStageIIwithoutNOxcontrol->setValueFromString(parts.at(20));
+    heavyDutyEuroOBDStageIIwithNOxcontrol->setValueFromString(parts.at(21));
+    brazilOBDPhase1->setValueFromString(parts.at(22));
+    brazilOBDPhase2->setValueFromString(parts.at(23));
+    koreanOBD->setValueFromString(parts.at(24));
+    indiaOBDI->setValueFromString(parts.at(25));
+    indiaOBDII->setValueFromString(parts.at(26));
+    heavyDutyEuroOBDStageVI->setValueFromString(parts.at(27));
+}

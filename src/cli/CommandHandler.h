@@ -13,10 +13,28 @@
 
 using namespace std;
 
+enum CLI_TYPES {
+    TESTER,
+    ECU
+};
+
 class CommandHandler {
 private:
-    map<string, int> commandMapping{
 
+    const string command_get = "get";
+    const string command_set = "set";
+    const string command_help = "help";
+    const string command_cmd = "cmd";
+    const string command_pid = "pid";
+
+    const string err_invalid_input = "Invalid usage. See help";
+    vector<string> commands{
+            command_get,
+            command_set,
+            command_help
+    };
+
+    map<string, int> commandMapping{
             {"MonitoringStatusSinceDTCsCleared",    MonitoringStatusSinceDTCsCleared},
             {"FreezeDTCPid",                        FreezeDTCPid},
             {"FuelSystemStatus",                    FuelSystemStatus},
@@ -91,21 +109,32 @@ private:
     std::thread tCmdHandler;
     bool exitRequested;
     unique_ptr<OBDHandler> obdHandler;
-    bool isOpen;
-private:
-    void configureVirtualVehicle(Vehicle *vehicle);
-
-    void canHandler(char *canInterface);
-
-    void cmdHandler();
+    bool open;
 
 public:
     CommandHandler();
 
 public:
-    void startECUSimulation(char *canInterface);
+    bool start(char *canInterface, CLI_TYPES type);
 
     void stopECUSimulation();
+
+    bool isOpen();
+
+private:
+    void configureVirtualVehicle(Vehicle *vehicle);
+
+    void canHandler(CanIsoTP *can);
+
+    void cmdHandler();
+
+    void printHelp(std::vector<std::string> &cmd);
+
+    void getData(std::vector<std::string> &cmd);
+
+    void setData(std::vector<std::string> &cmd);
+
+    int getPid(std::vector<std::string> &cmd);
 };
 
 

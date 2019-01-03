@@ -35,7 +35,7 @@ public:
 
     Vehicle *getVehicleFreezeFrame();
 
-    void getFrameInfo(const byte *frame, int serviceId, Pid &pid, Service &service);
+    int getFrameInfo(int pidPid, int serviceId, Pid &pid, Service &service);
 };
 
 #endif //OPEN_OBD2_OBDHANDLER_H

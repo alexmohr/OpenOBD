@@ -9,7 +9,7 @@
 #include <cstddef>
 #include <string>
 #include <type_traits>
-
+#include <vector>
 
 using namespace std;
 
@@ -25,5 +25,6 @@ string to_string(byte val);
 
 unsigned int getBytes(int bits);
 
+vector<string> splitString(char *input);
 
 #endif //OPEN_OBD2_CONVERSION_H

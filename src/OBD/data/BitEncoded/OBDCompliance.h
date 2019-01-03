@@ -103,6 +103,8 @@ public:// IFrameObject
     unsigned int toFrame(unsigned int &data, unsigned int &size) override;
 
     string getPrintableData() override;
+
+    void setValueFromString(string data) override;
 };
 
 

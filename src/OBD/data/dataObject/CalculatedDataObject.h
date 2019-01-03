@@ -80,6 +80,19 @@ public:
     DataObjectDescription<T> &getDescription() {
         return *description;
     }
+
+    void setValueFromString(string data) override {
+        if (std::is_same<T, double>::value ||
+            std::is_same<T, float>::value) {
+            setValue((T) strtod(data.c_str(), nullptr));
+        } else if (std::is_same<T, short>::value ||
+                   std::is_same<T, int>::value ||
+                   std::is_same<T, long>::value) {
+            setValue((T) strtol(data.c_str(), nullptr, 0));
+        } else {
+            setValue((T) strtoul(data.c_str(), nullptr, 0));
+        }
+    }
 };
 
 

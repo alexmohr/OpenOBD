@@ -86,3 +86,20 @@ string BankOxygenSensors4BankCollection::getPrintableData() {
            "bank4Sensor1presentIn4Banks: " + bank4Sensor1presentIn4Banks->getPrintableData() + "\n" +
            "bank4Sensor2presentIn4Banks: " + bank4Sensor2presentIn4Banks->getPrintableData() + "\n";
 }
+
+void BankOxygenSensors4BankCollection::setValueFromString(string data) {
+    auto parts = splitString(const_cast<char *>(data.c_str()));
+    if (8 > parts.size()) {
+        LOG(ERROR) << "Insufficient parameter count expected 8";
+    }
+
+    bank1Sensor1presentIn4Banks->setValueFromString(parts.at(0));
+    bank1Sensor2presentIn4Banks->setValueFromString(parts.at(1));
+    bank2Sensor1presentIn4Banks->setValueFromString(parts.at(2));
+    bank2Sensor2presentIn4Banks->setValueFromString(parts.at(3));
+    bank3Sensor1presentIn4Banks->setValueFromString(parts.at(4));
+    bank3Sensor2presentIn4Banks->setValueFromString(parts.at(5));
+    bank4Sensor1presentIn4Banks->setValueFromString(parts.at(6));
+    bank4Sensor2presentIn4Banks->setValueFromString(parts.at(7));
+
+}

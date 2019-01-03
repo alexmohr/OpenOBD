@@ -35,3 +35,13 @@ string FuelSystemStates::getPrintableData() {
 
 }
 
+void FuelSystemStates::setValueFromString(string data) {
+    auto parts = splitString(const_cast<char *>(data.c_str()));
+    if (2 > parts.size()) {
+        LOG(ERROR) << "Insufficient parameter count expected 2";
+    }
+
+    fuelSystem1->setValueFromString(parts.at(0));
+    fuelSystem2->setValueFromString(parts.at(1));
+}
+

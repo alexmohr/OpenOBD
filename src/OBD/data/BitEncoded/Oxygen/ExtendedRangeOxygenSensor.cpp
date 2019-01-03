@@ -32,3 +32,13 @@ string ExtendedRangeOxygenSensor::getPrintableData() {
     return "fuelAirEquivalenceRatio: " + fuelAirEquivalenceRatio->getPrintableData() +
            "\ncurrent: " + current->getPrintableData();
 }
+
+void ExtendedRangeOxygenSensor::setValueFromString(string data) {
+    auto parts = splitString(const_cast<char *>(data.c_str()));
+    if (2 > parts.size()) {
+        LOG(ERROR) << "Insufficient parameter count expected 2";
+    }
+
+    fuelAirEquivalenceRatio->setValueFromString(parts.at(0));
+    current->setValueFromString(parts.at(1));
+}

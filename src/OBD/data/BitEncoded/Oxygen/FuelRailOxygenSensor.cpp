@@ -33,3 +33,13 @@ string FuelRailOxygenSensor::getPrintableData() {
     return "fuelAirEquivalenceRatio: " + fuelAirEquivalenceRatio->getPrintableData() +
            "\nvoltage: " + voltage->getPrintableData();
 }
+
+void FuelRailOxygenSensor::setValueFromString(string data) {
+    auto parts = splitString(const_cast<char *>(data.c_str()));
+    if (2 > parts.size()) {
+        LOG(ERROR) << "Insufficient parameter count expected 2";
+    }
+
+    fuelAirEquivalenceRatio->setValueFromString(parts.at(0));
+    voltage->setValueFromString(parts.at(1));
+}

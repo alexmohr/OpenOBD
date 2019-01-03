@@ -76,6 +76,7 @@ public:
 
     string getPrintableData() override;
 
+    void setValueFromString(string data) override;
 };
 
 #endif //OPEN_OBD2_MONITORSTATUS_H

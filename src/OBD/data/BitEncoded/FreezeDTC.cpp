@@ -37,4 +37,13 @@ string FreezeDTC::getPrintableData() {
     return "FreezeDTC :" + dataObj->getPrintableData();
 }
 
+void FreezeDTC::setValueFromString(string data) {
+    auto parts = splitString(const_cast<char *>(data.c_str()));
+    if (parts.empty()) {
+        LOG(ERROR) << "Insufficient parameter count expected 1";
+    }
+
+    dataObj->setValueFromString(data);
+}
+
 

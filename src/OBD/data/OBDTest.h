@@ -23,17 +23,20 @@ public:
 
     ~OBDTest();
 
-    void fromFrame(byte *frame, int size) override;
-
-    unsigned int toFrame(unsigned int &data, unsigned int &size) override;
-
-    string getPrintableData() override;
-
     void setName(string name);
 
     DataObject<bool> &getAvailable();
 
     DataObject<bool> &getIncomplete();
+
+public: // IFrameObject
+    void setValueFromString(string data) override;
+
+    void fromFrame(byte *frame, int size) override;
+
+    unsigned int toFrame(unsigned int &data, unsigned int &size) override;
+
+    string getPrintableData() override;
 };
 
 

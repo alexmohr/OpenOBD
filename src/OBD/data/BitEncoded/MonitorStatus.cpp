@@ -93,3 +93,28 @@ string MonitorStatus::getPrintableData() {
            "\nEngineSystem8" + engine->getEngineSystem8().getPrintableData() +
            "\nEngineType" + to_string(engine->getEngineType());
 }
+
+void MonitorStatus::setValueFromString(string data) {
+    auto parts = splitString(const_cast<char *>(data.c_str()));
+    if (14 > parts.size()) {
+        LOG(ERROR) << "Insufficient parameter count expected 14"
+                   << "\nMil, DtcCount, Misfire, Fuelsystem"
+                   << "\nEngineSystem1..8 EngineType" << endl;
+    }
+
+
+    mil->setValueFromString(parts.at(0));
+    dtcCount->setValueFromString(parts.at(1));
+    components->setValueFromString(parts.at(2));
+    misfire->setValueFromString(parts.at(3));
+    fuelSystem->setValueFromString(parts.at(4));
+    engine->getEngineSystem1().setValueFromString(parts.at(5));
+    engine->getEngineSystem2().setValueFromString(parts.at(6));
+    engine->getEngineSystem3().setValueFromString(parts.at(7));
+    engine->getEngineSystem4().setValueFromString(parts.at(8));
+    engine->getEngineSystem5().setValueFromString(parts.at(9));
+    engine->getEngineSystem6().setValueFromString(parts.at(10));
+    engine->getEngineSystem7().setValueFromString(parts.at(11));
+    engine->getEngineSystem8().setValueFromString(parts.at(12));
+    engine->setEngineType(static_cast<EngineType>(strtol(parts.at(13).c_str(), nullptr, 0)));
+}

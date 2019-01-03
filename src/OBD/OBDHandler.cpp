@@ -19,14 +19,15 @@ byte *OBDHandler::createAnswerFrame(byte *request, int &size) {
 
     Service service;
     Pid pid;
-    getFrameInfo(request, (int) request[0], pid, service);
+    if (getFrameInfo((int) request[1], (int) request[0], pid, service) < 0) {
+        LOG(ERROR) << "Received invalid or unsupported pid or service ";
+        size = 0;
+        return nullptr;
+    }
+
 
     unsigned int dataSize = 0;
     byte *data = pid.getVehicleData(service, vehicle.get(), dataSize);
-//
-//    if (data != nullptr) {
-//        dataSize = (sizeof(data)/2); // todo fix division
-//    }
 
     byte* result = (byte*)malloc(dataSize + 2);
 
@@ -50,7 +51,10 @@ void OBDHandler::updateFromFrame(byte *frame, int frameSize) {
 
     Service service;
     Pid pid;
-    getFrameInfo(frame, (int)frame[0]-ANSWER_OFFSET, pid, service);
+    if (getFrameInfo((int) frame[1], (int) frame[0] - ANSWER_OFFSET, pid, service) < 0) {
+        LOG(ERROR) << "Received invalid or unsupported pid or service ";
+        return;
+    }
 
     const int startByte = 2;
     // 1 byte is service, 1 byte is pid. rest is data
@@ -65,12 +69,16 @@ void OBDHandler::updateFromFrame(byte *frame, int frameSize) {
     pid.updateVehicle(service, updateVehicle, data, dataSize);
 }
 
-void OBDHandler::getFrameInfo(const byte *frame, int serviceId, Pid &pid, Service &service) {
+int OBDHandler::getFrameInfo(int pidPid, int serviceId, Pid &pid, Service &service) {
     service = static_cast<Service>(serviceId);
+    if (pidConfig->find(service) == pidConfig->end()) {
+        return -1;
+    }
     auto pc = pidConfig->at(service);
-    pid = pc.pidList.at((int)frame[1]);
-    LOG(DEBUG) << "Creating information for pid " << to_string(pid.id)
-               << " in service " << service << " : " << pid.description;
+    pid = pc.pidList.at(pidPid);
+//    LOG(DEBUG) << "Creating information for pid " << to_string(pid.id)
+//               << " in service " << service << " : " << pid.description;
+    return 0;
 }
 
 

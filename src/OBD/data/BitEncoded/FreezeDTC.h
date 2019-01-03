@@ -30,6 +30,8 @@ public:// IFrameObject
 
     string getPrintableData() override;
 
+    void setValueFromString(string data) override;
+
 };
 
 

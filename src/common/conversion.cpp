@@ -1,6 +1,8 @@
 //
 // Created by me on 21/12/18.
 //
+#include <sstream>
+#include <iterator>
 #include "conversion.h"
 
 unsigned short byteArrayToUShort(byte *data) {
@@ -51,7 +53,15 @@ unsigned int getBytes(int bits) {
     }
 
     return 8;
+}
 
+
+
+vector<string> splitString(char *input) {
+    std::istringstream iss(input);
+    std::vector<std::string> cmd(std::istream_iterator<std::string>{iss},
+                                 std::istream_iterator<std::string>());
+    return cmd;
 }
 
 

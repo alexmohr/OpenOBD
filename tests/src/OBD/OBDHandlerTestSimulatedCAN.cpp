@@ -29,6 +29,9 @@ TEST(OBDHandler, PIDSupported01_20_With_VirtualCAN) {
     buf = (byte *) malloc(response.size());
     vehicleCAN->send(response.data(), static_cast<int>(response.size()));
     testerCAN->receive(buf, static_cast<int>(response.size()), readSize);
+
+    assert(readSize > 0);
+
     handler->updateFromFrame(buf, readSize);
 
     buf = (byte *) malloc(request.size());
@@ -40,5 +43,55 @@ TEST(OBDHandler, PIDSupported01_20_With_VirtualCAN) {
     EXPECT_EQ(dataSize, response.size());
     compareResponse(response, val);
 }
+
+TEST(OBDHandler, AmbientTemperature_46_With_VirtualCAN) {
+    // these data has uds structure removed because it is added by the kernel driver.
+    vector<byte> request{(byte) 0x01, (byte) AmbientAirTemperature};
+    vector<byte> response{(byte) 0x41, (byte) (AmbientAirTemperature), (byte) 0xff};
+
+    auto vehicleCAN = new CanIsoTP();
+    auto testerCAN = new CanIsoTP();
+
+    vehicleCAN->openIsoTp(TESTER_ID, VEHICLE_ID, const_cast<char *>(CAN_INTERFACE));
+    testerCAN->openIsoTp(VEHICLE_ID, TESTER_ID, const_cast<char *>(CAN_INTERFACE));
+
+
+    OBDHandler *handler = getHandler();
+    byte *buf;
+    int readSize;
+
+    // setup vehicle
+    buf = (byte *) malloc(response.size());
+    vehicleCAN->send(response.data(), static_cast<int>(response.size()));
+    testerCAN->receive(buf, static_cast<int>(response.size()), readSize);
+
+    assert(readSize > 0);
+
+    handler->updateFromFrame(buf, readSize);
+
+    buf = (byte *) malloc(request.size());
+    testerCAN->send(request.data(), static_cast<int>(request.size()));
+    vehicleCAN->receive(buf, static_cast<int>(request.size()), readSize);
+
+    int dataSize = 0;
+    byte *val = handler->createAnswerFrame(buf, dataSize);
+    vehicleCAN->send(val, dataSize);
+    EXPECT_EQ(dataSize, response.size());
+    compareResponse(response, val);
+}
+
+TEST(OBDHandler, Test_timeout) {
+
+    auto vehicleCAN = new CanIsoTP();
+
+    vehicleCAN->openIsoTp(TESTER_ID, VEHICLE_ID, const_cast<char *>(CAN_INTERFACE));
+
+    byte *buf;
+    int readSize;
+    vehicleCAN->receive(buf, 255, readSize);
+    EXPECT_EQ(readSize, 0);
+}
+
+
 
 #pragma clang diagnostic pop

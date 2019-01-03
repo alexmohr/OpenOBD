@@ -43,6 +43,8 @@ public:// IFrameObject
     void fromFrame(byte *frame, int size) override;
 
     string getPrintableData() override;
+
+    void setValueFromString(string data) override;
 };
 
 

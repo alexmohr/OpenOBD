@@ -8,28 +8,28 @@
 #include <memory>
 #include <thread>
 #include <csignal>
+#include <unistd.h>
 #include "CommandHandler.h"
 #include "easylogging++.h"
 
-enum CLI_TYPES {
-    SIMUALATE_VEHICLE
-};
 
 class CliHandling {
 private:
-private:
     bool running;
     unique_ptr<CommandHandler> cmdHandler;
+
 public:
     CliHandling();
-
 public:
-    void openCli(CLI_TYPES type, char *canInterface);
-
+    int openCli(int argc, char *argv[]);
     void closeCli();
 
-private:
+    bool isOpen();
 
+private:
+    void display_help(char *progname);
+
+    int getCommandLineArgs(int argc, char *argv[], char &canAdapter, CLI_TYPES &type);
 };
 
 

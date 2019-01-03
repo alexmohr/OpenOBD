@@ -45,7 +45,18 @@ DataObject<bool> &OBDTest::getIncomplete() {
 }
 
 string OBDTest::getPrintableData() {
-return "OBDTest: " + name +
-"\nAvailable: " + available->getPrintableData() +
-"\nIncomplete: " + incomplete->getPrintableData();
+    return "OBDTest: " + name +
+           "\nAvailable: " + available->getPrintableData() +
+           "\nIncomplete: " + incomplete->getPrintableData();
 }
+
+void OBDTest::setValueFromString(string data) {
+    auto parts = splitString(const_cast<char *>(data.c_str()));
+    if (2 > parts.size()) {
+        LOG(ERROR) << "Insufficient parameter count";
+    }
+
+    available->setValueFromString(parts.at(0));
+    incomplete->setValueFromString(parts.at(1));
+}
+

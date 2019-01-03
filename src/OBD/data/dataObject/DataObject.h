@@ -164,7 +164,7 @@ public:
         const int size = stopByte - startByte + 1;
         if (size > bufferSize || stopByte > bufferSize) {
             //return -1;
-            throw std::invalid_argument("Buffer overflow");
+            throw std::invalid_argument("Buffer overflow in DataObject.h");
         }
 
         auto dataBytes = (byte *) malloc((size_t) size);
@@ -214,6 +214,18 @@ public:
         return to_string(getValue()) + unit;
     }
 
+    void setValueFromString(string data) override {
+        if (std::is_same<T, double>::value ||
+            std::is_same<T, float>::value) {
+            setValue((T) strtod(data.c_str(), nullptr));
+        } else if (std::is_same<T, short>::value ||
+                   std::is_same<T, int>::value ||
+                   std::is_same<T, long>::value) {
+            setValue((T) strtol(data.c_str(), nullptr, 0));
+        } else {
+            setValue((T) strtoul(data.c_str(), nullptr, 0));
+        }
+    }
 };
 
 

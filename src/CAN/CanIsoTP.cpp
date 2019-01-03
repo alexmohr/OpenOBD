@@ -116,6 +116,11 @@ int CanIsoTP::openIsoTp(unsigned int rxId, unsigned int txId, char* ifname){
     addr.can_family = AF_CAN;
     addr.can_ifindex = if_nametoindex(ifname);
 
+    struct timeval tv;
+    tv.tv_sec = 1;  /* 1 sec timeout */
+    setsockopt(socketHandle, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(struct timeval));
+
+
     if (bind(socketHandle, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
         perror("bind");
         closeIsoTp();
@@ -146,5 +151,16 @@ int CanIsoTP::send(byte* buf, int buflen) {
 }
 
 void CanIsoTP::receive(byte* buffer, int buffSize, int& readSize) {
-    readSize= static_cast<int>(read(socketHandle, buffer, static_cast<size_t>(buffSize)));
+    struct timeval timeout = {1, 0};
+    fd_set readSet;
+    FD_ZERO(&readSet);
+    FD_SET(socketHandle, &readSet);
+    int t = select((socketHandle + 1), &readSet, nullptr, nullptr, &timeout);
+    if (t > 0) {
+        readSize = static_cast<int>(read(socketHandle, buffer, static_cast<size_t>(buffSize)));
+    } else {
+        readSize = 0;
+    }
+
+
 }

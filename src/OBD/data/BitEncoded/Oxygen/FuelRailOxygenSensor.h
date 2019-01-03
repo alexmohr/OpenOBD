@@ -26,6 +26,8 @@ public:// IFrameObject
     void fromFrame(byte *data, int size) override;
 
     string getPrintableData() override;
+
+    void setValueFromString(string data) override;
 };
 
 

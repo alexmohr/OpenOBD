@@ -64,7 +64,7 @@ public:
         dataObj->fromFrame(data, size);
     }
 
-    unsigned int toFrame(unsigned int &data, unsigned int &size) override {
+    unsigned int toFrame(unsigned int &data, int &size) override {
         return dataObj->toFrame(data, size);
     }
 

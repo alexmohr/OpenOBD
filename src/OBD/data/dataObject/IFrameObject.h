@@ -11,7 +11,7 @@ using namespace std;
 
 class IFrameObject {
 public:
-    virtual unsigned int toFrame(unsigned int &data, unsigned int &size) = 0;
+    virtual unsigned int toFrame(unsigned int &data, int &size) = 0;
 
     virtual void fromFrame(byte *data, int size) = 0;
 

@@ -22,7 +22,7 @@ MonitorStatus::MonitorStatus(shared_ptr<Engine> *engine) {
 }
 
 
-unsigned int MonitorStatus::toFrame(unsigned int &data, unsigned int &size) {
+unsigned int MonitorStatus::toFrame(unsigned int &data, int &size) {
 
     data = mil->toFrame(data, size);
     data |= dtcCount->toFrame(data, size);
@@ -30,6 +30,7 @@ unsigned int MonitorStatus::toFrame(unsigned int &data, unsigned int &size) {
     data |= misfire->toFrame(data, size);
     data |= fuelSystem->toFrame(data, size);
     data |= engine->toFrameForMonitoringSystem(data, size);
+    size = 32; // this size is in bits
     return data;
 }
 

@@ -19,7 +19,7 @@ CalculatedDataObject<unsigned short, float> &FuelRailOxygenSensor::getVoltage() 
     return *voltage;
 }
 
-unsigned int FuelRailOxygenSensor::toFrame(unsigned int &data, unsigned int &size) {
+unsigned int FuelRailOxygenSensor::toFrame(unsigned int &data, int &size) {
     return data |= fuelAirEquivalenceRatio->toFrame(data, size) |
                    voltage->toFrame(data, size);
 }

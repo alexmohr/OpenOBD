@@ -22,7 +22,7 @@ CalculatedDataObject<byte, float> &BankOxygenSensor::getShortTermFuelTrim() {
     return *shortTermFuelTrim;
 }
 
-unsigned int BankOxygenSensor::toFrame(unsigned int &data, unsigned int &size) {
+unsigned int BankOxygenSensor::toFrame(unsigned int &data, int &size) {
     data |= voltage->toFrame(data, size);
     data |= shortTermFuelTrim->toFrame(data, size);
     return data;

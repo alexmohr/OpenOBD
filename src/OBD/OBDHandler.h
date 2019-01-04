@@ -8,10 +8,11 @@
 #include "../Config.h"
 #include "../Vehicle.h"
 
+#define ANSWER_OFFSET 0x40
 
 class OBDHandler{
 private:
-    const int ANSWER_OFFSET = 0x40;
+
     unique_ptr<Vehicle> vehicle;
     unique_ptr<Vehicle> vehicleFreezeFrame;
     unique_ptr<map<Service, PidCollection>> pidConfig;
@@ -25,6 +26,8 @@ public:
      */
     byte *createAnswerFrame(byte *request, int &size);
 
+    byte *createAnswerFrame(Service service, Pid pid, byte *data, int &size);
+
     /**
      * Updates the vehicle with received data.
      * @param frame The CAN frame received which contains the data.
@@ -35,7 +38,9 @@ public:
 
     Vehicle *getVehicleFreezeFrame();
 
-    int getFrameInfo(int pidPid, int serviceId, Pid &pid, Service &service);
+    int getFrameInfo(int pidId, int serviceId, Pid &pid, Service &service);
+
+
 };
 
 #endif //OPEN_OBD2_OBDHANDLER_H

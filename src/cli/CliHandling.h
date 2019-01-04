@@ -29,7 +29,7 @@ public:
 private:
     void display_help(char *progname);
 
-    int getCommandLineArgs(int argc, char *argv[], char &canAdapter, CLI_TYPES &type);
+    int getCommandLineArgs(int argc, char **argv, char &interface, int &port, CLI_TYPE &type);
 };
 
 

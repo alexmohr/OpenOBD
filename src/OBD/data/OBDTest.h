@@ -34,7 +34,7 @@ public: // IFrameObject
 
     void fromFrame(byte *frame, int size) override;
 
-    unsigned int toFrame(unsigned int &data, unsigned int &size) override;
+    unsigned int toFrame(unsigned int &data, int &size) override;
 
     string getPrintableData() override;
 };

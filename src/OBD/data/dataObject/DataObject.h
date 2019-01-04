@@ -133,7 +133,7 @@ public:
     }
 
 
-    unsigned int toFrame(unsigned int &data, unsigned int &size) override {
+    unsigned int toFrame(unsigned int &data, int &size) override {
         auto startByteValue = -BITS_PER_BYTE + ((startByte + 1) * BITS_PER_BYTE);
         auto stopByteValue = -BITS_PER_BYTE + ((stopByte + 1) * BITS_PER_BYTE);
 

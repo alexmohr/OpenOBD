@@ -9,7 +9,7 @@ void Pid::updateVehicle(Service service, Vehicle *vehicle, byte *data, int dataS
     switch (service){
         case POWERTRAIN:
         case FREEZE_FRAME:
-            updateService1_2(vehicle, data, dataSize);
+            writeService1_2(vehicle, data, dataSize);
             break;
         case CONFIRMED_DTCS:
             break;
@@ -31,7 +31,7 @@ void Pid::updateVehicle(Service service, Vehicle *vehicle, byte *data, int dataS
 
 }
 
-byte *Pid::getVehicleData(Service service, Vehicle *vehicle, unsigned int &size) {
+byte *Pid::getVehicleData(Service service, Vehicle *vehicle, int &size) {
     byte* data = nullptr;
     switch (service){
         case POWERTRAIN:
@@ -203,7 +203,7 @@ IFrameObject &Pid::getFrameObject(Vehicle *vehicle) {
     throw invalid_argument("pid: " + to_string(pid) + " not implemented");
 }
 
-void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
+void Pid::writeService1_2(Vehicle *vehicle, byte *data, int size) {
     auto pid = (Service1Pids) id;
     switch (pid) {
         case SupportedPid01_20:
@@ -232,7 +232,7 @@ void Pid::updateService1_2(Vehicle *vehicle, byte *data, int size) {
     }
 }
 
-byte *Pid::readService1_2(Vehicle *vehicle, unsigned int &size) {
+byte *Pid::readService1_2(Vehicle *vehicle, int &size) {
     unsigned int data = 0;
     auto pid = (Service1Pids) id;
     switch (pid) {
@@ -264,6 +264,14 @@ byte *Pid::readService1_2(Vehicle *vehicle, unsigned int &size) {
     size = getBytes(size);
     byte *retVal = uintToByteArray(data);
     return retVal;
+}
+
+byte *Pid::getQueryForService(Service service, int& buflen) {
+    buflen = 2;
+    byte* frame = (byte*)malloc(buflen);
+    frame[0] = (byte)service;
+    frame[1] = (byte)id;
+    return frame;
 }
 
 

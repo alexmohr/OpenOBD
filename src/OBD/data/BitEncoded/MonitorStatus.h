@@ -65,7 +65,7 @@ public:
     /**
      * Converts this object into frame data.
      */
-    unsigned int toFrame(unsigned int &data, unsigned int &size) override;
+    unsigned int toFrame(unsigned int &data, int &size) override;
 
 
     /**

@@ -92,7 +92,7 @@ set(CPPSRC
         src/OBD/data/BitEncoded/Oxygen/BankOxygenSensorsCollection.h
         src/cli/CliHandling.cpp src/cli/CliHandling.h
         src/OBD/data/BitEncoded/Oxygen/BankOxygenSensors4BankCollection.cpp
-        src/OBD/data/BitEncoded/Oxygen/BankOxygenSensors4BankCollection.h src/OBD/data/BitEncoded/Throttle.cpp src/OBD/data/BitEncoded/Throttle.h src/OBD/data/dataObject/CalculatedDataObjectFactory.cpp src/OBD/data/dataObject/CalculatedDataObjectFactory.h src/cli/CommandHandler.cpp src/cli/CommandHandler.h)
+        src/OBD/data/BitEncoded/Oxygen/BankOxygenSensors4BankCollection.h src/OBD/data/BitEncoded/Throttle.cpp src/OBD/data/BitEncoded/Throttle.h src/OBD/data/dataObject/CalculatedDataObjectFactory.cpp src/OBD/data/dataObject/CalculatedDataObjectFactory.h src/cli/CommandHandler.cpp src/cli/CommandHandler.h src/CAN/ELM327.cpp src/CAN/ELM327.h src/CAN/ComHandler.h src/CAN/ComHandler.cpp)
 
 
 add_executable(open_obd2 src/main.cpp ${CPPSRC})

@@ -112,7 +112,7 @@ void PidSupport::setPidSupportedFromFrame(PidRange pid, byte *data, int size) {
 }
 
 
-unsigned int PidSupport::getPidSupportedRange(PidRange pid, unsigned int &data, unsigned int &size) {
+unsigned int PidSupport::getPidSupportedRange(PidRange pid, unsigned int &data, int &size) {
     switch (pid) {
         case Pid01_20:
             data = getPids(*pidSupported01_20, data, size);
@@ -141,7 +141,7 @@ unsigned int PidSupport::getPidSupportedRange(PidRange pid, unsigned int &data, 
 }
 
 
-unsigned int PidSupport::getPids(vector<DataObject<bool>> &pids, unsigned int &data, unsigned int &size) {
+unsigned int PidSupport::getPids(vector<DataObject<bool>> &pids, unsigned int &data, int &size) {
     for (auto &pid: pids) {
         data |= pid.toFrame(data, size);
     }

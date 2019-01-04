@@ -7,12 +7,13 @@
 
 
 #define NO_CAN_ID 0xFFFFFFFFU
-#define BUFSIZE 5000 /* size > 4095 to check socket API internal checks */
+// #define BUFSIZE 5000 /* size > 4095 to check socket API internal checks */
 
 #define MAX_CAN_ID_NORMAL 0x800
 #define MAX_CAN_ID_EXTENDED 0x20000000
 
 #include <cstddef>
+#include "ComHandler.h"
 
 using namespace std;
 
@@ -21,16 +22,10 @@ enum TP_ERRORS{
     FailedToOpenSocket =2
 };
 
-class CanIsoTP {
-private:
-    int socketHandle;
+class CanIsoTP : public ComHandler {
 public:
-
     int openIsoTp(unsigned int rxId, unsigned int txId, char* ifname);
-    void closeIsoTp();
 
-    int send(byte* buf, int buflen);
-    void receive(byte* buffer, int buffSize, int& readSize);
 };
 
 

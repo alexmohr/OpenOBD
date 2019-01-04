@@ -27,7 +27,7 @@ void OBDTest::fromFrame(byte *frame, int size) {
     incomplete->fromFrame(frame, size);
 }
 
-unsigned int OBDTest::toFrame(unsigned int &data, unsigned int &size) {
+unsigned int OBDTest::toFrame(unsigned int &data, int &size) {
     return data |= available->toFrame(data, size) |
                    incomplete->toFrame(data, size);
 }

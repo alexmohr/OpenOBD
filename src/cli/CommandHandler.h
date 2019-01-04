@@ -7,14 +7,19 @@
 
 #include <thread>
 #include <map>
+#include <mutex>
+#include <condition_variable>
 #include "../OBD/Pid.h"
 #include "../CAN/CanIsoTP.h"
+#include "../CAN/ELM327.h"
 #include "../OBD/OBDHandler.h"
 
 using namespace std;
 
-enum CLI_TYPES {
+
+enum CLI_TYPE {
     TESTER,
+    ELM,
     ECU
 };
 
@@ -110,31 +115,40 @@ private:
     bool exitRequested;
     unique_ptr<OBDHandler> obdHandler;
     bool open;
+    CLI_TYPE type;
+    ComHandler *com;
+
+    std::mutex dataMutex;
+    std::condition_variable dataCv;
+
+    int expectedPid;
 
 public:
     CommandHandler();
 
 public:
-    bool start(char *canInterface, CLI_TYPES type);
+    bool start(char *target, CLI_TYPE type, int port = 0);
 
-    void stopECUSimulation();
+    void stopHandler();
 
     bool isOpen();
 
 private:
     void configureVirtualVehicle(Vehicle *vehicle);
 
-    void canHandler(CanIsoTP *can);
+    void comHandler(ComHandler *com);
 
-    void cmdHandler();
+    void cmdHandler(ComHandler *com);
 
     void printHelp(std::vector<std::string> &cmd);
 
-    void getData(std::vector<std::string> &cmd);
+    void getData(std::vector<std::string> &cmd, ComHandler *com);
 
     void setData(std::vector<std::string> &cmd);
 
-    int getPid(std::vector<std::string> &cmd);
+    bool getPid(std::vector<std::string> &cmd, Pid &pid, Service &service);
+
+    void queryECU(Pid pid, Service service);
 };
 
 

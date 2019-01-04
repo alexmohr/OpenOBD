@@ -36,7 +36,7 @@ void compareResponse(vector<byte> expectedResponse, unsigned int data, unsigned 
 
 void compareResponseInt(vector<byte> expectedResponse, DataObject<unsigned int> *actualResponse) {
     unsigned int data = 0;
-    unsigned int size = 0;
+    int size = 0;
     data = actualResponse->toFrame(data, size);
     compareResponse(expectedResponse, data, size);
 }
@@ -44,7 +44,7 @@ void compareResponseInt(vector<byte> expectedResponse, DataObject<unsigned int> 
 
 void compareResponse(vector<byte> expectedResponse, DataObject<unsigned short> *actualResponse) {
     unsigned int data = 0;
-    unsigned int size = 0;
+    int size = 0;
     data = actualResponse->toFrame(data, size);
     compareResponse(expectedResponse, data, size);
 }

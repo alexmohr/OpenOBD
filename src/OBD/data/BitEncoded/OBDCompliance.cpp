@@ -178,7 +178,7 @@ void OBDCompliance::fromFrame(byte *data, int size) {
     heavyDutyEuroOBDStageVI->fromFrame(data, size);
 }
 
-unsigned int OBDCompliance::toFrame(unsigned int &data, unsigned int &size) {
+unsigned int OBDCompliance::toFrame(unsigned int &data, int &size) {
     data |=
             oBD_II_CARB->toFrame(data, size) |
             oBD_EPA->toFrame(data, size) |

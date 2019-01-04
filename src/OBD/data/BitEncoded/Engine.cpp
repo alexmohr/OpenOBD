@@ -114,7 +114,8 @@ OBDTest& Engine::getEngineSystem8() {
     return *engineSystem8;
 }
 
-unsigned int Engine::toFrameForMonitoringSystem(unsigned int &data, unsigned int &size) {
+// todo refactor this into a seperate class
+unsigned int Engine::toFrameForMonitoringSystem(unsigned int &data, int &size) {
     data = engineSystem1->toFrame(data, size) |
            engineSystem2->toFrame(data, size) |
            engineSystem3->toFrame(data, size) |

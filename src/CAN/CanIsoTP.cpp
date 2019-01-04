@@ -61,9 +61,6 @@
 #include <linux/can.h>
 #include <linux/can/isotp.h>
 
-
-
-
 int CanIsoTP::openIsoTp(unsigned int rxId, unsigned int txId, char* ifname){
     if (rxId > MAX_CAN_ID_EXTENDED || rxId == 0 ||
         txId > MAX_CAN_ID_EXTENDED || txId == 0
@@ -123,44 +120,10 @@ int CanIsoTP::openIsoTp(unsigned int rxId, unsigned int txId, char* ifname){
 
     if (bind(socketHandle, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
         perror("bind");
-        closeIsoTp();
+        closeHandler();
         return  FailedToOpenSocket;
     }
 
     return 0;
 }
 
-void CanIsoTP::closeIsoTp(){
-    close(socketHandle);
-}
-
-int CanIsoTP::send(byte* buf, int buflen) {
-    int retval = 0;
-
-    retval = static_cast<int>(write(socketHandle, buf, buflen));
-    if (retval < 0) {
-        perror("write");
-        return retval;
-    }
-
-    if (retval != buflen){
-        fprintf(stderr, "wrote only %d from %d byte\n", retval, buflen);
-    }
-
-    return retval;
-}
-
-void CanIsoTP::receive(byte* buffer, int buffSize, int& readSize) {
-    struct timeval timeout = {1, 0};
-    fd_set readSet;
-    FD_ZERO(&readSet);
-    FD_SET(socketHandle, &readSet);
-    int t = select((socketHandle + 1), &readSet, nullptr, nullptr, &timeout);
-    if (t > 0) {
-        readSize = static_cast<int>(read(socketHandle, buffer, static_cast<size_t>(buffSize)));
-    } else {
-        readSize = 0;
-    }
-
-
-}

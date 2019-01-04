@@ -109,11 +109,13 @@ public:
 
     void updateVehicle(Service service, Vehicle *vehicle, byte *data, int dataSize);
 
-    byte *getVehicleData(Service service, Vehicle *vehicle, unsigned int &size);
+    byte *getVehicleData(Service service, Vehicle *vehicle, int &size);
 
-    void updateService1_2(Vehicle *vehicle, byte *data, int size);
+    void writeService1_2(Vehicle *vehicle, byte *data, int size);
 
-    byte *readService1_2(Vehicle *vehicle, unsigned int &size);
+    byte *readService1_2(Vehicle *vehicle, int &size);
+
+    byte *getQueryForService(Service service, int &buflen);
 
     IFrameObject &getFrameObject(Vehicle *vehicle);
 };

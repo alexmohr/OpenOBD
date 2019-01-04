@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <libnet.h>
-#include <spqr.hpp>
 #include <chrono>
 #include <iomanip>
 
@@ -128,9 +127,15 @@ void ELM327::receive(byte *buffer, int buffSize, int &readSize) {
         return;
     }
 
+    if (readSize > buffSize) {
+        // received garbage from interface
+        LOG(ERROR) << "Data does not fit into buffer.";
+        readSize = -1;
+    } else {
+        // printDebugInfo(readSize, buffer);
+        parseData(buffer, readSize);
+    }
 
-    // printDebugInfo(readSize, buffer);
-    parseData(buffer, readSize);
     closeHandler();
 }
 
@@ -138,6 +143,7 @@ void ELM327::parseData(byte *buffer, int &readSize) {
     // copy data into temporary buffer.
     char *cbuf = (char *) malloc(readSize);
     memcpy(cbuf, buffer, readSize);
+
 
     // data is received as string.
     // parse the string by taking 2 chars and combining them into byte

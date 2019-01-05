@@ -38,7 +38,7 @@ public:
 
     Vehicle *getVehicleFreezeFrame();
 
-    int getFrameInfo(int pidId, int serviceId, Pid &pid, Service &service);
+    int getServiceAndPidInfo(int pidId, int serviceId, Pid &pid, Service &service);
 
 
 };

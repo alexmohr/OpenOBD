@@ -149,7 +149,7 @@ private:
 
     void comHandler(ICommunicationInterface *com);
 
-    void cmdHandler(ICommunicationInterface *com);
+    void cmdHandler();
 
     void printHelp(std::vector<std::string> &cmd);
 

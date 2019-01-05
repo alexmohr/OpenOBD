@@ -33,7 +33,7 @@ bool CommandHandler::start() {
         return false;
     }
     open = true;
-    tCmdHandler = thread(&CommandHandler::cmdHandler, this, com);
+    tCmdHandler = thread(&CommandHandler::cmdHandler, this);
 
     if (type != ELM) {
         tCanHandler = thread(&CommandHandler::comHandler, this, com);
@@ -55,10 +55,8 @@ void CommandHandler::stopHandler() {
 
     exitRequested = true;
 
-    cout << "\n\nPress any key to exit ..." << endl;
+    LOG(DEBUG) << "Closing command handler";
 
-    string s = "\r\n";
-    write(STDIN_FILENO, s.c_str(), s.size());
 
     tCanHandler.join();
     tCmdHandler.join();
@@ -75,6 +73,8 @@ void CommandHandler::configureVirtualVehicle(Vehicle *vehicle) {
 }
 
 void CommandHandler::configureVehicle() {
+    LOG(INFO) << "Getting supported pids from vehicle";
+
     // query the vehicle which PID's it supports
     vector<Service1Pids> pidIds{
             SupportedPid01_20, SupportedPid21_40, SupportedPid41_60, SupportedPid61_80,
@@ -82,18 +82,27 @@ void CommandHandler::configureVehicle() {
     };
 
     auto service = POWERTRAIN;
+    int rt = 0;
     for (const auto &id: pidIds) {
         Pid pid;
-        if (obdHandler->getFrameInfo(id, service, pid, service) < 0) {
+        if (obdHandler->getServiceAndPidInfo(id, service, pid, service) < 0) {
             LOG(ERROR) << "failed to get pid information";
         }
 
-        queryECU(pid, service);
+        rt += queryECU(pid, service);
 
         if (exitRequested) {
             return;
         }
     }
+
+    if (0 == rt) {
+        LOG(INFO) << "Successfully configured vehicle.";
+    } else {
+        LOG(INFO) << "Could not read all data from vehicle. Available commands may be incomplete.";
+    }
+
+    cout << ">>" << flush;
 }
 
 
@@ -138,12 +147,25 @@ void CommandHandler::comHandler(ICommunicationInterface *com) {
     delete buf;
 }
 
-void CommandHandler::cmdHandler(ICommunicationInterface *com) {
-    char input[256];
+void CommandHandler::cmdHandler() {
+    std::string input;
+    cout << ">>" << std::flush;
     while (!exitRequested) {
-        cout << ">>" << std::flush;
-        std::cin.getline(input, 256);
+        struct pollfd pfd = {STDIN_FILENO, POLLIN, 0};
 
+        int ret = 0;
+        //       while (ret == 0) {
+        ret = poll(&pfd, 1, 500);  // timeout of 500ms
+        if (ret == 1) // there is something to read
+        {
+            std::getline(std::cin, input);
+        } else if (ret == -1) {
+            LOG(ERROR) << "Error: " << strerror(errno) << std::endl;
+        } else {
+            continue;
+        }
+
+        cout << ">>" << std::flush;
         std::istringstream iss(input);
         std::vector<std::string> cmd(std::istream_iterator<std::string>{iss},
                                      std::istream_iterator<std::string>());
@@ -165,6 +187,8 @@ void CommandHandler::cmdHandler(ICommunicationInterface *com) {
         } else if (cmd.at(0) == command_set) {
             setData(cmd);
         }
+
+        cout << ">>" << std::flush;
     }
 }
 
@@ -187,8 +211,18 @@ void CommandHandler::printHelp(vector<string> &cmd) {
         }
         cout << endl;
     } else if (cmd.at(1) == command_pid) {
+        Service service = Service::POWERTRAIN;
+        Pid pid;
+        cout << "Supported Pids for service " << service << ":\n";
         for (const auto &cmdName : commandMapping) {
-            cout << cmdName.first << " ";
+            if (obdHandler->getServiceAndPidInfo(cmdName.second, service, pid, service) != 0) {
+                LOG(FATAL) << "Pid with ID " << pid.id << "does only exist in cmdHandler";
+                continue;
+            }
+
+            if (obdHandler->getVehicle()->getPidSupport().getPidSupported(pid.id)) {
+                cout << cmdName.first << " ";
+            }
         }
         cout << endl;
     } else {
@@ -216,7 +250,7 @@ bool CommandHandler::getPid(std::vector<std::string> &cmd, Pid &pid, Service &se
 
     // todo find a way to support other services.
     service = POWERTRAIN;
-    if (obdHandler->getFrameInfo(pidId, service, pid, service) < 0) {
+    if (obdHandler->getServiceAndPidInfo(pidId, service, pid, service) < 0) {
         cout << "Failed to retrieve info" << endl;
         return false;
     }
@@ -287,6 +321,8 @@ int CommandHandler::queryECU(Pid pid, Service service) {
     int tries = 0;
     int frameLen = 0;
     int retVal = 0;
+    const string timeoutWarning = "Failed to retrieve pid " + to_string(pid.id)
+                                  + " in service " + to_string(service) + " in " + to_string(maxTries) + " tries";
 
     byte *frame = pid.getQueryForService(service, frameLen);
 
@@ -303,7 +339,7 @@ int CommandHandler::queryECU(Pid pid, Service service) {
         } while (result != cv_status::no_timeout && tries++ < maxTries);
 
         if (cv_status::timeout == result) {
-            LOG(WARNING) << "Received no answer. Tried " << maxTries << " times";
+            LOG(WARNING) << timeoutWarning;
             retVal = 1;
         }
 
@@ -342,7 +378,8 @@ int CommandHandler::queryECU(Pid pid, Service service) {
         } while (!success && tries++ < maxTries);
 
         if (!success) {
-            retVal = -1;
+            LOG(WARNING) << timeoutWarning;
+            retVal = 1;
         }
 
         delete buf;

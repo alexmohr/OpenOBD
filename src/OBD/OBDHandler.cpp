@@ -19,7 +19,7 @@ byte *OBDHandler::createAnswerFrame(byte *request, int &size) {
 
     Service service;
     Pid pid;
-    if (getFrameInfo((int) request[1], (int) request[0], pid, service) < 0) {
+    if (getServiceAndPidInfo((int) request[1], (int) request[0], pid, service) < 0) {
         LOG(ERROR) << "Received invalid or unsupported pid or service ";
         size = 0;
         return nullptr;
@@ -56,7 +56,7 @@ void OBDHandler::updateFromFrame(byte *frame, int frameSize) {
 
     Service service;
     Pid pid;
-    if (getFrameInfo((int) frame[1], (int) frame[0] - ANSWER_OFFSET, pid, service) < 0) {
+    if (getServiceAndPidInfo((int) frame[1], (int) frame[0] - ANSWER_OFFSET, pid, service) < 0) {
         return;
     }
 
@@ -75,7 +75,7 @@ void OBDHandler::updateFromFrame(byte *frame, int frameSize) {
     delete data;
 }
 
-int OBDHandler::getFrameInfo(int pidId, int serviceId, Pid &pid, Service &service) {
+int OBDHandler::getServiceAndPidInfo(int pidId, int serviceId, Pid &pid, Service &service) {
     service = static_cast<Service>(serviceId);
     if (pidConfig->find(service) == pidConfig->end()) {
         LOG(WARNING) << "Invalid PID" << to_string(pidId)

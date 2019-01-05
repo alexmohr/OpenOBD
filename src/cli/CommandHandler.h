@@ -13,6 +13,7 @@
 #include "../CAN/CanIsoTP.h"
 #include "../CAN/ELM327.h"
 #include "../OBD/OBDHandler.h"
+#include "CommandInfo.h"
 
 using namespace std;
 
@@ -39,82 +40,89 @@ private:
             command_help
     };
 public:
-    map<string, int> commandMapping{
-            {"MonitoringStatusSinceDTCsCleared",    MonitoringStatusSinceDTCsCleared},
-            {"FreezeDTCPid",                        FreezeDTCPid},
-            {"FuelSystemStatus",                    FuelSystemStatus},
-            {"CalculatedEngineLoad",                CalculatedEngineLoad},
-            {"EngineCoolantTemperature",            EngineCoolantTemperature},
-            {"ShortTermFuelTrimBank1",              ShortTermFuelTrimBank1},
-            {"LongTermFuelTrimBank1",               LongTermFuelTrimBank1},
-            {"ShortTermFuelTrimBank2",              ShortTermFuelTrimBank2},
-            {"LongTermFuelTrimBank2",               LongTermFuelTrimBank2},
-            {"FuelPressure",                        FuelPressure},
-            {"IntakeManifoldAbsolutePressure",      IntakeManifoldAbsolutePressure},
-            {"EngineRPM",                           EngineRPM},
-            {"VehicleSpeed",                        VehicleSpeed},
-            {"TimingAdvance",                       TimingAdvance},
-            {"IntakeAirTemperature",                IntakeAirTemperature},
-            {"MAFAirFlowRate",                      MAFAirFlowRate},
-            {"ThrottlePosition",                    ThrottlePosition},
-            {"CommandedSecondaryAirStatus",         CommandedSecondaryAirStatus},
-            {"OxygenSensorsPresent",                OxygenSensorsPresent},
-            {"BankOxygenSensor1",                   BankOxygenSensor1},
-            {"BankOxygenSensor2",                   BankOxygenSensor2},
-            {"BankOxygenSensor3",                   BankOxygenSensor3},
-            {"BankOxygenSensor4",                   BankOxygenSensor4},
-            {"BankOxygenSensor5",                   BankOxygenSensor5},
-            {"BankOxygenSensor6",                   BankOxygenSensor6},
-            {"BankOxygenSensor7",                   BankOxygenSensor7},
-            {"BankOxygenSensor8",                   BankOxygenSensor8},
-            {"OBDStandardsVehicleConformsTo",       OBDStandardsVehicleConformsTo},
-            {"OxygenSensorsPresent4Banks",          OxygenSensorsPresent4Banks},
-            {"AuxiliaryInputStatus",                AuxiliaryInputStatus},
-            {"RunTimeSinceEngineStart",             RunTimeSinceEngineStart},
-            {"DistanceTraveledWithMilOn",           DistanceTraveledWithMilOn},
-            {"FuelRailPressure",                    FuelRailPressure},
-            {"FuelRailGaugePressure",               FuelRailGaugePressure},
-            {"FuelRailOxygenSensor1",               FuelRailOxygenSensor1},
-            {"FuelRailOxygenSensor2",               FuelRailOxygenSensor2},
-            {"FuelRailOxygenSensor3",               FuelRailOxygenSensor3},
-            {"FuelRailOxygenSensor4",               FuelRailOxygenSensor4},
-            {"FuelRailOxygenSensor5",               FuelRailOxygenSensor5},
-            {"FuelRailOxygenSensor6",               FuelRailOxygenSensor6},
-            {"FuelRailOxygenSensor7",               FuelRailOxygenSensor7},
-            {"FuelRailOxygenSensor8",               FuelRailOxygenSensor8},
-            {"CommandedEGR",                        CommandedEGR},
-            {"EGRError",                            EGRError},
-            {"CommandedEvaporativePurge",           CommandedEvaporativePurge},
-            {"FuelTankLevelInput",                  FuelTankLevelInput},
-            {"WarmUpsSinceCodesCleared",            WarmUpsSinceCodesCleared},
-            {"DistanceTraveledSinceCodesCleared",   DistanceTraveledSinceCodesCleared},
-            {"EvaporativePurgeSystemVaporPressure", EvaporativePurgeSystemVaporPressure},
-            {"AbsoluteBarometricPressure",          AbsoluteBarometricPressure},
-            {"ExtendedRangeOxygenSensor1",          ExtendedRangeOxygenSensor1},
-            {"ExtendedRangeOxygenSensor2",          ExtendedRangeOxygenSensor2},
-            {"ExtendedRangeOxygenSensor3",          ExtendedRangeOxygenSensor3},
-            {"ExtendedRangeOxygenSensor4",          ExtendedRangeOxygenSensor4},
-            {"ExtendedRangeOxygenSensor5",          ExtendedRangeOxygenSensor5},
-            {"ExtendedRangeOxygenSensor6",          ExtendedRangeOxygenSensor6},
-            {"ExtendedRangeOxygenSensor7",          ExtendedRangeOxygenSensor7},
-            {"ExtendedRangeOxygenSensor8",          ExtendedRangeOxygenSensor8},
-            {"CatalystTemperatureBank1Sensor1",     CatalystTemperatureBank1Sensor1},
-            {"CatalystTemperatureBank2Sensor1",     CatalystTemperatureBank2Sensor1},
-            {"CatalystTemperatureBank1Sensor2",     CatalystTemperatureBank1Sensor2},
-            {"CatalystTemperatureBank2Sensor2",     CatalystTemperatureBank2Sensor2},
-            {"MonitorStatusThisDriveCycle",         MonitorStatusThisDriveCycle},
-            {"ControlModuleVoltage",                ControlModuleVoltage},
-            {"AbsoluteLoadValue",                   AbsoluteLoadValue},
-            {"FuelAirCommandedEquivalenceRatio",    FuelAirCommandedEquivalenceRatio},
-            {"RelativeThrottlePosition",            RelativeThrottlePosition},
-            {"AmbientAirTemperature",               AmbientAirTemperature},
+
+    map<string, CommandInfo> commandMapping{
+            {"MonitoringStatusSinceDTCsCleared",    CommandInfo(Service::POWERTRAIN, MonitoringStatusSinceDTCsCleared)},
+            {"FreezeDTCPid",                        CommandInfo(Service::POWERTRAIN, FreezeDTCPid)},
+            {"FuelSystemStatus",                    CommandInfo(Service::POWERTRAIN, FuelSystemStatus)},
+            {"CalculatedEngineLoad",                CommandInfo(Service::POWERTRAIN, CalculatedEngineLoad)},
+            {"EngineCoolantTemperature",            CommandInfo(Service::POWERTRAIN, EngineCoolantTemperature)},
+            {"ShortTermFuelTrimBank1",              CommandInfo(Service::POWERTRAIN, ShortTermFuelTrimBank1)},
+            {"LongTermFuelTrimBank1",               CommandInfo(Service::POWERTRAIN, LongTermFuelTrimBank1)},
+            {"ShortTermFuelTrimBank2",              CommandInfo(Service::POWERTRAIN, ShortTermFuelTrimBank2)},
+            {"LongTermFuelTrimBank2",               CommandInfo(Service::POWERTRAIN, LongTermFuelTrimBank2)},
+            {"FuelPressure",                        CommandInfo(Service::POWERTRAIN, FuelPressure)},
+            {"IntakeManifoldAbsolutePressure",      CommandInfo(Service::POWERTRAIN, IntakeManifoldAbsolutePressure)},
+            {"EngineRPM",                           CommandInfo(Service::POWERTRAIN, EngineRPM)},
+            {"VehicleSpeed",                        CommandInfo(Service::POWERTRAIN, VehicleSpeed)},
+            {"TimingAdvance",                       CommandInfo(Service::POWERTRAIN, TimingAdvance)},
+            {"IntakeAirTemperature",                CommandInfo(Service::POWERTRAIN, IntakeAirTemperature)},
+            {"MAFAirFlowRate",                      CommandInfo(Service::POWERTRAIN, MAFAirFlowRate)},
+            {"ThrottlePosition",                    CommandInfo(Service::POWERTRAIN, ThrottlePosition)},
+            {"CommandedSecondaryAirStatus",         CommandInfo(Service::POWERTRAIN, CommandedSecondaryAirStatus)},
+            {"OxygenSensorsPresent",                CommandInfo(Service::POWERTRAIN, OxygenSensorsPresent)},
+            {"BankOxygenSensor1",                   CommandInfo(Service::POWERTRAIN, BankOxygenSensor1)},
+            {"BankOxygenSensor2",                   CommandInfo(Service::POWERTRAIN, BankOxygenSensor2)},
+            {"BankOxygenSensor3",                   CommandInfo(Service::POWERTRAIN, BankOxygenSensor3)},
+            {"BankOxygenSensor4",                   CommandInfo(Service::POWERTRAIN, BankOxygenSensor4)},
+            {"BankOxygenSensor5",                   CommandInfo(Service::POWERTRAIN, BankOxygenSensor5)},
+            {"BankOxygenSensor6",                   CommandInfo(Service::POWERTRAIN, BankOxygenSensor6)},
+            {"BankOxygenSensor7",                   CommandInfo(Service::POWERTRAIN, BankOxygenSensor7)},
+            {"BankOxygenSensor8",                   CommandInfo(Service::POWERTRAIN, BankOxygenSensor8)},
+            {"OBDStandardsVehicleConformsTo",       CommandInfo(Service::POWERTRAIN, OBDStandardsVehicleConformsTo)},
+            {"OxygenSensorsPresent4Banks",          CommandInfo(Service::POWERTRAIN, OxygenSensorsPresent4Banks)},
+            {"AuxiliaryInputStatus",                CommandInfo(Service::POWERTRAIN, AuxiliaryInputStatus)},
+            {"RunTimeSinceEngineStart",             CommandInfo(Service::POWERTRAIN, RunTimeSinceEngineStart)},
+            {"DistanceTraveledWithMilOn",           CommandInfo(Service::POWERTRAIN, DistanceTraveledWithMilOn)},
+            {"FuelRailPressure",                    CommandInfo(Service::POWERTRAIN, FuelRailPressure)},
+            {"FuelRailGaugePressure",               CommandInfo(Service::POWERTRAIN, FuelRailGaugePressure)},
+            {"FuelRailOxygenSensor1",               CommandInfo(Service::POWERTRAIN, FuelRailOxygenSensor1)},
+            {"FuelRailOxygenSensor2",               CommandInfo(Service::POWERTRAIN, FuelRailOxygenSensor2)},
+            {"FuelRailOxygenSensor3",               CommandInfo(Service::POWERTRAIN, FuelRailOxygenSensor3)},
+            {"FuelRailOxygenSensor4",               CommandInfo(Service::POWERTRAIN, FuelRailOxygenSensor4)},
+            {"FuelRailOxygenSensor5",               CommandInfo(Service::POWERTRAIN, FuelRailOxygenSensor5)},
+            {"FuelRailOxygenSensor6",               CommandInfo(Service::POWERTRAIN, FuelRailOxygenSensor6)},
+            {"FuelRailOxygenSensor7",               CommandInfo(Service::POWERTRAIN, FuelRailOxygenSensor7)},
+            {"FuelRailOxygenSensor8",               CommandInfo(Service::POWERTRAIN, FuelRailOxygenSensor8)},
+            {"CommandedEGR",                        CommandInfo(Service::POWERTRAIN, CommandedEGR)},
+            {"EGRError",                            CommandInfo(Service::POWERTRAIN, EGRError)},
+            {"CommandedEvaporativePurge",           CommandInfo(Service::POWERTRAIN, CommandedEvaporativePurge)},
+            {"FuelTankLevelInput",                  CommandInfo(Service::POWERTRAIN, FuelTankLevelInput)},
+            {"WarmUpsSinceCodesCleared",            CommandInfo(Service::POWERTRAIN, WarmUpsSinceCodesCleared)},
+            {"DistanceTraveledSinceCodesCleared",   CommandInfo(Service::POWERTRAIN,
+                                                                DistanceTraveledSinceCodesCleared)},
+            {"EvaporativePurgeSystemVaporPressure", CommandInfo(Service::POWERTRAIN,
+                                                                EvaporativePurgeSystemVaporPressure)},
+            {"AbsoluteBarometricPressure",          CommandInfo(Service::POWERTRAIN, AbsoluteBarometricPressure)},
+            {"ExtendedRangeOxygenSensor1",          CommandInfo(Service::POWERTRAIN, ExtendedRangeOxygenSensor1)},
+            {"ExtendedRangeOxygenSensor2",          CommandInfo(Service::POWERTRAIN, ExtendedRangeOxygenSensor2)},
+            {"ExtendedRangeOxygenSensor3",          CommandInfo(Service::POWERTRAIN, ExtendedRangeOxygenSensor3)},
+            {"ExtendedRangeOxygenSensor4",          CommandInfo(Service::POWERTRAIN, ExtendedRangeOxygenSensor4)},
+            {"ExtendedRangeOxygenSensor5",          CommandInfo(Service::POWERTRAIN, ExtendedRangeOxygenSensor5)},
+            {"ExtendedRangeOxygenSensor6",          CommandInfo(Service::POWERTRAIN, ExtendedRangeOxygenSensor6)},
+            {"ExtendedRangeOxygenSensor7",          CommandInfo(Service::POWERTRAIN, ExtendedRangeOxygenSensor7)},
+            {"ExtendedRangeOxygenSensor8",          CommandInfo(Service::POWERTRAIN, ExtendedRangeOxygenSensor8)},
+            {"CatalystTemperatureBank1Sensor1",     CommandInfo(Service::POWERTRAIN, CatalystTemperatureBank1Sensor1)},
+            {"CatalystTemperatureBank2Sensor1",     CommandInfo(Service::POWERTRAIN, CatalystTemperatureBank2Sensor1)},
+            {"CatalystTemperatureBank1Sensor2",     CommandInfo(Service::POWERTRAIN, CatalystTemperatureBank1Sensor2)},
+            {"CatalystTemperatureBank2Sensor2",     CommandInfo(Service::POWERTRAIN, CatalystTemperatureBank2Sensor2)},
+            {"MonitorStatusThisDriveCycle",         CommandInfo(Service::POWERTRAIN, MonitorStatusThisDriveCycle)},
+            {"ControlModuleVoltage",                CommandInfo(Service::POWERTRAIN, ControlModuleVoltage)},
+            {"AbsoluteLoadValue",                   CommandInfo(Service::POWERTRAIN, AbsoluteLoadValue)},
+            {"FuelAirCommandedEquivalenceRatio",    CommandInfo(Service::POWERTRAIN, FuelAirCommandedEquivalenceRatio)},
+            {"RelativeThrottlePosition",            CommandInfo(Service::POWERTRAIN, RelativeThrottlePosition)},
+            {"AmbientAirTemperature",               CommandInfo(Service::POWERTRAIN, AmbientAirTemperature)},
     };
+
+
 private:
     std::thread tCanHandler;
     std::thread tCmdHandler;
+    std::thread tInit;
     bool exitRequested;
     unique_ptr<OBDHandler> obdHandler;
     bool open;
+    bool initDone;
     CLI_TYPE type;
     ICommunicationInterface *com;
 
@@ -140,6 +148,8 @@ public: // public for testing
     int getData(std::vector<std::string> &cmd);
 
     bool getPid(std::vector<std::string> &cmd, Pid &pid, Service &service);
+
+    bool isInitDone();
 
     OBDHandler &getObdHandler();
 private:

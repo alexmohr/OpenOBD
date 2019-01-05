@@ -69,11 +69,15 @@ void TestCommandHandler(CLI_TYPE type) {
     bool descriptionsNotNull;
     cmdHandler.start();
 
+    while (!cmdHandler.isInitDone()) {
+        usleep(1000);
+    }
+
     for (const auto &cmdMap: cmdHandler.commandMapping) {
         vector<string> validData{"set", cmdMap.first};
         vector<string> tooSmallData{"set", cmdMap.first};
         vector<string> tooBigData{"set", cmdMap.first};
-        cmdHandler.getPid(validData, pid, service);
+        EXPECT_EQ(true, cmdHandler.getPid(validData, pid, service));
         auto &fo = pid.getFrameObject(cmdHandler.getObdHandler().getVehicle());
         descriptionsNotNull = true;
 

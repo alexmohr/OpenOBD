@@ -22,16 +22,23 @@ CommandHandler::CommandHandler(CLI_TYPE type, ICommunicationInterface *interface
             dtcMap);
 
     com = interface;
+    open = false;
     this->type = type;
 }
 
 bool CommandHandler::start() {
+    if (open) {
+        return false;
+    }
+
+    LOG(INFO) << "Starting CLI";
     exitRequested = false;
-    LOG(INFO) << "Starting command handler";
+    initDone = false;
 
     if (com->openInterface() != 0) {
         return false;
     }
+
     open = true;
     tCmdHandler = thread(&CommandHandler::cmdHandler, this);
 
@@ -42,7 +49,9 @@ bool CommandHandler::start() {
     if (type == ECU) {
         configureVirtualVehicle(obdHandler->getVehicle());
     } else {
-        configureVehicle();
+        // run in background to give user to chance to abort if
+        // the requests to the vehicle time out.
+        tInit = thread(&CommandHandler::configureVehicle, this);
     }
 
     return true;
@@ -60,6 +69,10 @@ void CommandHandler::stopHandler() {
         tCanHandler.join();
     }
 
+    if (type != ECU) {
+        tInit.join();
+    }
+
     tCmdHandler.join();
     com->closeInterface();
     open = false;
@@ -69,8 +82,10 @@ void CommandHandler::stopHandler() {
 
 void CommandHandler::configureVirtualVehicle(Vehicle *vehicle) {
     for (auto &cmd: commandMapping) {
-        vehicle->getPidSupport().setPidSupported(cmd.second, true);
+        vehicle->getPidSupport().setPidSupported(cmd.second.getPidId(), true);
     }
+
+    initDone = true;
 }
 
 void CommandHandler::configureVehicle() {
@@ -104,6 +119,7 @@ void CommandHandler::configureVehicle() {
     }
 
     cout << ">>" << flush;
+    initDone = true;
 }
 
 
@@ -215,7 +231,9 @@ void CommandHandler::printHelp(vector<string> &cmd) {
         Pid pid;
         cout << "Supported Pids for service " << service << ":\n";
         for (const auto &cmdName : commandMapping) {
-            if (obdHandler->getServiceAndPidInfo(cmdName.second, service, pid, service) != 0) {
+            if (obdHandler->getServiceAndPidInfo(
+                    cmdName.second.getPidId(), cmdName.second.getService(), pid, service) != 0) {
+
                 LOG(FATAL) << "Pid with ID " << pid.id << "does only exist in cmdHandler";
                 continue;
             }
@@ -231,26 +249,25 @@ void CommandHandler::printHelp(vector<string> &cmd) {
 }
 
 bool CommandHandler::getPid(std::vector<std::string> &cmd, Pid &pid, Service &service) {
-    int pidId = -1;
     if (cmd.size() == 1) {
         cout << "No system given. See help for more details" << endl;
         return false;
     }
 
+    const CommandInfo *info = nullptr;
     for (const auto &cmdName : commandMapping) {
         if (cmd.at(1) == cmdName.first) {
-            pidId = cmdName.second;
+            info = &cmdName.second;
         }
     }
 
-    if (-1 == pidId) {
+    if (nullptr == info) {
         cout << "Pid " << cmd.at(1) << " is invalid." << endl;
         return false;
     }
 
-    // todo find a way to support other services.
-    service = POWERTRAIN;
-    if (obdHandler->getServiceAndPidInfo(pidId, service, pid, service) < 0) {
+    service = info->getService();
+    if (obdHandler->getServiceAndPidInfo(info->getPidId(), service, pid, service) < 0) {
         cout << "Failed to retrieve info" << endl;
         return false;
     }
@@ -392,6 +409,10 @@ int CommandHandler::queryECU(Pid pid, Service service) {
 
 OBDHandler &CommandHandler::getObdHandler() {
     return *obdHandler;
+}
+
+bool CommandHandler::isInitDone() {
+    return initDone;
 }
 
 

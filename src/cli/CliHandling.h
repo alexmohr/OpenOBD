@@ -30,8 +30,6 @@ private:
     void display_help(char *progname);
 
     int getCommandLineArgs(int argc, char **argv, char &interface, int &port, CLI_TYPE &type);
-
-    void configureLogging(bool logdebug);
 };
 
 

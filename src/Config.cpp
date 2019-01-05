@@ -69,3 +69,29 @@ void from_json(const json& jsData, Pid& pid) {
 }
 
 
+void Config::configureLogging(bool logdebug, bool toFile) {
+
+    el::Configurations defaultConf;
+    defaultConf.setToDefault();
+
+    if (!logdebug) {
+
+        // Values are always std::string
+        defaultConf.set(el::Level::Trace, el::ConfigurationType::Enabled, "false");
+        defaultConf.set(el::Level::Debug, el::ConfigurationType::Enabled, "false");
+    }
+
+    if (toFile) {
+        defaultConf.set(el::Level::Global, el::ConfigurationType::ToFile, "true");
+        defaultConf.set(el::Level::Global, el::ConfigurationType::Filename, "openobd.log");
+    } else {
+        defaultConf.set(el::Level::Global, el::ConfigurationType::ToFile, "false");
+    }
+
+
+    defaultConf.set(el::Level::Debug, el::ConfigurationType::Enabled, "false");
+
+    // default logger uses default configurations
+    el::Loggers::reconfigureLogger("default", defaultConf);
+
+}

@@ -12,20 +12,6 @@ CliHandling::CliHandling() {
 }
 
 
-void CliHandling::configureLogging(bool logdebug) {
-    el::Configurations defaultConf;
-    defaultConf.setToDefault();
-
-    if (!logdebug) {
-
-        // Values are always std::string
-        defaultConf.set(el::Level::Trace, el::ConfigurationType::Enabled, "false");
-        defaultConf.set(el::Level::Debug, el::ConfigurationType::Enabled, "false");
-    }
-
-    // default logger uses default configurations
-    el::Loggers::reconfigureLogger("default", defaultConf);
-}
 
 int CliHandling::openCli(int argc, char *argv[]) {
 
@@ -136,7 +122,7 @@ int CliHandling::getCommandLineArgs(int argc, char **argv, char &interface, int 
         }
     }
 
-    configureLogging(logdebug);
+    Config::configureLogging(logdebug, false);
 
     return EXIT_SUCCESS;
 }

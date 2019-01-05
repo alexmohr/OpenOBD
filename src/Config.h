@@ -56,6 +56,8 @@ public:
         return true;
     }
 
+    static void configureLogging(bool logdebug, bool toFile);
+
 };
 
 

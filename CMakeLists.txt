@@ -109,9 +109,11 @@ add_executable(Test
         tests/src/OBD/DataTroubleCodeTest.cpp
         tests/src/ConfigTest.cpp
         tests/src/OBD/OBDHandlerTestService1Explicit.cpp
-        ${CPPSRC} tests/src/cli/CommandHandlerTest.cpp)
+        tests/src/cli/CommandHandlerTest.cpp tests/main.cpp
+        ${CPPSRC}
+        )
 
 install(TARGETS open_obd2 EXPORT open_obd2 DESTINATION bin)
 
-target_link_libraries(Test gtest_main)
+target_link_libraries(Test gtest)
 add_test(NAME obdtest COMMAND Test)

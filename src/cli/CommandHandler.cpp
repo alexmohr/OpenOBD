@@ -56,9 +56,10 @@ void CommandHandler::stopHandler() {
     exitRequested = true;
 
     LOG(DEBUG) << "Closing command handler";
+    if (type != ELM) {
+        tCanHandler.join();
+    }
 
-
-    tCanHandler.join();
     tCmdHandler.join();
     com->closeInterface();
     open = false;
@@ -165,7 +166,6 @@ void CommandHandler::cmdHandler() {
             continue;
         }
 
-        cout << ">>" << std::flush;
         std::istringstream iss(input);
         std::vector<std::string> cmd(std::istream_iterator<std::string>{iss},
                                      std::istream_iterator<std::string>());
@@ -261,7 +261,7 @@ bool CommandHandler::getPid(std::vector<std::string> &cmd, Pid &pid, Service &se
 int CommandHandler::getData(std::vector<std::string> &cmd) {
     Service service;
     Pid pid;
-    int i;
+    int i = 0;
     if (!getPid(cmd, pid, service)) {
         return -1;
     }
@@ -321,6 +321,7 @@ int CommandHandler::queryECU(Pid pid, Service service) {
     int tries = 0;
     int frameLen = 0;
     int retVal = 0;
+    auto timeout = 500ms;
     const string timeoutWarning = "Failed to retrieve pid " + to_string(pid.id)
                                   + " in service " + to_string(service) + " in " + to_string(maxTries) + " tries";
 
@@ -335,7 +336,7 @@ int CommandHandler::queryECU(Pid pid, Service service) {
             // wait until answer is received.
             expectedPid = pid.id;
             std::unique_lock<std::mutex> lk(dataMutex);
-            result = dataCv.wait_for(lk, 500ms);
+            result = dataCv.wait_for(lk, timeout);
         } while (result != cv_status::no_timeout && tries++ < maxTries);
 
         if (cv_status::timeout == result) {
@@ -354,14 +355,14 @@ int CommandHandler::queryECU(Pid pid, Service service) {
         do {
             com->send(frame, frameLen);
 
-            bool timeout = false;
+            bool hasTimeout = false;
             auto t0 = chrono::high_resolution_clock::now();
-            while (readSize <= 0 && !timeout) {
+            while (readSize <= 0 && !hasTimeout) {
                 com->receive(buf, buflen, readSize);
-                timeout = (chrono::high_resolution_clock::now() - t0) > 2000ms;
+                hasTimeout = (chrono::high_resolution_clock::now() - t0) > timeout;
             }
 
-            if (timeout) {
+            if (hasTimeout) {
                 continue;
             }
 

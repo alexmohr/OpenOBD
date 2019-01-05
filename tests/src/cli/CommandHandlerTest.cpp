@@ -60,9 +60,10 @@ string vectorToString(vector<string> v) {
 }
 
 
-TEST(CommandHandlerTest, setData_getData) {
+void TestCommandHandler(CLI_TYPE type) {
     auto mockComm = new MockInterface();
-    auto cmdHandler = CommandHandler(CLI_TYPE::TESTER, mockComm);
+    auto cmdHandler = CommandHandler(type, mockComm);
+
     Pid pid;
     Service service;
     bool descriptionsNotNull;
@@ -96,7 +97,9 @@ TEST(CommandHandlerTest, setData_getData) {
 
             for (auto &cmd : commands) {
                 cout << "testing command: " << vectorToString(cmd) << endl;
-                EXPECT_EQ(0, cmdHandler.setData(cmd));
+                if (ELM != type) {
+                    EXPECT_EQ(0, cmdHandler.setData(cmd)); // no set support for elm.
+                }
 
                 int size = 0;
 
@@ -114,5 +117,18 @@ TEST(CommandHandlerTest, setData_getData) {
         }
     }
     cmdHandler.stopHandler();
+}
+
+TEST(CommandHandlerTest, setData_getData_TESTER) {
+    TestCommandHandler(CLI_TYPE::TESTER);
+
+}
+
+TEST(CommandHandlerTest, setData_getData_ECU) {
+    TestCommandHandler(CLI_TYPE::ECU);
+}
+
+TEST(CommandHandlerTest, setData_getData_ELM) {
+    TestCommandHandler(CLI_TYPE::ELM);
 
 }

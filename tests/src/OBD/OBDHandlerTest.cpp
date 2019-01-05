@@ -4,7 +4,6 @@
 
 #include "OBDHandlerTest.h"
 
-INITIALIZE_EASYLOGGINGPP // NOLINT(cert-err58-cpp)
 
 OBDHandler *getHandler() {
     Config config = Config();

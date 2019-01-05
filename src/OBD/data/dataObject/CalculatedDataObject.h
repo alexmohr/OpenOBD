@@ -16,7 +16,7 @@ class CalculatedDataObject : public IFrameObject {
 private:
 
     unique_ptr<DataObject<S>> dataObj;
-    unique_ptr<DataObjectDescription<T>> description;
+    unique_ptr<DataObjectDescription> description;
     function<T(S)> fromFrameFunction;
     function<S(T)> toFrameFunction;
 
@@ -35,7 +35,7 @@ public: // todo refactor this to private;
                          function<S(T)> toFrameFunction, const DataObjectUnit &unit, T min, T max,
                          const string &description) {
         this->dataObj = make_unique<DataObject<S>>(startByte, startIndex, stopByte, stopIndex);
-        this->description = make_unique<DataObjectDescription<T>>(unit, min, max, description);
+        this->description = make_unique<DataObjectDescription>(unit, (double)min, (double)max, description);
         this->toFrameFunction = toFrameFunction;
         this->fromFrameFunction = fromFrameFunction;
     }
@@ -51,13 +51,19 @@ public:
         return fromFrameFunction(val);
     }
 
-    void setValue(T value) {
-        if (value < description->getMin() || value > description->getMax()) {
-            string msg = "Value: " + to_string((long) value) + " is out of bounds.";
-            throw std::invalid_argument(msg.c_str());
+    int setValue(T value) {
+        if (nullptr != this->description) {
+            if (value < (T) description->getMin()) {
+                LOG(ERROR) << "value is too small: " << (double) value << ", min value is :" << description->getMin();
+                return TOO_SMALL;
+            } else if (value > (T) description->getMax()) {
+                LOG(ERROR) << "value is too large: " << (double) value << ", max value is :" << description->getMax();
+                return TOO_LARGE;
+            }
         }
 
         dataObj->setValue(toFrameFunction(value));
+        return 0;
     }
 
     void fromFrame(byte *data, int size) override {
@@ -77,11 +83,7 @@ public:
         return to_string(getValue()) + unit;
     }
 
-    DataObjectDescription<T> &getDescription() {
-        return *description;
-    }
-
-    void setValueFromString(string data) override {
+    int setValueFromString(string data) override {
         if (std::is_same<T, double>::value ||
             std::is_same<T, float>::value) {
             setValue((T) strtod(data.c_str(), nullptr));
@@ -92,6 +94,13 @@ public:
         } else {
             setValue((T) strtoul(data.c_str(), nullptr, 0));
         }
+
+        return 0;
+    }
+
+
+    vector<DataObjectDescription *> getDescriptions() override {
+        return vector<DataObjectDescription *>{description.get()};
     }
 };
 

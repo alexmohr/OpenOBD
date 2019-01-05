@@ -61,7 +61,15 @@
 #include <linux/can.h>
 #include <linux/can/isotp.h>
 
-int CanIsoTP::openIsoTp(unsigned int rxId, unsigned int txId, char* ifname){
+
+CanIsoTP::CanIsoTP(unsigned int rxId, unsigned int txId, char *ifname) {
+    this->rxId = rxId;
+    this->txId = txId;
+    this->ifname = ifname;
+}
+
+
+int CanIsoTP::openInterface() {
     if (rxId > MAX_CAN_ID_EXTENDED || rxId == 0 ||
         txId > MAX_CAN_ID_EXTENDED || txId == 0
         || txId == rxId){
@@ -120,7 +128,7 @@ int CanIsoTP::openIsoTp(unsigned int rxId, unsigned int txId, char* ifname){
 
     if (bind(socketHandle, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
         perror("bind");
-        closeHandler();
+        closeInterface();
         return  FailedToOpenSocket;
     }
 

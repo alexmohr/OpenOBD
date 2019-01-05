@@ -76,7 +76,9 @@ public:
 
     string getPrintableData() override;
 
-    void setValueFromString(string data) override;
+    int setValueFromString(string data) override;
+
+    vector<DataObjectDescription *> getDescriptions() override;
 };
 
 #endif //OPEN_OBD2_MONITORSTATUS_H

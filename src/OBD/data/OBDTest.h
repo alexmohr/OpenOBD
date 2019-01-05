@@ -30,13 +30,15 @@ public:
     DataObject<bool> &getIncomplete();
 
 public: // IFrameObject
-    void setValueFromString(string data) override;
+    int setValueFromString(string data) override;
 
     void fromFrame(byte *frame, int size) override;
 
     unsigned int toFrame(unsigned int &data, int &size) override;
 
     string getPrintableData() override;
+
+    vector<DataObjectDescription *> getDescriptions() override;
 };
 
 

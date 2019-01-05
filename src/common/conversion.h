@@ -27,4 +27,6 @@ unsigned int getBytes(int bits);
 
 vector<string> splitString(char *input);
 
+string convertIntToHex(int n);
+
 #endif //OPEN_OBD2_CONVERSION_H

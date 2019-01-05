@@ -3,25 +3,59 @@
 //
 
 #include "CliHandling.h"
+#include "easylogging++.h"
 #include <chrono>         // std::chrono::seconds
 
 
+
 CliHandling::CliHandling() {
-    cmdHandler = make_unique<CommandHandler>();
+}
+
+
+void CliHandling::configureLogging(bool logdebug) {
+    el::Configurations defaultConf;
+    defaultConf.setToDefault();
+
+    if (!logdebug) {
+
+        // Values are always std::string
+        defaultConf.set(el::Level::Trace, el::ConfigurationType::Enabled, "false");
+        defaultConf.set(el::Level::Debug, el::ConfigurationType::Enabled, "false");
+    }
+
+    // default logger uses default configurations
+    el::Loggers::reconfigureLogger("default", defaultConf);
 }
 
 int CliHandling::openCli(int argc, char *argv[]) {
 
-    char *canAdapter = static_cast<char *>(malloc(255));
+    char *target = static_cast<char *>(malloc(255));
     int port = 0;
 
     CLI_TYPE type;
 
-    if (getCommandLineArgs(argc, argv, *canAdapter, port, type) == EXIT_FAILURE) {
-        return EXIT_SUCCESS;
+    if (getCommandLineArgs(argc, argv, *target, port, type) == EXIT_FAILURE) {
+        return EXIT_FAILURE;
     }
 
-    cmdHandler->start(canAdapter, type, port);
+    switch (type) {
+        case ELM:
+            commHandler = make_unique<ELM327>(port, target);
+            break;
+        case TESTER:
+            commHandler = make_unique<CanIsoTP>(VEHICLE_ID, TESTER_ID, target);
+            break;
+        case ECU:
+            commHandler = make_unique<CanIsoTP>(TESTER_ID, VEHICLE_ID, target);
+            break;
+        default:
+            LOG(ERROR) << "Unsupported interface type";
+            return EXIT_FAILURE;
+
+    }
+
+    cmdHandler = make_unique<CommandHandler>(type, commHandler.get());
+    cmdHandler->start();
 
     return EXIT_SUCCESS;
 }
@@ -40,6 +74,8 @@ void CliHandling::display_help(char *progname) {
                     "                     ELM does only work with wifi interfaces.\n"
                     "  -i ADDRESS         IP Address of the ELM interface.\n"
                     "  -p PORT IP         PORT of the ELM interface\n."
+                    "  -p PORT IP         PORT of the ELM interface\n."
+                    "  -x                 Set logging to debug\n."
                     "\n");
 }
 
@@ -60,9 +96,14 @@ int CliHandling::getCommandLineArgs(int argc, char **argv, char &interface, int 
 
     port = 35000;
 
+    bool logdebug = false;
+
     int c;
-    while ((c = getopt(argc, argv, "d:t:i:p:")) != -1) {
+    while ((c = getopt(argc, argv, "d:t:i:p:x")) != -1) {
         switch (c) {
+            case 'x':
+                logdebug = true;
+                break;
             case 'd':
                 strcpy(&interface, optarg);
                 break;
@@ -94,6 +135,8 @@ int CliHandling::getCommandLineArgs(int argc, char **argv, char &interface, int 
                 return EXIT_FAILURE;
         }
     }
+
+    configureLogging(logdebug);
 
     return EXIT_SUCCESS;
 }

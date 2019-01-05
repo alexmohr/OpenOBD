@@ -78,8 +78,8 @@ void Engine::setEngineType(EngineType type) {
 
 }
 
-EngineType Engine::getEngineType() {
-    return type->getValue();
+DataObject<EngineType> &Engine::getEngineType() {
+    return *type;
 }
 
 OBDTest& Engine::getEngineSystem1() {

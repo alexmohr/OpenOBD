@@ -45,7 +45,7 @@ private:
     unsigned int stopIndex;
     T value;
     bool isBool = false;
-    unique_ptr<DataObjectDescription<T>> description;
+    unique_ptr<DataObjectDescription> description;
 
     int getBitIndexRead(int byteVal, int idx, int sByte) const {
         if (sByte == A) {
@@ -85,21 +85,23 @@ public:
     DataObject(ByteIndex startByte, unsigned int startIndex,
                ByteIndex stopByte, unsigned int stopIndex, const DataObjectUnit &unit, T min, T max) :
             DataObject(startByte, startIndex, stopByte, stopIndex) {
-        this->description = make_unique<DataObjectDescription<T>>(unit, min, max, "");
+        this->description = make_unique<DataObjectDescription>(unit, (double)min, (double)max, "");
     }
 
     DataObject(ByteIndex startByte, unsigned int startIndex,
                ByteIndex stopByte, unsigned int stopIndex, const DataObjectUnit &unit, T min, T max,
                const string &description) :
             DataObject(startByte, startIndex, stopByte, stopIndex) {
-        this->description = make_unique<DataObjectDescription<T>>(unit, min, max, description);
+        this->description = make_unique<DataObjectDescription>(unit, (double)min, (double)max, description);
     }
 
     // c'tors without description
 public:
     // boolean C'tor
     DataObject(ByteIndex startByte, unsigned int startIndex) :
-            DataObject(startByte, startIndex, startByte, startIndex) {}
+            DataObject(startByte, startIndex, startByte, startIndex) {
+        this->description = make_unique<DataObjectDescription>(unit_none, 0, 1, "");
+    }
 
     DataObject(ByteIndex startByte, unsigned int startIndex,
                ByteIndex stopByte, unsigned int stopIndex) {
@@ -122,14 +124,19 @@ public:
         return value;
     }
 
-    void setValue(T val) {
+    int setValue(T val) {
         if (nullptr != this->description) {
-            if (val > this->description->getMax() || val < this->description->getMin()) {
-                string msg = "Value: " + to_string((long) val) + " is out of bounds.";
-                throw std::invalid_argument(msg.c_str());
+            if (value < (T) description->getMin()) {
+                LOG(ERROR) << "value is too small: " << (double) value << ", min value is :" << description->getMin();
+                return TOO_SMALL;
+            } else if (value > (T) description->getMax()) {
+                LOG(ERROR) << "value is too large: " << (double) value << ", max value is :" << description->getMax();
+                return TOO_LARGE;
             }
         }
+
         value = val;
+        return 0;
     }
 
 
@@ -201,10 +208,6 @@ public:
         }
     }
 
-    DataObjectDescription<T> *getDescription() {
-        return description.get();
-    }
-
     string getPrintableData() override {
         string unit = "";
         if (nullptr != description) {
@@ -214,7 +217,7 @@ public:
         return to_string(getValue()) + unit;
     }
 
-    void setValueFromString(string data) override {
+    int setValueFromString(string data) override {
         if (std::is_same<T, double>::value ||
             std::is_same<T, float>::value) {
             setValue((T) strtod(data.c_str(), nullptr));
@@ -225,6 +228,12 @@ public:
         } else {
             setValue((T) strtoul(data.c_str(), nullptr, 0));
         }
+
+        return 0;
+    }
+
+    vector<DataObjectDescription *> getDescriptions() override {
+        return vector<DataObjectDescription *>{description.get()};
     }
 };
 

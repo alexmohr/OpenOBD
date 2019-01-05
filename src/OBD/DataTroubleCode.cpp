@@ -36,14 +36,14 @@ unsigned int DataTroubleCode::convertSaeIdToCan(string id) {
     const char system = id[0];
     unsigned int offset = convertHexToInt(id.substr(1, 1));
 
-    if (PREFIX_POWERTRAIN == system) {
-        offset += CAN_OFFSET_POWERTRAIN;
-    } else if (PREFIX_CHASIS == system) {
-        offset += CAN_OFFSET_CHASIS;
-    } else if (PREFIX_BODY == system) {
-        offset += CAN_OFFSET_BODY;
-    } else if (PREFIX_NETWORK == system) {
-        offset += CAN_OFFSET_NETWORK;
+    if (DTC_PREFIX_POWERTRAIN == system) {
+        offset += DTC_CAN_OFFSET_POWERTRAIN;
+    } else if (DTC_PREFIX_CHASIS == system) {
+        offset += DTC_CAN_OFFSET_CHASIS;
+    } else if (DTC_PREFIX_BODY == system) {
+        offset += DTC_CAN_OFFSET_BODY;
+    } else if (DTC_PREFIX_NETWORK == system) {
+        offset += DTC_CAN_OFFSET_NETWORK;
     } else {
         // invalid id
         return MAX_CAN_ID_EXTENDED + 1;
@@ -52,13 +52,6 @@ unsigned int DataTroubleCode::convertSaeIdToCan(string id) {
     string hexId = convertIntToHex(offset) + id.substr(2, id.size() - 1);
     unsigned int canId = convertHexToInt(hexId);
     return canId;
-}
-
-string DataTroubleCode::convertIntToHex(unsigned int n) {
-    stringstream stream;
-    stream << hex << n;
-    string result = stream.str();
-    return result;
 }
 
 unsigned int DataTroubleCode::convertHexToInt(string hex) {

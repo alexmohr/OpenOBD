@@ -65,4 +65,10 @@ vector<string> splitString(char *input) {
 }
 
 
+string convertIntToHex(int n) {
+    stringstream stream;
+    stream << hex << n;
+    string result = stream.str();
+    return result;
+}
 

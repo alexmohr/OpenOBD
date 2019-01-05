@@ -7,13 +7,18 @@
 
 FreezeDTC::FreezeDTC(shared_ptr<map<int, DataTroubleCode>> dtcMap) {
     this->dtcMap = dtcMap;
-    this->dtc = nullptr;
     this->dataObj = make_unique<DataObject<unsigned short>>(A, 7, B, 0, unit_none, 0, 65535);
+
+    dtcId = -1;
+    fallbackDTC = make_unique<DataTroubleCode>();
+    fallbackDTC->setDescription("Unknown DTC");
 }
 
 FreezeDTC::~FreezeDTC() {
-    delete dtc;
+    
 }
+
+
 
 unsigned int FreezeDTC::toFrame(unsigned int &data, int &size) {
     return dataObj->toFrame(data, size);
@@ -21,29 +26,73 @@ unsigned int FreezeDTC::toFrame(unsigned int &data, int &size) {
 
 void FreezeDTC::fromFrame(byte *data, int size) {
     dataObj->fromFrame(data, size);
-    dtc = &dtcMap->at(dataObj->getValue());
+    setTroubleCode(dataObj->getValue());
 }
 
 void FreezeDTC::setValue(unsigned short value) {
     dataObj->setValue(value);
-    dtc = &dtcMap->at(dataObj->getValue());
+    setTroubleCode(dataObj->getValue());
+}
+
+void FreezeDTC::setTroubleCode(unsigned short val) {
+    if (dtcMap->find(dataObj->getValue()) != dtcMap->end()) {
+        dtcId = val;
+    } else {
+        fallbackDTC->setSaeId("0x" + to_string(val));
+        dtcId = -1;
+    }
 }
 
 DataTroubleCode FreezeDTC::getValue() {
-    return *dtc;
+    if (dtcId >= 0) {
+        return dtcMap->at(dtcId);
+    }
+    return *fallbackDTC;
 }
 
 string FreezeDTC::getPrintableData() {
-    return "FreezeDTC :" + dataObj->getPrintableData();
+    DataTroubleCode dtc = getValue();
+
+    return "FreezeDTC: " + dtc.getSaeId() +
+           "\nDescription: " + dtc.getDescription();
 }
 
-void FreezeDTC::setValueFromString(string data) {
+int FreezeDTC::setValueFromString(string data) {
     auto parts = splitString(const_cast<char *>(data.c_str()));
     if (parts.empty()) {
         LOG(ERROR) << "Insufficient parameter count expected 1";
+        return 1;
     }
 
-    dataObj->setValueFromString(data);
+    DataTroubleCode dtc = getValue();
+
+    bool found = false;
+    // is it sae?
+    if (data[0] == DataTroubleCode::DTC_PREFIX_POWERTRAIN ||
+        data[0] == DataTroubleCode::DTC_PREFIX_CHASIS ||
+        data[0] == DataTroubleCode::DTC_PREFIX_BODY ||
+        data[0] == DataTroubleCode::DTC_PREFIX_NETWORK) {
+        for (auto &d: *dtcMap) {
+            if (d.second.getSaeId() == data) {
+                dtcId = d.first;
+                dataObj->setValue(d.first);
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            dtcId = -1;
+        }
+    } else {
+        dataObj->setValueFromString(data);
+    }
+
+    setTroubleCode(dataObj->getValue());
+    return 0;
+}
+
+vector<DataObjectDescription *> FreezeDTC::getDescriptions() {
+    return dataObj->getDescriptions();
 }
 
 

@@ -12,16 +12,16 @@
 using namespace std;
 
 
-template<class T>
+//template<class T>
 class DataObjectDescription {
 private:
     const DataObjectUnit *unit;
     string description;
-    T min;
-    T max;
+    double min;
+    double max;
 
 public:
-    DataObjectDescription(const DataObjectUnit &unit, T min, T max, const string &description) {
+    DataObjectDescription(const DataObjectUnit &unit, double min, double max, const string &description) {
         this->unit = &unit;
         this->min = min;
         this->max = max;
@@ -36,11 +36,11 @@ public:
         return description;
     }
 
-    T getMin() {
+    double getMin() {
         return min;
     }
 
-    T getMax() {
+    double getMax() {
         return max;
     }
 };

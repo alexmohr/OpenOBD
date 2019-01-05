@@ -63,7 +63,7 @@ public:
 
     void setEngineType(EngineType type);
 
-    EngineType getEngineType();
+    DataObject<EngineType> &getEngineType();
 
     OBDTest &getEngineSystem1();
 
@@ -85,7 +85,6 @@ public:
 
     CalculatedDataObject<byte, short> &getCoolantTemperature();
 
-
     CalculatedDataObject<byte, float> &getShortTermFuelTrimBank1();
 
     CalculatedDataObject<byte, float> &getLongTermFuelTrimBank1();
@@ -105,8 +104,6 @@ public:
     CalculatedDataObject<byte, short> &getIntakeAirTemperature();
 
     CalculatedDataObject<unsigned short, float> &getMAFAirFlowRate();
-
-
 };
 
 #endif //OPEN_OBD2_ENGINE_H

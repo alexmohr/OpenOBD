@@ -17,7 +17,7 @@ class CliHandling {
 private:
     bool running;
     unique_ptr<CommandHandler> cmdHandler;
-
+    unique_ptr<ICommunicationInterface> commHandler;
 public:
     CliHandling();
 public:
@@ -30,6 +30,8 @@ private:
     void display_help(char *progname);
 
     int getCommandLineArgs(int argc, char **argv, char &interface, int &port, CLI_TYPE &type);
+
+    void configureLogging(bool logdebug);
 };
 
 

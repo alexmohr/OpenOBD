@@ -5,14 +5,10 @@
 #include "CommandHandler.h"
 
 #include <unistd.h>
+#include <poll.h>
 
-CommandHandler::CommandHandler() = default;
-
-
-bool CommandHandler::start(char *target, CLI_TYPE type, int port) {
+CommandHandler::CommandHandler(CLI_TYPE type, ICommunicationInterface *interface) {
     Config p = Config();
-
-    this->type = type;
 
     // todo make paths configurable
     auto pcMap = map<Service, PidCollection>();
@@ -25,44 +21,28 @@ bool CommandHandler::start(char *target, CLI_TYPE type, int port) {
             make_unique<map<Service, PidCollection>>(pcMap),
             dtcMap);
 
-    configureVirtualVehicle(obdHandler->getVehicle());
+    com = interface;
+    this->type = type;
+}
 
-    int retVal;
-    string st;
-    if (type == ELM) {
-        auto *elm = new ELM327(port, target);
-        retVal = elm->openElm();
-        com = elm;
-        st = "ELM";
-    } else {
-        auto *can = new CanIsoTP();
-        if (type == TESTER) {
-            st = "TESTER";
-            retVal = can->openIsoTp(VEHICLE_ID, TESTER_ID, target);
-        } else if (type == ECU) {
-            st = "ECU";
-            retVal = can->openIsoTp(TESTER_ID, VEHICLE_ID, target);
-        } else {
-            LOG(ERROR) << "Invalid type " << type << " given";
-            return false;
-        }
+bool CommandHandler::start() {
+    exitRequested = false;
+    LOG(INFO) << "Starting command handler";
 
-        com = can;
+    if (com->openInterface() != 0) {
+        return;
     }
-
-
-    if (retVal != 0) {
-        LOG(ERROR) << "Failed to open interface " << target;
-        delete com;
-        return false;
-    }
-
-    LOG(INFO) << "Started " << st;
     open = true;
     tCmdHandler = thread(&CommandHandler::cmdHandler, this, com);
 
     if (type != ELM) {
         tCanHandler = thread(&CommandHandler::comHandler, this, com);
+    }
+
+    if (type == ECU) {
+        configureVirtualVehicle(obdHandler->getVehicle());
+    } else {
+        configureVehicle();
     }
 
     return true;
@@ -77,12 +57,14 @@ void CommandHandler::stopHandler() {
 
     cout << "\n\nPress any key to exit ..." << endl;
 
+    string s = "\r\n";
+    write(STDIN_FILENO, s.c_str(), s.size());
+
     tCanHandler.join();
     tCmdHandler.join();
-    com->closeHandler();
-    delete com;
+    com->closeInterface();
     open = false;
-    LOG(DEBUG) << "Cleanup done";
+    LOG(DEBUG) << "Closed command handler";
 }
 
 
@@ -92,10 +74,32 @@ void CommandHandler::configureVirtualVehicle(Vehicle *vehicle) {
     }
 }
 
-void CommandHandler::comHandler(ComHandler *com) {
+void CommandHandler::configureVehicle() {
+    // query the vehicle which PID's it supports
+    vector<Service1Pids> pidIds{
+            SupportedPid01_20, SupportedPid21_40, SupportedPid41_60, SupportedPid61_80,
+            SupportedPid81_A0, SupportedPidA1_C0, SupportedPidC1_E0,
+    };
+
+    auto service = POWERTRAIN;
+    for (const auto &id: pidIds) {
+        Pid pid;
+        if (obdHandler->getFrameInfo(id, service, pid, service) < 0) {
+            LOG(ERROR) << "failed to get pid information";
+        }
+
+        queryECU(pid, service);
+
+        if (exitRequested) {
+            return;
+        }
+    }
+}
+
+
+void CommandHandler::comHandler(ICommunicationInterface *com) {
     int bufSize = 255;
     byte *buf = (byte *) malloc(bufSize);
-    byte *answer;
     int readSize = 0;
 
     // will not run for ELM
@@ -117,22 +121,24 @@ void CommandHandler::comHandler(ComHandler *com) {
             }
         } else {
             if (ECU != type) {
-                return;
+                continue;
             }
 
+            byte *answer;
             answer = obdHandler->createAnswerFrame(buf, readSize);
             if (nullptr != answer) {
                 com->send(answer, readSize);
+                delete answer;
             }
         }
 
         usleep(100);
-        delete buf;
     }
+
+    delete buf;
 }
 
-void CommandHandler::cmdHandler(ComHandler *com) {
-    //string input;
+void CommandHandler::cmdHandler(ICommunicationInterface *com) {
     char input[256];
     while (!exitRequested) {
         cout << ">>" << std::flush;
@@ -155,7 +161,7 @@ void CommandHandler::cmdHandler(ComHandler *com) {
         if (cmd.at(0) == command_help) {
             printHelp(cmd);
         } else if (cmd.at(0) == command_get) {
-            getData(cmd, com);
+            getData(cmd);
         } else if (cmd.at(0) == command_set) {
             setData(cmd);
         }
@@ -210,7 +216,6 @@ bool CommandHandler::getPid(std::vector<std::string> &cmd, Pid &pid, Service &se
 
     // todo find a way to support other services.
     service = POWERTRAIN;
-
     if (obdHandler->getFrameInfo(pidId, service, pid, service) < 0) {
         cout << "Failed to retrieve info" << endl;
         return false;
@@ -219,26 +224,27 @@ bool CommandHandler::getPid(std::vector<std::string> &cmd, Pid &pid, Service &se
     return true;
 }
 
-void CommandHandler::getData(std::vector<std::string> &cmd, ComHandler *com) {
+int CommandHandler::getData(std::vector<std::string> &cmd) {
     Service service;
     Pid pid;
+    int i;
     if (!getPid(cmd, pid, service)) {
-        return;
+        return -1;
     }
 
     // query data from ecu if we are not one
     if (ECU != type) {
-        queryECU(pid, service);
+        i = queryECU(pid, service);
     }
     cout << pid.getFrameObject(obdHandler->getVehicle()).getPrintableData() << endl;
+    return i;
 }
 
-void CommandHandler::setData(std::vector<std::string> &cmd) {
+int CommandHandler::setData(std::vector<std::string> &cmd) {
     if (ELM == type) {
         cout << "ELM does not support setting values" << endl;
-        return;
+        return -1;
     }
-
 
     if (cmd.size() < 3) {
         cout << "Give at least 1 value" << endl;
@@ -247,18 +253,22 @@ void CommandHandler::setData(std::vector<std::string> &cmd) {
     int i;
     string val;
     for (i = 2; i < cmd.size(); i++) {
-        val += cmd.at(i);
+        val += cmd.at(i) + " ";
     }
+    val.pop_back();
 
     Service service;
     Pid pid;
     if (!getPid(cmd, pid, service)) {
-        return;
+        return -1;
     }
 
-    // update vehicle
+    // Try to update vehicle from data.
     auto &frameObject = pid.getFrameObject(obdHandler->getVehicle());
-    frameObject.setValueFromString(val);
+    i = frameObject.setValueFromString(val);
+    if (i != 0) {
+        return i;
+    }
 
     i = 0;
     byte *data = pid.getVehicleData(service, obdHandler->getVehicle(), i);
@@ -268,63 +278,82 @@ void CommandHandler::setData(std::vector<std::string> &cmd) {
     delete data;
 
     cout << "New value: " << frameObject.getPrintableData() << endl;
+    return 0;
 }
 
-void CommandHandler::queryECU(Pid pid, Service service) {
-    int i = 0;
-    int buflen = 0;
+// Queries the vehicle and updates internal stored object
+int CommandHandler::queryECU(Pid pid, Service service) {
+    const int maxTries = 3;
+    int tries = 0;
+    int frameLen = 0;
+    int retVal = 0;
 
-    byte *frame = pid.getQueryForService(service, buflen);
+    byte *frame = pid.getQueryForService(service, frameLen);
 
     if (type == TESTER) {
         cv_status result;
-        const int maxTries = 3;
-        // try 3 times to receive the data. Give ecu 200ms each.
+        // try 3 times to receive the data. Give ecu 500ms each.
         do {
-            com->send(frame, buflen);
+            com->send(frame, frameLen);
 
             // wait until answer is received.
             expectedPid = pid.id;
             std::unique_lock<std::mutex> lk(dataMutex);
-            result = dataCv.wait_for(lk, 600ms);
-        } while (result != cv_status::no_timeout && i++ < maxTries);
+            result = dataCv.wait_for(lk, 500ms);
+        } while (result != cv_status::no_timeout && tries++ < maxTries);
 
         if (cv_status::timeout == result) {
             LOG(WARNING) << "Received no answer. Tried " << maxTries << " times";
+            retVal = 1;
         }
 
     } else {
-        com->send(frame, buflen);
-
         // make space for answer
-        buflen = 255;
+        int buflen = 255;
         byte *buf = (byte *) malloc(buflen);
         int readSize = 0;
+        bool success;
+        int i;
 
-        bool timeout = false;
-        auto t0 = chrono::high_resolution_clock::now();
-        while (readSize <= 0 && !timeout) {
-            com->receive(buf, buflen, readSize);
-            timeout = (chrono::high_resolution_clock::now() - t0) > 2000ms;
+        do {
+            com->send(frame, frameLen);
+
+            bool timeout = false;
+            auto t0 = chrono::high_resolution_clock::now();
+            while (readSize <= 0 && !timeout) {
+                com->receive(buf, buflen, readSize);
+                timeout = (chrono::high_resolution_clock::now() - t0) > 2000ms;
+            }
+
+            if (timeout) {
+                continue;
+            }
+
+            int rs = readSize + 1;
+            byte *nbuf = (byte *) (malloc(rs));
+            for (i = 0; i < readSize; i++) {
+                nbuf[i + 1] = buf[i];
+            }
+
+            nbuf[0] = (byte) (service + ANSWER_OFFSET);
+            obdHandler->updateFromFrame(buf, readSize);
+            success = true;
+            delete nbuf;
+        } while (!success && tries++ < maxTries);
+
+        if (!success) {
+            retVal = -1;
         }
-
-        if (timeout) {
-            LOG(ERROR) << "Did not receive an answer from interface. Try restarting application if the error persists";
-            return;
-        }
-
-        int rs = readSize + 1;
-        byte *nbuf = (byte *) (malloc(rs));
-        for (i = 0; i < readSize; i++) {
-            nbuf[i + 1] = buf[i];
-        }
-
-        nbuf[0] = (byte) (service + ANSWER_OFFSET);
-        obdHandler->updateFromFrame(buf, readSize);
 
         delete buf;
-        delete nbuf;
     }
 
     delete frame;
+    return retVal;
 }
+
+OBDHandler &CommandHandler::getObdHandler() {
+    return *obdHandler;
+}
+
+

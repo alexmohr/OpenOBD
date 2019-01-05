@@ -79,43 +79,84 @@ OBDTest &MonitorStatus::getMisfire() {
 }
 
 string MonitorStatus::getPrintableData() {
-    return "mil" + mil->getPrintableData() +
-           "\ndtcCount" + dtcCount->getPrintableData() +
-           "\ncomponents" + components->getPrintableData() +
-           "\nmisfire" + misfire->getPrintableData() +
-           "\nfuelSystem" + fuelSystem->getPrintableData() +
-           "\nEngineSystem1" + engine->getEngineSystem1().getPrintableData() +
-           "\nEngineSystem2" + engine->getEngineSystem2().getPrintableData() +
-           "\nEngineSystem3" + engine->getEngineSystem3().getPrintableData() +
-           "\nEngineSystem4" + engine->getEngineSystem4().getPrintableData() +
-           "\nEngineSystem5" + engine->getEngineSystem5().getPrintableData() +
-           "\nEngineSystem6" + engine->getEngineSystem6().getPrintableData() +
-           "\nEngineSystem7" + engine->getEngineSystem7().getPrintableData() +
-           "\nEngineSystem8" + engine->getEngineSystem8().getPrintableData() +
-           "\nEngineType" + to_string(engine->getEngineType());
+    return "mil: " + mil->getPrintableData() +
+           "\ndtcCount: " + dtcCount->getPrintableData() +
+           "\ncomponents: " + components->getPrintableData() +
+           "\nmisfire: " + misfire->getPrintableData() +
+           "\nfuelSystem: " + fuelSystem->getPrintableData() +
+           "\nEngineSystem1: " + engine->getEngineSystem1().getPrintableData() +
+           "\nEngineSystem2: " + engine->getEngineSystem2().getPrintableData() +
+           "\nEngineSystem3: " + engine->getEngineSystem3().getPrintableData() +
+           "\nEngineSystem4: " + engine->getEngineSystem4().getPrintableData() +
+           "\nEngineSystem5: " + engine->getEngineSystem5().getPrintableData() +
+           "\nEngineSystem6: " + engine->getEngineSystem6().getPrintableData() +
+           "\nEngineSystem7: " + engine->getEngineSystem7().getPrintableData() +
+           "\nEngineSystem8: " + engine->getEngineSystem8().getPrintableData() +
+           "\nEngineType: " + to_string(engine->getEngineType().getValue());
 }
 
-void MonitorStatus::setValueFromString(string data) {
+int MonitorStatus::setValueFromString(string data) {
     auto parts = splitString(const_cast<char *>(data.c_str()));
-    if (14 > parts.size()) {
-        LOG(ERROR) << "Insufficient parameter count expected 14"
-                   << "\nMil, DtcCount, Misfire, Fuelsystem"
-                   << "\nEngineSystem1..8 EngineType" << endl;
+    const int paramCount = 24;
+    if (paramCount > parts.size()) {
+        LOG(ERROR) << "Insufficient parameter count expected " << paramCount << endl <<
+                   "\n\tMil:           1" <<
+                   "\n\tDtcCount:      1" <<
+                   "\n\tComponents:    2 (Available, Incomplete)" <<
+                   "\n\tMisfire :      2 (Available, Incomplete)" <<
+                   "\n\tFuelSystem:    2 (Available, Incomplete)" <<
+                   "\n\tEngineSystem1: 2 (Available, Incomplete)" <<
+                   "\n\tEngineSystem2: 2 (Available, Incomplete)" <<
+                   "\n\tEngineSystem3: 2 (Available, Incomplete)" <<
+                   "\n\tEngineSystem4: 2 (Available, Incomplete)" <<
+                   "\n\tEngineSystem5: 2 (Available, Incomplete)" <<
+                   "\n\tEngineSystem6: 2 (Available, Incomplete)" <<
+                   "\n\tEngineSystem7: 2 (Available, Incomplete)" <<
+                   "\n\tEngineSystem8: 2 (Available, Incomplete)" << endl;
+        return paramCount;
     }
 
+    int i = 0;
+    // todo refactor me please :(
+    i += mil->setValueFromString(parts.at(0));
+    i += dtcCount->setValueFromString(parts.at(1));
+    i += components->setValueFromString(parts.at(2) + " " + parts.at(3));
+    i += misfire->setValueFromString(parts.at(4) + " " + parts.at(5));
+    i += fuelSystem->setValueFromString(parts.at(6) + " " + parts.at(7));
+    i += engine->getEngineSystem1().setValueFromString(parts.at(8) + " " + parts.at(9));
+    i += engine->getEngineSystem2().setValueFromString(parts.at(10) + " " + parts.at(11));
+    i += engine->getEngineSystem3().setValueFromString(parts.at(12) + " " + parts.at(13));
+    i += engine->getEngineSystem4().setValueFromString(parts.at(14) + " " + parts.at(15));
+    i += engine->getEngineSystem5().setValueFromString(parts.at(16) + " " + parts.at(17));
+    i += engine->getEngineSystem6().setValueFromString(parts.at(18) + " " + parts.at(19));
+    i += engine->getEngineSystem7().setValueFromString(parts.at(20) + " " + parts.at(21));
+    i += engine->getEngineSystem8().setValueFromString(parts.at(22) + " " + parts.at(23));
+    engine->setEngineType(static_cast<EngineType>(strtol(parts.at(24).c_str(), nullptr, 0)));
+    return i;
+}
 
-    mil->setValueFromString(parts.at(0));
-    dtcCount->setValueFromString(parts.at(1));
-    components->setValueFromString(parts.at(2));
-    misfire->setValueFromString(parts.at(3));
-    fuelSystem->setValueFromString(parts.at(4));
-    engine->getEngineSystem1().setValueFromString(parts.at(5));
-    engine->getEngineSystem2().setValueFromString(parts.at(6));
-    engine->getEngineSystem3().setValueFromString(parts.at(7));
-    engine->getEngineSystem4().setValueFromString(parts.at(8));
-    engine->getEngineSystem5().setValueFromString(parts.at(9));
-    engine->getEngineSystem6().setValueFromString(parts.at(10));
-    engine->getEngineSystem7().setValueFromString(parts.at(11));
-    engine->getEngineSystem8().setValueFromString(parts.at(12));
-    engine->setEngineType(static_cast<EngineType>(strtol(parts.at(13).c_str(), nullptr, 0)));
+vector<DataObjectDescription *> MonitorStatus::getDescriptions() {
+    auto descDesc = vector<vector<DataObjectDescription *>>{
+            mil->getDescriptions(),
+            dtcCount->getDescriptions(),
+            components->getDescriptions(),
+            misfire->getDescriptions(),
+            fuelSystem->getDescriptions(),
+            engine->getEngineSystem1().getDescriptions(),
+            engine->getEngineSystem2().getDescriptions(),
+            engine->getEngineSystem3().getDescriptions(),
+            engine->getEngineSystem4().getDescriptions(),
+            engine->getEngineSystem5().getDescriptions(),
+            engine->getEngineSystem6().getDescriptions(),
+            engine->getEngineSystem7().getDescriptions(),
+            engine->getEngineSystem8().getDescriptions(),
+            engine->getEngineType().getDescriptions()};
+
+    auto desc = vector<DataObjectDescription *>();
+    for (const auto &dd : descDesc) {
+        for (const auto &d : dd) {
+            desc.push_back(d);
+        }
+    }
+    return desc;
 }

@@ -13,7 +13,7 @@
 #define MAX_CAN_ID_EXTENDED 0x20000000
 
 #include <cstddef>
-#include "ComHandler.h"
+#include "SocketCommunicationBase.h"
 
 using namespace std;
 
@@ -22,9 +22,16 @@ enum TP_ERRORS{
     FailedToOpenSocket =2
 };
 
-class CanIsoTP : public ComHandler {
+class CanIsoTP : public SocketCommunicationBase {
+private:
+    unsigned int rxId;
+    unsigned int txId;
+    char *ifname;
 public:
-    int openIsoTp(unsigned int rxId, unsigned int txId, char* ifname);
+    CanIsoTP(unsigned int rxId, unsigned int txId, char *ifname);
+
+public: // Overides SocketCommunicationBase
+    int openInterface() override;
 
 };
 

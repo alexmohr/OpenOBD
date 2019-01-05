@@ -2,7 +2,7 @@
 // Created by me on 03/01/19.
 //
 
-#include "ComHandler.h"
+#include "SocketCommunicationBase.h"
 #include "easylogging++.h"
 #include <stdio.h>
 #include <sys/socket.h>
@@ -12,7 +12,7 @@
 #include <libnet.h>
 
 
-int ComHandler::send(byte *buf, int buflen) {
+int SocketCommunicationBase::send(byte *buf, int buflen) {
     int retval = 0;
 
     retval = static_cast<int>(write(socketHandle, buf, buflen));
@@ -29,7 +29,7 @@ int ComHandler::send(byte *buf, int buflen) {
     return retval;
 }
 
-void ComHandler::receive(byte *buffer, int buffSize, int &readSize) {
+void SocketCommunicationBase::receive(byte *buffer, int buffSize, int &readSize) {
     struct timeval timeout = {1, 0};
     fd_set readSet;
     FD_ZERO(&readSet);
@@ -43,7 +43,8 @@ void ComHandler::receive(byte *buffer, int buffSize, int &readSize) {
 }
 
 
-void ComHandler::closeHandler() {
+int SocketCommunicationBase::closeInterface() {
     close(socketHandle);
     socketHandle = -1;
+    return 0;
 }

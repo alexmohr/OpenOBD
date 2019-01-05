@@ -50,13 +50,21 @@ string OBDTest::getPrintableData() {
            "\nIncomplete: " + incomplete->getPrintableData();
 }
 
-void OBDTest::setValueFromString(string data) {
+int OBDTest::setValueFromString(string data) {
     auto parts = splitString(const_cast<char *>(data.c_str()));
-    if (2 > parts.size()) {
-        LOG(ERROR) << "Insufficient parameter count";
+    const int paramCount = 2;
+    if (paramCount > parts.size()) {
+        LOG(ERROR) << "Insufficient parameter count expected " << paramCount;
+        return paramCount;
     }
 
     available->setValueFromString(parts.at(0));
     incomplete->setValueFromString(parts.at(1));
+
+    return 0;
+}
+
+vector<DataObjectDescription *> OBDTest::getDescriptions() {
+    return vector<DataObjectDescription *>{available->getDescriptions().at(0), incomplete->getDescriptions().at(0)};
 }
 

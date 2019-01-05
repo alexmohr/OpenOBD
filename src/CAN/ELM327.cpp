@@ -19,7 +19,7 @@ ELM327::ELM327(int port, char *host) {
 }
 
 
-int ELM327::openElm() {
+int ELM327::openInterface() {
     int res, valopt;
     struct sockaddr_in addr;
     long arg;
@@ -87,12 +87,12 @@ void printDebugInfo(int readSize, byte *buffer) {
 void ELM327::receive(byte *buffer, int buffSize, int &readSize) {
     // hack because elm closes connection after command has been sent.
     if (socketHandle == -1) {
-        this->openElm();
+        this->openInterface();
     }
 
-    ComHandler::receive(buffer, buffSize, readSize);
+    SocketCommunicationBase::receive(buffer, buffSize, readSize);
     if (readSize <= 0) {
-        closeHandler();
+        closeInterface();
         return;
     }
 
@@ -108,7 +108,7 @@ void ELM327::receive(byte *buffer, int buffSize, int &readSize) {
            && (char) buffer[readSize - 2] != frameEnd
            && !hasTimeout) {
         int newSize = 0;
-        ComHandler::receive(nbuf, buffSize, newSize);
+        SocketCommunicationBase::receive(nbuf, buffSize, newSize);
         if (newSize > 0) {
             // append the additional received data to our existing buffer.
             memcpy(buffer + readSize, nbuf, newSize);
@@ -123,7 +123,7 @@ void ELM327::receive(byte *buffer, int buffSize, int &readSize) {
     if (hasTimeout) {
         LOG(ERROR) << "failed to retrieve complete frame";
         readSize = -1;
-        closeHandler();
+        closeInterface();
         return;
     }
 
@@ -136,7 +136,7 @@ void ELM327::receive(byte *buffer, int buffSize, int &readSize) {
         parseData(buffer, readSize);
     }
 
-    closeHandler();
+    closeInterface();
 }
 
 void ELM327::parseData(byte *buffer, int &readSize) {
@@ -196,7 +196,7 @@ void ELM327::parseData(byte *buffer, int &readSize) {
 int ELM327::send(byte *buf, int buflen) {
     // hack because elm closes connection after command has been sent.
     if (socketHandle == -1) {
-        this->openElm();
+        this->openInterface();
     }
 
     std::stringstream ss;
@@ -206,5 +206,5 @@ int ELM327::send(byte *buf, int buflen) {
 
     string st = ss.str();
     st += '\r';
-    return ComHandler::send((byte *) st.c_str(), st.size());
+    return SocketCommunicationBase::send((byte *) st.c_str(), st.size());
 }

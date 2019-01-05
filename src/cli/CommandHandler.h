@@ -38,7 +38,7 @@ private:
             command_set,
             command_help
     };
-
+public:
     map<string, int> commandMapping{
             {"MonitoringStatusSinceDTCsCleared",    MonitoringStatusSinceDTCsCleared},
             {"FreezeDTCPid",                        FreezeDTCPid},
@@ -116,7 +116,7 @@ private:
     unique_ptr<OBDHandler> obdHandler;
     bool open;
     CLI_TYPE type;
-    ComHandler *com;
+    ICommunicationInterface *com;
 
     std::mutex dataMutex;
     std::condition_variable dataCv;
@@ -124,31 +124,38 @@ private:
     int expectedPid;
 
 public:
-    CommandHandler();
+    CommandHandler(CLI_TYPE type, ICommunicationInterface *com);
 
 public:
-    bool start(char *target, CLI_TYPE type, int port = 0);
+
+    bool start();
 
     void stopHandler();
 
     bool isOpen();
 
-private:
-    void configureVirtualVehicle(Vehicle *vehicle);
+public: // public for testing
+    int setData(std::vector<std::string> &cmd);
 
-    void comHandler(ComHandler *com);
-
-    void cmdHandler(ComHandler *com);
-
-    void printHelp(std::vector<std::string> &cmd);
-
-    void getData(std::vector<std::string> &cmd, ComHandler *com);
-
-    void setData(std::vector<std::string> &cmd);
+    int getData(std::vector<std::string> &cmd);
 
     bool getPid(std::vector<std::string> &cmd, Pid &pid, Service &service);
 
-    void queryECU(Pid pid, Service service);
+    OBDHandler &getObdHandler();
+private:
+    void configureVirtualVehicle(Vehicle *vehicle);
+
+    void configureVehicle();
+
+    void comHandler(ICommunicationInterface *com);
+
+    void cmdHandler(ICommunicationInterface *com);
+
+    void printHelp(std::vector<std::string> &cmd);
+
+    int queryECU(Pid pid, Service service);
+
+
 };
 
 

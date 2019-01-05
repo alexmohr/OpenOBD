@@ -12,15 +12,11 @@ using namespace std;
 
 #define CAN_INTERFACE "vcan0"
 
-void initIsoTp(CanIsoTP* vehicleCAN, CanIsoTP* testerCAN){
-    vehicleCAN->openIsoTp(TESTER_ID, VEHICLE_ID, const_cast<char *>(CAN_INTERFACE));
-    testerCAN->openIsoTp(VEHICLE_ID, TESTER_ID, const_cast<char *>(CAN_INTERFACE));
-}
-
 void doTest(vector<byte> &request) {
-    auto vehicleCAN = new CanIsoTP();
-    auto testerCAN = new CanIsoTP();
-    initIsoTp(vehicleCAN, testerCAN);
+    auto vehicleCAN = new CanIsoTP(TESTER_ID, VEHICLE_ID, const_cast<char *>(CAN_INTERFACE));
+    auto testerCAN = new CanIsoTP(VEHICLE_ID, TESTER_ID, const_cast<char *>(CAN_INTERFACE));
+    vehicleCAN->openInterface();
+    testerCAN->openInterface();
     testerCAN->send(request.data(), static_cast<int>(request.size()));
 
     auto buf = (byte *) malloc(request.size());
@@ -59,9 +55,9 @@ TEST(CanIsoTp, MultiFrameMessageVirtualCAN) { // NOLINT(cert-err58-cpp)
 
 TEST(OBDHandler, Test_timeout) {
 
-    auto vehicleCAN = new CanIsoTP();
+    auto vehicleCAN = new CanIsoTP(TESTER_ID, VEHICLE_ID, const_cast<char *>(CAN_INTERFACE));
 
-    vehicleCAN->openIsoTp(TESTER_ID, VEHICLE_ID, const_cast<char *>(CAN_INTERFACE));
+    vehicleCAN->openInterface();
 
     byte *buf;
     int readSize;

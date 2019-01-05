@@ -248,7 +248,7 @@ TEST(OBDHandler, PID_01_AND_40_MonitoringStatus) {
         EXPECT_EQ(monitoringStatus->getMisfire().getIncomplete().getValue(), false);
 
         Engine &engine = monitoringStatus->getEngine();
-        EXPECT_EQ(engine.getEngineType(), PETROL);
+        EXPECT_EQ(engine.getEngineType().getValue(), PETROL);
 
         EXPECT_EQ(engine.getEngineSystem1().getAvailable().getValue(), true);
         EXPECT_EQ(engine.getEngineSystem2().getAvailable().getValue(), true);

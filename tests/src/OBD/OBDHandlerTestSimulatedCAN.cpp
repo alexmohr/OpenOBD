@@ -14,11 +14,11 @@ TEST(OBDHandler, PIDSupported01_20_With_VirtualCAN) {
     vector<byte> request{(byte) 0x01, (byte) 0x00};
     vector<byte> response{(byte) 0x41, (byte) 0x00, (byte) 0xbe, (byte) 0x7e, (byte) 0xb8, (byte) 0x13};
 
-    auto vehicleCAN = new CanIsoTP();
-    auto testerCAN = new CanIsoTP();
+    auto vehicleCAN = new CanIsoTP(TESTER_ID, VEHICLE_ID, const_cast<char *>(CAN_INTERFACE));
+    auto testerCAN = new CanIsoTP(VEHICLE_ID, TESTER_ID, const_cast<char *>(CAN_INTERFACE));
 
-    vehicleCAN->openIsoTp(TESTER_ID, VEHICLE_ID, const_cast<char *>(CAN_INTERFACE));
-    testerCAN->openIsoTp(VEHICLE_ID, TESTER_ID, const_cast<char *>(CAN_INTERFACE));
+    vehicleCAN->openInterface();
+    testerCAN->openInterface();
 
 
     OBDHandler *handler = getHandler();
@@ -49,11 +49,11 @@ TEST(OBDHandler, AmbientTemperature_46_With_VirtualCAN) {
     vector<byte> request{(byte) 0x01, (byte) AmbientAirTemperature};
     vector<byte> response{(byte) 0x41, (byte) (AmbientAirTemperature), (byte) 0xff};
 
-    auto vehicleCAN = new CanIsoTP();
-    auto testerCAN = new CanIsoTP();
+    auto vehicleCAN = new CanIsoTP(TESTER_ID, VEHICLE_ID, const_cast<char *>(CAN_INTERFACE));
+    auto testerCAN = new CanIsoTP(VEHICLE_ID, TESTER_ID, const_cast<char *>(CAN_INTERFACE));
 
-    vehicleCAN->openIsoTp(TESTER_ID, VEHICLE_ID, const_cast<char *>(CAN_INTERFACE));
-    testerCAN->openIsoTp(VEHICLE_ID, TESTER_ID, const_cast<char *>(CAN_INTERFACE));
+    vehicleCAN->openInterface();
+    testerCAN->openInterface();
 
 
     OBDHandler *handler = getHandler();

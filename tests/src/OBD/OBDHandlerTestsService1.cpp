@@ -41,12 +41,12 @@ void TestCalculatedData(Service1Pids pid,
     }
 
     vector<S> values{
-            (S) ((S) system->getDescription().getMin()),
-            (S) ((S) system->getDescription().getMax()),
-            (S) ((S) system->getDescription().getMax() / 2),
-            (S) ((S) system->getDescription().getMax() / 3),
-            (S) ((S) system->getDescription().getMax() / 4),
-            (S) ((S) system->getDescription().getMax() / 5),
+            (S) ((S) system->getDescriptions().at(0)->getMin()),
+            (S) ((S) system->getDescriptions().at(0)->getMax()),
+            (S) ((S) system->getDescriptions().at(0)->getMax() / 2),
+            (S) ((S) system->getDescriptions().at(0)->getMax() / 3),
+            (S) ((S) system->getDescriptions().at(0)->getMax() / 4),
+            (S) ((S) system->getDescriptions().at(0)->getMax() / 5),
     };
 
     for (auto const &val: values) {
@@ -55,6 +55,8 @@ void TestCalculatedData(Service1Pids pid,
         system->setValueFromString(to_string(val));
         EXPECT_NEAR(system->getValue(), val, offset);
     }
+
+    EXPECT_GT(system->getDescriptions().size(), 0);
 }
 
 
@@ -88,21 +90,22 @@ void TestDataObject(Service1Pids pid,
 
     vector<T> values;
 
-    if (nullptr != system->getDescription()) {
         values = {
-                (system->getDescription()->getMin()),
-                (system->getDescription()->getMax()),
-                (T) (system->getDescription()->getMax() / (T) 2),
-                (T) (system->getDescription()->getMax() / (T) 3),
-                (T) (system->getDescription()->getMax() / (T) 4),
-                (T) (system->getDescription()->getMax() / (T) 5)};
+                (T) (system->getDescriptions().at(0)->getMin()),
+                (T) (system->getDescriptions().at(0)->getMax()),
+                (T) (system->getDescriptions().at(0)->getMax() / (T) 2),
+                (T) (system->getDescriptions().at(0)->getMax() / (T) 3),
+                (T) (system->getDescriptions().at(0)->getMax() / (T) 4),
+                (T) (system->getDescriptions().at(0)->getMax() / (T) 5)};
         for (auto const &val: values) {
             system->setValue(val);
             EXPECT_NEAR((double) system->getValue(), (double) val, offset);
             system->setValueFromString(to_string(val));
             EXPECT_NEAR(system->getValue(), val, offset);
         }
-    }
+
+
+    EXPECT_GT(system->getDescriptions().size(), 0);
 }
 
 template<>
@@ -124,12 +127,12 @@ void TestDataObject<byte>(Service1Pids pid,
     }
 
     vector<byte> values{
-            (system->getDescription()->getMin()),
-            (system->getDescription()->getMax()),
-            (byte) ((int) system->getDescription()->getMax() / 2),
-            (byte) ((int) system->getDescription()->getMax() / 3),
-            (byte) ((int) system->getDescription()->getMax() / 4),
-            (byte) ((int) system->getDescription()->getMax() / 5)};
+            (byte) (system->getDescriptions().at(0)->getMin()),
+            (byte) (system->getDescriptions().at(0)->getMax()),
+            (byte) ((int) system->getDescriptions().at(0)->getMax() / 2),
+            (byte) ((int) system->getDescriptions().at(0)->getMax() / 3),
+            (byte) ((int) system->getDescriptions().at(0)->getMax() / 4),
+            (byte) ((int) system->getDescriptions().at(0)->getMax() / 5)};
     for (auto const &val: values) {
         system->setValue(val);
         EXPECT_NEAR((double) system->getValue(), (double) val, offset);

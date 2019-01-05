@@ -23,7 +23,9 @@ Vehicle::Vehicle(shared_ptr<map<int, DataTroubleCode>> dtcMap) {
     throttle = make_unique<Throttle>();
 
 
-    commandedSecondaryAirStatus = make_unique<DataObject<StateOfCommandedSecondaryAir>>(A, 7, A, 0);
+    commandedSecondaryAirStatus = make_unique<DataObject<StateOfCommandedSecondaryAir>>(
+            A, 7, A, 0,
+            unit_none, CommandedSecondaryAirStatusDoesNotExist, PumpCommandedOnForDiagnostics);
 
     speed = make_unique<DataObject<byte>>(A, 7, A, 0, unit_kph, (byte) 0, (byte) 255);
     warmUpsSinceCodesCleared = make_unique<DataObject<byte>>(A, 7, A, 0, unit_count, (byte) 0, (byte) 255);
@@ -32,7 +34,7 @@ Vehicle::Vehicle(shared_ptr<map<int, DataTroubleCode>> dtcMap) {
     auxiliaryInputStatus = make_unique<DataObject<bool>>(A, 0);
     runTimeSinceEngineStart = make_unique<DataObject<unsigned short>>(A, 7, B, 0, unit_seconds, 0, 65535);
 
-    distanceTraveledWithMilOn = make_unique<DataObject<unsigned short>>(A, 7, B, 0);
+    distanceTraveledWithMilOn = make_unique<DataObject<unsigned short>>(A, 7, B, 0, unit_km, 0, 65535);
 
     absoluteBarometricPressure = make_unique<DataObject<byte>>(A, 7, A, 0, unit_kPa, (byte) 0, (byte) 255);
 

@@ -6,8 +6,10 @@
 
 
 FuelSystemStates::FuelSystemStates() {
-    fuelSystem1 = make_unique<DataObject<StateOfFuelSystem>>(A, 7, A, 0);
-    fuelSystem2 = make_unique<DataObject<StateOfFuelSystem>>(B, 7, B, 0);
+    fuelSystem1 = make_unique<DataObject<StateOfFuelSystem>>(
+            A, 7, A, 0, unit_none, StateOfFuelSystemDoesNotExist, ClosedLoopUsingOxygenSensorWithFault);
+    fuelSystem2 = make_unique<DataObject<StateOfFuelSystem>>(
+            B, 7, B, 0, unit_none, StateOfFuelSystemDoesNotExist, ClosedLoopUsingOxygenSensorWithFault);
 }
 
 DataObject<StateOfFuelSystem> &FuelSystemStates::getFuelSystem1() {
@@ -35,13 +37,23 @@ string FuelSystemStates::getPrintableData() {
 
 }
 
-void FuelSystemStates::setValueFromString(string data) {
+int FuelSystemStates::setValueFromString(string data) {
     auto parts = splitString(const_cast<char *>(data.c_str()));
-    if (2 > parts.size()) {
-        LOG(ERROR) << "Insufficient parameter count expected 2";
+    const int paramCount = 2;
+    if (paramCount > parts.size()) {
+        LOG(ERROR) << "Insufficient parameter count expected " << paramCount;
+        return paramCount;
     }
 
     fuelSystem1->setValueFromString(parts.at(0));
     fuelSystem2->setValueFromString(parts.at(1));
+    return 0;
+}
+
+vector<DataObjectDescription *> FuelSystemStates::getDescriptions() {
+    return vector<DataObjectDescription *>{
+            fuelSystem1->getDescriptions().at(0),
+            fuelSystem2->getDescriptions().at(0)
+    };
 }
 

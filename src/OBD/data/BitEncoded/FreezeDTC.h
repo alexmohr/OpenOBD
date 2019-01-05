@@ -9,10 +9,10 @@
 
 class FreezeDTC : public IFrameObject {
 private:
-    DataTroubleCode *dtc;
     unique_ptr<DataObject<unsigned short>> dataObj;
+    unique_ptr<DataTroubleCode> fallbackDTC;
     shared_ptr<map<int, DataTroubleCode>> dtcMap;
-
+    int dtcId;
 public:
     explicit FreezeDTC(shared_ptr<map<int, DataTroubleCode>> dtcMap);
 
@@ -30,8 +30,12 @@ public:// IFrameObject
 
     string getPrintableData() override;
 
-    void setValueFromString(string data) override;
+    int setValueFromString(string data) override;
 
+    vector<DataObjectDescription *> getDescriptions() override;
+
+private:
+    void setTroubleCode(unsigned short val);
 };
 
 

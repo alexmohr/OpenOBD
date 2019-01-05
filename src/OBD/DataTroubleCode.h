@@ -15,16 +15,16 @@ using namespace std;
 class DataTroubleCode {
 
     // Constants
-private:
-    const char PREFIX_POWERTRAIN = 'P';
-    const char PREFIX_CHASIS = 'C';
-    const char PREFIX_BODY = 'B';
-    const char PREFIX_NETWORK = 'U';
+public:
+    static const char DTC_PREFIX_POWERTRAIN = 'P';
+    static const char DTC_PREFIX_CHASIS = 'C';
+    static const char DTC_PREFIX_BODY = 'B';
+    static const char DTC_PREFIX_NETWORK = 'U';
 
-    const int CAN_OFFSET_POWERTRAIN = 0x00;
-    const int CAN_OFFSET_CHASIS = 0x04;
-    const int CAN_OFFSET_BODY = 0x08;
-    const int CAN_OFFSET_NETWORK = 0x0c;
+    static const int DTC_CAN_OFFSET_POWERTRAIN = 0x00;
+    static const int DTC_CAN_OFFSET_CHASIS = 0x04;
+    static const int DTC_CAN_OFFSET_BODY = 0x08;
+    static const int DTC_CAN_OFFSET_NETWORK = 0x0c;
 
 private:
     unsigned int canId;
@@ -32,9 +32,6 @@ private:
     unsigned int convertSaeIdToCan(string saeId);
 
     unsigned int convertHexToInt(string hex);
-
-    string convertIntToHex(unsigned int n);
-
 
 // fields set from configuration
 private:

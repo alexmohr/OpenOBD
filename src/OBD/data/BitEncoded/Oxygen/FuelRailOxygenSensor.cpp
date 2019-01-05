@@ -6,8 +6,6 @@
 
 FuelRailOxygenSensor::FuelRailOxygenSensor() {
     fuelAirEquivalenceRatio = CalculatedDataObjectFactory::ratio_2Divided2Pow16TimesValue();
-
-
     voltage = CalculatedDataObjectFactory::ratio_8Divided2Pow16TimesValue();
 }
 
@@ -34,12 +32,23 @@ string FuelRailOxygenSensor::getPrintableData() {
            "\nvoltage: " + voltage->getPrintableData();
 }
 
-void FuelRailOxygenSensor::setValueFromString(string data) {
+int FuelRailOxygenSensor::setValueFromString(string data) {
     auto parts = splitString(const_cast<char *>(data.c_str()));
-    if (2 > parts.size()) {
-        LOG(ERROR) << "Insufficient parameter count expected 2";
+    const int paramCount = 2;
+    if (paramCount > parts.size()) {
+        LOG(ERROR) << "Insufficient parameter count expected " << paramCount;
+        return paramCount;
     }
 
     fuelAirEquivalenceRatio->setValueFromString(parts.at(0));
     voltage->setValueFromString(parts.at(1));
+
+    return 0;
+}
+
+vector<DataObjectDescription *> FuelRailOxygenSensor::getDescriptions() {
+    return vector<DataObjectDescription *>{
+            fuelAirEquivalenceRatio->getDescriptions().at(0),
+            voltage->getDescriptions().at(0)
+    };
 }

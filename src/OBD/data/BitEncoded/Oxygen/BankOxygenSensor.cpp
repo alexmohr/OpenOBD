@@ -38,13 +38,21 @@ string BankOxygenSensor::getPrintableData() {
            "\nshortTermFuelTrim: " + shortTermFuelTrim->getPrintableData();
 }
 
-void BankOxygenSensor::setValueFromString(string data) {
+int BankOxygenSensor::setValueFromString(string data) {
     auto parts = splitString(const_cast<char *>(data.c_str()));
-    if (2 > parts.size()) {
-        LOG(ERROR) << "Insufficient parameter count expected 2";
+    const int paramCount = 2;
+    if (paramCount > parts.size()) {
+        LOG(ERROR) << "Insufficient parameter count expected " << paramCount;
+        return paramCount;
     }
 
     voltage->setValueFromString(parts.at(0));
     shortTermFuelTrim->setValueFromString(parts.at(1));
+    return 0;
+}
+
+vector<DataObjectDescription *> BankOxygenSensor::getDescriptions() {
+    return vector<DataObjectDescription *>{voltage->getDescriptions().at(0),
+                                           shortTermFuelTrim->getDescriptions().at(0)};
 }
 

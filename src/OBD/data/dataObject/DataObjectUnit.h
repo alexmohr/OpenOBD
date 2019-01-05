@@ -58,7 +58,7 @@ const static DataObjectUnit unit_bool = DataObjectUnit("Boolean", "", &si_none);
 const static DataObjectUnit unit_none = DataObjectUnit("", "", &si_none);
 
 const static DataObjectUnit unit_volt = DataObjectUnit("Volt", "V", &si_none);
-const static DataObjectUnit unit_kPa = DataObjectUnit("Pascal", "Pa", &si_kilo);
+const static DataObjectUnit  unit_kPa = DataObjectUnit("Pascal", "Pa", &si_kilo);
 const static DataObjectUnit unit_celsius = DataObjectUnit("Celsius", "°C", &si_none);
 const static DataObjectUnit unit_rpm = DataObjectUnit("Revolutions per Minute", "RPM", &si_none);
 const static DataObjectUnit unit_degree = DataObjectUnit("Degree", "°", &si_none);

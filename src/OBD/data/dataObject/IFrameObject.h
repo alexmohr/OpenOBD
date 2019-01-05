@@ -6,18 +6,47 @@
 #define OPEN_OBD2_IFRAMEOBJECT_H
 
 #include <cstddef>
+#include "DataObjectDescription.h"
 
 using namespace std;
 
+enum IFrameErrors {
+    TOO_LARGE,
+    TOO_SMALL
+};
+
 class IFrameObject {
 public:
+    /**
+     * Convert the object into a CAN frame.
+     * @param data Reference to data were the values will be written to
+     * @param size The size of the data. size is in BITS!
+     * @return Modified data.
+     */
     virtual unsigned int toFrame(unsigned int &data, int &size) = 0;
 
+    /**
+     * Reads the data from a frame.
+     * @param data The data to read from
+     * @param size size of the data buffer.
+     */
     virtual void fromFrame(byte *data, int size) = 0;
 
+    /**
+     * Gets the object state in string form.
+     * This is currently used in the CLI
+     * @return A string representing the current state of the object
+     */
     virtual string getPrintableData() = 0;
 
-    virtual void setValueFromString(string data) = 0;
+    /**
+     * Sets the object value from string.
+     * @param data The data which is set.
+     * @return 0 on Success; Number greater 0 for error due to wrong parameter count less than 0 due to other error.
+     */
+    virtual int setValueFromString(string data) = 0;
+
+    virtual vector<DataObjectDescription*> getDescriptions() = 0;
 };
 
 #endif //OPEN_OBD2_IFRAMEOBJECT_H

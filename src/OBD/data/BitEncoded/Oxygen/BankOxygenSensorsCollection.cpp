@@ -83,10 +83,12 @@ string BankOxygenSensorsCollection::getPrintableData() {
            "bank2Sensor4present: " + bank2Sensor4present->getPrintableData();
 }
 
-void BankOxygenSensorsCollection::setValueFromString(string data) {
+int BankOxygenSensorsCollection::setValueFromString(string data) {
     auto parts = splitString(const_cast<char *>(data.c_str()));
-    if (8 > parts.size()) {
-        LOG(ERROR) << "Insufficient parameter count expected 8";
+    const int paramCount = 8;
+    if (paramCount > parts.size()) {
+        LOG(ERROR) << "Insufficient parameter count expected " << paramCount;
+        return paramCount;
     }
 
     bank1Sensor1present->setValueFromString(parts.at(0));
@@ -97,4 +99,18 @@ void BankOxygenSensorsCollection::setValueFromString(string data) {
     bank2Sensor2present->setValueFromString(parts.at(5));
     bank2Sensor3present->setValueFromString(parts.at(6));
     bank2Sensor4present->setValueFromString(parts.at(7));
+
+    return 0;
+}
+
+vector<DataObjectDescription *> BankOxygenSensorsCollection::getDescriptions() {
+    return vector<DataObjectDescription *>{
+            bank1Sensor1present->getDescriptions().at(0),
+            bank1Sensor2present->getDescriptions().at(0),
+            bank1Sensor3present->getDescriptions().at(0),
+            bank1Sensor4present->getDescriptions().at(0),
+            bank2Sensor1present->getDescriptions().at(0),
+            bank2Sensor2present->getDescriptions().at(0),
+            bank2Sensor3present->getDescriptions().at(0),
+            bank2Sensor4present->getDescriptions().at(0)};
 }

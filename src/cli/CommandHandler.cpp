@@ -30,7 +30,7 @@ bool CommandHandler::start() {
     LOG(INFO) << "Starting command handler";
 
     if (com->openInterface() != 0) {
-        return;
+        return false;
     }
     open = true;
     tCmdHandler = thread(&CommandHandler::cmdHandler, this, com);

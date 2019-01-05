@@ -126,12 +126,9 @@ public:
 
     int setValue(T val) {
         if (nullptr != this->description) {
-            if (value < (T) description->getMin()) {
-                LOG(ERROR) << "value is too small: " << (double) value << ", min value is :" << description->getMin();
-                return TOO_SMALL;
-            } else if (value > (T) description->getMax()) {
-                LOG(ERROR) << "value is too large: " << (double) value << ", max value is :" << description->getMax();
-                return TOO_LARGE;
+            int i = description->checkBounds((double) val);
+            if (i != 0) {
+                return i;
             }
         }
 
@@ -218,17 +215,13 @@ public:
     }
 
     int setValueFromString(string data) override {
-        if (std::is_same<T, double>::value ||
-            std::is_same<T, float>::value) {
-            setValue((T) strtod(data.c_str(), nullptr));
-        } else if (std::is_same<T, short>::value ||
-                   std::is_same<T, int>::value ||
-                   std::is_same<T, long>::value) {
-            setValue((T) strtol(data.c_str(), nullptr, 0));
-        } else {
-            setValue((T) strtoul(data.c_str(), nullptr, 0));
+        if (nullptr != this->description) {
+            int i = description->checkBounds(strtod(data.c_str(), nullptr));
+            if (i != 0) {
+                return i;
+            }
         }
-
+        setValue(convertStringToT<T>(data));
         return 0;
     }
 

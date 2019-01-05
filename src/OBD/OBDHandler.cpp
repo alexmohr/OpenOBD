@@ -27,7 +27,8 @@ byte *OBDHandler::createAnswerFrame(byte *request, int &size) {
 
     byte *data = pid.getVehicleData(service, vehicle.get(), size);
     if (nullptr == data) {
-        LOG(ERROR) << "Not implemented pid or error";
+        LOG(ERROR) << "Received a request which is not supported or caused an error: " <<
+                   "ServiceID: " << service << ", PID: " << pid.id;
         return nullptr;
     }
     return createAnswerFrame(service, pid, data, size);

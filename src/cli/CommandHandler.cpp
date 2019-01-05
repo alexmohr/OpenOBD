@@ -171,7 +171,6 @@ void CommandHandler::cmdHandler() {
         struct pollfd pfd = {STDIN_FILENO, POLLIN, 0};
 
         int ret = 0;
-        //       while (ret == 0) {
         ret = poll(&pfd, 1, 500);  // timeout of 500ms
         if (ret == 1) // there is something to read
         {
@@ -187,12 +186,14 @@ void CommandHandler::cmdHandler() {
                                      std::istream_iterator<std::string>());
 
         if (cmd.empty()) {
+            cout << ">>" << std::flush;
             continue;
         }
 
         if (std::find(commands.begin(), commands.end(), cmd.at(0)) == commands.end()) {
             cout << "Command " << input << " is invalid\n";
             cout << "Type 'help' to get more information" << endl;
+            cout << ">>" << std::flush;
             continue;
         }
 

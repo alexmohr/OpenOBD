@@ -95,3 +95,7 @@ void Config::configureLogging(bool logdebug, bool toFile) {
     el::Loggers::reconfigureLogger("default", defaultConf);
 
 }
+
+string Config::findConfigFolder(vector<string> additionalSearchPaths) {
+    return std::__cxx11::string();
+}

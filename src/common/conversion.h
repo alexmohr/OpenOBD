@@ -29,4 +29,19 @@ vector<string> splitString(char *input);
 
 string convertIntToHex(int n);
 
+template<typename T>
+T convertStringToT(const string &value) {
+    if (std::is_same<T, double>::value ||
+        std::is_same<T, float>::value) {
+        return ((T) strtod(value.c_str(), nullptr));
+    } else if (std::is_same<T, short>::value ||
+               std::is_same<T, int>::value ||
+               std::is_same<T, long>::value) {
+        return ((T) strtol(value.c_str(), nullptr, 0));
+    } else {
+        return ((T) strtoul(value.c_str(), nullptr, 0));
+    }
+}
+
+
 #endif //OPEN_OBD2_CONVERSION_H

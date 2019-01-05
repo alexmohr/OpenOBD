@@ -10,10 +10,6 @@
 
 using namespace std;
 
-enum IFrameErrors {
-    TOO_LARGE,
-    TOO_SMALL
-};
 
 class IFrameObject {
 public:

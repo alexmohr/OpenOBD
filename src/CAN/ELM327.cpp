@@ -70,6 +70,7 @@ int ELM327::openInterface() {
     return 0;
 }
 
+/*
 // Prints the content to std out
 void printDebugInfo(int readSize, byte *buffer) {
     for (int i = 0; i < readSize; i++) {
@@ -83,7 +84,7 @@ void printDebugInfo(int readSize, byte *buffer) {
 
     printf("\n");
 }
-
+*/
 void ELM327::receive(byte *buffer, int buffSize, int &readSize) {
     // hack because elm closes connection after command has been sent.
     if (socketHandle == -1) {

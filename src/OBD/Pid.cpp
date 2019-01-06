@@ -197,6 +197,16 @@ IFrameObject &Pid::getFrameObject(Vehicle *vehicle) {
             return vehicle->getThrottle().getRelativeThrottlePosition();
         case AmbientAirTemperature:
             return vehicle->getAmbientAirTemperature();
+        case AbsoluteThrottlePositionB:
+            return vehicle->getThrottle().getAbsoluteThrottlePositionB();
+        case AbsoluteThrottlePositionC:
+            return vehicle->getThrottle().getAbsoluteThrottlePositionC();
+        case AcceleratorPedalPositionD:
+            return vehicle->getThrottle().getAcceleratorPedalPositionD();
+        case AcceleratorPedalPositionE:
+            return vehicle->getThrottle().getAcceleratorPedalPositionE();
+        case AcceleratorPedalPositionF:
+            return vehicle->getThrottle().getAcceleratorPedalPositionF();
 
     }
 

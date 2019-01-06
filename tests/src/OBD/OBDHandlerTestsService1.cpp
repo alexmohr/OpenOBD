@@ -428,5 +428,47 @@ TEST(OBDHandler, PID_46_AmbientAirTemperature) {
 }
 
 
+TEST(OBDHandler, PID_47_AbsoluteThrottlePositionB){
+    function<CalculatedDataObject<byte,float> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getThrottle().getAbsoluteThrottlePositionB(); };
+
+    function<float(int)> dc = [](int value) { return 100.0f / 255 * value; };
+
+    TestCalculatedData(AbsoluteThrottlePositionB, cb, 0.5f, dc);
+}
+TEST(OBDHandler, PID_48_AbsoluteThrottlePositionC){
+    function<CalculatedDataObject<byte, float> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getThrottle().getAbsoluteThrottlePositionC(); };
+
+    function<float(int)> dc = [](int value) { return 100.0f / 255 * value; };
+
+    TestCalculatedData(AbsoluteThrottlePositionC, cb, 0.5f, dc);
+}
+TEST(OBDHandler, PID_49_AcceleratorPedalPositionD){
+    function<CalculatedDataObject<byte, float> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getThrottle().getAcceleratorPedalPositionD(); };
+
+    function<float(int)> dc = [](int value) { return 100.0f / 255 * value; };
+
+    TestCalculatedData(AcceleratorPedalPositionD, cb, 0.5f, dc);
+}
+TEST(OBDHandler, PID_4A_AcceleratorPedalPositionE){
+    function<CalculatedDataObject<byte, float> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getThrottle().getAcceleratorPedalPositionE(); };
+
+    function<float(int)> dc = [](int value) { return 100.0f / 255 * value; };
+
+    TestCalculatedData(AcceleratorPedalPositionE, cb, 0.5f, dc);
+}
+TEST(OBDHandler, PID_4B_AcceleratorPedalPositionF){
+    function<CalculatedDataObject<byte, float> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getThrottle().getAcceleratorPedalPositionF(); };
+
+    function<float(int)> dc = [](int value) { return 100.0f / 255 * value; };
+
+    TestCalculatedData(AcceleratorPedalPositionF, cb, 0.5f, dc);
+}
+
+
 
 #pragma clang diagnostic pop

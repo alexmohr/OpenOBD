@@ -90,8 +90,11 @@ enum Service1Pids {
     FuelAirCommandedEquivalenceRatio = 0x44,
     RelativeThrottlePosition = 0x45,
     AmbientAirTemperature = 0x46,
-
-
+    AbsoluteThrottlePositionB = 0x47,
+    AbsoluteThrottlePositionC = 0x48,
+    AcceleratorPedalPositionD = 0x49,
+    AcceleratorPedalPositionE = 0x4A,
+    AcceleratorPedalPositionF = 0x4B,
 };
 
 class Pid {

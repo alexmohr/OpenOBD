@@ -61,6 +61,7 @@ string vectorToString(vector<string> v) {
 
 
 void TestCommandHandler(CLI_TYPE type) {
+
     auto mockComm = new MockInterface();
     auto cmdHandler = CommandHandler(type, mockComm);
 
@@ -75,8 +76,8 @@ void TestCommandHandler(CLI_TYPE type) {
 
     for (const auto &cmdMap: cmdHandler.commandMapping) {
         vector<string> validData{"set", cmdMap.first};
-        vector<string> tooSmallData{"set", cmdMap.first};
-        vector<string> tooBigData{"set", cmdMap.first};
+        vector<string> smallData{"set", cmdMap.first};
+        vector<string> largeData{"set", cmdMap.first};
         EXPECT_EQ(true, cmdHandler.getPid(validData, pid, service));
         auto &fo = pid.getFrameObject(cmdHandler.getObdHandler().getVehicle());
         descriptionsNotNull = true;
@@ -91,18 +92,22 @@ void TestCommandHandler(CLI_TYPE type) {
 
             validData.push_back(to_string(getRand(desc->getMin(), desc->getMax())));
 
-            // should not crash. Values will be capped or overflow to negative max.
-            tooSmallData.push_back(to_string(desc->getMin() - 1));
-            tooBigData.push_back(to_string(desc->getMax() + 1));
+            // offset because double and float would give under/overflow
+            smallData.push_back(to_string(desc->getMin() + 0.01));
+            largeData.push_back(to_string(desc->getMax() - 0.01));
         }
         if (descriptionsNotNull) {
             cout << "testing command: " << vectorToString(validData) << endl;
-            vector<vector<string>> commands{validData, tooSmallData, tooSmallData};
+            vector<pair<vector<string>, int>> commands{
+                    {validData, SUCCESS},
+                    {smallData, SUCCESS},
+                    {largeData, SUCCESS}};
+
 
             for (auto &cmd : commands) {
-                cout << "testing command: " << vectorToString(cmd) << endl;
+                cout << "testing command: " << vectorToString(cmd.first) << endl;
                 if (ELM != type) {
-                    EXPECT_EQ(0, cmdHandler.setData(cmd)); // no set support for elm.
+                    EXPECT_EQ(cmd.second, cmdHandler.setData(cmd.first).type); // no set support for elm.
                 }
 
                 int size = 0;
@@ -113,10 +118,10 @@ void TestCommandHandler(CLI_TYPE type) {
                 delete data;
 
                 // modify command to make getter
-                cmd.erase(cmd.begin() + 2, cmd.end());
-                cmd.at(0) = "get";
-                cout << "testing command: " << vectorToString(cmd) << endl;
-                EXPECT_EQ(0, cmdHandler.getData(cmd));
+                cmd.first.erase(cmd.first.begin() + 2, cmd.first.end());
+                cmd.first.at(0) = "get";
+                cout << "testing command: " << vectorToString(cmd.first) << endl;
+                EXPECT_EQ(0, cmdHandler.getData(cmd.first));
             }
         }
     }
@@ -135,4 +140,39 @@ TEST(CommandHandlerTest, setData_getData_ECU) {
 TEST(CommandHandlerTest, setData_getData_ELM) {
     TestCommandHandler(CLI_TYPE::ELM);
 
+}
+
+
+TEST(CommandHandlerTest, tryBreakStuff) {
+    auto mockComm = new MockInterface();
+    auto cmdHandler = CommandHandler(ECU, mockComm);
+    vector<string> data = {"set"};
+    cmdHandler.setData(data);
+
+    data = {"set asdasd"};
+    cmdHandler.setData(data);
+
+    data = {"set BankOxygenSensor"};
+    cmdHandler.setData(data);
+
+    data = {"set VehicleSpeed"};
+    cmdHandler.setData(data);
+
+    data = {"set VehicleSpeed asdhasdlsad"};
+    cmdHandler.setData(data);
+
+    data = {"set"};
+    cmdHandler.setData(data);
+
+    data = {"get"};
+    cmdHandler.getData(data);
+
+    data = {"get adsas"};
+    cmdHandler.getData(data);
+
+    data = {"get VehicleSpeed"};
+    cmdHandler.getData(data);
+
+    data = {"get VehicleSpeed aasdasd"};
+    cmdHandler.getData(data);
 }

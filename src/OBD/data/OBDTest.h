@@ -30,7 +30,7 @@ public:
     DataObject<bool> &getIncomplete();
 
 public: // IFrameObject
-    int setValueFromString(string data) override;
+    DataObjectStateCollection setValueFromString(string data) override;
 
     void fromFrame(byte *frame, int size) override;
 

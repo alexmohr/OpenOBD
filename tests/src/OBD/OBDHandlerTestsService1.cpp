@@ -11,15 +11,16 @@
 #include "gtest/gtest.h"
 #include <random>
 
-template<class T, class S>
-void TestCalculatedData(Service1Pids pid,
-                        function<CalculatedDataObject<T, S> *(Vehicle &vehicle)> dataCallback,
-                        float offset, function<S(int)> dataConversion) {
-    vector<byte> request{(RequestServiceID), (byte) pid};
+void checkDataCollection(DataObjectStateCollection co, ErrorType state) {
+    for (const auto &doe : co.resultSet) {
+        EXPECT_EQ(doe.type, state);
+    }
+}
 
-
+template<class T>
+OBDHandler *genericTest(Service1Pids pid, unsigned int &value) {
     vector<byte> response;
-    unsigned int value = 0;
+    vector<byte> request{(RequestServiceID), (byte) pid};
     if (sizeof(T) == sizeof(byte)) {
         response = {ResponseServiceID, (byte) pid, (byte) 0xca};
         value = 0xca;
@@ -31,32 +32,54 @@ void TestCalculatedData(Service1Pids pid,
         value = 0xcafebabe;
     }
 
-
     auto handler = doTest(request, response);
 
     auto &vehicle = *handler->getVehicle();
+    return handler;
+}
+
+
+template<class T>
+void dataTest(IDataObject<T> *system, vector<pair<T, ErrorType>> values, float offset) {
+    for (auto const &val: values) {
+        EXPECT_EQ(system->setValue(val.first).type, val.second);
+        if (val.second == SUCCESS) {
+            EXPECT_NEAR(system->getValue(), val.first, offset);
+        }
+
+        checkDataCollection(system->setValueFromString(to_string(val.first)), val.second);
+        if (val.second == SUCCESS) {
+            EXPECT_NEAR(system->getValue(), val.first, offset);
+        }
+    }
+
+    EXPECT_GT(system->getDescriptions().size(), 0);
+}
+
+
+
+template<class T, class S>
+void TestCalculatedData(Service1Pids pid,
+                        function<CalculatedDataObject<T, S> *(Vehicle &vehicle)> dataCallback,
+                        float offset, function<S(int)> dataConversion) {
+
+    unsigned int value = 0;
+    auto &vehicle = *genericTest<T>(pid, value)->getVehicle();
     auto system = dataCallback(vehicle);
     if (nullptr != dataConversion) {
         EXPECT_FLOAT_EQ(system->getValue(), dataConversion(value));
     }
 
-    vector<S> values{
-            (S) ((S) system->getDescriptions().at(0)->getMin()),
-            (S) ((S) system->getDescriptions().at(0)->getMax()),
-            (S) ((S) system->getDescriptions().at(0)->getMax() / 2),
-            (S) ((S) system->getDescriptions().at(0)->getMax() / 3),
-            (S) ((S) system->getDescriptions().at(0)->getMax() / 4),
-            (S) ((S) system->getDescriptions().at(0)->getMax() / 5),
+    vector<pair<S, ErrorType>> values{
+            {((S) system->getDescriptions().at(0)->getMin()),             SUCCESS},
+            {(S) ((S) system->getDescriptions().at(0)->getMax() - 0.001), SUCCESS},
+            {(S) ((S) system->getDescriptions().at(0)->getMax() / 2),     SUCCESS},
+            {(S) ((S) system->getDescriptions().at(0)->getMax() / 3),     SUCCESS},
+            {(S) ((S) system->getDescriptions().at(0)->getMax() / 4),     SUCCESS},
+            {(S) ((S) system->getDescriptions().at(0)->getMax() / 5),     SUCCESS},
     };
 
-    for (auto const &val: values) {
-        system->setValue(val);
-        EXPECT_NEAR(system->getValue(), val, offset);
-        system->setValueFromString(to_string(val));
-        EXPECT_NEAR(system->getValue(), val, offset);
-    }
-
-    EXPECT_GT(system->getDescriptions().size(), 0);
+    dataTest<S>(system, values, offset);
 }
 
 
@@ -64,48 +87,23 @@ template<class T>
 void TestDataObject(Service1Pids pid,
                     function<DataObject<T> *(Vehicle &vehicle)> dataCallback,
                     float offset = 0, function<T(int)> dataConversion = nullptr) {
-    vector<byte> request{(RequestServiceID), (byte) pid};
-
-    vector<byte> response;
     unsigned int value = 0;
-    if (sizeof(T) == sizeof(byte)) {
-        response = {ResponseServiceID, (byte) pid, (byte) 0xca};
-        value = 0xca;
-    } else if (sizeof(T) == sizeof(short)) {
-        response = {ResponseServiceID, (byte) pid, (byte) 0xca, (byte) 0xfe};
-        value = 0xcafe;
-    } else if (sizeof(T) == sizeof(int)) {
-        response = {ResponseServiceID, (byte) pid, (byte) 0xca, (byte) 0xfe, (byte) 0xba, (byte) 0xbe};
-        value = 0xcafebabe;
-    }
-
-
-    auto handler = doTest(request, response);
-
-    auto &vehicle = *handler->getVehicle();
+    auto &vehicle = *genericTest<T>(pid, value)->getVehicle();
     auto system = dataCallback(vehicle);
     if (nullptr != dataConversion) {
         EXPECT_EQ(system->getValue(), dataConversion(value));
     }
 
-    vector<T> values;
-
+    vector<pair<T, ErrorType>> values;
         values = {
-                (T) (system->getDescriptions().at(0)->getMin()),
-                (T) (system->getDescriptions().at(0)->getMax()),
-                (T) (system->getDescriptions().at(0)->getMax() / (T) 2),
-                (T) (system->getDescriptions().at(0)->getMax() / (T) 3),
-                (T) (system->getDescriptions().at(0)->getMax() / (T) 4),
-                (T) (system->getDescriptions().at(0)->getMax() / (T) 5)};
-        for (auto const &val: values) {
-            system->setValue(val);
-            EXPECT_NEAR((double) system->getValue(), (double) val, offset);
-            system->setValueFromString(to_string(val));
-            EXPECT_NEAR(system->getValue(), val, offset);
-        }
+                {(T) (system->getDescriptions().at(0)->getMin()),         SUCCESS},
+                {(T) (system->getDescriptions().at(0)->getMax()),         SUCCESS},
+                {(T) (system->getDescriptions().at(0)->getMax() / (T) 2), SUCCESS},
+                {(T) (system->getDescriptions().at(0)->getMax() / (T) 3), SUCCESS},
+                {(T) (system->getDescriptions().at(0)->getMax() / (T) 4), SUCCESS},
+                {(T) (system->getDescriptions().at(0)->getMax() / (T) 5), SUCCESS}};
 
-
-    EXPECT_GT(system->getDescriptions().size(), 0);
+    dataTest<T>(system, values, offset);
 }
 
 template<>
@@ -126,52 +124,52 @@ void TestDataObject<byte>(Service1Pids pid,
         EXPECT_EQ(system->getValue(), dataConversion(value));
     }
 
-    vector<byte> values{
-            (byte) (system->getDescriptions().at(0)->getMin()),
-            (byte) (system->getDescriptions().at(0)->getMax()),
-            (byte) ((int) system->getDescriptions().at(0)->getMax() / 2),
-            (byte) ((int) system->getDescriptions().at(0)->getMax() / 3),
-            (byte) ((int) system->getDescriptions().at(0)->getMax() / 4),
-            (byte) ((int) system->getDescriptions().at(0)->getMax() / 5)};
+    vector<pair<byte, ErrorType>> values{
+            {(byte) (system->getDescriptions().at(0)->getMin()),           SUCCESS},
+            {(byte) (system->getDescriptions().at(0)->getMax()),           SUCCESS},
+            {(byte) ((int) system->getDescriptions().at(0)->getMax() / 2), SUCCESS},
+            {(byte) ((int) system->getDescriptions().at(0)->getMax() / 3), SUCCESS},
+            {(byte) ((int) system->getDescriptions().at(0)->getMax() / 4), SUCCESS},
+            {(byte) ((int) system->getDescriptions().at(0)->getMax() / 5), SUCCESS}};
     for (auto const &val: values) {
-        system->setValue(val);
-        EXPECT_NEAR((double) system->getValue(), (double) val, offset);
-        system->setValueFromString(to_string(val));
-        EXPECT_NEAR((double) system->getValue(), (double) val, offset);
+        EXPECT_EQ(system->setValue(val.first).type, val.second);
+        if (val.second == SUCCESS) {
+            EXPECT_NEAR((double) system->getValue(), (double) val.first, offset);
+        }
+
+        checkDataCollection(system->setValueFromString(to_string(val.first)), val.second);
+        if (val.second == SUCCESS) {
+            EXPECT_NEAR((double) system->getValue(), (double) val.first, offset);
+        }
     }
 }
-
-template<>
-void TestDataObject<bool>(Service1Pids pid,
-                          function<DataObject<bool> *(Vehicle &vehicle)> dataCallback,
-                          float offset, function<bool(int)> dataConversion) {
-    vector<byte> request{(RequestServiceID), (byte) pid};
-
-    vector<byte> response = {ResponseServiceID, (byte) pid, (byte) 0xca};;
-    unsigned int value = 0xca;;
-
-
-    auto handler = doTest(request, response);
-
-    auto &vehicle = *handler->getVehicle();
-    auto system = dataCallback(vehicle);
-    if (nullptr != dataConversion) {
-        EXPECT_EQ(system->getValue(), dataConversion(value));
-    }
-
-    vector<bool> values{
-            false,
-            true,
-            false,
-            true};
-    for (auto const &val: values) {
-        system->setValue(val);
-        EXPECT_NEAR((double) system->getValue(), (double) val, offset);
-        system->setValueFromString(to_string(val));
-        EXPECT_NEAR(system->getValue(), val, offset);
-    }
-}
-
+//
+//template<>
+//void TestDataObject<bool>(Service1Pids pid,
+//                          function<DataObject<bool> *(Vehicle &vehicle)> dataCallback,
+//                          float offset, function<bool(int)> dataConversion) {
+//    vector<byte> request{(RequestServiceID), (byte) pid};
+//
+//    vector<byte> response = {ResponseServiceID, (byte) pid, (byte) 0xca};;
+//    unsigned int value = 0xca;;
+//
+//
+//    auto handler = doTest(request, response);
+//
+//    auto &vehicle = *handler->getVehicle();
+//    auto system = dataCallback(vehicle);
+//    if (nullptr != dataConversion) {
+//        EXPECT_EQ(system->getValue(), dataConversion(value));
+//    }
+//
+//    vector<pair<bool, ErrorType>>
+//            values{{false, SUCCESS},
+//                   {true,  SUCCESS},
+//                   {false, SUCCESS},
+//                   {true,  SUCCESS}};
+//    dataTest<bool>(system, values, offset);
+//}
+//
 
 
 TEST(OBDHandler, PID_0A_FuelPressure) {
@@ -373,7 +371,7 @@ TEST(OBDHandler, PID_32_EvaporativePurgeSystemVaporPressure) {
         return getTwoComplement(value) / 4.0f;
     };
 
-    TestCalculatedData(EvaporativePurgeSystemVaporPressure, cb, 0.2, dc);
+    TestCalculatedData(EvaporativePurgeSystemVaporPressure, cb, 0.3, dc);
 }
 
 TEST(OBDHandler, PID_33_AbsoluteBarometricPressure) {

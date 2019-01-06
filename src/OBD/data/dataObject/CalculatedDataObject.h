@@ -4,7 +4,6 @@
 
 #ifndef OPEN_OBD2_CALCULATEDDATAOBJECT_H
 #define OPEN_OBD2_CALCULATEDDATAOBJECT_H
-
 #include "DataObject.h"
 #include "CalculatedValues.h"
 #include <functional>
@@ -12,7 +11,7 @@
 class CalculatedDataObjectFactory;
 
 template<typename S, typename T>
-class CalculatedDataObject : public IFrameObject {
+class CalculatedDataObject : public IFrameObject, public IDataObject<T> {
 private:
 
     unique_ptr<DataObject<S>> dataObj;
@@ -46,21 +45,22 @@ public:
         return dataObj->getValue();
     }
 
-    T getValue() {
+    T getValue() override {
         auto val = dataObj->getValue();
         return fromFrameFunction(val);
     }
 
-    int setValue(T value) {
+    DataObjectState setValue(T value) override {
+        DataObjectState i;
         if (nullptr != this->description) {
-            int i = description->checkBounds((double)value);
-            if (i != 0){
+            i = description->checkBounds((double) value);
+            if (i.type != SUCCESS) {
                 return i;
             }
         }
 
-        dataObj->setValue(toFrameFunction(value));
-        return 0;
+        i = dataObj->setValue(toFrameFunction(value));
+        return i;
     }
 
     void fromFrame(byte *data, int size) override {
@@ -80,13 +80,15 @@ public:
         return to_string(getValue()) + unit;
     }
 
-    int setValueFromString(string data) override {
-        int i = description->checkBounds(strtod(data.c_str(), nullptr));
-        if (i != 0) {
-            return i;
+    DataObjectStateCollection setValueFromString(string data) override {
+        DataObjectStateCollection rs = DataObjectStateCollection();
+        DataObjectState i = description->checkBounds(strtod(data.c_str(), nullptr));
+        if (i.type == SUCCESS) {
+            i = setValue(convertStringToT<T>(data));
         }
-        setValue(convertStringToT<T>(data));
-        return 0;
+
+        rs.resultSet.push_back(i);
+        return rs;
     }
 
 

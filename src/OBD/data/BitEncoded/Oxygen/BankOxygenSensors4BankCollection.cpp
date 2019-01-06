@@ -16,6 +16,15 @@ BankOxygenSensors4BankCollection::BankOxygenSensors4BankCollection() {
     bank4Sensor1presentIn4Banks = make_unique<DataObject<bool>>(A, 6);
     bank4Sensor2presentIn4Banks = make_unique<DataObject<bool>>(A, 7);
 
+    allSensors = vector<DataObject<bool> *>();
+    allSensors.push_back(bank1Sensor1presentIn4Banks.get());
+    allSensors.push_back(bank1Sensor2presentIn4Banks.get());
+    allSensors.push_back(bank2Sensor1presentIn4Banks.get());
+    allSensors.push_back(bank2Sensor2presentIn4Banks.get());
+    allSensors.push_back(bank3Sensor1presentIn4Banks.get());
+    allSensors.push_back(bank3Sensor2presentIn4Banks.get());
+    allSensors.push_back(bank4Sensor1presentIn4Banks.get());
+    allSensors.push_back(bank4Sensor2presentIn4Banks.get());
 }
 
 
@@ -53,25 +62,16 @@ DataObject<bool> &BankOxygenSensors4BankCollection::getBank4Sensor2presentIn4Ban
 
 
 void BankOxygenSensors4BankCollection::fromFrame(byte *frame, int size) {
-    bank1Sensor1presentIn4Banks->fromFrame(frame, size);
-    bank1Sensor2presentIn4Banks->fromFrame(frame, size);
-    bank2Sensor1presentIn4Banks->fromFrame(frame, size);
-    bank2Sensor2presentIn4Banks->fromFrame(frame, size);
-    bank3Sensor1presentIn4Banks->fromFrame(frame, size);
-    bank3Sensor2presentIn4Banks->fromFrame(frame, size);
-    bank4Sensor1presentIn4Banks->fromFrame(frame, size);
-    bank4Sensor2presentIn4Banks->fromFrame(frame, size);
+    for (const auto &sensor: allSensors) {
+        sensor->fromFrame(frame, size);
+    }
 }
 
 unsigned int BankOxygenSensors4BankCollection::toFrame(unsigned int &data, int &size) {
-    data |= bank1Sensor1presentIn4Banks->getValue() |
-            bank1Sensor2presentIn4Banks->toFrame(data, size) |
-            bank2Sensor1presentIn4Banks->toFrame(data, size) |
-            bank2Sensor2presentIn4Banks->toFrame(data, size) |
-            bank3Sensor1presentIn4Banks->toFrame(data, size) |
-            bank3Sensor2presentIn4Banks->toFrame(data, size) |
-            bank4Sensor1presentIn4Banks->toFrame(data, size) |
-            bank4Sensor2presentIn4Banks->toFrame(data, size);
+    for (const auto &sensor: allSensors) {
+        data |= sensor->toFrame(data, size);
+    }
+
     size = 1;
     return data;
 }
@@ -87,34 +87,27 @@ string BankOxygenSensors4BankCollection::getPrintableData() {
            "bank4Sensor2presentIn4Banks: " + bank4Sensor2presentIn4Banks->getPrintableData() + "\n";
 }
 
-int BankOxygenSensors4BankCollection::setValueFromString(string data) {
-    auto parts = splitString(const_cast<char *>(data.c_str()));
-    const int paramCount = 8;
-    if (paramCount > parts.size()) {
-        LOG(ERROR) << "Insufficient parameter count expected " << paramCount;
-        return paramCount;
+DataObjectStateCollection BankOxygenSensors4BankCollection::setValueFromString(string data) {
+    vector<string> parts;
+    auto rs = DataObjectStateFactory::boundCheck(8, data, parts);
+    if (!rs.resultSet.empty()) {
+        return rs;
     }
 
-    bank1Sensor1presentIn4Banks->setValueFromString(parts.at(0));
-    bank1Sensor2presentIn4Banks->setValueFromString(parts.at(1));
-    bank2Sensor1presentIn4Banks->setValueFromString(parts.at(2));
-    bank2Sensor2presentIn4Banks->setValueFromString(parts.at(3));
-    bank3Sensor1presentIn4Banks->setValueFromString(parts.at(4));
-    bank3Sensor2presentIn4Banks->setValueFromString(parts.at(5));
-    bank4Sensor1presentIn4Banks->setValueFromString(parts.at(6));
-    bank4Sensor2presentIn4Banks->setValueFromString(parts.at(7));
+    int i;
+    for (i = 0; i < allSensors.size(); i++) {
+        DataObjectStateFactory::merge(rs, allSensors.at(i)->setValueFromString(parts.at(i)));
+    }
 
-    return 0;
+    return rs;
 }
 
 vector<DataObjectDescription *> BankOxygenSensors4BankCollection::getDescriptions() {
-    return vector<DataObjectDescription *>{
-            bank1Sensor1presentIn4Banks->getDescriptions().at(0),
-            bank1Sensor2presentIn4Banks->getDescriptions().at(0),
-            bank2Sensor1presentIn4Banks->getDescriptions().at(0),
-            bank2Sensor2presentIn4Banks->getDescriptions().at(0),
-            bank3Sensor1presentIn4Banks->getDescriptions().at(0),
-            bank3Sensor2presentIn4Banks->getDescriptions().at(0),
-            bank4Sensor1presentIn4Banks->getDescriptions().at(0),
-            bank4Sensor2presentIn4Banks->getDescriptions().at(0)};
+    vector<DataObjectDescription *> desc;
+    for (const auto &sensor: allSensors) {
+        auto sdesc = sensor->getDescriptions();
+        desc.insert(desc.end(), sdesc.begin(), sdesc.end());
+    }
+
+    return desc;
 }

@@ -13,6 +13,10 @@ BankOxygenSensorsCollection::BankOxygenSensorsCollection() {
     bank2Sensor2present = make_unique<DataObject<bool>>(A, 5);
     bank2Sensor3present = make_unique<DataObject<bool>>(A, 6);
     bank2Sensor4present = make_unique<DataObject<bool>>(A, 7);
+
+    allSensors = vector<DataObject<bool> *>{
+            bank1Sensor1present.get(), bank1Sensor2present.get(), bank1Sensor3present.get(), bank1Sensor4present.get(),
+            bank2Sensor1present.get(), bank2Sensor2present.get(), bank2Sensor3present.get(), bank2Sensor4present.get()};
 }
 
 
@@ -49,27 +53,18 @@ DataObject<bool> &BankOxygenSensorsCollection::getBank2Sensor4present() {
 }
 
 unsigned int BankOxygenSensorsCollection::toFrame(unsigned int &data, int &size) {
-    data |= bank1Sensor1present->getValue() |
-            bank1Sensor2present->toFrame(data, size) |
-            bank1Sensor3present->toFrame(data, size) |
-            bank1Sensor4present->toFrame(data, size) |
-            bank2Sensor1present->toFrame(data, size) |
-            bank2Sensor2present->toFrame(data, size) |
-            bank2Sensor3present->toFrame(data, size) |
-            bank2Sensor4present->toFrame(data, size);
+    for (const auto &sensor: allSensors) {
+        data |= sensor->toFrame(data, size);
+    }
+
     size = 1;
     return data;
 }
 
 void BankOxygenSensorsCollection::fromFrame(byte *frame, int size) {
-    bank1Sensor1present->fromFrame(frame, size);
-    bank1Sensor2present->fromFrame(frame, size);
-    bank1Sensor3present->fromFrame(frame, size);
-    bank1Sensor4present->fromFrame(frame, size);
-    bank2Sensor1present->fromFrame(frame, size);
-    bank2Sensor2present->fromFrame(frame, size);
-    bank2Sensor3present->fromFrame(frame, size);
-    bank2Sensor4present->fromFrame(frame, size);
+    for (const auto &sensor: allSensors) {
+        sensor->fromFrame(frame, size);
+    }
 }
 
 string BankOxygenSensorsCollection::getPrintableData() {
@@ -83,34 +78,26 @@ string BankOxygenSensorsCollection::getPrintableData() {
            "bank2Sensor4present: " + bank2Sensor4present->getPrintableData();
 }
 
-int BankOxygenSensorsCollection::setValueFromString(string data) {
-    auto parts = splitString(const_cast<char *>(data.c_str()));
-    const int paramCount = 8;
-    if (paramCount > parts.size()) {
-        LOG(ERROR) << "Insufficient parameter count expected " << paramCount;
-        return paramCount;
+DataObjectStateCollection BankOxygenSensorsCollection::setValueFromString(string data) {
+    vector<string> parts;
+    auto rs = DataObjectStateFactory::boundCheck(8, data, parts);
+    if (!rs.resultSet.empty()) {
+        return rs;
     }
 
-    bank1Sensor1present->setValueFromString(parts.at(0));
-    bank1Sensor2present->setValueFromString(parts.at(1));
-    bank1Sensor3present->setValueFromString(parts.at(2));
-    bank1Sensor4present->setValueFromString(parts.at(3));
-    bank2Sensor1present->setValueFromString(parts.at(4));
-    bank2Sensor2present->setValueFromString(parts.at(5));
-    bank2Sensor3present->setValueFromString(parts.at(6));
-    bank2Sensor4present->setValueFromString(parts.at(7));
+    int i;
+    for (i = 0; i < allSensors.size(); i++) {
+        DataObjectStateFactory::merge(rs, allSensors.at(i)->setValueFromString(parts.at(i)));
+    }
 
-    return 0;
+    return rs;
 }
 
 vector<DataObjectDescription *> BankOxygenSensorsCollection::getDescriptions() {
-    return vector<DataObjectDescription *>{
-            bank1Sensor1present->getDescriptions().at(0),
-            bank1Sensor2present->getDescriptions().at(0),
-            bank1Sensor3present->getDescriptions().at(0),
-            bank1Sensor4present->getDescriptions().at(0),
-            bank2Sensor1present->getDescriptions().at(0),
-            bank2Sensor2present->getDescriptions().at(0),
-            bank2Sensor3present->getDescriptions().at(0),
-            bank2Sensor4present->getDescriptions().at(0)};
+    vector<DataObjectDescription *> desc;
+    for (const auto &sensor: allSensors) {
+        auto sdesc = sensor->getDescriptions();
+        desc.insert(desc.end(), sdesc.begin(), sdesc.end());
+    }
+    return desc;
 }

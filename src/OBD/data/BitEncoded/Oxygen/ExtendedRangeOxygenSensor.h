@@ -26,7 +26,7 @@ public:// IFrameObject
 
     string getPrintableData() override;
 
-    int setValueFromString(string data) override;
+    DataObjectStateCollection setValueFromString(string data) override;
 
     vector<DataObjectDescription *> getDescriptions() override;
 };

@@ -43,5 +43,4 @@ T convertStringToT(const string &value) {
     }
 }
 
-
 #endif //OPEN_OBD2_CONVERSION_H

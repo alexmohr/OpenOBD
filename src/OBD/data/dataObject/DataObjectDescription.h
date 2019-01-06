@@ -8,13 +8,11 @@
 #include <string>
 #include "DataObjectUnit.h"
 #include "DataObjectDescriptionText.h"
+#include "DataObjectState.h"
 
 using namespace std;
 
-enum DataObjectDescriptionErrors {
-    TOO_LARGE = 1,
-    TOO_SMALL = 2
-};
+
 
 
 //template<class T>
@@ -49,16 +47,19 @@ public:
         return max;
     }
 
-    int checkBounds(double value) {
+    DataObjectState checkBounds(double value) {
+        DataObjectState state  = DataObjectState();
         if (value < getMin()) {
-            LOG(ERROR) << "value is too small: " << value << ", min value is: " << min;
-            return TOO_SMALL;
+            state.min = getMin();
+            state.value = value;
+            state.type = TOO_SMALL;
         } else if (value > getMax()) {
-            LOG(ERROR) << "value is too large: " << value << ", max value is: " << max;
-            return TOO_LARGE;
+            state.max = getMax();
+            state.value = value;
+            state.type = TOO_LARGE;
         }
 
-        return 0;
+        return state;
     }
 };
 

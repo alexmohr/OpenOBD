@@ -143,7 +143,7 @@ public:
     bool isOpen();
 
 public: // public for testing
-    int setData(std::vector<std::string> &cmd);
+    DataObjectState setData(std::vector<std::string> &cmd);
 
     int getData(std::vector<std::string> &cmd);
 

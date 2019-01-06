@@ -33,17 +33,17 @@ string ExtendedRangeOxygenSensor::getPrintableData() {
            "\ncurrent: " + current->getPrintableData();
 }
 
-int ExtendedRangeOxygenSensor::setValueFromString(string data) {
-    auto parts = splitString(const_cast<char *>(data.c_str()));
-    const int paramCount = 2;
-    if (paramCount > parts.size()) {
-        LOG(ERROR) << "Insufficient parameter count expected " << paramCount;
-        return paramCount;
+DataObjectStateCollection ExtendedRangeOxygenSensor::setValueFromString(string data) {
+    vector<string> parts;
+    auto rs = DataObjectStateFactory::boundCheck(2, data, parts);
+    if (rs.resultSet.empty()) {
+        DataObjectStateFactory::merge(rs, fuelAirEquivalenceRatio->setValueFromString(data));
+        DataObjectStateFactory::merge(rs, current->setValueFromString(data));
+    } else {
+        rs.msg = "Expected 2 values. fuelAirEquivalenceRatio, current";
     }
 
-    fuelAirEquivalenceRatio->setValueFromString(parts.at(0));
-    current->setValueFromString(parts.at(1));
-    return 0;
+    return rs;
 }
 
 vector<DataObjectDescription *> ExtendedRangeOxygenSensor::getDescriptions() {

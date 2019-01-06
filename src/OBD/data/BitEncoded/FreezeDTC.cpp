@@ -57,11 +57,11 @@ string FreezeDTC::getPrintableData() {
            "\nDescription: " + dtc.getDescription();
 }
 
-int FreezeDTC::setValueFromString(string data) {
-    auto parts = splitString(const_cast<char *>(data.c_str()));
-    if (parts.empty()) {
-        LOG(ERROR) << "Insufficient parameter count expected 1";
-        return 1;
+DataObjectStateCollection FreezeDTC::setValueFromString(string data) {
+    vector<string> parts;
+    auto rs = DataObjectStateFactory::boundCheck(1, data, parts);
+    if (rs.resultSet.empty()) {
+        return rs;
     }
 
     DataTroubleCode dtc = getValue();
@@ -88,7 +88,8 @@ int FreezeDTC::setValueFromString(string data) {
     }
 
     setTroubleCode(dataObj->getValue());
-    return 0;
+    DataObjectStateFactory::success(rs);
+    return rs;
 }
 
 vector<DataObjectDescription *> FreezeDTC::getDescriptions() {

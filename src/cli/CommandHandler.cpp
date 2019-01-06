@@ -181,10 +181,7 @@ void CommandHandler::cmdHandler() {
             continue;
         }
 
-        std::istringstream iss(input);
-        std::vector<std::string> cmd(std::istream_iterator<std::string>{iss},
-                                     std::istream_iterator<std::string>());
-
+        std::vector<std::string> cmd = splitString(const_cast<char *>(input.c_str()));
         if (cmd.empty()) {
             cout << ">>" << std::flush;
             continue;
@@ -292,14 +289,15 @@ int CommandHandler::getData(std::vector<std::string> &cmd) {
     return i;
 }
 
-int CommandHandler::setData(std::vector<std::string> &cmd) {
+DataObjectState CommandHandler::setData(std::vector<std::string> &cmd) {
     if (ELM == type) {
         cout << "ELM does not support setting values" << endl;
-        return -1;
+        return DataObjectState(NOT_SUPPORTED);
     }
 
     if (cmd.size() < 3) {
         cout << "Give at least 1 value" << endl;
+        return DataObjectState(MISSING_ARGUMENTS);
     }
 
     int i;
@@ -308,19 +306,42 @@ int CommandHandler::setData(std::vector<std::string> &cmd) {
         val += cmd.at(i) + " ";
     }
     val.pop_back();
+    if (val.empty()) {
+        cout << "Give at least 1 value" << endl;
+        return DataObjectState(MISSING_ARGUMENTS);
+    }
+
 
     Service service;
     Pid pid;
     if (!getPid(cmd, pid, service)) {
-        return -1;
+        return DataObjectState(DATA_ERROR);
     }
 
     // Try to update vehicle from data.
     auto &frameObject = pid.getFrameObject(obdHandler->getVehicle());
-    i = frameObject.setValueFromString(val);
-    if (i != 0) {
-        return i;
+    DataObjectStateCollection sc = frameObject.setValueFromString(val);
+    if (!sc.msg.empty()) {
+        cout << sc.msg;
     }
+    for (const auto &state : sc.resultSet) {
+        switch (state.type) {
+            case TOO_LARGE:
+                cout << "Value " << state.value << " is too large, max value: " << state.max << endl;;
+                return state;
+            case TOO_SMALL:
+                cout << "Value " << state.value << " is too small, min value: " << state.min << endl;
+                return state;
+            case MISSING_ARGUMENTS:
+                cout << "Argument count mismatch. Count: " << state.count << ", Expected: " << state.expectedCount
+                     << endl;;
+                return state;
+            case INVALID_NUMBER:
+                cout << "Input is not a valid number" << endl;
+                return state;
+        }
+    }
+
 
     i = 0;
     byte *data = pid.getVehicleData(service, obdHandler->getVehicle(), i);
@@ -330,7 +351,7 @@ int CommandHandler::setData(std::vector<std::string> &cmd) {
     delete data;
 
     cout << "New value: " << frameObject.getPrintableData() << endl;
-    return 0;
+    return DataObjectState(SUCCESS);
 }
 
 // Queries the vehicle and updates internal stored object

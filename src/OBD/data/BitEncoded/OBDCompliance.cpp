@@ -5,6 +5,7 @@
 #include "OBDCompliance.h"
 
 OBDCompliance::OBDCompliance() {
+    allSystems = vector<DataObject<bool> *>();
     oBD_II_CARB = make_unique<DataObject<bool>>(A, 1);
     oBD_EPA = make_unique<DataObject<bool>>(A, 2);
     oBD_and_OBD_II = make_unique<DataObject<bool>>(A, 3);
@@ -33,6 +34,35 @@ OBDCompliance::OBDCompliance() {
     indiaOBDI = make_unique<DataObject<bool>>(A, 31);
     indiaOBDII = make_unique<DataObject<bool>>(A, 32);
     heavyDutyEuroOBDStageVI = make_unique<DataObject<bool>>(A, 33);
+
+    allSystems.push_back(oBD_II_CARB.get());
+    allSystems.push_back(oBD_EPA.get());
+    allSystems.push_back(oBD_and_OBD_II.get());
+    allSystems.push_back(oBD_I.get());
+    allSystems.push_back(notOBDcompliant.get());
+    allSystems.push_back(eOBD.get());
+    allSystems.push_back(eOBDandOBD_II.get());
+    allSystems.push_back(eOBDandOBD.get());
+    allSystems.push_back(eOBD_OBD_and_OBDII.get());
+    allSystems.push_back(jOBD.get());
+    allSystems.push_back(jOBDandOBDII.get());
+    allSystems.push_back(jOBDandEOBD.get());
+    allSystems.push_back(jOBD_EOBD_and_OBDII.get());
+    allSystems.push_back(engineManufacturerDiagnostics.get());
+    allSystems.push_back(engineManufacturerDiagnosticsEnhanced.get());
+    allSystems.push_back(heavyDutyOn_BoardDiagnostics_OBD_C.get());
+    allSystems.push_back(heavyDutyOn_BoardDiagnostics.get());
+    allSystems.push_back(worldWideHarmonizedOBD.get());
+    allSystems.push_back(heavyDutyEuroOBDStageIwithoutNOxcontrol.get());
+    allSystems.push_back(heavyDutyEuroOBDStageIwithNOxcontrol.get());
+    allSystems.push_back(heavyDutyEuroOBDStageIIwithoutNOxcontrol.get());
+    allSystems.push_back(heavyDutyEuroOBDStageIIwithNOxcontrol.get());
+    allSystems.push_back(brazilOBDPhase1.get());
+    allSystems.push_back(brazilOBDPhase2.get());
+    allSystems.push_back(koreanOBD.get());
+    allSystems.push_back(indiaOBDI.get());
+    allSystems.push_back(indiaOBDII.get());
+    allSystems.push_back(heavyDutyEuroOBDStageVI.get());
 }
 
 DataObject<bool> &OBDCompliance::getOBD_II_CARB() {
@@ -148,66 +178,15 @@ DataObject<bool> &OBDCompliance::getHeavyDutyEuroOBDStageVI() {
 }
 
 void OBDCompliance::fromFrame(byte *data, int size) {
-    oBD_II_CARB->fromFrame(data, size);
-    oBD_EPA->fromFrame(data, size);
-    oBD_and_OBD_II->fromFrame(data, size);
-    oBD_I->fromFrame(data, size);
-    notOBDcompliant->fromFrame(data, size);
-    eOBD->fromFrame(data, size);
-    eOBDandOBD_II->fromFrame(data, size);
-    eOBDandOBD->fromFrame(data, size);
-    eOBD_OBD_and_OBDII->fromFrame(data, size);
-    jOBD->fromFrame(data, size);
-    jOBDandOBDII->fromFrame(data, size);
-    jOBDandEOBD->fromFrame(data, size);
-    jOBD_EOBD_and_OBDII->fromFrame(data, size);
-    engineManufacturerDiagnostics->fromFrame(data, size);
-    engineManufacturerDiagnosticsEnhanced->fromFrame(data, size);
-    heavyDutyOn_BoardDiagnostics_OBD_C->fromFrame(data, size);
-    heavyDutyOn_BoardDiagnostics->fromFrame(data, size);
-    worldWideHarmonizedOBD->fromFrame(data, size);
-    heavyDutyEuroOBDStageIwithoutNOxcontrol->fromFrame(data, size);
-    heavyDutyEuroOBDStageIwithNOxcontrol->fromFrame(data, size);
-    heavyDutyEuroOBDStageIIwithoutNOxcontrol->fromFrame(data, size);
-    heavyDutyEuroOBDStageIIwithNOxcontrol->fromFrame(data, size);
-    brazilOBDPhase1->fromFrame(data, size);
-    brazilOBDPhase2->fromFrame(data, size);
-    koreanOBD->fromFrame(data, size);
-    indiaOBDI->fromFrame(data, size);
-    indiaOBDII->fromFrame(data, size);
-    heavyDutyEuroOBDStageVI->fromFrame(data, size);
+    for (const auto &sys: allSystems) {
+        sys->fromFrame(data, size);
+    }
 }
 
 unsigned int OBDCompliance::toFrame(unsigned int &data, int &size) {
-    data |=
-            oBD_II_CARB->toFrame(data, size) |
-            oBD_EPA->toFrame(data, size) |
-            oBD_and_OBD_II->toFrame(data, size) |
-            oBD_I->toFrame(data, size) |
-            notOBDcompliant->toFrame(data, size) |
-            eOBD->toFrame(data, size) |
-            eOBDandOBD_II->toFrame(data, size) |
-            eOBDandOBD->toFrame(data, size) |
-            eOBD_OBD_and_OBDII->toFrame(data, size) |
-            jOBD->toFrame(data, size) |
-            jOBDandOBDII->toFrame(data, size) |
-            jOBDandEOBD->toFrame(data, size) |
-            jOBD_EOBD_and_OBDII->toFrame(data, size) |
-            engineManufacturerDiagnostics->toFrame(data, size) |
-            engineManufacturerDiagnosticsEnhanced->toFrame(data, size) |
-            heavyDutyOn_BoardDiagnostics_OBD_C->toFrame(data, size) |
-            heavyDutyOn_BoardDiagnostics->toFrame(data, size) |
-            worldWideHarmonizedOBD->toFrame(data, size) |
-            heavyDutyEuroOBDStageIwithoutNOxcontrol->toFrame(data, size) |
-            heavyDutyEuroOBDStageIwithNOxcontrol->toFrame(data, size) |
-            heavyDutyEuroOBDStageIIwithoutNOxcontrol->toFrame(data, size) |
-            heavyDutyEuroOBDStageIIwithNOxcontrol->toFrame(data, size) |
-            brazilOBDPhase1->toFrame(data, size) |
-            brazilOBDPhase2->toFrame(data, size) |
-            koreanOBD->toFrame(data, size) |
-            indiaOBDI->toFrame(data, size) |
-            indiaOBDII->toFrame(data, size) |
-            heavyDutyEuroOBDStageVI->toFrame(data, size);
+    for (const auto &sys: allSystems) {
+        data |= sys->toFrame(data, size);
+    }
     return data;
 }
 
@@ -243,75 +222,27 @@ string OBDCompliance::getPrintableData() {
            "\nHeavyDutyEuroOBDStageVI: " + heavyDutyEuroOBDStageVI->getPrintableData();
 }
 
-int OBDCompliance::setValueFromString(string data) {
-    auto parts = splitString(const_cast<char *>(data.c_str()));
-    const int paramCount = 28;
-    if (paramCount > parts.size()) {
-        LOG(ERROR) << "Insufficient parameter count expected " << paramCount;
-        return paramCount;
+DataObjectStateCollection OBDCompliance::setValueFromString(string data) {
+    vector<string> parts;
+    auto rs = DataObjectStateFactory::boundCheck(28, data, parts);
+    if (!rs.resultSet.empty()) {
+        rs.msg = "Expected 28 Bool values. See getter for order.";
+        return rs;
+    }
+
+    int i;
+    for (i = 0; i < allSystems.size(); i++) {
+        DataObjectStateFactory::merge(rs, allSystems.at(i)->setValueFromString(parts.at(i)));
     }
 
 
-    oBD_II_CARB->setValueFromString(parts.at(0));
-    oBD_EPA->setValueFromString(parts.at(1));
-    oBD_and_OBD_II->setValueFromString(parts.at(2));
-    oBD_I->setValueFromString(parts.at(3));
-    notOBDcompliant->setValueFromString(parts.at(4));
-    eOBD->setValueFromString(parts.at(5));
-    eOBDandOBD_II->setValueFromString(parts.at(6));
-    eOBDandOBD->setValueFromString(parts.at(7));
-    eOBD_OBD_and_OBDII->setValueFromString(parts.at(8));
-    jOBD->setValueFromString(parts.at(9));
-    jOBDandOBDII->setValueFromString(parts.at(10));
-    jOBDandEOBD->setValueFromString(parts.at(11));
-    jOBD_EOBD_and_OBDII->setValueFromString(parts.at(12));
-    engineManufacturerDiagnostics->setValueFromString(parts.at(13));
-    engineManufacturerDiagnosticsEnhanced->setValueFromString(parts.at(14));
-    heavyDutyOn_BoardDiagnostics_OBD_C->setValueFromString(parts.at(15));
-    heavyDutyOn_BoardDiagnostics->setValueFromString(parts.at(16));
-    worldWideHarmonizedOBD->setValueFromString(parts.at(17));
-    heavyDutyEuroOBDStageIwithoutNOxcontrol->setValueFromString(parts.at(18));
-    heavyDutyEuroOBDStageIwithNOxcontrol->setValueFromString(parts.at(19));
-    heavyDutyEuroOBDStageIIwithoutNOxcontrol->setValueFromString(parts.at(20));
-    heavyDutyEuroOBDStageIIwithNOxcontrol->setValueFromString(parts.at(21));
-    brazilOBDPhase1->setValueFromString(parts.at(22));
-    brazilOBDPhase2->setValueFromString(parts.at(23));
-    koreanOBD->setValueFromString(parts.at(24));
-    indiaOBDI->setValueFromString(parts.at(25));
-    indiaOBDII->setValueFromString(parts.at(26));
-    heavyDutyEuroOBDStageVI->setValueFromString(parts.at(27));
-
-    return 0;
+    return rs;
 }
 
 vector<DataObjectDescription *> OBDCompliance::getDescriptions() {
-    return vector<DataObjectDescription *>{
-            oBD_II_CARB->getDescriptions().at(0),
-            oBD_EPA->getDescriptions().at(0),
-            oBD_and_OBD_II->getDescriptions().at(0),
-            oBD_I->getDescriptions().at(0),
-            notOBDcompliant->getDescriptions().at(0),
-            eOBD->getDescriptions().at(0),
-            eOBDandOBD_II->getDescriptions().at(0),
-            eOBDandOBD->getDescriptions().at(0),
-            eOBD_OBD_and_OBDII->getDescriptions().at(0),
-            jOBD->getDescriptions().at(0),
-            jOBDandOBDII->getDescriptions().at(0),
-            jOBDandEOBD->getDescriptions().at(0),
-            jOBD_EOBD_and_OBDII->getDescriptions().at(0),
-            engineManufacturerDiagnostics->getDescriptions().at(0),
-            engineManufacturerDiagnosticsEnhanced->getDescriptions().at(0),
-            heavyDutyOn_BoardDiagnostics_OBD_C->getDescriptions().at(0),
-            heavyDutyOn_BoardDiagnostics->getDescriptions().at(0),
-            worldWideHarmonizedOBD->getDescriptions().at(0),
-            heavyDutyEuroOBDStageIwithoutNOxcontrol->getDescriptions().at(0),
-            heavyDutyEuroOBDStageIwithNOxcontrol->getDescriptions().at(0),
-            heavyDutyEuroOBDStageIIwithoutNOxcontrol->getDescriptions().at(0),
-            heavyDutyEuroOBDStageIIwithNOxcontrol->getDescriptions().at(0),
-            brazilOBDPhase1->getDescriptions().at(0),
-            brazilOBDPhase2->getDescriptions().at(0),
-            koreanOBD->getDescriptions().at(0),
-            indiaOBDI->getDescriptions().at(0),
-            indiaOBDII->getDescriptions().at(0),
-            heavyDutyEuroOBDStageVI->getDescriptions().at(0)};
+    vector<DataObjectDescription *> desc;
+    for (const auto &sys: allSystems) {
+        desc.push_back(sys->getDescriptions().at(0));
+    }
+    return desc;
 }

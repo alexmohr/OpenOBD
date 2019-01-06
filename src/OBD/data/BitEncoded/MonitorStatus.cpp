@@ -95,44 +95,44 @@ string MonitorStatus::getPrintableData() {
            "\nEngineType: " + to_string(engine->getEngineType().getValue());
 }
 
-int MonitorStatus::setValueFromString(string data) {
-    auto parts = splitString(const_cast<char *>(data.c_str()));
-    const int paramCount = 24;
-    if (paramCount > parts.size()) {
-        LOG(ERROR) << "Insufficient parameter count expected " << paramCount << endl <<
-                   "\n\tMil:           1" <<
-                   "\n\tDtcCount:      1" <<
-                   "\n\tComponents:    2 (Available, Incomplete)" <<
-                   "\n\tMisfire :      2 (Available, Incomplete)" <<
-                   "\n\tFuelSystem:    2 (Available, Incomplete)" <<
-                   "\n\tEngineSystem1: 2 (Available, Incomplete)" <<
-                   "\n\tEngineSystem2: 2 (Available, Incomplete)" <<
-                   "\n\tEngineSystem3: 2 (Available, Incomplete)" <<
-                   "\n\tEngineSystem4: 2 (Available, Incomplete)" <<
-                   "\n\tEngineSystem5: 2 (Available, Incomplete)" <<
-                   "\n\tEngineSystem6: 2 (Available, Incomplete)" <<
-                   "\n\tEngineSystem7: 2 (Available, Incomplete)" <<
-                   "\n\tEngineSystem8: 2 (Available, Incomplete)" << endl;
-        return paramCount;
+DataObjectStateCollection MonitorStatus::setValueFromString(string data) {
+    vector<string> parts;
+    auto rs = DataObjectStateFactory::boundCheck(24, data, parts);
+    if (!rs.resultSet.empty()) {
+        rs.msg = "\n\tMil:           1"
+                 "\n\tDtcCount:      1"
+                 "\n\tComponents:    2 (Available, Incomplete)"
+                 "\n\tMisfire :      2 (Available, Incomplete)"
+                 "\n\tFuelSystem:    2 (Available, Incomplete)"
+                 "\n\tEngineSystem1: 2 (Available, Incomplete)"
+                 "\n\tEngineSystem2: 2 (Available, Incomplete)"
+                 "\n\tEngineSystem3: 2 (Available, Incomplete)"
+                 "\n\tEngineSystem4: 2 (Available, Incomplete)"
+                 "\n\tEngineSystem5: 2 (Available, Incomplete)"
+                 "\n\tEngineSystem6: 2 (Available, Incomplete)"
+                 "\n\tEngineSystem7: 2 (Available, Incomplete)"
+                 "\n\tEngineSystem8: 2 (Available, Incomplete)\n";
+        return rs;
     }
 
-    int i = 0;
     // todo refactor me please :(
-    i += mil->setValueFromString(parts.at(0));
-    i += dtcCount->setValueFromString(parts.at(1));
-    i += components->setValueFromString(parts.at(2) + " " + parts.at(3));
-    i += misfire->setValueFromString(parts.at(4) + " " + parts.at(5));
-    i += fuelSystem->setValueFromString(parts.at(6) + " " + parts.at(7));
-    i += engine->getEngineSystem1().setValueFromString(parts.at(8) + " " + parts.at(9));
-    i += engine->getEngineSystem2().setValueFromString(parts.at(10) + " " + parts.at(11));
-    i += engine->getEngineSystem3().setValueFromString(parts.at(12) + " " + parts.at(13));
-    i += engine->getEngineSystem4().setValueFromString(parts.at(14) + " " + parts.at(15));
-    i += engine->getEngineSystem5().setValueFromString(parts.at(16) + " " + parts.at(17));
-    i += engine->getEngineSystem6().setValueFromString(parts.at(18) + " " + parts.at(19));
-    i += engine->getEngineSystem7().setValueFromString(parts.at(20) + " " + parts.at(21));
-    i += engine->getEngineSystem8().setValueFromString(parts.at(22) + " " + parts.at(23));
+    DataObjectStateFactory::merge(rs, mil->setValueFromString(parts.at(0)));
+    DataObjectStateFactory::merge(rs, dtcCount->setValueFromString(parts.at(1)));
+    DataObjectStateFactory::merge(rs, components->setValueFromString(parts.at(2) + " " + parts.at(3)));
+    DataObjectStateFactory::merge(rs, misfire->setValueFromString(parts.at(4) + " " + parts.at(5)));
+    DataObjectStateFactory::merge(rs, fuelSystem->setValueFromString(parts.at(6) + " " + parts.at(7)));
+    DataObjectStateFactory::merge(rs, engine->getEngineSystem1().setValueFromString(parts.at(8) + " " + parts.at(9)));
+    DataObjectStateFactory::merge(rs, engine->getEngineSystem2().setValueFromString(parts.at(10) + " " + parts.at(11)));
+    DataObjectStateFactory::merge(rs, engine->getEngineSystem3().setValueFromString(parts.at(12) + " " + parts.at(13)));
+    DataObjectStateFactory::merge(rs, engine->getEngineSystem4().setValueFromString(parts.at(14) + " " + parts.at(15)));
+    DataObjectStateFactory::merge(rs, engine->getEngineSystem5().setValueFromString(parts.at(16) + " " + parts.at(17)));
+    DataObjectStateFactory::merge(rs, engine->getEngineSystem6().setValueFromString(parts.at(18) + " " + parts.at(19)));
+    DataObjectStateFactory::merge(rs, engine->getEngineSystem7().setValueFromString(parts.at(20) + " " + parts.at(21)));
+    DataObjectStateFactory::merge(rs, engine->getEngineSystem8().setValueFromString(parts.at(22) + " " + parts.at(23)));
+
     engine->setEngineType(static_cast<EngineType>(strtol(parts.at(24).c_str(), nullptr, 0)));
-    return i;
+    rs.resultSet.push_back(DataObjectState()); // todo for engine. Always success. ... Needs to be changed
+    return rs;
 }
 
 vector<DataObjectDescription *> MonitorStatus::getDescriptions() {

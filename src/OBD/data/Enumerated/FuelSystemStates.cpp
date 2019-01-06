@@ -37,17 +37,17 @@ string FuelSystemStates::getPrintableData() {
 
 }
 
-int FuelSystemStates::setValueFromString(string data) {
-    auto parts = splitString(const_cast<char *>(data.c_str()));
-    const int paramCount = 2;
-    if (paramCount > parts.size()) {
-        LOG(ERROR) << "Insufficient parameter count expected " << paramCount;
-        return paramCount;
+DataObjectStateCollection FuelSystemStates::setValueFromString(string data) {
+    vector<string> parts;
+    auto rs = DataObjectStateFactory::boundCheck(2, data, parts);
+    if (rs.resultSet.empty()) {
+        DataObjectStateFactory::merge(rs, fuelSystem1->setValueFromString(parts.at(0)));
+        DataObjectStateFactory::merge(rs, fuelSystem2->setValueFromString(parts.at(1)));
+    } else {
+        rs.msg = "Expected 2 values. FuelSystem1, FuelSystem2";
     }
 
-    fuelSystem1->setValueFromString(parts.at(0));
-    fuelSystem2->setValueFromString(parts.at(1));
-    return 0;
+    return rs;
 }
 
 vector<DataObjectDescription *> FuelSystemStates::getDescriptions() {

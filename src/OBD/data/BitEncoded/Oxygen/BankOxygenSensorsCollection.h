@@ -17,6 +17,9 @@ private:
     unique_ptr<DataObject<bool>> bank2Sensor2present;
     unique_ptr<DataObject<bool>> bank2Sensor3present;
     unique_ptr<DataObject<bool>> bank2Sensor4present;
+
+    vector<DataObject<bool> *> allSensors;
+
 public:
     BankOxygenSensorsCollection();
 
@@ -44,7 +47,7 @@ public:// IFrameObject
 
     string getPrintableData() override;
 
-    int setValueFromString(string data) override;
+    DataObjectStateCollection setValueFromString(string data) override;
 
     vector<DataObjectDescription *> getDescriptions() override;
 };

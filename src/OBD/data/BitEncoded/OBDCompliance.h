@@ -9,6 +9,7 @@
 
 class OBDCompliance : public IFrameObject {
 private:
+    vector<DataObject<bool> *> allSystems;
     unique_ptr<DataObject<bool>> oBD_II_CARB;
     unique_ptr<DataObject<bool>> oBD_EPA;
     unique_ptr<DataObject<bool>> oBD_and_OBD_II;
@@ -104,7 +105,7 @@ public:// IFrameObject
 
     string getPrintableData() override;
 
-    int setValueFromString(string data) override;
+    DataObjectStateCollection setValueFromString(string data) override;
 
     vector<DataObjectDescription *> getDescriptions() override;
 };

@@ -14,6 +14,7 @@
 #include "DataObjectDescription.h"
 #include "IFrameObject.h"
 #include "../../../common/conversion.h"
+#include "IDataObject.h"
 
 using namespace std;
 
@@ -37,7 +38,7 @@ enum ByteIndex{
 
 
 template <class T>
-class DataObject : public IFrameObject {
+class DataObject : public IFrameObject, public IDataObject<T> {
 private:
     ByteIndex startByte;
     unsigned int startIndex;
@@ -120,20 +121,22 @@ public:
     }
 
 public:
-    T getValue() {
+    T getValue() override {
         return value;
     }
 
-    int setValue(T val) {
+
+    DataObjectState setValue(T value) override {
+        DataObjectState i;
         if (nullptr != this->description) {
-            int i = description->checkBounds((double) val);
-            if (i != 0) {
+            i = description->checkBounds((double)value);
+            if (i.type != SUCCESS){
                 return i;
             }
         }
 
-        value = val;
-        return 0;
+        this->value = value;
+        return i;
     }
 
 
@@ -214,15 +217,16 @@ public:
         return to_string(getValue()) + unit;
     }
 
-    int setValueFromString(string data) override {
-        if (nullptr != this->description) {
-            int i = description->checkBounds(strtod(data.c_str(), nullptr));
-            if (i != 0) {
-                return i;
-            }
+
+    DataObjectStateCollection setValueFromString(string data) override {
+        DataObjectStateCollection rs = DataObjectStateCollection();
+        DataObjectState i = description->checkBounds(strtod(data.c_str(), nullptr));
+        if (i.type == SUCCESS) {
+            i = setValue(convertStringToT<T>(data));
         }
-        setValue(convertStringToT<T>(data));
-        return 0;
+
+        rs.resultSet.push_back(i);
+        return rs;
     }
 
     vector<DataObjectDescription *> getDescriptions() override {

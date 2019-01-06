@@ -2,8 +2,8 @@
 [![Build Status](https://travis-ci.org/alexmohr/OpenOBD.svg?branch=master)](https://travis-ci.org/alexmohr/OpenOBD)
 
 This is an open implementation of the OBD protocol. It utilizes socket can for communication on Linux ( windows not supported at the moment ).
-
-Supported OS: Linux 
+At the moment the only supported communication protocol is ISO 15765 CAN (ISO-TP), at any baudrate the used can adapter supports.
+The standard defines 250 kbit/s or 500 kbit/s.
 
 ## Features
 ### Simualte a vehicle

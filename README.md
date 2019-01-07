@@ -4,12 +4,11 @@
 This is an open implementation of the OBD protocol. It utilizes socket can for communication on Linux ( windows not supported at the moment ).
 At the moment the only supported communication protocol is ISO 15765 CAN (ISO-TP), at any baudrate the used can adapter supports.
 The standard defines 250 kbit/s or 500 kbit/s.
+Please note that all configuration of the can interfaces must be done before using this software.
 
 ## Features
 ### Simualte a vehicle
 With the vehicle simulation an OBD dongle can be used without an actual vehicle. This can be used for testing new implementations.
-Currently only ISO-TP is supported as protocol.  
-
 ### OBD Tester
 The software can be used to communicate with a vehicle to read OBD data from it. This requires a can connection to the vehicle. 
 Note that the tester mode cannot be used together with an interface like ELM327 but is rather a full implementation of the CAN protocol. 

@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.12)
 project(open_obd2)
 
 set(CMAKE_CXX_STANDARD 17)
-
+set(CMAKE_CXX_FLAGS "-Wall")
+SET(COVERAGE OFF CACHE BOOL "Coverage")
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 link_directories(${PROJECT_SOURCE_DIR}/lib)
@@ -96,7 +97,6 @@ set(CPPSRC
         src/OBD/data/BitEncoded/Oxygen/BankOxygenSensors4BankCollection.h src/OBD/data/BitEncoded/Throttle.cpp src/OBD/data/BitEncoded/Throttle.h src/OBD/data/dataObject/CalculatedDataObjectFactory.cpp src/OBD/data/dataObject/CalculatedDataObjectFactory.h src/cli/CommandHandler.cpp src/cli/CommandHandler.h src/CAN/ELM327.cpp src/CAN/ELM327.h src/CAN/SocketCommunicationBase.h src/CAN/SocketCommunicationBase.cpp src/CAN/ICommunicationInterface.h src/cli/CommandInfo.cpp src/cli/CommandInfo.h src/OBD/data/dataObject/DataObjectState.h src/OBD/data/dataObject/DataObjectStateFactory.cpp src/OBD/data/dataObject/DataObjectStateFactory.h src/OBD/data/dataObject/IDataObject.h)
 
 
-set(CMAKE_CXX_FLAGS "-Wall")
 add_executable(open_obd2 src/main.cpp ${CPPSRC})
 target_link_libraries(open_obd2 pthread)
 
@@ -118,4 +118,9 @@ add_executable(Test
 
 install(TARGETS open_obd2 EXPORT open_obd2 DESTINATION bin)
 target_link_libraries(Test gtest)
+
+if (COVERAGE)
+    target_compile_options(Test PRIVATE --coverage)
+    target_link_libraries(Test --coverage)
+endif ()
 add_test(NAME obdtest COMMAND Test)

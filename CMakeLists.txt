@@ -121,6 +121,6 @@ target_link_libraries(Test gtest)
 
 if (COVERAGE)
     target_compile_options(Test PRIVATE --coverage)
-    target_link_libraries(Test --coverage)
+    target_link_libraries(Test gtest --coverage)
 endif ()
 add_test(NAME obdtest COMMAND Test)

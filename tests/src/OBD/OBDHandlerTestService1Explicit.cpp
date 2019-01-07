@@ -424,27 +424,33 @@ TEST(OBDHandler, PID_06_To_9_FuelTrimBanks) {
             case LongTermFuelTrimBank2:
                 EXPECT_EQ(engine.getLongTermFuelTrimBank2().getValue(), -100);
                 break;
+            default:
+                EXPECT_TRUE(false);
+                // not used.
+                break;
         }
 
         handler = getHandler();
         auto &engine2 = handler->getVehicle()->getEngine();
         switch (pid) {
             case ShortTermFuelTrimBank1:
-                engine.getShortTermFuelTrimBank1().setValue(40);
+                engine2.getShortTermFuelTrimBank1().setValue(40);
                 EXPECT_EQ(ceil(engine.getShortTermFuelTrimBank1().getValue()), 40);
                 break;
             case LongTermFuelTrimBank1:
-                engine.getLongTermFuelTrimBank1().setValue(40);
+                engine2.getLongTermFuelTrimBank1().setValue(40);
                 EXPECT_EQ(ceil(engine.getLongTermFuelTrimBank1().getValue()), 40);
                 break;
             case ShortTermFuelTrimBank2:
-                engine.getShortTermFuelTrimBank2().setValue(40);
+                engine2.getShortTermFuelTrimBank2().setValue(40);
                 EXPECT_EQ(ceil(engine.getShortTermFuelTrimBank2().getValue()), 40);
                 break;
             case LongTermFuelTrimBank2:
-                engine.getLongTermFuelTrimBank2().setValue(40);
+                engine2.getLongTermFuelTrimBank2().setValue(40);
                 EXPECT_EQ(ceil(engine.getLongTermFuelTrimBank2().getValue()), 40);
                 break;
+            default:
+                EXPECT_TRUE(false);
         }
     }
 }

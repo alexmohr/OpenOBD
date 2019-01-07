@@ -109,7 +109,6 @@ public:
         this->startByte = startByte;
         this->startIndex = startIndex;
         this->stopByte= stopByte;
-        int offset = (stopByte - startByte + 1);
         this->stopIndex = stopIndex;
         this->description = nullptr;
 
@@ -154,13 +153,10 @@ public:
 
         size_t shift = targetSize - bitSize - startBitIndex - 1;
         retVal = (unsigned int) value << (shift);
-        unsigned ts = size * 8;
         if (0 == bitSize) {
             bitSize++;
         }
         size += bitSize;
-        //size += getBytes(ts);
-        //size += getBytes(shift);
 
         return retVal;
     }
@@ -203,7 +199,7 @@ public:
             if (bitSize > 4) {
                 value = (T) (mask & (data));
             } else {
-                value = (T) ((data << startBitIndex) - 1 & mask);
+                value = (T) (((data << startBitIndex) - 1) & mask);
             }
         }
     }

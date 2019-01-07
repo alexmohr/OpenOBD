@@ -302,7 +302,7 @@ DataObjectState CommandHandler::setData(std::vector<std::string> &cmd) {
 
     int i;
     string val;
-    for (i = 2; i < cmd.size(); i++) {
+    for (i = 2; i < (int) cmd.size(); i++) {
         val += cmd.at(i) + " ";
     }
     val.pop_back();
@@ -339,6 +339,14 @@ DataObjectState CommandHandler::setData(std::vector<std::string> &cmd) {
             case INVALID_NUMBER:
                 cout << "Input is not a valid number" << endl;
                 return state;
+            case NOT_SUPPORTED:
+                cout << "Not supported pid";
+                return state;
+            case DATA_ERROR:
+                cout << "Error while parsing data";
+                return state;
+            default:
+                break;
         }
     }
 

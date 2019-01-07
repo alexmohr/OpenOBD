@@ -1,5 +1,3 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "cert-err58-cpp"
 //
 // Created by me on 16/12/18.
 //
@@ -275,5 +273,3 @@ TEST(DataObjectTest, TestDecodeInt) {
     EXPECT_EQ(0xcafebabe, obj->getValue());
     compareResponseInt(data, obj);
 }
-
-#pragma clang diagnostic pop

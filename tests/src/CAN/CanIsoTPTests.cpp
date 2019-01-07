@@ -26,7 +26,7 @@ void doTest(vector<byte> &request) {
     EXPECT_EQ(readSize, static_cast<int> (request.size()));
 
     long i;
-    for (i = 0; i < request.size(); i++) {
+    for (i = 0; i < (long) request.size(); i++) {
         EXPECT_EQ(request.at(i), buf[i]);
     }
 }
@@ -59,7 +59,7 @@ TEST(OBDHandler, Test_timeout) {
 
     vehicleCAN->openInterface();
 
-    byte *buf;
+    byte *buf = (byte *) malloc(255);
     int readSize;
     vehicleCAN->receive(buf, 255, readSize);
     EXPECT_EQ(readSize, 0);

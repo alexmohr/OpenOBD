@@ -207,6 +207,9 @@ IFrameObject &Pid::getFrameObject(Vehicle *vehicle) {
             return vehicle->getThrottle().getAcceleratorPedalPositionE();
         case AcceleratorPedalPositionF:
             return vehicle->getThrottle().getAcceleratorPedalPositionF();
+        default:
+            throw invalid_argument("pid: " + to_string(pid) + " not implemented");
+            break;
 
     }
 

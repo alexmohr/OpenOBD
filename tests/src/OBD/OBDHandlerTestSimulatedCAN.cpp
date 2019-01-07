@@ -1,5 +1,4 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "cert-err58-cpp"
+
 //
 // Created by me on 14/12/18.
 //
@@ -79,7 +78,3 @@ TEST(OBDHandler, AmbientTemperature_46_With_VirtualCAN) {
     EXPECT_EQ(dataSize, response.size());
     compareResponse(response, val);
 }
-
-
-
-#pragma clang diagnostic pop

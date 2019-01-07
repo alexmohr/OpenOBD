@@ -231,7 +231,7 @@ DataObjectStateCollection OBDCompliance::setValueFromString(string data) {
     }
 
     int i;
-    for (i = 0; i < allSystems.size(); i++) {
+    for (i = 0; i < (int) allSystems.size(); i++) {
         DataObjectStateFactory::merge(rs, allSystems.at(i)->setValueFromString(parts.at(i)));
     }
 

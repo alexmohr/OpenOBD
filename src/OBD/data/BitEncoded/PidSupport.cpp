@@ -46,38 +46,38 @@ void PidSupport::initPid(vector<DataObject<bool>> &data) {
 
 void PidSupport::setPidSupported(int pid, bool supported) {
     // pid--;
-    if (pid >= 0x01 & pid <= 0x20) {
+    if ((pid >= 0x01) & (pid <= 0x20)) {
         pidSupported01_20->at(static_cast<unsigned long>(pid - 0x01)).setValue(supported);
-    } else if (pid >= 0x21 & pid <= 0x40) {
+    } else if ((pid >= 0x21) & (pid <= 0x40)) {
         pidSupported21_40->at(static_cast<unsigned long>(pid - 0x21)).setValue(supported);
-    } else if (pid >= 0x41 & pid <= 0x60) {
+    } else if ((pid >= 0x41) & (pid <= 0x60)) {
         pidSupported41_60->at(static_cast<unsigned long>(pid - 0x41)).setValue(supported);
-    } else if (pid >= 0x61 & pid <= 0x80) {
+    } else if ((pid >= 0x61) & (pid <= 0x80)) {
         pidSupported61_80->at(static_cast<unsigned long>(pid - 0x61)).setValue(supported);
-    } else if (pid >= 0x81 & pid <= 0xA0) {
+    } else if ((pid >= 0x81) & (pid <= 0xA0)) {
         pidSupported81_A0->at(static_cast<unsigned long>(pid - 0x81)).setValue(supported);
-    } else if (pid >= 0xA1 & pid <= 0xC0) {
+    } else if ((pid >= 0xA1) & (pid <= 0xC0)) {
         pidSupportedA1_C0->at(static_cast<unsigned long>(pid - 0xA1)).setValue(supported);
-    } else if (pid >= 0xC1 & pid <= 0xE0) {
+    } else if ((pid >= 0xC1) & (pid <= 0xE0)) {
         pidSupportedC1_E0->at(static_cast<unsigned long>(pid - 0xC1)).setValue(supported);
     }
 }
 
 bool PidSupport::getPidSupported(int pid) {
 
-    if (pid >= 0x01 & pid <= 0x20) {
+    if ((pid >= 0x01) & (pid <= 0x20)) {
         return pidSupported01_20->at(static_cast<unsigned long>(pid - 0x01)).getValue();
-    } else if (pid >= 0x21 & pid <= 0x40) {
+    } else if ((pid >= 0x21) & (pid <= 0x40)) {
         return pidSupported21_40->at(static_cast<unsigned long>(pid - 0x21)).getValue();
-    } else if (pid >= 0x41 & pid <= 0x60) {
+    } else if ((pid >= 0x41) & (pid <= 0x60)) {
         return pidSupported41_60->at(static_cast<unsigned long>(pid - 0x41)).getValue();
-    } else if (pid >= 0x61 & pid <= 0x80) {
+    } else if ((pid >= 0x61) & (pid <= 0x80)) {
         return pidSupported61_80->at(static_cast<unsigned long>(pid - 0x61)).getValue();
-    } else if (pid >= 0x81 & pid <= 0xA0) {
+    } else if ((pid >= 0x81) & (pid <= 0xA0)) {
         return pidSupported81_A0->at(static_cast<unsigned long>(pid - 0x81)).getValue();
-    } else if (pid >= 0xA1 & pid <= 0xC0) {
+    } else if ((pid >= 0xA1) & (pid <= 0xC0)) {
         return pidSupportedA1_C0->at(static_cast<unsigned long>(pid - 0xA1)).getValue();
-    } else if (pid >= 0xC1 & pid <= 0xE0) {
+    } else if ((pid >= 0xC1) & (pid <= 0xE0)) {
         return pidSupportedC1_E0->at(static_cast<unsigned long>(pid - 0xC1)).getValue();
     }
 

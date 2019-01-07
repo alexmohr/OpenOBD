@@ -86,7 +86,7 @@ DataObjectStateCollection BankOxygenSensorsCollection::setValueFromString(string
     }
 
     int i;
-    for (i = 0; i < allSensors.size(); i++) {
+    for (i = 0; i < (int) allSensors.size(); i++) {
         DataObjectStateFactory::merge(rs, allSensors.at(i)->setValueFromString(parts.at(i)));
     }
 

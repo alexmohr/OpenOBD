@@ -1,5 +1,3 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "cert-err58-cpp"
 //
 // Created by me on 14/12/18.
 //
@@ -65,6 +63,3 @@ TEST(DataTroubleCode, SaeConversionTestInvalidIds) {
         EXPECT_GT(code.getCanId(), MAX_CAN_ID_EXTENDED);
     }
 }
-
-
-#pragma clang diagnostic pop

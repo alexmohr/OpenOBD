@@ -1,5 +1,3 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "cert-err58-cpp"
 //
 // Created by me on 14/12/18.
 //
@@ -21,5 +19,3 @@ TEST(OBDHandler, Service09Pid02_GetVin) {
 //
 //    doTest(request, response);
 }
-
-#pragma clang diagnostic pop

@@ -1,5 +1,3 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "cert-err58-cpp"
 //
 // Created by me on 14/12/18.
 //
@@ -33,8 +31,6 @@ OBDHandler *genericTest(Service1Pids pid, unsigned int &value) {
     }
 
     auto handler = doTest(request, response);
-
-    auto &vehicle = *handler->getVehicle();
     return handler;
 }
 
@@ -470,5 +466,3 @@ TEST(OBDHandler, PID_4B_AcceleratorPedalPositionF){
 }
 
 
-
-#pragma clang diagnostic pop

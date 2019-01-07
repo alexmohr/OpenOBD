@@ -3,6 +3,7 @@ dist: xenial
 before_install:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
   - sudo apt-get update -qq
+  - sudo pip install cpp-coveralls
 
 install:
   - sudo apt-get install -qq cmake gcc-8 can-utils g++-8 libnet1-dev
@@ -26,6 +27,10 @@ compiler:
 script:
   - mkdir build
   - cd build
-  - cmake ../
+  - cmake ../ -DCOVERAGE=1
   - cmake --build .
   - ./Test --gtest_filter=-` tr '\n' ':' < ../tests/travis.excludes`
+
+
+after_success:
+  - coveralls --root . -E ".*gtest.*" -E ".*CMakeFiles.*"

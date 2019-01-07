@@ -10,7 +10,7 @@ DataObjectStateCollection DataObjectStateFactory::boundCheck(
 
     parts = splitString(const_cast<char *>(data.c_str()));
     DataObjectStateCollection rs = DataObjectStateCollection();
-    if (expected > parts.size()) {
+    if (expected > (int) parts.size()) {
         rs.resultSet.emplace_back(ErrorType::MISSING_ARGUMENTS, expected, parts.size());
     }
 

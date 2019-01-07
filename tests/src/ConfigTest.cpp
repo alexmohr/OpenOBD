@@ -1,5 +1,4 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "cert-err58-cpp"
+
 //
 // Created by me on 18/12/18.
 //
@@ -26,5 +25,3 @@ TEST(Config, ParseDtcConfig) {
     auto d = dtcMap.at(dtc.getCanId());
     EXPECT_EQ(dtc.getSaeId(), d.getSaeId());
 }
-
-#pragma clang diagnostic pop

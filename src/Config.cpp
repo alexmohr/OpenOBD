@@ -37,7 +37,7 @@ void from_json(const json &jsData, map<int, DataTroubleCode> &dtcMap) {
 }
 
 void from_json(const json& jsData, map<Service, PidCollection>& pcmap) {
-    int i;
+    long unsigned int i;
 
     for (i = 0; i < jsData.size(); i++){
         const auto jsonPC = jsData[i];

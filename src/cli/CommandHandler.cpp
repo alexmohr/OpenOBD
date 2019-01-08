@@ -225,7 +225,7 @@ void CommandHandler::printHelp(vector<string> &cmd) {
         }
         cout << endl;
     } else if (cmd.at(1) == command_pid) {
-        Service service = Service::POWERTRAIN;
+        Service service;
         Pid pid;
         cout << "Supported Pids for service " << service << ":\n";
         for (const auto &cmdName : commandMapping) {
@@ -290,8 +290,8 @@ int CommandHandler::getData(std::vector<std::string> &cmd) {
 }
 
 DataObjectState CommandHandler::setData(std::vector<std::string> &cmd) {
-    if (ELM == type) {
-        cout << "ELM does not support setting values" << endl;
+    if (ECU != type) {
+        cout << "Only ECU does support setting values" << endl;
         return DataObjectState(NOT_SUPPORTED);
     }
 

@@ -61,6 +61,20 @@ byte *Pid::getVehicleData(Service service, Vehicle *vehicle, int &size) {
 IFrameObject &Pid::getFrameObject(Vehicle *vehicle) {
     auto pid = (Service1Pids) id;
     switch (pid) {
+        case SupportedPid01_20:
+            return vehicle->getPidSupport().getCollectionPid01_20();
+        case SupportedPid21_40:
+            return vehicle->getPidSupport().getCollectionPid21_40();
+        case SupportedPid41_60:
+            return vehicle->getPidSupport().getCollectionPid41_60();
+        case SupportedPid61_80:
+            return vehicle->getPidSupport().getCollectionPid61_80();
+        case SupportedPid81_A0:
+            return vehicle->getPidSupport().getCollectionPid81_A0();
+        case SupportedPidA1_C0:
+            return vehicle->getPidSupport().getCollectionPidA1_C0();
+        case SupportedPidC1_E0:
+            return vehicle->getPidSupport().getCollectionPidC1_E0();
         case FuelSystemStatus:
             return vehicle->getFuelSystemStates();
         case MonitoringStatusSinceDTCsCleared:
@@ -209,70 +223,16 @@ IFrameObject &Pid::getFrameObject(Vehicle *vehicle) {
             return vehicle->getThrottle().getAcceleratorPedalPositionF();
         default:
             throw invalid_argument("pid: " + to_string(pid) + " not implemented");
-            break;
-
     }
-
-    throw invalid_argument("pid: " + to_string(pid) + " not implemented");
 }
 
 void Pid::writeService1_2(Vehicle *vehicle, byte *data, int size) {
-    auto pid = (Service1Pids) id;
-    switch (pid) {
-        case SupportedPid01_20:
-            vehicle->getPidSupport().setPidSupportedFromFrame(Pid01_20, data, size);
-            break;
-        case SupportedPid21_40:
-            vehicle->getPidSupport().setPidSupportedFromFrame(Pid21_40, data, size);
-            break;
-        case SupportedPid41_60:
-            vehicle->getPidSupport().setPidSupportedFromFrame(Pid41_60, data, size);
-            break;
-        case SupportedPid61_80:
-            vehicle->getPidSupport().setPidSupportedFromFrame(Pid61_80, data, size);
-            break;
-        case SupportedPid81_A0:
-            vehicle->getPidSupport().setPidSupportedFromFrame(Pid81_A0, data, size);
-            break;
-        case SupportedPidA1_C0:
-            vehicle->getPidSupport().setPidSupportedFromFrame(PidA1_C0, data, size);
-            break;
-        case SupportedPidC1_E0:
-            vehicle->getPidSupport().setPidSupportedFromFrame(PidC1_E0, data, size);
-            break;
-        default:
-            getFrameObject(vehicle).fromFrame(data, size);
-    }
+    getFrameObject(vehicle).fromFrame(data, size);
 }
 
 byte *Pid::readService1_2(Vehicle *vehicle, int &size) {
     unsigned int data = 0;
-    auto pid = (Service1Pids) id;
-    switch (pid) {
-        case SupportedPid01_20:
-            data = vehicle->getPidSupport().getPidSupportedRange(Pid01_20, data, size);
-            break;
-        case SupportedPid21_40:
-            data = vehicle->getPidSupport().getPidSupportedRange(Pid21_40, data, size);
-            break;
-        case SupportedPid41_60:
-            data = vehicle->getPidSupport().getPidSupportedRange(Pid41_60, data, size);
-            break;
-        case SupportedPid61_80:
-            data = vehicle->getPidSupport().getPidSupportedRange(Pid61_80, data, size);
-            break;
-        case SupportedPid81_A0:
-            data = vehicle->getPidSupport().getPidSupportedRange(Pid81_A0, data, size);
-            break;
-        case SupportedPidA1_C0:
-            data = vehicle->getPidSupport().getPidSupportedRange(PidA1_C0, data, size);
-            break;
-        case SupportedPidC1_E0:
-            data = vehicle->getPidSupport().getPidSupportedRange(PidC1_E0, data, size);
-            break;
-        default:
-            data = getFrameObject(vehicle).toFrame(data, size);
-    }
+    data = getFrameObject(vehicle).toFrame(data, size);
 
     size = getBytes(size);
     byte *retVal = uintToByteArray(data);

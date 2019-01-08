@@ -57,8 +57,8 @@ set(CPPSRC
         src/OBD/data/BitEncoded/OBDCompliance.h
         src/OBD/data/BitEncoded/Oxygen/OxygenSensors.cpp
         src/OBD/data/BitEncoded/Oxygen/OxygenSensors.h
-        src/OBD/data/BitEncoded/PidSupport.cpp
-        src/OBD/data/BitEncoded/PidSupport.h
+        src/OBD/data/BitEncoded/Pid/PidSupport.cpp
+        src/OBD/data/BitEncoded/Pid/PidSupport.h
         src/OBD/data/dataObject/CalculatedDataObject.h
         src/OBD/data/dataObject/CalculatedValues.cpp
         src/OBD/data/dataObject/CalculatedValues.h
@@ -94,7 +94,16 @@ set(CPPSRC
         src/OBD/data/BitEncoded/Oxygen/BankOxygenSensorsCollection.h
         src/cli/CliHandling.cpp src/cli/CliHandling.h
         src/OBD/data/BitEncoded/Oxygen/BankOxygenSensors4BankCollection.cpp
-        src/OBD/data/BitEncoded/Oxygen/BankOxygenSensors4BankCollection.h src/OBD/data/BitEncoded/Throttle.cpp src/OBD/data/BitEncoded/Throttle.h src/OBD/data/dataObject/CalculatedDataObjectFactory.cpp src/OBD/data/dataObject/CalculatedDataObjectFactory.h src/cli/CommandHandler.cpp src/cli/CommandHandler.h src/CAN/ELM327.cpp src/CAN/ELM327.h src/CAN/SocketCommunicationBase.h src/CAN/SocketCommunicationBase.cpp src/CAN/ICommunicationInterface.h src/cli/CommandInfo.cpp src/cli/CommandInfo.h src/OBD/data/dataObject/DataObjectState.h src/OBD/data/dataObject/DataObjectStateFactory.cpp src/OBD/data/dataObject/DataObjectStateFactory.h src/OBD/data/dataObject/IDataObject.h)
+        src/OBD/data/BitEncoded/Oxygen/BankOxygenSensors4BankCollection.h
+        src/OBD/data/BitEncoded/Throttle.cpp src/OBD/data/BitEncoded/Throttle.h
+        src/OBD/data/dataObject/CalculatedDataObjectFactory.cpp
+        src/OBD/data/dataObject/CalculatedDataObjectFactory.h
+        src/cli/CommandHandler.cpp src/cli/CommandHandler.h src/CAN/ELM327.cpp
+        src/CAN/ELM327.h src/CAN/SocketCommunicationBase.h src/CAN/SocketCommunicationBase.cpp
+        src/CAN/ICommunicationInterface.h src/cli/CommandInfo.cpp src/cli/CommandInfo.h
+        src/OBD/data/dataObject/DataObjectState.h src/OBD/data/dataObject/DataObjectStateFactory.cpp
+        src/OBD/data/dataObject/DataObjectStateFactory.h src/OBD/data/dataObject/IDataObject.h
+        src/OBD/data/BitEncoded/Pid/SupportedPidCollection.cpp src/OBD/data/BitEncoded/Pid/SupportedPidCollection.h)
 
 
 add_executable(open_obd2 src/main.cpp ${CPPSRC})
@@ -117,10 +126,10 @@ add_executable(Test
 
 
 install(TARGETS open_obd2 EXPORT open_obd2 DESTINATION bin)
-target_link_libraries(Test gtest)
+target_link_libraries(Test PRIVATE gtest)
 
 if (COVERAGE)
     target_compile_options(Test PRIVATE --coverage)
-    target_link_libraries(Test gtest --coverage)
+    target_link_libraries(Test PRIVATE gtest --coverage)
 endif ()
 add_test(NAME obdtest COMMAND Test)

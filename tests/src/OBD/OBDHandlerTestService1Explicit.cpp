@@ -163,7 +163,8 @@ TEST(OBDHandler, PID_00_PIDSupportedGeneric) {
             SupportedPid61_80,
             SupportedPid81_A0,
             SupportedPidA1_C0,
-            SupportedPidC1_E0};
+            SupportedPidC1_E0
+    };
 
 
     OBDHandler *handler = getHandler();

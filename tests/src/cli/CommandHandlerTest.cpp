@@ -106,8 +106,8 @@ void TestCommandHandler(CLI_TYPE type) {
 
             for (auto &cmd : commands) {
                 cout << "testing command: " << vectorToString(cmd.first) << endl;
-                if (ELM != type) {
-                    EXPECT_EQ(cmd.second, cmdHandler.setData(cmd.first).type); // no set support for elm.
+                if (ECU == type) {
+                    EXPECT_EQ(cmd.second, cmdHandler.setData(cmd.first).type); // only ecu does support setting.
                 }
 
                 int size = 0;

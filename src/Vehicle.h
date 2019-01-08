@@ -9,7 +9,7 @@
 
 #include "OBD/data/BitEncoded/MonitorStatus.h"
 #include "OBD/data/BitEncoded/FreezeDTC.h"
-#include "OBD/data/BitEncoded/PidSupport.h"
+#include "OBD/data/BitEncoded/Pid/PidSupport.h"
 #include "OBD/data/Enumerated/StateOfFuelSystem.h"
 #include "OBD/data/Enumerated/StateOfCommandedSecondaryAir.h"
 #include "OBD/data/BitEncoded/Oxygen/OxygenSensors.h"

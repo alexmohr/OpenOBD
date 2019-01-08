@@ -46,7 +46,7 @@ public:
      */
     virtual DataObjectStateCollection setValueFromString(string data) = 0;
 
-    virtual vector<DataObjectDescription*> getDescriptions() = 0;
+    virtual vector<DataObjectDescription *> getDescriptions() = 0;
 };
 
 #endif //OPEN_OBD2_IFRAMEOBJECT_H

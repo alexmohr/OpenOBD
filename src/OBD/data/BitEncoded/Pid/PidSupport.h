@@ -9,7 +9,7 @@
 #include "../../dataObject/DataObject.h"
 #include "../../../../common/endian.h"
 #include "SupportedPidCollection.h"
-
+#include "../../../Service.h"
 
 class PidSupport {
 private:
@@ -24,9 +24,9 @@ private:
 public:
     PidSupport();
 
-    void setPidSupported(int pid, bool supported);
+    void setPidSupported(Service service, int pid, bool supported);
 
-    bool getPidSupported(int pid);
+    bool getPidSupported(Service service, int pid);
 
 
     SupportedPidCollection &getCollectionPid01_20();

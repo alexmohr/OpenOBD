@@ -9,6 +9,7 @@
 #include <string>
 #include <sstream>
 #include "DataTroubleCode.h"
+#include "../common/conversion.h"
 
 
 DataTroubleCode::DataTroubleCode() {
@@ -52,10 +53,6 @@ unsigned int DataTroubleCode::convertSaeIdToCan(string id) {
     string hexId = convertIntToHex(offset) + id.substr(2, id.size() - 1);
     unsigned int canId = convertHexToInt(hexId);
     return canId;
-}
-
-unsigned int DataTroubleCode::convertHexToInt(string hex) {
-    return static_cast<unsigned int>(strtoul(hex.c_str(), nullptr, 16));
 }
 
 void DataTroubleCode::setSaeId(string saeId) {

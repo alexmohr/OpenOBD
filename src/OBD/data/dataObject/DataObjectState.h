@@ -17,7 +17,8 @@ enum ErrorType {
     INVALID_NUMBER = 8,
     MISSING_ARGUMENTS = 16,
     NOT_SUPPORTED = 32,
-    DATA_ERROR = 64
+    DATA_ERROR = 64,
+    TIMEOUT = 128,
 };
 
 

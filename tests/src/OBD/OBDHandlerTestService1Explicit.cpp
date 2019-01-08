@@ -115,11 +115,11 @@ TEST(OBDHandler, PID_00_PIDSupported01_20_Single) {
     vector<int> supported{0x01};
 
     for (auto const &value: supported) {
-        handler->getVehicle()->getPidSupport().setPidSupported(value, true);
+        handler->getVehicle()->getPidSupport().setPidSupported(Service::POWERTRAIN, value, true);
     }
 
     for (auto const &value: supported) {
-        EXPECT_TRUE(handler->getVehicle()->getPidSupport().getPidSupported(value));
+        EXPECT_TRUE(handler->getVehicle()->getPidSupport().getPidSupported(Service::POWERTRAIN, value));
     }
 
     int dataSize = 0;
@@ -130,6 +130,7 @@ TEST(OBDHandler, PID_00_PIDSupported01_20_Single) {
 
 TEST(OBDHandler, PID_00_PIDSupported01_20_Setter) {
     auto const pid = (byte) 0x00;
+    Service service = Service::POWERTRAIN;
     vector<byte> request{RequestServiceID, pid};
     vector<byte> response{ResponseServiceID, pid, (byte) 0xbe, (byte) 0x1f, (byte) 0xa8, (byte) 0x13};
 
@@ -139,11 +140,11 @@ TEST(OBDHandler, PID_00_PIDSupported01_20_Setter) {
                           0x1F, 0x20};
 
     for (auto const &value: supported) {
-        handler->getVehicle()->getPidSupport().setPidSupported(value, true);
+        handler->getVehicle()->getPidSupport().setPidSupported(service, value, true);
     }
 
     for (auto const &value: supported) {
-        EXPECT_TRUE(handler->getVehicle()->getPidSupport().getPidSupported(value));
+        EXPECT_TRUE(handler->getVehicle()->getPidSupport().getPidSupported(service, value));
     }
 
     int dataSize = 0;
@@ -170,15 +171,16 @@ TEST(OBDHandler, PID_00_PIDSupportedGeneric) {
     OBDHandler *handler = getHandler();
     auto vehicle = handler->getVehicle();
     currentPid = 0;
+    Service service = Service::POWERTRAIN;
 
     for (const auto &pid: pids) {
         k = pidsPerCall;
         for (j = 1; j <= pidsPerCall; j++) {
             currentPid++;
-            EXPECT_FALSE(vehicle->getPidSupport().getPidSupported(currentPid));
+            EXPECT_FALSE(vehicle->getPidSupport().getPidSupported(service, currentPid));
 
-            vehicle->getPidSupport().setPidSupported(currentPid, true);
-            EXPECT_TRUE(vehicle->getPidSupport().getPidSupported(currentPid));
+            vehicle->getPidSupport().setPidSupported(service, currentPid, true);
+            EXPECT_TRUE(vehicle->getPidSupport().getPidSupported(service, currentPid));
 
             vector<byte> request = {RequestServiceID, (byte) pid};
             int dataSize = 0;
@@ -196,7 +198,7 @@ TEST(OBDHandler, PID_00_PIDSupportedGeneric) {
             response[2] = (byte) ((data >> 24U) & 0xFF);
 
             compareResponse(response, val, 8);
-            vehicle->getPidSupport().setPidSupported(currentPid, false);
+            vehicle->getPidSupport().setPidSupported(service, currentPid, false);
         }
     }
 }

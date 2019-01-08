@@ -33,12 +33,21 @@ private:
     const string command_cmd = "cmd";
     const string command_pid = "pid";
 
+    const string command_pid_by_number = "PidByNumber";
+    const string command_set_by_hex_number = "PidByHexNumber";
+
     const string err_invalid_input = "Invalid usage. See help";
     vector<string> commands{
             command_get,
             command_set,
             command_help
     };
+
+    vector<string> specialSetCommands{
+            command_pid_by_number,
+            command_set_by_hex_number
+    };
+
 public:
 
     map<string, CommandInfo> commandMapping{
@@ -159,7 +168,7 @@ public:
 public: // public for testing
     DataObjectState setData(std::vector<std::string> &cmd);
 
-    int getData(std::vector<std::string> &cmd);
+    DataObjectState getData(std::vector<std::string> &cmd);
 
     bool getPid(std::vector<std::string> &cmd, Pid &pid, Service &service);
 
@@ -167,6 +176,13 @@ public: // public for testing
 
     OBDHandler &getObdHandler();
 private:
+
+    DataObjectState setDataViaPid(string val, Service service, Pid pid);
+
+    DataObjectState setDataSpecial(std::vector<std::string> &cmd);
+
+    DataObjectState getDataSpecial(std::vector<std::string> &cmd);
+
     void configureVirtualVehicle(Vehicle *vehicle);
 
     void configureVehicle();
@@ -177,8 +193,9 @@ private:
 
     void printHelp(std::vector<std::string> &cmd);
 
-    int queryECU(Pid pid, Service service);
+    DataObjectState queryECU(Pid pid, Service service);
 
+    DataObjectState isPidSupported(Service service, Pid pid);
 
 };
 

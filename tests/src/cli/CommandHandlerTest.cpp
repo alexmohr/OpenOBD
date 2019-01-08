@@ -17,20 +17,59 @@ class MockInterface : public ICommunicationInterface {
     byte *data = (byte *) malloc(255);
     int size;
 public:
-    virtual int send(byte *buf, int buflen) {
+
+    bool supportEverthing = false;
+
+    byte responseSupportedPid01_20[6] =
+            {(byte) 0x41, (byte) SupportedPid01_20, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
+    byte responseSupportedPid21_40[6] =
+            {(byte) 0x41, (byte) SupportedPid21_40, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
+    byte responseSupportedPid41_60[6] =
+            {(byte) 0x41, (byte) SupportedPid41_60, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
+    byte responseSupportedPid61_80[6] =
+            {(byte) 0x41, (byte) SupportedPid61_80, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
+    byte responseSupportedPid81_A0[6] =
+            {(byte) 0x41, (byte) SupportedPid81_A0, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
+    byte responseSupportedPidA1_C0[6] =
+            {(byte) 0x41, (byte) SupportedPidA1_C0, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
+    byte responseSupportedPidC1_E0[6] =
+            {(byte) 0x41, (byte) SupportedPidC1_E0, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
+
+    virtual int send(byte *buf, int buflen) override {
+        if (supportEverthing && buflen >= 2) {
+
+            if (buf[1] == (byte) SupportedPid01_20) {
+                setNextReceive(responseSupportedPid01_20, 6);
+            } else if (buf[1] == (byte) SupportedPid21_40) {
+                setNextReceive(responseSupportedPid21_40, 6);
+            } else if (buf[1] == (byte) SupportedPid41_60) {
+                setNextReceive(responseSupportedPid41_60, 6);
+            } else if (buf[1] == (byte) SupportedPid61_80) {
+                setNextReceive(responseSupportedPid61_80, 6);
+            } else if (buf[1] == (byte) SupportedPid81_A0) {
+                setNextReceive(responseSupportedPid81_A0, 6);
+            } else if (buf[1] == (byte) SupportedPidA1_C0) {
+                setNextReceive(responseSupportedPidA1_C0, 6);
+            } else if (buf[1] == (byte) SupportedPidC1_E0) {
+                setNextReceive(responseSupportedPidC1_E0, 6);
+            }
+
+        }
+
         return buflen;
     }
 
-    virtual int closeInterface() {
+    virtual int closeInterface() override {
         return 0;
     }
 
-    virtual int openInterface() {
+    virtual int openInterface() override {
         return 0;
     };
 
 
-    virtual void receive(byte *buffer, int buffSize, int &readSize) {
+    virtual void receive(byte *buffer, int buffSize, int &readSize) override {
+
         memcpy(buffer, data, size);
         readSize = size;
     }
@@ -59,27 +98,34 @@ string vectorToString(vector<string> v) {
     return s;
 }
 
+void initCommandHandler(MockInterface *mockComm, CommandHandler *cmdHandler) {
+    mockComm->supportEverthing = true;
 
-void TestCommandHandler(CLI_TYPE type) {
+    cmdHandler->start();
 
-    auto mockComm = new MockInterface();
-    auto cmdHandler = CommandHandler(type, mockComm);
-
-    Pid pid;
-    Service service;
-    bool descriptionsNotNull;
-    cmdHandler.start();
-
-    while (!cmdHandler.isInitDone()) {
+    while (!cmdHandler->isInitDone()) {
         usleep(1000);
     }
 
-    for (const auto &cmdMap: cmdHandler.commandMapping) {
+}
+
+void TestCommandHandler(CLI_TYPE type) {
+    auto *mockComm = new MockInterface();
+    auto *cmdHandler = new CommandHandler(type, mockComm);
+
+
+    initCommandHandler(mockComm, cmdHandler);
+    
+    Pid pid;
+    Service service;
+    bool descriptionsNotNull;
+
+    for (const auto &cmdMap: cmdHandler->commandMapping) {
         vector<string> validData{"set", cmdMap.first};
         vector<string> smallData{"set", cmdMap.first};
         vector<string> largeData{"set", cmdMap.first};
-        EXPECT_EQ(true, cmdHandler.getPid(validData, pid, service));
-        auto &fo = pid.getFrameObject(cmdHandler.getObdHandler().getVehicle());
+        EXPECT_EQ(true, cmdHandler->getPid(validData, pid, service));
+        auto &fo = pid.getFrameObject(cmdHandler->getObdHandler().getVehicle());
         descriptionsNotNull = true;
 
         for (const auto &desc : fo.getDescriptions()) {
@@ -90,11 +136,20 @@ void TestCommandHandler(CLI_TYPE type) {
                 break;
             }
 
-            validData.push_back(to_string(getRand(desc->getMin(), desc->getMax())));
+            // do not overwrite supported pids
+            if (cmdMap.first.find("SupportedPid") != std::string::npos) {
+                validData.push_back(to_string(1));
+                // offset because double and float would give under/overflow
+                smallData.push_back(to_string(1));
+                largeData.push_back(to_string(1));
+            } else {
+                validData.push_back(to_string(getRand(desc->getMin(), desc->getMax())));
+                // offset because double and float would give under/overflow
+                smallData.push_back(to_string(desc->getMin() + 0.01));
+                largeData.push_back(to_string(desc->getMax() - 0.01));
+            }
 
-            // offset because double and float would give under/overflow
-            smallData.push_back(to_string(desc->getMin() + 0.01));
-            largeData.push_back(to_string(desc->getMax() - 0.01));
+
         }
         if (descriptionsNotNull) {
             cout << "testing command: " << vectorToString(validData) << endl;
@@ -105,15 +160,16 @@ void TestCommandHandler(CLI_TYPE type) {
 
 
             for (auto &cmd : commands) {
+
                 cout << "testing command: " << vectorToString(cmd.first) << endl;
                 if (ECU == type) {
-                    EXPECT_EQ(cmd.second, cmdHandler.setData(cmd.first).type); // only ecu does support setting.
+                    EXPECT_EQ(cmd.second, cmdHandler->setData(cmd.first).type); // only ecu does support setting.
                 }
 
                 int size = 0;
 
-                byte *data = pid.getVehicleData(service, cmdHandler.getObdHandler().getVehicle(), size);
-                data = cmdHandler.getObdHandler().createAnswerFrame(service, pid, data, size);
+                byte *data = pid.getVehicleData(service, cmdHandler->getObdHandler().getVehicle(), size);
+                data = cmdHandler->getObdHandler().createAnswerFrame(service, pid, data, size);
                 mockComm->setNextReceive(data, size);
                 delete data;
 
@@ -121,11 +177,11 @@ void TestCommandHandler(CLI_TYPE type) {
                 cmd.first.erase(cmd.first.begin() + 2, cmd.first.end());
                 cmd.first.at(0) = "get";
                 cout << "testing command: " << vectorToString(cmd.first) << endl;
-                EXPECT_EQ(0, cmdHandler.getData(cmd.first));
+                EXPECT_EQ(SUCCESS, cmdHandler->getData(cmd.first).type);
             }
         }
     }
-    cmdHandler.stopHandler();
+    cmdHandler->stopHandler();
 }
 
 TEST(CommandHandlerTest, setData_getData_TESTER) {
@@ -142,37 +198,105 @@ TEST(CommandHandlerTest, setData_getData_ELM) {
 
 }
 
+TEST(CommandHandlerTest, set_special) {
+    auto *mockComm = new MockInterface();
+    auto *cmdHandler = new CommandHandler(CLI_TYPE::ECU, mockComm);
+    initCommandHandler(mockComm, cmdHandler);
+
+    // invalid
+    vector<string> cmd = {"set", "PidByNumber"};
+    DataObjectState res = cmdHandler->setData(cmd);
+    EXPECT_EQ(res.type, ErrorType::MISSING_ARGUMENTS);
+
+    cmd = {"set", "PidByNumber", "123"};
+    res = cmdHandler->setData(cmd);
+    EXPECT_EQ(res.type, ErrorType::MISSING_ARGUMENTS);
+
+    cmd = {"set", "PidByHexNumber"};
+    res = cmdHandler->setData(cmd);
+    EXPECT_EQ(res.type, ErrorType::MISSING_ARGUMENTS);
+
+    cmd = {"set", "PidByNumber", "123"};
+    res = cmdHandler->setData(cmd);
+    EXPECT_EQ(res.type, ErrorType::MISSING_ARGUMENTS);
+
+    cmd = {"set", "PidByHexNumber", "123"};
+    res = cmdHandler->setData(cmd);
+    EXPECT_EQ(res.type, ErrorType::MISSING_ARGUMENTS);
+
+    cmd = {"set", "PidByNumber", "123", "test"};
+    res = cmdHandler->setData(cmd);
+    EXPECT_EQ(res.type, ErrorType::MISSING_ARGUMENTS);
+
+    cmd = {"set", "PidByHexNumber", "123", "test"};
+    res = cmdHandler->setData(cmd);
+    EXPECT_EQ(res.type, ErrorType::MISSING_ARGUMENTS);
+
+    // valid
+    cmd = {"set", "PidByHexNumber", "1", "0x0D", "1"};
+    res = cmdHandler->setData(cmd);
+    EXPECT_EQ(res.type, ErrorType::SUCCESS);
+    EXPECT_TRUE(cmdHandler->getObdHandler().getVehicle()->getPidSupport().getPidSupported(Service::POWERTRAIN, 0x0d));
+
+    cmd = {"set", "PidByHexNumber", "1", "0x0D", "0"};
+    EXPECT_EQ(res.type, ErrorType::SUCCESS);
+    res = cmdHandler->setData(cmd);
+    EXPECT_FALSE(cmdHandler->getObdHandler().getVehicle()->getPidSupport().getPidSupported(Service::POWERTRAIN, 0x0d));
+
+    cmd = {"set", "PidByNumber", "1", "13", "1"};
+    res = cmdHandler->setData(cmd);
+    EXPECT_EQ(res.type, ErrorType::SUCCESS);
+    EXPECT_TRUE(cmdHandler->getObdHandler().getVehicle()->getPidSupport().getPidSupported(Service::POWERTRAIN, 0x0d));
+
+    cmd = {"set", "PidByNumber", "1", "13", "0"};
+    EXPECT_EQ(res.type, ErrorType::SUCCESS);
+    res = cmdHandler->setData(cmd);
+    EXPECT_FALSE(cmdHandler->getObdHandler().getVehicle()->getPidSupport().getPidSupported(Service::POWERTRAIN, 0x0d));
+
+    cmdHandler->stopHandler();
+}
+
+
 
 TEST(CommandHandlerTest, tryBreakStuff) {
-    auto mockComm = new MockInterface();
-    auto cmdHandler = CommandHandler(ECU, mockComm);
+    auto *mockComm = new MockInterface();
+    auto *cmdHandler = new CommandHandler(CLI_TYPE::ECU, mockComm);
     vector<string> data = {"set"};
-    cmdHandler.setData(data);
+    cmdHandler->setData(data);
 
-    data = {"set asdasd"};
-    cmdHandler.setData(data);
+    data = {"set", "asdasd"};
+    EXPECT_EQ(MISSING_ARGUMENTS, cmdHandler->setData(data).type);
 
-    data = {"set BankOxygenSensor"};
-    cmdHandler.setData(data);
+    data = {"set", "BankOxygenSensor"};
+    EXPECT_EQ(MISSING_ARGUMENTS, cmdHandler->setData(data).type);
 
-    data = {"set VehicleSpeed"};
-    cmdHandler.setData(data);
-
-    data = {"set VehicleSpeed asdhasdlsad"};
-    cmdHandler.setData(data);
+    data = {"set", "VehicleSpeed"};
+    EXPECT_EQ(MISSING_ARGUMENTS, cmdHandler->setData(data).type);
 
     data = {"set"};
-    cmdHandler.setData(data);
+    EXPECT_EQ(MISSING_ARGUMENTS, cmdHandler->setData(data).type);
 
     data = {"get"};
-    cmdHandler.getData(data);
+    EXPECT_EQ(MISSING_ARGUMENTS, cmdHandler->getData(data).type);
 
-    data = {"get adsas"};
-    cmdHandler.getData(data);
+    data = {"get", "adsas"};
+    EXPECT_EQ(DATA_ERROR, cmdHandler->getData(data).type);
 
-    data = {"get VehicleSpeed"};
-    cmdHandler.getData(data);
+    data = {"get", "VehicleSpeed"};
+    EXPECT_EQ(NOT_SUPPORTED, cmdHandler->getData(data).type);
 
-    data = {"get VehicleSpeed aasdasd"};
-    cmdHandler.getData(data);
+    data = {"get", "VehicleSpeed", "aasdasd"};
+    EXPECT_EQ(NOT_SUPPORTED, cmdHandler->getData(data).type);
+
+
+    initCommandHandler(mockComm, cmdHandler);
+    data = {"get", "VehicleSpeed"};
+    EXPECT_EQ(SUCCESS, cmdHandler->getData(data).type);
+
+    // todo invalid int is not handled.
+    data = {"set", "VehicleSpeed", "asdhasdlsad"};
+    EXPECT_EQ(SUCCESS, cmdHandler->setData(data).type);
+
+    cmdHandler->stopHandler();
+
 }

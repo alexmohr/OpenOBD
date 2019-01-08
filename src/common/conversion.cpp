@@ -72,3 +72,11 @@ string convertIntToHex(int n) {
     return result;
 }
 
+unsigned int convertHexToInt(string hex) {
+    unsigned int x;
+    std::stringstream ss;
+    ss << std::hex << hex;
+    ss >> x;
+    return x;
+}
+

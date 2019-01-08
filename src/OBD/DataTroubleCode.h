@@ -31,8 +31,6 @@ private:
 
     unsigned int convertSaeIdToCan(string saeId);
 
-    unsigned int convertHexToInt(string hex);
-
 // fields set from configuration
 private:
     string saeId;

@@ -29,6 +29,9 @@ vector<string> splitString(char *input);
 
 string convertIntToHex(int n);
 
+unsigned int convertHexToInt(string hex);
+
+
 template<typename T>
 T convertStringToT(const string &value) {
     if (std::is_same<T, double>::value ||

@@ -82,7 +82,7 @@ void CommandHandler::stopHandler() {
 
 void CommandHandler::configureVirtualVehicle(Vehicle *vehicle) {
     for (auto &cmd: commandMapping) {
-        vehicle->getPidSupport().setPidSupported(cmd.second.getPidId(), true);
+        vehicle->getPidSupport().setPidSupported(cmd.second.getService(), cmd.second.getPidId(), true);
     }
 
     initDone = true;
@@ -98,21 +98,21 @@ void CommandHandler::configureVehicle() {
     };
 
     auto service = POWERTRAIN;
-    int rt = 0;
+    bool anyError = false;
     for (const auto &id: pidIds) {
         Pid pid;
         if (obdHandler->getServiceAndPidInfo(id, service, pid, service) < 0) {
             LOG(ERROR) << "failed to get pid information";
         }
 
-        rt += queryECU(pid, service);
+        anyError |= queryECU(pid, service).type != SUCCESS;
 
         if (exitRequested) {
             return;
         }
     }
 
-    if (0 == rt) {
+    if (!anyError) {
         LOG(INFO) << "Successfully configured vehicle.";
     } else {
         LOG(INFO) << "Could not read all data from vehicle. Available commands may be incomplete.";
@@ -236,9 +236,13 @@ void CommandHandler::printHelp(vector<string> &cmd) {
                 continue;
             }
 
-            if (obdHandler->getVehicle()->getPidSupport().getPidSupported(pid.id)) {
+            if (obdHandler->getVehicle()->getPidSupport().getPidSupported(service, pid.id)) {
                 cout << cmdName.first << " ";
             }
+        }
+        cout << endl << "These additional commands can follow a set as well:" << endl;
+        for (const auto &cmdName : specialSetCommands) {
+            cout << cmdName << " ";
         }
         cout << endl;
     } else {
@@ -248,7 +252,6 @@ void CommandHandler::printHelp(vector<string> &cmd) {
 
 bool CommandHandler::getPid(std::vector<std::string> &cmd, Pid &pid, Service &service) {
     if (cmd.size() == 1) {
-        cout << "No system given. See help for more details" << endl;
         return false;
     }
 
@@ -260,7 +263,6 @@ bool CommandHandler::getPid(std::vector<std::string> &cmd, Pid &pid, Service &se
     }
 
     if (nullptr == info) {
-        cout << "Pid " << cmd.at(1) << " is invalid." << endl;
         return false;
     }
 
@@ -273,20 +275,60 @@ bool CommandHandler::getPid(std::vector<std::string> &cmd, Pid &pid, Service &se
     return true;
 }
 
-int CommandHandler::getData(std::vector<std::string> &cmd) {
+DataObjectState CommandHandler::getData(std::vector<std::string> &cmd) {
     Service service;
     Pid pid;
-    int i = 0;
+    DataObjectState state;
+    if (cmd.size() == 1) {
+        cout << "No system given. See help for more details" << endl;
+        return DataObjectState(MISSING_ARGUMENTS);;
+    }
+
     if (!getPid(cmd, pid, service)) {
-        return -1;
+        return getDataSpecial(cmd);
+
+    }
+
+    state = isPidSupported(service, pid);
+    if (state.type != SUCCESS){
+        return state;
     }
 
     // query data from ecu if we are not one
     if (ECU != type) {
-        i = queryECU(pid, service);
+        state = queryECU(pid, service);
+        if (state.type != SUCCESS) {
+            return state;
+        }
     }
     cout << pid.getFrameObject(obdHandler->getVehicle()).getPrintableData() << endl;
-    return i;
+    return DataObjectState(SUCCESS);
+}
+
+DataObjectState CommandHandler::getDataSpecial(std::vector<std::string> &cmd) {
+    const string usage = "Argument missing. Usage: command <SERVICE> <PID>";
+    if (cmd.at(1) == command_pid_by_number || cmd.at(1) == command_set_by_hex_number) {
+        if (cmd.size() < 4) {
+            cout << usage << endl;
+            return DataObjectState(ErrorType::MISSING_ARGUMENTS);
+        }
+
+        int service = convertStringToT<int>(cmd.at(2));
+        int pid;
+        if (cmd.at(1) == command_pid_by_number) {
+            pid = convertStringToT<int>(cmd.at(3));
+        } else {
+            pid = convertHexToInt(cmd.at(3));
+        }
+
+        bool supported = obdHandler->getVehicle()->getPidSupport().getPidSupported((Service) service, pid);
+        cout << hex << "Support for pid " << pid << " new value: " << to_string(supported) << endl;
+        return DataObjectState(ErrorType::SUCCESS);
+    } else {
+        cout << "Command " << cmd.at(1) << " is invalid." << endl;
+        return DataObjectState(ErrorType::DATA_ERROR);
+    }
+
 }
 
 DataObjectState CommandHandler::setData(std::vector<std::string> &cmd) {
@@ -311,13 +353,23 @@ DataObjectState CommandHandler::setData(std::vector<std::string> &cmd) {
         return DataObjectState(MISSING_ARGUMENTS);
     }
 
-
     Service service;
     Pid pid;
-    if (!getPid(cmd, pid, service)) {
-        return DataObjectState(DATA_ERROR);
+    // command is a pid.
+    if (getPid(cmd, pid, service)) {
+        return setDataViaPid(val, service, pid);
+    } else {
+        // try if it is special command
+        return setDataSpecial(cmd);
     }
+}
 
+
+DataObjectState CommandHandler::setDataViaPid(string val, Service service, Pid pid) {
+    DataObjectState state = isPidSupported(service, pid);
+    if (state.type != SUCCESS){
+        return state;
+    }
     // Try to update vehicle from data.
     auto &frameObject = pid.getFrameObject(obdHandler->getVehicle());
     DataObjectStateCollection sc = frameObject.setValueFromString(val);
@@ -350,8 +402,7 @@ DataObjectState CommandHandler::setData(std::vector<std::string> &cmd) {
         }
     }
 
-
-    i = 0;
+    int i = 0;
     byte *data = pid.getVehicleData(service, obdHandler->getVehicle(), i);
     data = obdHandler->createAnswerFrame(service, pid, data, i);
     i = com->send(data, i);
@@ -362,12 +413,42 @@ DataObjectState CommandHandler::setData(std::vector<std::string> &cmd) {
     return DataObjectState(SUCCESS);
 }
 
+
+DataObjectState CommandHandler::setDataSpecial(std::vector<std::string> &cmd) {
+    const string usage = "Argument missing. Usage: command <SERVICE> <PID> <0|1>";
+    if (cmd.at(1) == command_pid_by_number || cmd.at(1) == command_set_by_hex_number) {
+        if (cmd.size() < 5) {
+            cout << usage << endl;
+            return DataObjectState(ErrorType::MISSING_ARGUMENTS);
+        }
+
+        int service = convertStringToT<int>(cmd.at(2));
+        int pid;
+        if (cmd.at(1) == command_pid_by_number) {
+            pid = convertStringToT<int>(cmd.at(3));
+        } else {
+            pid = convertHexToInt(cmd.at(3));
+        }
+
+        int val = convertStringToT<int>(cmd.at(4));
+
+        obdHandler->getVehicle()->getPidSupport().setPidSupported((Service) service, pid, val > 0);
+        return DataObjectState(ErrorType::SUCCESS);
+    } else {
+        cout << "Command " << cmd.at(1) << " is invalid." << endl;
+        return DataObjectState(ErrorType::DATA_ERROR);
+    }
+
+}
+
+
+
 // Queries the vehicle and updates internal stored object
-int CommandHandler::queryECU(Pid pid, Service service) {
+DataObjectState CommandHandler::queryECU(Pid pid, Service service) {
     const int maxTries = 3;
     int tries = 0;
     int frameLen = 0;
-    int retVal = 0;
+    DataObjectState retVal;
     auto timeout = 500ms;
     const string timeoutWarning = "Failed to retrieve pid " + to_string(pid.id)
                                   + " in service " + to_string(service) + " in " + to_string(maxTries) + " tries";
@@ -388,7 +469,7 @@ int CommandHandler::queryECU(Pid pid, Service service) {
 
         if (cv_status::timeout == result) {
             LOG(WARNING) << timeoutWarning;
-            retVal = 1;
+            retVal = DataObjectState(TIMEOUT);
         }
 
     } else {
@@ -427,15 +508,16 @@ int CommandHandler::queryECU(Pid pid, Service service) {
 
         if (!success) {
             LOG(WARNING) << timeoutWarning;
-            retVal = 1;
+            retVal = DataObjectState(TIMEOUT);
         }
 
         delete buf;
     }
 
     delete frame;
-    return retVal;
+    return DataObjectState(SUCCESS);
 }
+
 
 OBDHandler &CommandHandler::getObdHandler() {
     return *obdHandler;
@@ -445,4 +527,11 @@ bool CommandHandler::isInitDone() {
     return initDone;
 }
 
+DataObjectState CommandHandler::isPidSupported(Service service, Pid pid) {
+    if (!(obdHandler->getVehicle()->getPidSupport().getPidSupported(service, pid.id))) {
+        cout << "The requested command is not supported by the vehicle" << endl;
+        return DataObjectState(NOT_SUPPORTED);
+    }
+    return DataObjectState(SUCCESS);
+}
 

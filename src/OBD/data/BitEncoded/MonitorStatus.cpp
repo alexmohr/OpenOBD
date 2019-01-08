@@ -30,7 +30,6 @@ unsigned int MonitorStatus::toFrame(unsigned int &data, int &size) {
     data |= misfire->toFrame(data, size);
     data |= fuelSystem->toFrame(data, size);
     data |= engine->toFrameForMonitoringSystem(data, size);
-    size = 32; // this size is in bits
     return data;
 }
 

@@ -56,8 +56,6 @@ unsigned int BankOxygenSensorsCollection::toFrame(unsigned int &data, int &size)
     for (const auto &sensor: allSensors) {
         data |= sensor->toFrame(data, size);
     }
-
-    size = 1;
     return data;
 }
 

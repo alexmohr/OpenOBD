@@ -72,7 +72,6 @@ unsigned int BankOxygenSensors4BankCollection::toFrame(unsigned int &data, int &
         data |= sensor->toFrame(data, size);
     }
 
-    size = 1;
     return data;
 }
 

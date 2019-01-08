@@ -13,8 +13,6 @@ PidSupport::PidSupport(){
     pidSupported81_A0 = make_unique<SupportedPidCollection>();
     pidSupportedA1_C0 = make_unique<SupportedPidCollection>();
     pidSupportedC1_E0 = make_unique<SupportedPidCollection>();
-
-
 }
 
 void PidSupport::setPidSupported(int pid, bool supported) {

@@ -232,9 +232,10 @@ void Pid::writeService1_2(Vehicle *vehicle, byte *data, int size) {
 
 byte *Pid::readService1_2(Vehicle *vehicle, int &size) {
     unsigned int data = 0;
-    data = getFrameObject(vehicle).toFrame(data, size);
+    int bitSize = 0;
+    data = getFrameObject(vehicle).toFrame(data, bitSize);
 
-    size = getBytes(size);
+    size = getBytes(bitSize);
     byte *retVal = uintToByteArray(data);
     return retVal;
 }

@@ -2,24 +2,26 @@
 // Created by me on 03/01/19.
 //
 
-#include "ELM327.h"
+#include "ELM327WifiClient.h"
 #include "easylogging++.h"
+#include "../common/conversion.h"
 #include <sys/socket.h>
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <libnet.h>
 #include <chrono>
 #include <iomanip>
+#include <thread>
 
 using namespace std::chrono_literals;
 
-ELM327::ELM327(int port, char *host) {
+ELM327WifiClient::ELM327WifiClient(int port, char *host) {
     this->port = port;
     this->host = host;
 }
 
 
-int ELM327::openInterface() {
+int ELM327WifiClient::openInterface() {
     int res, valopt;
     struct sockaddr_in addr;
     long arg;
@@ -67,6 +69,7 @@ int ELM327::openInterface() {
     arg = fcntl(socketHandle, F_GETFL, NULL);
     arg &= (~O_NONBLOCK);
     fcntl(socketHandle, F_SETFL, arg);
+
     return 0;
 }
 
@@ -85,7 +88,7 @@ void printDebugInfo(int readSize, byte *buffer) {
     printf("\n");
 }
 */
-void ELM327::receive(byte *buffer, int buffSize, int &readSize) {
+void ELM327WifiClient::receive(byte *buffer, int buffSize, int &readSize) {
     // hack because elm closes connection after command has been sent.
     if (socketHandle == -1) {
         this->openInterface();
@@ -102,21 +105,27 @@ void ELM327::receive(byte *buffer, int buffSize, int &readSize) {
 
     // get the rest of the frame.
     // abort after 500 ms.
-    char frameEnd = '>';
     bool hasTimeout = false;
     byte *nbuf = (byte *) malloc(buffSize);
-    while ((char) buffer[readSize - 1] != frameEnd
-           && (char) buffer[readSize - 2] != frameEnd
+    while ((char) buffer[readSize - 1] != '\r'
+           && (char) buffer[readSize - 2] != '\r'
            && !hasTimeout) {
         int newSize = 0;
         SocketCommunicationBase::receive(nbuf, buffSize, newSize);
         if (newSize > 0) {
-            // append the additional received data to our existing buffer.
-            memcpy(buffer + readSize, nbuf, newSize);
-            readSize += newSize;
+            if (readSize + newSize < buffSize) {
+                // append the additional received data to our existing buffer.
+                memcpy(buffer + readSize, nbuf, newSize);
+                readSize += newSize;
+            } else {
+                LOG(ERROR) << "Appending to buffer would lead to overflow. aborting read";
+                readSize = -1;
+                return;
+            }
+
         }
 
-        hasTimeout = chrono::high_resolution_clock::now() - t0 > 600ms;
+        hasTimeout = chrono::high_resolution_clock::now() - t0 > 500ms;
     }
 
     delete nbuf;
@@ -137,50 +146,30 @@ void ELM327::receive(byte *buffer, int buffSize, int &readSize) {
         parseData(buffer, readSize);
     }
 
-    closeInterface();
+    //   closeInterface();
 }
 
-void ELM327::parseData(byte *buffer, int &readSize) {
+void ELM327WifiClient::parseData(byte *buffer, int &readSize) {
     // copy data into temporary buffer.
     char *cbuf = (char *) malloc(readSize);
     memcpy(cbuf, buffer, readSize);
-
-
-    // data is received as string.
-    // parse the string by taking 2 chars and combining them into byte
-    readSize /= 2;
-
-    // reset the buffer with is given back to the caller
     memset(buffer, 0, readSize);
 
     // used as temporary value for parsing data
     unsigned int value;
 
+    // first 3 bytes are id.
+    int j = 0;
+    int i = 3;
     char tbuf[2];
-    int rs = readSize;
-    int i, j = 0;
+    memcpy(tbuf, cbuf + i, 2);
+    string sData = string(tbuf);
+    
+    // todo add support for multi frame messages.
+    auto remaining = convertHexToInt(sData);
 
-    // find start
-    for (i = 0; i <= readSize; i++) {
-        // skip the value if it is not data
-        if (cbuf[i] != '\r') {
-            rs--; // byte is not relevant for read size
-            continue;
-        }
-        break;
-    }
-    i++;
-
-    for (; i <= readSize + 2; i += 2) {
-        if (cbuf[i] <= ' ') {
-            rs--; // byte is not relevant for read size
-            i--;
-            continue;
-        }
-
-        // copy the data into the new buffer and parse it to hex
-        // there is a potenial bug when i+1 does not match the condition above
-        // it has not yet seen in praxis because the condition above only checks where the message starts
+    int offset = 5;
+    for (i = offset; i <= remaining * 2 + offset; i += 2) {
         memset(&tbuf, 0, 2);
         memcpy(tbuf, cbuf + i, 2);
         stringstream ss;
@@ -189,12 +178,11 @@ void ELM327::parseData(byte *buffer, int &readSize) {
         ss >> value;
         buffer[j++] = (byte) value;
     }
-
-    readSize = rs;
+    readSize = --j;
     delete cbuf;
 }
 
-int ELM327::send(byte *buf, int buflen) {
+int ELM327WifiClient::send(byte *buf, int buflen) {
     // hack because elm closes connection after command has been sent.
     if (socketHandle == -1) {
         this->openInterface();
@@ -207,5 +195,57 @@ int ELM327::send(byte *buf, int buflen) {
 
     string st = ss.str();
     st += '\r';
-    return SocketCommunicationBase::send((byte *) st.c_str(), st.size());
+    return SocketCommunicationBase::send((byte *) st.c_str(), static_cast<int>(st.size()));
+}
+
+int ELM327WifiClient::configureInterface() {
+    int bufSize = 1024;
+    int result = 0;
+    int recvSize;
+
+    byte *buf = (byte *) malloc(bufSize);
+
+    // echo OFF
+    result += isOkay(buf, bufSize, "ATE0");
+
+    // headers ON
+    result += isOkay(buf, bufSize, "ATH1");
+
+    // spaces OFF
+    result += isOkay(buf, bufSize, "ATS0");
+
+    // try auto protocol
+    result += isOkay(buf, bufSize, "ATSP0");
+
+    // will trigger search.
+    // wait until device is done.
+    isOkay(buf, bufSize, "0101");
+    do {
+        std::this_thread::sleep_for(1000ms);
+        SocketCommunicationBase::receive(buf, bufSize, recvSize);
+    } while (recvSize != 0);
+
+
+    return result;
+}
+
+int ELM327WifiClient::isOkay(byte *buf, int bufSize, string data) {
+    const string ok = "OK";
+    int recvSize = 0;
+    data += '\r';
+
+    SocketCommunicationBase::send((byte *) data.c_str(), static_cast<int>(data.size()));
+    std::this_thread::sleep_for(250ms);
+    SocketCommunicationBase::receive(buf, bufSize, recvSize);
+    if (recvSize < 2) {
+        return 1;
+    }
+
+    int i;
+    for (i = 0; i < recvSize - 1; i++) {
+        if ((char) buf[i] == 'O' && (char) buf[i + 1] == 'K') {
+            return 0;
+        }
+    }
+    return 1;
 }

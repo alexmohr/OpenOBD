@@ -7,80 +7,12 @@
 #include <vector>
 #include "../../../src/cli/CommandHandler.h"
 #include "../../../src/CAN/CanIsoTP.h"
-
+#include "../MockCommInterface.h"
 #include <random>
 
 
 using namespace std;
 
-class MockInterface : public ICommunicationInterface {
-    byte *data = (byte *) malloc(255);
-    int size;
-public:
-
-    bool supportEverthing = false;
-
-    byte responseSupportedPid01_20[6] =
-            {(byte) 0x41, (byte) SupportedPid01_20, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-    byte responseSupportedPid21_40[6] =
-            {(byte) 0x41, (byte) SupportedPid21_40, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-    byte responseSupportedPid41_60[6] =
-            {(byte) 0x41, (byte) SupportedPid41_60, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-    byte responseSupportedPid61_80[6] =
-            {(byte) 0x41, (byte) SupportedPid61_80, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-    byte responseSupportedPid81_A0[6] =
-            {(byte) 0x41, (byte) SupportedPid81_A0, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-    byte responseSupportedPidA1_C0[6] =
-            {(byte) 0x41, (byte) SupportedPidA1_C0, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-    byte responseSupportedPidC1_E0[6] =
-            {(byte) 0x41, (byte) SupportedPidC1_E0, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-
-    virtual int send(byte *buf, int buflen) override {
-        if (supportEverthing && buflen >= 2) {
-
-            if (buf[1] == (byte) SupportedPid01_20) {
-                setNextReceive(responseSupportedPid01_20, 6);
-            } else if (buf[1] == (byte) SupportedPid21_40) {
-                setNextReceive(responseSupportedPid21_40, 6);
-            } else if (buf[1] == (byte) SupportedPid41_60) {
-                setNextReceive(responseSupportedPid41_60, 6);
-            } else if (buf[1] == (byte) SupportedPid61_80) {
-                setNextReceive(responseSupportedPid61_80, 6);
-            } else if (buf[1] == (byte) SupportedPid81_A0) {
-                setNextReceive(responseSupportedPid81_A0, 6);
-            } else if (buf[1] == (byte) SupportedPidA1_C0) {
-                setNextReceive(responseSupportedPidA1_C0, 6);
-            } else if (buf[1] == (byte) SupportedPidC1_E0) {
-                setNextReceive(responseSupportedPidC1_E0, 6);
-            }
-
-        }
-
-        return buflen;
-    }
-
-    virtual int closeInterface() override {
-        return 0;
-    }
-
-    virtual int openInterface() override {
-        return 0;
-    };
-
-
-    virtual void receive(byte *buffer, int buffSize, int &readSize) override {
-
-        memcpy(buffer, data, size);
-        readSize = size;
-    }
-
-    void setNextReceive(byte *data, int size) {
-        memcpy(this->data, data, size);
-        this->size = size;
-    }
-
-
-};
 
 double getRand(double lower, double upper) {
     std::random_device rd;
@@ -98,8 +30,8 @@ string vectorToString(vector<string> v) {
     return s;
 }
 
-void initCommandHandler(MockInterface *mockComm, CommandHandler *cmdHandler) {
-    mockComm->supportEverthing = true;
+void initCommandHandler(MockCommInterface *mockComm, CommandHandler *cmdHandler) {
+    mockComm->supportEverything = true;
 
     cmdHandler->start();
 
@@ -110,7 +42,7 @@ void initCommandHandler(MockInterface *mockComm, CommandHandler *cmdHandler) {
 }
 
 void TestCommandHandler(CLI_TYPE type) {
-    auto *mockComm = new MockInterface();
+    auto *mockComm = new MockCommInterface();
     auto *cmdHandler = new CommandHandler(type, mockComm);
 
 
@@ -199,7 +131,7 @@ TEST(CommandHandlerTest, setData_getData_ELM) {
 }
 
 TEST(CommandHandlerTest, set_special) {
-    auto *mockComm = new MockInterface();
+    auto *mockComm = new MockCommInterface();
     auto *cmdHandler = new CommandHandler(CLI_TYPE::ECU, mockComm);
     initCommandHandler(mockComm, cmdHandler);
 
@@ -259,7 +191,7 @@ TEST(CommandHandlerTest, set_special) {
 
 
 TEST(CommandHandlerTest, tryBreakStuff) {
-    auto *mockComm = new MockInterface();
+    auto *mockComm = new MockCommInterface();
     auto *cmdHandler = new CommandHandler(CLI_TYPE::ECU, mockComm);
     vector<string> data = {"set"};
     cmdHandler->setData(data);

@@ -12,6 +12,22 @@ OBDHandler::OBDHandler(unique_ptr<map<Service, PidCollection>> pidConfig, map<in
     this->pidConfig = move(pidConfig);
 }
 
+unique_ptr<OBDHandler> OBDHandler::createInstance() {
+    Config p = Config();
+
+    // todo make paths configurable
+    auto pcMap = map<Service, PidCollection>();
+    p.parseJson("../configuration/pidConfig.json", pcMap);
+
+    auto dtcMap = map<int, DataTroubleCode>();
+    p.parseJson("../configuration/dtcConfig.json", dtcMap);
+
+    return make_unique<OBDHandler>(
+            make_unique<map<Service, PidCollection>>(pcMap),
+            dtcMap);
+}
+
+
 byte *OBDHandler::createAnswerFrame(byte *request, int &size) {
     // Example request
     // size service pid ....
@@ -96,6 +112,8 @@ Vehicle * OBDHandler::getVehicle() {
 Vehicle *OBDHandler::getVehicleFreezeFrame() {
     return vehicleFreezeFrame.get();
 }
+
+
 
 
 

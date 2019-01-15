@@ -24,44 +24,58 @@ int CliHandling::openCli(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    switch (type) {
-        case ELM:
-            commHandler = make_unique<ELM327>(port, target);
-            break;
-        case TESTER:
-            commHandler = make_unique<CanIsoTP>(VEHICLE_ID, TESTER_ID, target);
-            break;
-        case ECU:
-            commHandler = make_unique<CanIsoTP>(TESTER_ID, VEHICLE_ID, target);
-            break;
-        default:
-            LOG(ERROR) << "Unsupported interface type";
-            return EXIT_FAILURE;
+    if (type != ELM_TESTER) {
+        switch (type) {
+            case ELM:
+                // todo support other interfaces.
+                commHandler = make_unique<ELM327WifiClient>(port, target);
+                break;
+            case TESTER:
+                commHandler = make_unique<CanIsoTP>(VEHICLE_ID, TESTER_ID, target);
+                break;
+            case ECU:
+                commHandler = make_unique<CanIsoTP>(TESTER_ID, VEHICLE_ID, target);
+                break;
+            default:
+                LOG(ERROR) << "Unsupported interface type";
+                return EXIT_FAILURE;
+        }
+
+        cmdHandler = make_unique<CommandHandler>(type, commHandler.get());
+        return cmdHandler->start();
+    } else {
+        // elm tester does not allow a cli.
+        commHandler = make_unique<CanIsoTP>(VEHICLE_ID, TESTER_ID, target);
+        simElm = make_unique<ELM327WifiServer>(port, commHandler.get());
+        return simElm->openInterface();
 
     }
-
-    cmdHandler = make_unique<CommandHandler>(type, commHandler.get());
-    cmdHandler->start();
-
-    return EXIT_SUCCESS;
 }
 
 void CliHandling::closeCli() {
-    cmdHandler->stopHandler();
+    if (cmdHandler != nullptr) {
+        cmdHandler->stopHandler();
+    }
+    if (simElm != nullptr) {
+        simElm->closeInterface();
+    }
+
 }
 
 void CliHandling::display_help(char *progname) {
     fprintf(stderr, "Usage: %s <options>\n", progname);
     fprintf(stderr, "Options:\n"
-                    "  -h                 Display this help and exit.\n"
-                    "  -d CAN_DEVICE      Select the can device which is used. Defaults to can0.\n"
-                    "  -t ecu|tester|elm  Define if the software is used as tester or simulates a ECU. Defaults to ecu.\n"
-                    "                     Note that tester does not work together with an interface like ELM327\n"
-                    "                     ELM does only work with wifi interfaces.\n"
-                    "  -i ADDRESS         IP Address of the ELM interface.\n"
-                    "  -p PORT IP         PORT of the ELM interface\n."
-                    "  -p PORT IP         PORT of the ELM interface\n."
-                    "  -x                 Set logging to debug\n."
+                    "  -h                              Display this help and exit.\n"
+                    "  -d CAN_DEVICE                   Select the can device which is used. Defaults to can0.\n"
+                    "  -t ecu|tester|elm|wifielm       Define if the software is used as tester or simulates a ECU. Defaults to ecu.\n"
+                    "                                  ecu: Simulates an ecu on the can interface given\n"
+                    "                                  tester: Tester on the given can interface\n"
+                    "                                  wifielm: Exposes the can interface as elm interface\n"
+                    "                                  Note that tester does not work together with an elm interface\n"
+                    "                                  ELM does only work with wifi interfaces.\n"
+                    "  -i ADDRESS                      IP Address of the ELM interface.\n"
+                    "  -p PORT IP                      PORT of the ELM interface\n."
+                    "  -x                              Set logging to debug\n."
                     "\n");
 }
 
@@ -70,6 +84,7 @@ int CliHandling::getCommandLineArgs(int argc, char **argv, char &interface, int 
     char *typeTester = const_cast<char *>("tester");
     char *typeEcu = const_cast<char *>("ecu");
     char *typeElm = const_cast<char *>("elm");
+    char *typeSimulatedElm = const_cast<char *>("simulatedelm");
 
 
     type = ECU;
@@ -101,6 +116,8 @@ int CliHandling::getCommandLineArgs(int argc, char **argv, char &interface, int 
                 } else if (strncmp(typeElm, optarg, sizeof(&typeElm)) == 0) {
                     type = ELM;
                     strcpy(&interface, elm);
+                } else if (strncmp(typeSimulatedElm, optarg, sizeof(&typeSimulatedElm)) == 0) {
+                    type = ELM_TESTER;
                 } else {
                     fprintf(stderr, "Specified type %s is invalid.\n", optarg);
                     return EXIT_FAILURE;
@@ -128,6 +145,12 @@ int CliHandling::getCommandLineArgs(int argc, char **argv, char &interface, int 
 }
 
 bool CliHandling::isOpen() {
-    return cmdHandler->isOpen();
+    if (nullptr != cmdHandler) {
+        return cmdHandler->isOpen();
+    }
+    if (nullptr != simElm) {
+        return simElm->isOpen();
+    }
+    return false;
 }
 

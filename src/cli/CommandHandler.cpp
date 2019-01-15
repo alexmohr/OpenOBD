@@ -8,27 +8,15 @@
 #include <poll.h>
 
 CommandHandler::CommandHandler(CLI_TYPE type, ICommunicationInterface *interface) {
-    Config p = Config();
-
-    // todo make paths configurable
-    auto pcMap = map<Service, PidCollection>();
-    p.parseJson("../configuration/pidConfig.json", pcMap);
-
-    auto dtcMap = map<int, DataTroubleCode>();
-    p.parseJson("../configuration/dtcConfig.json", dtcMap);
-
-    obdHandler = make_unique<OBDHandler>(
-            make_unique<map<Service, PidCollection>>(pcMap),
-            dtcMap);
-
+    obdHandler = OBDHandler::createInstance();
     com = interface;
     open = false;
     this->type = type;
 }
 
-bool CommandHandler::start() {
+int CommandHandler::start() {
     if (open) {
-        return false;
+        return 1;
     }
 
     LOG(INFO) << "Starting CLI";
@@ -36,7 +24,11 @@ bool CommandHandler::start() {
     initDone = false;
 
     if (com->openInterface() != 0) {
-        return false;
+        return 1;
+    }
+
+    if (com->configureInterface() != 0) {
+        return 1;
     }
 
     open = true;
@@ -54,7 +46,7 @@ bool CommandHandler::start() {
         tInit = thread(&CommandHandler::configureVehicle, this);
     }
 
-    return true;
+    return 0;
 }
 
 void CommandHandler::stopHandler() {
@@ -227,7 +219,7 @@ void CommandHandler::printHelp(vector<string> &cmd) {
     } else if (cmd.at(1) == command_pid) {
         Service service;
         Pid pid;
-        cout << "Supported Pids for service " << service << ":\n";
+        cout << "Supported Pids:\n";
         for (const auto &cmdName : commandMapping) {
             if (obdHandler->getServiceAndPidInfo(
                     cmdName.second.getPidId(), cmdName.second.getService(), pid, service) != 0) {
@@ -376,27 +368,27 @@ DataObjectState CommandHandler::setDataViaPid(string val, Service service, Pid p
     if (!sc.msg.empty()) {
         cout << sc.msg;
     }
-    for (const auto &state : sc.resultSet) {
-        switch (state.type) {
+    for (const auto &scState : sc.resultSet) {
+        switch (scState.type) {
             case TOO_LARGE:
-                cout << "Value " << state.value << " is too large, max value: " << state.max << endl;;
-                return state;
+                cout << "Value " << scState.value << " is too large, max value: " << scState.max << endl;;
+                return scState;
             case TOO_SMALL:
-                cout << "Value " << state.value << " is too small, min value: " << state.min << endl;
-                return state;
+                cout << "Value " << scState.value << " is too small, min value: " << scState.min << endl;
+                return scState;
             case MISSING_ARGUMENTS:
-                cout << "Argument count mismatch. Count: " << state.count << ", Expected: " << state.expectedCount
+                cout << "Argument count mismatch. Count: " << scState.count << ", Expected: " << scState.expectedCount
                      << endl;;
-                return state;
+                return scState;
             case INVALID_NUMBER:
                 cout << "Input is not a valid number" << endl;
-                return state;
+                return scState;
             case NOT_SUPPORTED:
                 cout << "Not supported pid";
-                return state;
+                return scState;
             case DATA_ERROR:
                 cout << "Error while parsing data";
-                return state;
+                return scState;
             default:
                 break;
         }
@@ -448,7 +440,7 @@ DataObjectState CommandHandler::queryECU(Pid pid, Service service) {
     const int maxTries = 3;
     int tries = 0;
     int frameLen = 0;
-    DataObjectState retVal;
+    auto retVal = DataObjectState(SUCCESS);
     auto timeout = 500ms;
     const string timeoutWarning = "Failed to retrieve pid " + to_string(pid.id)
                                   + " in service " + to_string(service) + " in " + to_string(maxTries) + " tries";
@@ -515,7 +507,7 @@ DataObjectState CommandHandler::queryECU(Pid pid, Service service) {
     }
 
     delete frame;
-    return DataObjectState(SUCCESS);
+    return retVal;
 }
 
 

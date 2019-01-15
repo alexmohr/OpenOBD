@@ -24,6 +24,8 @@ public: // ICommunicationInterface-
     void receive(byte *buffer, int buffSize, int &readSize) override;
 
     int closeInterface() override;
+
+    int configureInterface() override { return 0; };
 };
 
 #endif //OPEN_OBD2_ICOMHANDLER_H

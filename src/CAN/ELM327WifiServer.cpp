@@ -103,29 +103,22 @@ int ELM327WifiServer::parseData(byte *data, int &size) {
     int i, j = 0;
     char charBuf[2];
     byte *outBuf = (byte *) malloc(size + 1);
-// used as temporary value for parsing data
-    unsigned int value;
 
-    for (
-            i = 0;
-            i <=
-            size;
-            i += 2) {
-        memcpy(charBuf, data
-                        + i, 2);
+    // used as temporary value for parsing data
+    unsigned int value;
+    for (i = 0; i <= size; i += 2) {
+        memcpy(charBuf, data + i, 2);
         stringstream ss;
-        ss << hex <<
-           charBuf;
-        ss >>
-           value;
+        ss << hex << charBuf;
+        ss >> value;
 
         outBuf[j++] = (byte)
-                value;
+        value;
     }
-    outBuf[j] = (byte) '\r';
 
-    memcpy(data, outBuf, size
-    );
+    outBuf[j] = (byte) '\r';
+    memcpy(data, outBuf, size);
+
     return 0;
 }
 

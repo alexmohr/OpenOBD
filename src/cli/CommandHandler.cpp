@@ -482,7 +482,7 @@ DataObjectState CommandHandler::queryECU(Pid pid, Service service) {
                 hasTimeout = (chrono::high_resolution_clock::now() - t0) > timeout;
             }
 
-            if (hasTimeout) {
+            if (hasTimeout || readSize < 1) {
                 continue;
             }
 

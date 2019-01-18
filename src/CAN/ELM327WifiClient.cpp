@@ -12,6 +12,7 @@
 #include <chrono>
 #include <iomanip>
 #include <thread>
+#include <spqr.hpp>
 
 using namespace std::chrono_literals;
 
@@ -73,179 +74,243 @@ int ELM327WifiClient::openInterface() {
     return 0;
 }
 
-/*
-// Prints the content to std out
-void printDebugInfo(int readSize, byte *buffer) {
-    for (int i = 0; i < readSize; i++) {
-        printf("%c", buffer[i]);
-    }
-
-    printf("\n");
-    for (int i = 0; i < readSize; i++) {
-        printf(" %i ", buffer[i]);
-    }
-
-    printf("\n");
-}
-*/
-void ELM327WifiClient::receive(byte *buffer, int buffSize, int &readSize) {
-    // hack because elm closes connection after command has been sent.
-    if (socketHandle == -1) {
-        this->openInterface();
-    }
-
-    SocketCommunicationBase::receive(buffer, buffSize, readSize);
-    if (readSize <= 0) {
-        closeInterface();
+void ELM327WifiClient::receive(byte *buf, int buffSize, int &readSize) {
+    closeInterface();
+    openInterface();
+    bool successFullRead = readDeviceBuffer(buf, buffSize, readSize);
+    if (!successFullRead) {
+        LOG(ERROR) << "failed to retrieve data";
+        readSize = -1;
         return;
     }
 
-    // part of frame received.
-    auto t0 = chrono::high_resolution_clock::now();
+    parseData(buf, buffSize, readSize);
+}
 
-    // get the rest of the frame.
-    // abort after 500 ms.
-    bool hasTimeout = false;
-    byte *nbuf = (byte *) malloc(buffSize);
-    while ((char) buffer[readSize - 1] != '\r'
-           && (char) buffer[readSize - 2] != '\r'
-           && !hasTimeout) {
-        int newSize = 0;
-        SocketCommunicationBase::receive(nbuf, buffSize, newSize);
-        if (newSize > 0) {
-            if (readSize + newSize < buffSize) {
-                // append the additional received data to our existing buffer.
-                memcpy(buffer + readSize, nbuf, newSize);
-                readSize += newSize;
+bool ELM327WifiClient::readDeviceBuffer(byte *buf, int buffSize, int &readSize) {
+    auto t0 = chrono::high_resolution_clock::now();
+    bool hasTimeout;
+
+    byte *tempReadBuffer = (byte *) malloc(buffSize);
+    memset(buf, 0, buffSize);
+    memset(tempReadBuffer, 0, buffSize);
+
+    int additionalReadSize;
+    readSize = 0;
+    do {
+        SocketCommunicationBase::receive(tempReadBuffer, buffSize, additionalReadSize);
+        if (additionalReadSize > 0) {
+            if (readSize + readSize < buffSize) {
+                // append the additional received data to our existing buf.
+                memcpy(buf + readSize, tempReadBuffer, additionalReadSize);
+                readSize += additionalReadSize;
             } else {
-                LOG(ERROR) << "Appending to buffer would lead to overflow. aborting read";
+                LOG(ERROR) << "Appending to buf would lead to overflow. aborting read";
                 readSize = -1;
-                return;
+                return false;
             }
 
         }
 
-        hasTimeout = chrono::high_resolution_clock::now() - t0 > 500ms;
-    }
+        hasTimeout = chrono::_V2::system_clock::now() - t0 > 500ms;
+    } while ((char) buf[readSize - 1] != '\r' && !hasTimeout);
 
-    delete nbuf;
+    delete tempReadBuffer;
+    return readSize > 0;
+}
 
-    if (hasTimeout) {
-        LOG(ERROR) << "failed to retrieve complete frame";
+void ELM327WifiClient::parseData(byte *buf, const int bufSize, int &readSize) {
+    int startIndex = getDataStartIndex(buf, readSize);
+    if (startIndex < 0 || readSize < 1) {
         readSize = -1;
-        closeInterface();
         return;
     }
 
-    if (readSize > buffSize) {
-        // received garbage from interface
-        LOG(ERROR) << "Data does not fit into buffer.";
-        readSize = -1;
+    if (usedProtocol > maxSaeIndex) {
+        removeHeader(buf, bufSize, readSize, 5);
     } else {
-        // printDebugInfo(readSize, buffer);
-        parseData(buffer, readSize);
+        removeHeader(buf, bufSize, readSize, 6);
     }
 
-    //   closeInterface();
+    byte *bufCopy = (byte *) malloc(readSize);
+    memcpy(bufCopy, buf, readSize);
+    memset(buf, 0, bufSize);
+
+    int bufIndex;
+    int dataIndex = 0;
+    byte byteValue;
+    char tempCharBuf[2];
+
+
+    for (bufIndex = 0; bufIndex <= readSize; bufIndex += 2) {
+        memset(&tempCharBuf, 0, 2);
+        memcpy(tempCharBuf, bufCopy + bufIndex, 2);
+
+        byteValue = (byte) convertHexToInt(string(tempCharBuf));
+        buf[dataIndex++] = byteValue;
+    }
+
+    delete bufCopy;
 }
 
-void ELM327WifiClient::parseData(byte *buffer, int &readSize) {
-    // copy data into temporary buffer.
-    char *cbuf = (char *) malloc(readSize);
-    memcpy(cbuf, buffer, readSize);
-    memset(buffer, 0, readSize);
-
-    // used as temporary value for parsing data
-    unsigned int value;
-
-    // first 3 bytes are id.
-    int j = 0;
-    int i = 3;
-    char tbuf[2];
-    memcpy(tbuf, cbuf + i, 2);
-    string sData = string(tbuf);
-    
-    // todo add support for multi frame messages.
-    auto remaining = convertHexToInt(sData);
-
-    int offset = 5;
-    for (i = offset; i <= remaining * 2 + offset; i += 2) {
-        memset(&tbuf, 0, 2);
-        memcpy(tbuf, cbuf + i, 2);
-        stringstream ss;
-        ss << hex << tbuf;
-
-        ss >> value;
-        buffer[j++] = (byte) value;
+void ELM327WifiClient::removeHeader(byte *buf, const int bufSize, int &readSize, int byteCountToRemove) const {
+    if (readSize < byteCountToRemove) {
+        readSize = -1;
+        return;
     }
-    readSize = --j;
-    delete cbuf;
+
+    byte *tempCharBuf = (byte *) malloc(readSize);
+    memcpy(tempCharBuf, buf + byteCountToRemove, readSize);
+    memset(buf, 0, bufSize);
+    memcpy(buf, tempCharBuf, readSize);
+    readSize -= byteCountToRemove;
+    delete tempCharBuf;
+}
+
+int ELM327WifiClient::getDataStartIndex(const byte *buf, const int recvSize) const {
+    int startIndex = 0;
+    while (((char) buf[startIndex] == '\r' || (char) buf[startIndex] == '>')
+           && startIndex < recvSize) {
+        startIndex++;
+    }
+
+    if (startIndex == recvSize || messageContains(buf, recvSize, "STOP")) {
+        LOG(DEBUG) << "Failed to parse frame";
+        return -1;
+    }
+
+    return startIndex;
 }
 
 int ELM327WifiClient::send(byte *buf, int buflen) {
-    // hack because elm closes connection after command has been sent.
-    if (socketHandle == -1) {
-        this->openInterface();
-    }
-
     std::stringstream ss;
     for (int i(0); i < buflen; ++i) {
         ss << std::hex << std::setfill('0') << std::setw(2) << (int) buf[i];
     }
 
-    string st = ss.str();
-    st += '\r';
-    return SocketCommunicationBase::send((byte *) st.c_str(), static_cast<int>(st.size()));
+    string dataString = ss.str();
+    dataString = dataString + '\r';
+    return sendString(dataString);
 }
 
 int ELM327WifiClient::configureInterface() {
     int bufSize = 1024;
-    int result = 0;
-    int recvSize;
+    bool configSuccess = true;
 
     byte *buf = (byte *) malloc(bufSize);
 
     // echo OFF
-    result += isOkay(buf, bufSize, "ATE0");
+    configSuccess &= configurationCommandSendSuccessfully(buf, bufSize, "ATE0");
 
     // headers ON
-    result += isOkay(buf, bufSize, "ATH1");
+    configSuccess &= configurationCommandSendSuccessfully(buf, bufSize, "ATH1");
 
     // spaces OFF
-    result += isOkay(buf, bufSize, "ATS0");
+    configSuccess &= configurationCommandSendSuccessfully(buf, bufSize, "ATS0");
 
-    // try auto protocol
-    result += isOkay(buf, bufSize, "ATSP0");
-
-    // will trigger search.
-    // wait until device is done.
-    isOkay(buf, bufSize, "0101");
-    do {
-        std::this_thread::sleep_for(1000ms);
-        SocketCommunicationBase::receive(buf, bufSize, recvSize);
-    } while (recvSize != 0);
-
-
-    return result;
-}
-
-int ELM327WifiClient::isOkay(byte *buf, int bufSize, string data) {
-    const string ok = "OK";
-    int recvSize = 0;
-    data += '\r';
-
-    SocketCommunicationBase::send((byte *) data.c_str(), static_cast<int>(data.size()));
-    std::this_thread::sleep_for(250ms);
-    SocketCommunicationBase::receive(buf, bufSize, recvSize);
-    if (recvSize < 2) {
+    if (!configSuccess) {
+        LOG(ERROR) << "Configuration of interface failed.";
         return 1;
     }
 
+    return findProtocol(bufSize, buf);
+}
+
+int ELM327WifiClient::findProtocol(int bufSize, byte *buf) {
+    vector<char *> searchStrings{
+            const_cast<char *>("SEARCHING"),
+            const_cast<char *>("BUS INIT")
+    };
+
+    const int protocolCount = 10;
+    int protocolNumber;
+
+    bool protocolFound = false;
+    for (protocolNumber = 1; protocolNumber <= protocolCount; protocolNumber++) {
+        protocolFound = isProtocolWorking(bufSize, buf, searchStrings, protocolNumber);
+        if (protocolFound) {
+            break;
+        }
+
+        LOG(DEBUG) << "Protocol " << protocolNumber << " failed: " << (char *) buf;
+    }
+
+    if (!protocolFound) {
+        LOG(ERROR) << "Unable to find protocol";
+        return 1;
+    }
+
+    LOG(DEBUG) << "Protocol can be used: " << protocolNumber;
+    usedProtocol = protocolNumber;
+    return 0;
+}
+
+bool ELM327WifiClient::isProtocolWorking(
+        int bufSize, byte *buf, const vector<char *> &searchStrings, int protocolNumber) {
+    bool searchRunning;
+    int strCompRes = 0;
+    const string protocolTestMessage = "0101\r";
+
+    if (!configurationCommandSendSuccessfully(buf, bufSize, "ATSP" + to_string(protocolNumber))) {
+        return false;
+    }
+
+    // will trigger search.
+    int recvSize = sendString(protocolTestMessage);
+    do {
+        std::this_thread::sleep_for(150ms);
+        searchRunning = false;
+        memset(buf, 0, bufSize);
+        SocketCommunicationBase::receive(buf, bufSize, recvSize);
+
+        if (0 == recvSize) {
+            LOG(DEBUG) << "Did not receive an answer from device";
+            searchRunning = true;
+            this_thread::sleep_for(150ms);
+        }
+
+        for (const auto &searchString : searchStrings) {
+            strCompRes = strncmp(searchString, (char *) buf, sizeof(&searchString - 1));
+            if (0 == strCompRes) {
+                searchRunning = true;
+                break;
+            }
+        }
+    } while (searchRunning);
+
+    return isNumber(buf[0]) || isNumber(buf[1]);
+}
+
+bool ELM327WifiClient::configurationCommandSendSuccessfully(byte *buf, int bufSize, string data) {
+    int recvSize = 0;
+    data += '\r';
+
+    closeInterface();
+    openInterface();
+
+    LOG(DEBUG) << "Sending configuration command: " << data;
+    sendString(data);
+    this_thread::sleep_for(150ms);
+    SocketCommunicationBase::receive(buf, bufSize, recvSize);
+
+    return messageContains(buf, recvSize, "OK");
+}
+
+bool ELM327WifiClient::messageContains(const byte *buf, int recvSize, string data) const {
+    if (recvSize < (int) data.size()) {
+        return false;
+    }
+
     int i;
-    for (i = 0; i < recvSize - 1; i++) {
-        if ((char) buf[i] == 'O' && (char) buf[i + 1] == 'K') {
-            return 0;
+    for (i = 0; i < (int) (recvSize - data.size()); i++) {
+        if (0 == strncmp(data.c_str(), (char *) buf + i, data.size())) {
+            return true;
         }
     }
-    return 1;
+    return false;
+}
+
+int ELM327WifiClient::sendString(const string &data) {
+    LOG(DEBUG) << "Sending: " << data;
+    return SocketCommunicationBase::send((byte *) data.c_str(), static_cast<int>(data.size()));
 }

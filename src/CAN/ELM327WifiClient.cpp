@@ -74,33 +74,30 @@ int ELM327WifiClient::openInterface() {
     return 0;
 }
 
-void ELM327WifiClient::receive(byte *buf, int buffSize, int &readSize) {
-    closeInterface();
-    openInterface();
-    bool successFullRead = readDeviceBuffer(buf, buffSize, readSize);
+void ELM327WifiClient::receive(byte *buf, int bufSize, int &readSize) {
+    bool successFullRead = readDeviceBuffer(buf, bufSize, readSize);
     if (!successFullRead) {
         LOG(ERROR) << "failed to retrieve data";
         readSize = -1;
-        return;
+    } else {
+        parseData(buf, bufSize, readSize);
     }
-
-    parseData(buf, buffSize, readSize);
 }
 
-bool ELM327WifiClient::readDeviceBuffer(byte *buf, int buffSize, int &readSize) {
+bool ELM327WifiClient::readDeviceBuffer(byte *buf, int bufSize, int &readSize) {
     auto t0 = chrono::high_resolution_clock::now();
     bool hasTimeout;
 
-    byte *tempReadBuffer = (byte *) malloc(buffSize);
-    memset(buf, 0, buffSize);
-    memset(tempReadBuffer, 0, buffSize);
+    byte *tempReadBuffer = (byte *) malloc(bufSize);
+    memset(buf, 0, bufSize);
+    memset(tempReadBuffer, 0, bufSize);
 
     int additionalReadSize;
     readSize = 0;
     do {
-        SocketCommunicationBase::receive(tempReadBuffer, buffSize, additionalReadSize);
+        SocketCommunicationBase::receive(tempReadBuffer, bufSize, additionalReadSize);
         if (additionalReadSize > 0) {
-            if (readSize + readSize < buffSize) {
+            if (readSize + readSize < bufSize) {
                 // append the additional received data to our existing buf.
                 memcpy(buf + readSize, tempReadBuffer, additionalReadSize);
                 readSize += additionalReadSize;
@@ -113,7 +110,7 @@ bool ELM327WifiClient::readDeviceBuffer(byte *buf, int buffSize, int &readSize) 
         }
 
         hasTimeout = chrono::_V2::system_clock::now() - t0 > 500ms;
-    } while ((char) buf[readSize - 1] != '\r' && !hasTimeout);
+    } while ((char) buf[readSize - 1] != '>' && !hasTimeout);
 
     delete tempReadBuffer;
     return readSize > 0;
@@ -174,7 +171,12 @@ int ELM327WifiClient::getDataStartIndex(const byte *buf, const int recvSize) con
         startIndex++;
     }
 
-    if (startIndex == recvSize || messageContains(buf, recvSize, "STOP")) {
+    if (messageContains(buf, recvSize, "STOP")) {
+        LOG(DEBUG) << "Adapter received interrupt.";
+        return -1;
+    }
+
+    if (startIndex == recvSize) {
         LOG(DEBUG) << "Failed to parse frame";
         return -1;
     }
@@ -247,7 +249,7 @@ int ELM327WifiClient::findProtocol(int bufSize, byte *buf) {
 
 bool ELM327WifiClient::isProtocolWorking(
         int bufSize, byte *buf, const vector<char *> &searchStrings, int protocolNumber) {
-    bool searchRunning;
+    bool searchRunning, readSuccess;
     int strCompRes = 0;
     const string protocolTestMessage = "0101\r";
 
@@ -257,13 +259,14 @@ bool ELM327WifiClient::isProtocolWorking(
 
     // will trigger search.
     int recvSize = sendString(protocolTestMessage);
+    auto t0 = chrono::high_resolution_clock::now();
+    auto maxTime = 2s;
     do {
-        std::this_thread::sleep_for(150ms);
+        std::this_thread::sleep_for(250ms);
         searchRunning = false;
         memset(buf, 0, bufSize);
-        SocketCommunicationBase::receive(buf, bufSize, recvSize);
-
-        if (0 == recvSize) {
+        readSuccess = readDeviceBuffer(buf, bufSize, recvSize);
+        if (0 == recvSize || !readSuccess) {
             LOG(DEBUG) << "Did not receive an answer from device";
             searchRunning = true;
             this_thread::sleep_for(150ms);
@@ -276,7 +279,7 @@ bool ELM327WifiClient::isProtocolWorking(
                 break;
             }
         }
-    } while (searchRunning);
+    } while (searchRunning && chrono::high_resolution_clock::now() - t0 < maxTime);
 
     return isNumber(buf[0]) || isNumber(buf[1]);
 }
@@ -291,7 +294,10 @@ bool ELM327WifiClient::configurationCommandSendSuccessfully(byte *buf, int bufSi
     LOG(DEBUG) << "Sending configuration command: " << data;
     sendString(data);
     this_thread::sleep_for(150ms);
-    SocketCommunicationBase::receive(buf, bufSize, recvSize);
+    bool success = readDeviceBuffer(buf, bufSize, recvSize);
+    if (!success) {
+        return false;
+    }
 
     return messageContains(buf, recvSize, "OK");
 }

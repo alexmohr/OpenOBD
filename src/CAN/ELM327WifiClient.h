@@ -21,7 +21,7 @@ public:
 
 
 public: // override SocketCommunicationBase
-    void receive(byte *buf, int buffSize, int &readSize) override;
+    void receive(byte *buf, int bufSize, int &readSize) override;
     int send(byte *buf, int buflen) override;
 
     int openInterface() override;
@@ -39,7 +39,7 @@ private:
     bool
     isProtocolWorking(int bufSize, byte *buf, const vector<char *> &searchStrings, int protocolNumber);
 
-    bool readDeviceBuffer(byte *buf, int buffSize, int &readSize);
+    bool readDeviceBuffer(byte *buf, int bufSize, int &readSize);
 
     int getDataStartIndex(const byte *buf, int recvSize) const;
 

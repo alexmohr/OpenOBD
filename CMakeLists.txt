@@ -121,19 +121,22 @@ add_executable(open_obd2 src/main.cpp ${CPPSRC})
 target_link_libraries(open_obd2 pthread)
 
 add_executable(Test
-        tests/src/OBD/OBDHandlerTest.h
-        tests/src/OBD/OBDHandlerTest.cpp
-        tests/src/OBD/OBDHandlerTestsService1.cpp
-        tests/src/OBD/OBDHandlerTestsService2.cpp
+        ${CPPSRC}
+        tests/src/cli/CommandHandlerTest.cpp tests/main.cpp
         tests/src/communication/CanIsoTPTests.cpp
-        tests/src/OBD/OBDHandlerTestSimulatedCAN.cpp
+        tests/src/communication/ELM327WifiClientTest.cpp
+        tests/src/communication/ELM327WifiServerTest.cpp
+        tests/src/ConfigTest.cpp
+        tests/src/MockCommInterface.cpp
+        tests/src/MockCommInterface.h
         tests/src/OBD/data/DataObjectTest.cpp
         tests/src/OBD/DataTroubleCodeTest.cpp
-        tests/src/ConfigTest.cpp
+        tests/src/OBD/OBDHandlerTest.cpp
+        tests/src/OBD/OBDHandlerTest.h
         tests/src/OBD/OBDHandlerTestService1Explicit.cpp
-        tests/src/cli/CommandHandlerTest.cpp tests/main.cpp
-        ${CPPSRC}
-        tests/src/communication/ELM327WifiServerTest.cpp tests/src/MockCommInterface.cpp tests/src/MockCommInterface.h tests/src/communication/ELM327WifiClientTest.cpp)
+        tests/src/OBD/OBDHandlerTestSimulatedCAN.cpp
+        tests/src/OBD/OBDHandlerTestsService1.cpp
+        tests/src/OBD/OBDHandlerTestsService2.cpp)
 
 
 install(TARGETS open_obd2 EXPORT open_obd2 DESTINATION bin)

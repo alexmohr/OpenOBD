@@ -192,9 +192,6 @@ private:
     void printHelp(std::vector<std::string> &cmd);
 
     DataObjectState queryECU(Pid pid, Service service);
-
-    DataObjectState isPidSupported(Service service, Pid pid);
-
 };
 
 

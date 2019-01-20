@@ -1,3 +1,5 @@
+#include <utility>
+
 //
 // Created by me on 02/01/19.
 //
@@ -59,7 +61,6 @@ void CommandHandler::stopHandler() {
     } else {
         tInit.join();
     }
-
 
     tCmdHandler.join();
     com->closeInterface();
@@ -130,11 +131,8 @@ void CommandHandler::ecuRecvThread(ICommunicationInterface *com) {
 
         byte *answer;
         answer = obdHandler->createAnswerFrame(buf, readSize);
-        if (nullptr != answer) {
-            com->send(answer, readSize);
-            delete answer;
-        }
-
+        com->send(answer, readSize);
+        delete answer;
         usleep(100);
     }
 
@@ -263,13 +261,13 @@ DataObjectState CommandHandler::getData(std::vector<std::string> &cmd) {
 
     if (!getPid(cmd, pid, service)) {
         return getDataSpecial(cmd);
-
     }
 
-    state = isPidSupported(service, pid);
+    state = obdHandler->isPidSupported(service, pid.id);
     if (state.type != SUCCESS){
         return state;
     }
+
 
     // query data from ecu if we are not one
     if (ECU != type) {
@@ -298,7 +296,8 @@ DataObjectState CommandHandler::getDataSpecial(std::vector<std::string> &cmd) {
             pid = convertHexToInt(cmd.at(3));
         }
 
-        bool supported = obdHandler->getVehicle()->getPidSupport().getPidSupported((Service) service, pid);
+        bool supported =
+                obdHandler->getVehicle()->getPidSupport().getPidSupported((Service) service, pid);
         cout << hex << "Support for pid " << pid << " new value: " << to_string(supported) << endl;
         return DataObjectState(ErrorType::SUCCESS);
     } else {
@@ -343,13 +342,13 @@ DataObjectState CommandHandler::setData(std::vector<std::string> &cmd) {
 
 
 DataObjectState CommandHandler::setDataViaPid(string val, Service service, Pid pid) {
-    DataObjectState state = isPidSupported(service, pid);
+    DataObjectState state = obdHandler->isPidSupported(service, pid.id);
     if (state.type != SUCCESS){
         return state;
     }
     // Try to update vehicle from data.
     auto &frameObject = pid.getFrameObject(obdHandler->getVehicle());
-    DataObjectStateCollection sc = frameObject.setValueFromString(val);
+    DataObjectStateCollection sc = frameObject.setValueFromString(std::move(val));
     if (!sc.msg.empty()) {
         cout << sc.msg;
     }
@@ -401,20 +400,20 @@ DataObjectState CommandHandler::setDataSpecial(std::vector<std::string> &cmd) {
         }
 
         int val = convertStringToT<int>(cmd.at(4));
-
         obdHandler->getVehicle()->getPidSupport().setPidSupported((Service) service, pid, val > 0);
         return DataObjectState(ErrorType::SUCCESS);
     } else {
         cout << "Command " << cmd.at(1) << " is invalid." << endl;
         return DataObjectState(ErrorType::DATA_ERROR);
     }
-
 }
-
-
 
 // Queries the vehicle and updates internal stored object
 DataObjectState CommandHandler::queryECU(Pid pid, Service service) {
+    if (obdHandler->isPidSupported(service, pid.id).type != SUCCESS) {
+        return NOT_SUPPORTED;
+    }
+
     const int maxTries = 3;
     int tries = 0;
     int frameLen = 0;
@@ -463,13 +462,5 @@ OBDHandler &CommandHandler::getObdHandler() {
 
 bool CommandHandler::isInitDone() {
     return initDone;
-}
-
-DataObjectState CommandHandler::isPidSupported(Service service, Pid pid) {
-    if (!(obdHandler->getVehicle()->getPidSupport().getPidSupported(service, pid.id))) {
-        cout << "The requested command is not supported by the vehicle" << endl;
-        return DataObjectState(NOT_SUPPORTED);
-    }
-    return DataObjectState(SUCCESS);
 }
 

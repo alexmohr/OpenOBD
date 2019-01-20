@@ -50,7 +50,7 @@ public:
 
     int getServiceAndPidInfo(int pidId, int serviceId, Pid &pid, Service &service);
 
-
+    DataObjectState isPidSupported(Service service, int pid);
 };
 
 #endif //OPEN_OBD2_OBDHANDLER_H

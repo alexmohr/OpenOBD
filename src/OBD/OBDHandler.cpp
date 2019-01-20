@@ -33,9 +33,18 @@ byte *OBDHandler::createAnswerFrame(byte *request, int &size) {
     // size service pid ....
     // 0x02 0x01 0x00 0x00 0x00 0x00 0x00 0x00
 
+    if (size < 2) {
+        byte service = (byte) 0;
+        return createErrorFrame(INCORRECT_MESSAGE_LENGTH_OR_FORMAT, size, service);
+    }
+
     Service service;
     Pid pid;
     if (getServiceAndPidInfo((int) request[1], (int) request[0], pid, service) < 0) {
+        return createErrorFrame(SUB_FUNCTION_NOT_SUPPORTED, size, request[1]);
+    }
+
+    if (isPidSupported(service, pid.id).type != SUCCESS) {
         return createErrorFrame(SUB_FUNCTION_NOT_SUPPORTED, size, request[1]);
     }
 
@@ -77,6 +86,10 @@ void OBDHandler::updateFromFrame(byte *frame, int frameSize) {
      * 3: 0xbe 0x7e 0xb8 0x13 0xaa data
      */
 
+    if (frame[0] == (byte) NEGATIVE_RESPONSE) {
+        return;
+    }
+
     Service service;
     Pid pid;
     if (getServiceAndPidInfo((int) frame[1], (int) frame[0] - ANSWER_OFFSET, pid, service) < 0) {
@@ -117,6 +130,15 @@ Vehicle * OBDHandler::getVehicle() {
 
 Vehicle *OBDHandler::getVehicleFreezeFrame() {
     return vehicleFreezeFrame.get();
+}
+
+
+DataObjectState OBDHandler::isPidSupported(Service service, int pid) {
+    if (!(vehicle->getPidSupport().getPidSupported(service, pid))) {
+        LOG(INFO) << "Requested command is not supported by vehicle" << endl;
+        return DataObjectState(NOT_SUPPORTED);
+    }
+    return DataObjectState(SUCCESS);
 }
 
 

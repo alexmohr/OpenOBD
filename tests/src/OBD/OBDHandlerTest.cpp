@@ -33,9 +33,12 @@ void compareResponse(vector<byte> expectedResponse, byte *actualResponse) {
 
 OBDHandler* doTest(vector<byte> request, vector<byte> response) {
     OBDHandler *handler = getHandler();
+
+    // enable support for the requested pid.
+    handler->getVehicle()->getPidSupport().setPidSupported((Service) request[0], (int) request[1], true);
     handler->updateFromFrame(response.data(), static_cast<int>(response.size()));
 
-    int dataSize = 0;
+    int dataSize = static_cast<int>(request.size());
     byte *val = handler->createAnswerFrame(request.data(), dataSize);
 
     EXPECT_EQ(dataSize, response.size());

@@ -87,7 +87,6 @@ set(CPPSRC
         src/OBD/data/BitEncoded/Catalyst.cpp
         src/OBD/data/BitEncoded/Catalyst.h
         src/OBD/data/dataObject/IFrameObject.h
-
         src/OBD/data/Enumerated/FuelSystemStates.cpp
         src/OBD/data/Enumerated/FuelSystemStates.h
         src/OBD/data/BitEncoded/Oxygen/BankOxygenSensorsCollection.cpp
@@ -98,12 +97,24 @@ set(CPPSRC
         src/OBD/data/BitEncoded/Throttle.cpp src/OBD/data/BitEncoded/Throttle.h
         src/OBD/data/dataObject/CalculatedDataObjectFactory.cpp
         src/OBD/data/dataObject/CalculatedDataObjectFactory.h
-        src/cli/CommandHandler.cpp src/cli/CommandHandler.h src/communication/ELM327WifiClient.cpp
-        src/communication/ELM327WifiClient.h src/communication/SocketCommunicationBase.h src/communication/SocketCommunicationBase.cpp
-        src/communication/ICommunicationInterface.h src/cli/CommandInfo.cpp src/cli/CommandInfo.h
-        src/OBD/data/dataObject/DataObjectState.h src/OBD/data/dataObject/DataObjectStateFactory.cpp
-        src/OBD/data/dataObject/DataObjectStateFactory.h src/OBD/data/dataObject/IDataObject.h
-        src/OBD/data/BitEncoded/Pid/SupportedPidCollection.cpp src/OBD/data/BitEncoded/Pid/SupportedPidCollection.h src/communication/ELM327WifiServer.cpp src/communication/ELM327WifiServer.h src/communication/SocketClient.cpp src/communication/SocketClient.h)
+        src/cli/CommandHandler.cpp
+        src/cli/CommandHandler.h
+        src/communication/ELM327WifiClient.cpp
+        src/communication/ELM327WifiClient.h
+        src/communication/SocketCommunicationBase.h
+        src/communication/SocketCommunicationBase.cpp
+        src/communication/ICommunicationInterface.h
+        src/cli/CommandInfo.cpp src/cli/CommandInfo.h
+        src/OBD/data/dataObject/DataObjectState.h
+        src/OBD/data/dataObject/DataObjectStateFactory.cpp
+        src/OBD/data/dataObject/DataObjectStateFactory.h
+        src/OBD/data/dataObject/IDataObject.h
+        src/OBD/data/BitEncoded/Pid/SupportedPidCollection.cpp
+        src/OBD/data/BitEncoded/Pid/SupportedPidCollection.h
+        src/communication/ELM327WifiServer.cpp
+        src/communication/ELM327WifiServer.h
+        src/communication/SocketClient.cpp
+        src/communication/SocketClient.h)
 
 
 add_executable(open_obd2 src/main.cpp ${CPPSRC})

@@ -90,7 +90,7 @@ int CliHandling::getCommandLineArgs(int argc, char **argv, char &interface, int 
     char *typeTester = const_cast<char *>("tester");
     char *typeEcu = const_cast<char *>("ecu");
     char *typeElm = const_cast<char *>("elm");
-    char *typeSimulatedElm = const_cast<char *>("simulatedelm");
+    char *typeWifiElm = const_cast<char *>("wifielm");
 
 
     type = ECU;
@@ -122,7 +122,7 @@ int CliHandling::getCommandLineArgs(int argc, char **argv, char &interface, int 
                 } else if (strncmp(typeElm, optarg, sizeof(&typeElm)) == 0) {
                     type = ELM;
                     strcpy(&interface, elm);
-                } else if (strncmp(typeSimulatedElm, optarg, sizeof(&typeSimulatedElm)) == 0) {
+                } else if (strncmp(typeWifiElm, optarg, sizeof(&typeWifiElm)) == 0) {
                     type = ELM_TESTER;
                 } else {
                     fprintf(stderr, "Specified type %s is invalid.\n", optarg);

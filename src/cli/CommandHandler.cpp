@@ -34,12 +34,9 @@ int CommandHandler::start() {
     open = true;
     tCmdHandler = thread(&CommandHandler::cmdHandler, this);
 
-    if (type != ELM) {
-        tCanHandler = thread(&CommandHandler::comHandler, this, com);
-    }
-
     if (type == ECU) {
         configureVirtualVehicle(obdHandler->getVehicle());
+        tRecv = thread(&CommandHandler::ecuRecvThread, this, com);
     } else {
         // run in background to give user to chance to abort if
         // the requests to the vehicle time out.
@@ -57,13 +54,12 @@ void CommandHandler::stopHandler() {
     exitRequested = true;
 
     LOG(DEBUG) << "Closing command handler";
-    if (type != ELM) {
-        tCanHandler.join();
-    }
-
-    if (type != ECU) {
+    if (type == ECU) {
+        tRecv.join();
+    } else {
         tInit.join();
     }
+
 
     tCmdHandler.join();
     com->closeInterface();
@@ -115,12 +111,12 @@ void CommandHandler::configureVehicle() {
 }
 
 
-void CommandHandler::comHandler(ICommunicationInterface *com) {
+void CommandHandler::ecuRecvThread(ICommunicationInterface *com) {
     int bufSize = 255;
     byte *buf = (byte *) malloc(bufSize);
     int readSize = 0;
 
-    // will not run for ELM
+
     while (!exitRequested) {
         com->receive(buf, bufSize, readSize);
         if (readSize <= 0) {
@@ -129,25 +125,14 @@ void CommandHandler::comHandler(ICommunicationInterface *com) {
 
         // Answer frame
         if ((int) buf[0] >= ANSWER_OFFSET) {
-            obdHandler->updateFromFrame(buf, readSize);
-            if (expectedPid == -1) {
-                continue;
-            }
+            continue;
+        }
 
-            if ((int) buf[1] == expectedPid) {
-                dataCv.notify_one();
-            }
-        } else {
-            if (ECU != type) {
-                continue;
-            }
-
-            byte *answer;
-            answer = obdHandler->createAnswerFrame(buf, readSize);
-            if (nullptr != answer) {
-                com->send(answer, readSize);
-                delete answer;
-            }
+        byte *answer;
+        answer = obdHandler->createAnswerFrame(buf, readSize);
+        if (nullptr != answer) {
+            com->send(answer, readSize);
+            delete answer;
         }
 
         usleep(100);
@@ -439,64 +424,32 @@ DataObjectState CommandHandler::queryECU(Pid pid, Service service) {
                                   + " in service " + to_string(service) + " in " + to_string(maxTries) + " tries";
 
     byte *frame = pid.getQueryForService(service, frameLen);
+    int bufSize = 255;
+    byte *buf = (byte *) malloc(bufSize);
+    int readSize = 0;
+    bool success;
 
-    if (type == TESTER) {
-        cv_status result;
-        // try 3 times to receive the data. Give ecu 500ms each.
-        do {
-            com->send(frame, frameLen);
-
-            // wait until answer is received.
-            expectedPid = pid.id;
-            std::unique_lock<std::mutex> lk(dataMutex);
-            result = dataCv.wait_for(lk, timeout);
-        } while (result != cv_status::no_timeout && tries++ < maxTries);
-
-        if (cv_status::timeout == result) {
-            LOG(WARNING) << timeoutWarning;
-            retVal = DataObjectState(TIMEOUT);
+    do {
+        com->send(frame, frameLen);
+        bool hasTimeout = false;
+        auto t0 = chrono::high_resolution_clock::now();
+        while (readSize <= 0 && !hasTimeout) {
+            com->receive(buf, bufSize, readSize);
+            hasTimeout = (chrono::high_resolution_clock::now() - t0) > timeout;
         }
 
-    } else {
-        // make space for answer
-        int buflen = 255;
-        byte *buf = (byte *) malloc(buflen);
-        int readSize = 0;
-        bool success;
-        int i;
-
-        do {
-            com->send(frame, frameLen);
-
-            bool hasTimeout = false;
-            auto t0 = chrono::high_resolution_clock::now();
-            while (readSize <= 0 && !hasTimeout) {
-                com->receive(buf, buflen, readSize);
-                hasTimeout = (chrono::high_resolution_clock::now() - t0) > timeout;
-            }
-
-            if (hasTimeout || readSize < 1) {
-                continue;
-            }
-
-            int rs = readSize + 1;
-            byte *nbuf = (byte *) (malloc(rs));
-            for (i = 0; i < readSize; i++) {
-                nbuf[i + 1] = buf[i];
-            }
-
-            nbuf[0] = (byte) (service + ANSWER_OFFSET);
-            obdHandler->updateFromFrame(buf, readSize);
-            success = true;
-            delete nbuf;
-        } while (!success && tries++ < maxTries);
-
-        if (!success) {
-            LOG(WARNING) << timeoutWarning;
-            retVal = DataObjectState(TIMEOUT);
+        if (hasTimeout || readSize < 1) {
+            continue;
         }
 
-        delete buf;
+        obdHandler->updateFromFrame(buf, readSize);
+        success = true;
+    } while (!success && tries++ < maxTries);
+
+
+    if (!success) {
+        LOG(WARNING) << timeoutWarning;
+        retVal = DataObjectState(TIMEOUT);
     }
 
     delete frame;

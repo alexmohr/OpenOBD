@@ -36,16 +36,14 @@ byte *OBDHandler::createAnswerFrame(byte *request, int &size) {
     Service service;
     Pid pid;
     if (getServiceAndPidInfo((int) request[1], (int) request[0], pid, service) < 0) {
-        LOG(ERROR) << "Received invalid or unsupported pid or service ";
-        size = 0;
-        return nullptr;
+        return createErrorFrame(SUB_FUNCTION_NOT_SUPPORTED, size, request[1]);
     }
 
     byte *data = pid.getVehicleData(service, vehicle.get(), size);
     if (nullptr == data) {
         LOG(ERROR) << "Received a request which is not supported or caused an error: " <<
                    "ServiceID: " << service << ", PID: " << pid.id;
-        return nullptr;
+        return createErrorFrame(SUB_FUNCTION_NOT_SUPPORTED, size, request[1]);
     }
     return createAnswerFrame(service, pid, data, size);
 }
@@ -61,6 +59,14 @@ byte *OBDHandler::createAnswerFrame(Service service, Pid pid, byte *data, int &s
     return result;
 }
 
+byte *OBDHandler::createErrorFrame(int type, int &size, byte &attemptedFunction) {
+    size = 3;
+    byte *result = (byte *) malloc(size);
+    result[0] = (byte) NEGATIVE_RESPONSE;
+    result[1] = attemptedFunction;
+    result[2] = (byte) type;
+    return result;
+}
 
 void OBDHandler::updateFromFrame(byte *frame, int frameSize) {
     /* example response
@@ -112,6 +118,7 @@ Vehicle * OBDHandler::getVehicle() {
 Vehicle *OBDHandler::getVehicleFreezeFrame() {
     return vehicleFreezeFrame.get();
 }
+
 
 
 

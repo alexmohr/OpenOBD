@@ -31,6 +31,10 @@ string convertIntToHex(int n);
 
 unsigned int convertHexToInt(string hex);
 
+bool isNumber(byte b);
+
+bool isNumber(char c);
+
 
 template<typename T>
 T convertStringToT(const string &value) {

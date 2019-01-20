@@ -16,8 +16,10 @@
 class CliHandling {
 private:
     bool running;
+    unique_ptr<ELM327WifiServer> elmServer;
     unique_ptr<CommandHandler> cmdHandler;
-    unique_ptr<ICommunicationInterface> commHandler;
+    unique_ptr<ICommunicationInterface> physicalComInterface;
+    unique_ptr<ICommunicationInterface> logicalComInterface;
 public:
     CliHandling();
 public:

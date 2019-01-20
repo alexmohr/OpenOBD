@@ -74,12 +74,14 @@ void Config::configureLogging(bool logdebug, bool toFile) {
     el::Configurations defaultConf;
     defaultConf.setToDefault();
 
+    string val = "true";
     if (!logdebug) {
-
-        // Values are always std::string
-        defaultConf.set(el::Level::Trace, el::ConfigurationType::Enabled, "false");
-        defaultConf.set(el::Level::Debug, el::ConfigurationType::Enabled, "false");
+        val = false;
     }
+
+    defaultConf.set(el::Level::Trace, el::ConfigurationType::Enabled, val);
+    defaultConf.set(el::Level::Debug, el::ConfigurationType::Enabled, val);
+
 
     if (toFile) {
         defaultConf.set(el::Level::Global, el::ConfigurationType::ToFile, "true");
@@ -87,9 +89,6 @@ void Config::configureLogging(bool logdebug, bool toFile) {
     } else {
         defaultConf.set(el::Level::Global, el::ConfigurationType::ToFile, "false");
     }
-
-
-    defaultConf.set(el::Level::Debug, el::ConfigurationType::Enabled, "false");
 
     // default logger uses default configurations
     el::Loggers::reconfigureLogger("default", defaultConf);

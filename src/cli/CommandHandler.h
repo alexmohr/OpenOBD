@@ -10,8 +10,9 @@
 #include <mutex>
 #include <condition_variable>
 #include "../OBD/Pid.h"
-#include "../CAN/CanIsoTP.h"
-#include "../CAN/ELM327.h"
+#include "../communication/CanIsoTP.h"
+#include "../communication/ELM327WifiClient.h"
+#include "../communication/ELM327WifiServer.h"
 #include "../OBD/OBDHandler.h"
 #include "CommandInfo.h"
 
@@ -19,9 +20,11 @@ using namespace std;
 
 
 enum CLI_TYPE {
+    ECU,
     TESTER,
     ELM,
-    ECU
+    ELM_TESTER,
+
 };
 
 class CommandHandler {
@@ -134,7 +137,6 @@ public:
             {"AcceleratorPedalPositionD",        CommandInfo(Service::POWERTRAIN, AcceleratorPedalPositionD)},
             {"AcceleratorPedalPositionE",        CommandInfo(Service::POWERTRAIN, AcceleratorPedalPositionE)},
             {"AcceleratorPedalPositionF",        CommandInfo(Service::POWERTRAIN, AcceleratorPedalPositionF)},
-
     };
 
 
@@ -159,7 +161,7 @@ public:
 
 public:
 
-    bool start();
+    int start();
 
     void stopHandler();
 

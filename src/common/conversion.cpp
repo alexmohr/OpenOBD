@@ -80,3 +80,11 @@ unsigned int convertHexToInt(string hex) {
     return x;
 }
 
+bool isNumber(byte b) {
+    return isNumber((char) b);
+}
+
+bool isNumber(char c) {
+    return c >= '0' && c <= '9';
+}
+

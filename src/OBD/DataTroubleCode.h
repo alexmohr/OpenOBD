@@ -6,7 +6,7 @@
 #define OPEN_OBD2_DATATROUBLECODE_H
 
 #include <string>
-#include "../CAN/CanIsoTP.h"
+#include "../communication/CanIsoTP.h"
 #include "data/dataObject/DataObject.h"
 
 using namespace std;

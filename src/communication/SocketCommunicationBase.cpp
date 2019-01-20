@@ -13,20 +13,19 @@
 
 
 int SocketCommunicationBase::send(byte *buf, int buflen) {
-    int retval = 0;
+    int returnValue = 0;
 
-    retval = static_cast<int>(write(socketHandle, buf, buflen));
-    if (retval < 0) {
-        LOG(ERROR) << "Failed to write to socket";
-        perror("write");
-        return retval;
+    returnValue = static_cast<int>(::send(socketHandle, buf, buflen, MSG_NOSIGNAL));
+    if (returnValue < 0) {
+        PLOG(ERROR) << "Failed to write to socket";
+        return returnValue;
     }
 
-    if (retval != buflen) {
-        fprintf(stderr, "wrote only %d from %d byte\n", retval, buflen);
+    if (returnValue != buflen) {
+        el::Loggers::getLogger("default")->warn("wrote only %d from %d byte\n", returnValue, buflen);
     }
 
-    return retval;
+    return returnValue;
 }
 
 void SocketCommunicationBase::receive(byte *buffer, int buffSize, int &readSize) {

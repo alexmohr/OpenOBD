@@ -19,7 +19,9 @@ public:
 
     virtual int openInterface() = 0;
 
-   // virtual ~ICommunicationInterface() = 0;
+    virtual int configureInterface() = 0;
+
+    virtual ~ICommunicationInterface() = default;
 
 };
 

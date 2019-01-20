@@ -19,6 +19,8 @@ private:
 public:
     explicit OBDHandler(unique_ptr<map<Service, PidCollection>> pidConfig, map<int, DataTroubleCode> dtcMap);
 
+    static unique_ptr<OBDHandler> createInstance();
+
     /**
      * Create a response for a request
      * @param request The data of the requst

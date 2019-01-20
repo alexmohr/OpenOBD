@@ -5,7 +5,7 @@
 
 #include <gtest/gtest.h>
 #include <vector>
-#include "../../../src/CAN/CanIsoTP.h"
+#include "../../../src/communication/CanIsoTP.h"
 #include "../../../src/Config.h"
 
 using namespace std;

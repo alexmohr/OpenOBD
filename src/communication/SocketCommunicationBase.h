@@ -16,7 +16,7 @@ protected:
 protected:
     SocketCommunicationBase() = default;
 
-//    ~SocketCommunicationBase() override = default;
+    // ~SocketCommunicationBase() override = default;
 
 public: // ICommunicationInterface-
     int send(byte *buf, int buflen) override;

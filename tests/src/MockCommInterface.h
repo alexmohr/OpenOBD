@@ -7,15 +7,25 @@
 
 #include <cstddef>
 #include <cstdlib>
-#include "../../src/CAN/ICommunicationInterface.h"
+#include "../../src/communication/ICommunicationInterface.h"
 #include "../../src/OBD/Pid.h"
 
 using namespace std;
 
 class MockCommInterface : public ICommunicationInterface {
-    byte *data = (byte *) malloc(255);
-    int size;
+    byte *dataForNextRecv;
+    int dataForNextRecvSize;
+
+    byte *dataFromLastSend;
+    int dataFromLastSendSize;
+
+    function<void(byte *inBuf, int inBufSize, byte *outBuf, int &outBufSize)> recvCallback;
+    bool recvCallbackSet = false;
 public:
+
+    MockCommInterface();
+
+    ~MockCommInterface();
 
     bool supportEverything = false;
 
@@ -34,19 +44,23 @@ public:
     byte responseSupportedPidC1_E0[6] =
             {(byte) 0x41, (byte) SupportedPidC1_E0, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
 
-    int send(byte *buf, int buflen) override;
+    int send(byte *buf, int bufSize) override;
 
     int closeInterface() override;
 
 
     int openInterface() override;
 
+    void receive(byte *buf, int bufSize, int &readSize) override;
 
-    void receive(byte *buffer, int buffSize, int &readSize) override;
+    void setDataForNextReceiveCall(byte *data, int size);
 
-    void setNextReceive(byte *data, int size);
+    void getDataFromLastSend(byte *buf, int bufSize, int &recvSize);
 
     int configureInterface() override { return 0; };
+
+    void setDataReceivedCallback(
+            function<void(byte *inBuf, int inBufSize, byte *outBuf, int &outBufSize)> callBack, bool enable);
 
 };
 

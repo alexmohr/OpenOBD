@@ -27,39 +27,45 @@ int CliHandling::openCli(int argc, char *argv[]) {
     if (type != ELM_TESTER) {
         switch (type) {
             case ELM:
-                // todo support other interfaces.
-                commHandler = make_unique<ELM327WifiClient>(port, target);
+                // todo support other interfaces, like serial or blue tooth.
+                physicalComInterface = make_unique<SocketClient>(port, target);
+                logicalComInterface = make_unique<ELM327WifiClient>(physicalComInterface.get());
                 break;
             case TESTER:
-                commHandler = make_unique<CanIsoTP>(VEHICLE_ID, TESTER_ID, target);
+                logicalComInterface = make_unique<CanIsoTP>(VEHICLE_ID, TESTER_ID, target);
                 break;
             case ECU:
-                commHandler = make_unique<CanIsoTP>(TESTER_ID, VEHICLE_ID, target);
+                logicalComInterface = make_unique<CanIsoTP>(TESTER_ID, VEHICLE_ID, target);
                 break;
             default:
                 LOG(ERROR) << "Unsupported interface type";
                 return EXIT_FAILURE;
         }
 
-        cmdHandler = make_unique<CommandHandler>(type, commHandler.get());
+        cmdHandler = make_unique<CommandHandler>(type, logicalComInterface.get());
         return cmdHandler->start();
     } else {
         // elm tester does not allow a cli.
-        commHandler = make_unique<CanIsoTP>(VEHICLE_ID, TESTER_ID, target);
-        simElm = make_unique<ELM327WifiServer>(port, commHandler.get());
-        return simElm->openInterface();
+        physicalComInterface = make_unique<CanIsoTP>(VEHICLE_ID, TESTER_ID, target);
+        elmServer = make_unique<ELM327WifiServer>(port, physicalComInterface.get());
+        return elmServer->openInterface();
 
     }
 }
 
 void CliHandling::closeCli() {
+    if (logicalComInterface!= nullptr) {
+        logicalComInterface->closeInterface();
+    }
+    if (physicalComInterface != nullptr){
+        physicalComInterface->closeInterface();
+    }
     if (cmdHandler != nullptr) {
         cmdHandler->stopHandler();
     }
-    if (simElm != nullptr) {
-        simElm->closeInterface();
+    if (elmServer != nullptr) {
+        elmServer->closeInterface();
     }
-
 }
 
 void CliHandling::display_help(char *progname) {
@@ -148,8 +154,8 @@ bool CliHandling::isOpen() {
     if (nullptr != cmdHandler) {
         return cmdHandler->isOpen();
     }
-    if (nullptr != simElm) {
-        return simElm->isOpen();
+    if (nullptr != elmServer) {
+        return elmServer->isOpen();
     }
     return false;
 }

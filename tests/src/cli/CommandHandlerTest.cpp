@@ -6,7 +6,7 @@
 #include <gtest/gtest.h>
 #include <vector>
 #include "../../../src/cli/CommandHandler.h"
-#include "../../../src/CAN/CanIsoTP.h"
+#include "../../../src/communication/CanIsoTP.h"
 #include "../MockCommInterface.h"
 #include <random>
 
@@ -102,7 +102,7 @@ void TestCommandHandler(CLI_TYPE type) {
 
                 byte *data = pid.getVehicleData(service, cmdHandler->getObdHandler().getVehicle(), size);
                 data = cmdHandler->getObdHandler().createAnswerFrame(service, pid, data, size);
-                mockComm->setNextReceive(data, size);
+                mockComm->setDataForNextReceiveCall(data, size);
                 delete data;
 
                 // modify command to make getter

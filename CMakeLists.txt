@@ -38,8 +38,8 @@ include_directories("${gtest_SOURCE_DIR}/include include//*")
 
 set(CPPSRC
         lib/easylogging++.cc
-        src/CAN/CanIsoTP.cpp
-        src/CAN/CanIsoTP.h
+        src/communication/CanIsoTP.cpp
+        src/communication/CanIsoTP.h
         src/common/conversion.cpp
         src/common/conversion.h
         src/common/endian.h
@@ -98,12 +98,12 @@ set(CPPSRC
         src/OBD/data/BitEncoded/Throttle.cpp src/OBD/data/BitEncoded/Throttle.h
         src/OBD/data/dataObject/CalculatedDataObjectFactory.cpp
         src/OBD/data/dataObject/CalculatedDataObjectFactory.h
-        src/cli/CommandHandler.cpp src/cli/CommandHandler.h src/CAN/ELM327WifiClient.cpp
-        src/CAN/ELM327WifiClient.h src/CAN/SocketCommunicationBase.h src/CAN/SocketCommunicationBase.cpp
-        src/CAN/ICommunicationInterface.h src/cli/CommandInfo.cpp src/cli/CommandInfo.h
+        src/cli/CommandHandler.cpp src/cli/CommandHandler.h src/communication/ELM327WifiClient.cpp
+        src/communication/ELM327WifiClient.h src/communication/SocketCommunicationBase.h src/communication/SocketCommunicationBase.cpp
+        src/communication/ICommunicationInterface.h src/cli/CommandInfo.cpp src/cli/CommandInfo.h
         src/OBD/data/dataObject/DataObjectState.h src/OBD/data/dataObject/DataObjectStateFactory.cpp
         src/OBD/data/dataObject/DataObjectStateFactory.h src/OBD/data/dataObject/IDataObject.h
-        src/OBD/data/BitEncoded/Pid/SupportedPidCollection.cpp src/OBD/data/BitEncoded/Pid/SupportedPidCollection.h src/CAN/ELM327WifiServer.cpp src/CAN/ELM327WifiServer.h)
+        src/OBD/data/BitEncoded/Pid/SupportedPidCollection.cpp src/OBD/data/BitEncoded/Pid/SupportedPidCollection.h src/communication/ELM327WifiServer.cpp src/communication/ELM327WifiServer.h src/communication/SocketClient.cpp src/communication/SocketClient.h)
 
 
 add_executable(open_obd2 src/main.cpp ${CPPSRC})
@@ -114,7 +114,7 @@ add_executable(Test
         tests/src/OBD/OBDHandlerTest.cpp
         tests/src/OBD/OBDHandlerTestsService1.cpp
         tests/src/OBD/OBDHandlerTestsService2.cpp
-        tests/src/CAN/CanIsoTPTests.cpp
+        tests/src/communication/CanIsoTPTests.cpp
         tests/src/OBD/OBDHandlerTestSimulatedCAN.cpp
         tests/src/OBD/data/DataObjectTest.cpp
         tests/src/OBD/DataTroubleCodeTest.cpp
@@ -122,7 +122,7 @@ add_executable(Test
         tests/src/OBD/OBDHandlerTestService1Explicit.cpp
         tests/src/cli/CommandHandlerTest.cpp tests/main.cpp
         ${CPPSRC}
-        tests/src/CAN/ELM327WifiServerTest.cpp tests/src/MockCommInterface.cpp tests/src/MockCommInterface.h)
+        tests/src/communication/ELM327WifiServerTest.cpp tests/src/MockCommInterface.cpp tests/src/MockCommInterface.h tests/src/communication/ELM327WifiClientTest.cpp)
 
 
 install(TARGETS open_obd2 EXPORT open_obd2 DESTINATION bin)

@@ -70,30 +70,20 @@ int ELM327WifiServer::closeInterface() {
 }
 
 
-int ELM327WifiServer::parseData(byte *data, int &size) {
-    string ok = "OK\r";
+int ELM327WifiServer::parseMessage(byte *data, int &size) {
     if (size < 2) {
         size = -1;
         return -1;
     }
     // AT* command for config...
     if ((char) data[0] == 'A' && (char) data[1] == 'T') {
-
-        char cmd = (char) data[2];
-        if (cmd == 'H') {
-            int val = (char) data[3] - '0';
-            sendHeaders = val > 0;
-        } else if (cmd == 'S' && (char) data[3] - '0' == 0) {
-            sendSpaces = false;
-        } else if (cmd == 'S' && (char) data[3] - '1' == 0) {
-            sendSpaces = true;
-        }
-
-        size = static_cast<int>(ok.size());
-        memcpy(data, ok.c_str(), ok.size());
-        return 1;
+        return parseConfiguration(data, size);
     }
 
+    return parseData(data, size);
+}
+
+int ELM327WifiServer::parseData(byte *data, int &size) const {
     if ((size + 1) % 2 != 0) {
         size = -1;
         return -1;
@@ -113,7 +103,7 @@ int ELM327WifiServer::parseData(byte *data, int &size) {
         ss >> value;
 
         outBuf[j++] = (byte)
-        value;
+                value;
     }
 
     outBuf[j] = (byte) '\r';
@@ -122,23 +112,32 @@ int ELM327WifiServer::parseData(byte *data, int &size) {
     return 0;
 }
 
+int ELM327WifiServer::parseConfiguration(byte *data, int &size) {
+    string ok = "OK\r";
+    char cmd = (char) data[2];
+    if (cmd == 'H') {
+        int val = (char) data[3] - '0';
+        sendHeaders = val > 0;
+    } else if (cmd == 'S' && (char) data[3] - '0' == 0) {
+        sendSpaces = false;
+    } else if (cmd == 'S' && (char) data[3] - '1' == 0) {
+        sendSpaces = true;
+    }
+
+    size = static_cast<int>(ok.size());
+    memcpy(data, ok.c_str(), ok.size());
+    return 1;
+}
+
 
 void ELM327WifiServer::serve() {
     int clientSockFd;
-    size_t readSize;
-    int buffSize = 1024;
-    auto data = vector<byte>();
-    byte *inBuf = (byte *) malloc(buffSize);
-    byte *cmdBuf = (byte *) malloc(buffSize);
+
     struct sockaddr_in address;
     int addrlen = sizeof(address);
 
-    size_t i;
-    int j;
-
-    string hello = "\r>";
+    // configure timeouts
     struct timeval tv;
-
     fd_set myset;
     tv.tv_sec = 1;
     tv.tv_usec = 0;
@@ -155,57 +154,72 @@ void ELM327WifiServer::serve() {
             continue;
         }
 
+        serveClient(clientSockFd);
+    }
+}
 
-        while (!exitRequested) {
-            // send hello string
-            if (send(clientSockFd, hello.c_str(), hello.size(), MSG_NOSIGNAL) < 0) {
-                PLOG(ERROR) << "Failed to write to socket";
-                break;
-            }
-            // read data from input
-            readSize = read(clientSockFd, inBuf, buffSize);
-            for (i = 0; i < readSize; i++) {
-                data.push_back(inBuf[i]);
-            }
+void ELM327WifiServer::serveClient(int clientSockFd) {
 
-            for (i = 0; i < data.size(); i++) {
-                // command not read completely
-                if ('\r' != (char) data.at(i)) {
-                    continue;
-                }
+    size_t readSize;
+    int bufSize = 1024;
+    byte *inBuf = (byte *) malloc(bufSize);
+    byte *cmdBuf = (byte *) malloc(bufSize);
+    auto data = vector<byte>();
+    string prompt = "\r>";
 
-                int rs = static_cast<int>(i + 1);
-                memcpy(cmdBuf, data.data(), rs);
-                j = parseData(cmdBuf, rs);
-                if (rs < 0) {
-                    continue;
-                }
+    size_t i;
+    int j;
 
-                if (0 == j) { // data command
-                    handleDataCommand(clientSockFd, rs, cmdBuf, buffSize);
-                } else if (j > 0) { // config command
-                    if (send(clientSockFd, cmdBuf, rs, MSG_NOSIGNAL) < 0) {
-                        PLOG(ERROR) << "failed sending data";
-                        break;
-                    }
-                } else { // error
-                    LOG(ERROR) << "failed parsing data";
-                }
+    while (!exitRequested) {
+        // send prompt string
+        if (send(clientSockFd, prompt.c_str(), prompt.size(), MSG_NOSIGNAL) < 0) {
+            PLOG(ERROR) << "Failed to write to socket";
+            break;
+        }
+        // read data from input
+        readSize = read(clientSockFd, inBuf, bufSize);
+        for (i = 0; i < readSize; i++) {
+            data.push_back(inBuf[i]);
+        }
 
-                data.erase(data.begin(), data.begin() + i + 1);
-                i = 0;
+        for (i = 0; i < data.size(); i++) {
+            // command not read completely
+            if ('\r' != (char) data.at(i)) {
+                continue;
             }
 
+            int rs = static_cast<int>(i + 1);
+            memcpy(cmdBuf, data.data(), rs);
+            j = parseMessage(cmdBuf, rs);
+            if (rs < 0) {
+                continue;
+            }
+
+            if (0 == j) { // data command
+                sendDataAnswer(clientSockFd, rs, cmdBuf, bufSize);
+            } else if (j > 0) { // config command
+                sendConfigurationAnswer(clientSockFd, cmdBuf, rs);
+            } else { // error
+                LOG(ERROR) << "failed parsing data";
+            }
+
+            data.erase(data.begin(), data.begin() + i + 1);
+            i = 0;
         }
     }
-
 
     delete inBuf;
     delete cmdBuf;
 
 }
 
-void ELM327WifiServer::handleDataCommand(int clientSockFd, int dataSize, byte *cmdBuf, int bufSize) const {
+void ELM327WifiServer::sendConfigurationAnswer(int clientSockFd, const byte *cmdBuf, int rs) const {
+    if (send(clientSockFd, cmdBuf, rs, MSG_NOSIGNAL) < 0) {
+        PLOG(ERROR) << "failed sending data";
+    }
+}
+
+void ELM327WifiServer::sendDataAnswer(int clientSockFd, int dataSize, byte *cmdBuf, int bufSize) const {
     int readSize;
     byte service = (byte) ((int) cmdBuf[0] + ANSWER_OFFSET);
     byte pid = cmdBuf[1];
@@ -238,13 +252,17 @@ void ELM327WifiServer::handleDataCommand(int clientSockFd, int dataSize, byte *c
     if (sendHeaders) {
         std::stringstream ss2;
         ss2 << std::hex << std::setfill('0') << std::setw(2) << j;
-        st = "7E8" + ss2.str() + st + "\r";
+        st = to_string(TESTER_ID) + ss2.str() + st + "\r";
     }
 
     std::transform(st.begin(), st.end(), st.begin(), ::toupper);
 
 
-    if (write(clientSockFd, st.c_str(), st.size()) < 0) {
+    sendString(clientSockFd, st);
+}
+
+void ELM327WifiServer::sendString(int clientSockFd, const string &st) const {
+    if (send(clientSockFd, st.c_str(), st.size(), MSG_NOSIGNAL) < 0) {
         PLOG(ERROR) << "Failed to send frame to elm client";
     }
 }

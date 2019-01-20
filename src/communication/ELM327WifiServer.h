@@ -38,12 +38,22 @@ public: // ELM327WifiClient
 
     int openInterface();
 
-    int parseData(byte *data, int &size);
+    int parseMessage(byte *data, int &size);
 
 private:
     void serve();
 
-    void handleDataCommand(int clientSockFd, int dataSize, byte *cmdBuf, int bufSize) const;
+    void sendDataAnswer(int clientSockFd, int dataSize, byte *cmdBuf, int bufSize) const;
+
+    int parseConfiguration(byte *data, int &size);
+
+    int parseData(byte *data, int &size) const;
+
+    void serveClient(int clientSockFd);
+
+    void sendConfigurationAnswer(int clientSockFd, const byte *cmdBuf, int rs) const;
+
+    void sendString(int clientSockFd, const string &st) const;
 };
 
 

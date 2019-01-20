@@ -1,31 +1,48 @@
+#include <utility>
+
 //
 // Created by me on 14/01/19.
 //
 
 #include "MockCommInterface.h"
 
-int MockCommInterface::send(byte *buf, int buflen) {
-    if (supportEverything && buflen >= 2) {
 
+MockCommInterface::MockCommInterface() {
+    dataForNextRecv = (byte *) malloc(255);
+    dataFromLastSend = (byte *) malloc(255);
+}
+
+MockCommInterface::~MockCommInterface() {
+    delete dataForNextRecv;
+    delete dataFromLastSend;
+}
+
+int MockCommInterface::send(byte *buf, int bufSize) {
+    if (supportEverything && bufSize >= 2) {
         if (buf[1] == (byte) SupportedPid01_20) {
-            setNextReceive(responseSupportedPid01_20, 6);
+            setDataForNextReceiveCall(responseSupportedPid01_20, 6);
         } else if (buf[1] == (byte) SupportedPid21_40) {
-            setNextReceive(responseSupportedPid21_40, 6);
+            setDataForNextReceiveCall(responseSupportedPid21_40, 6);
         } else if (buf[1] == (byte) SupportedPid41_60) {
-            setNextReceive(responseSupportedPid41_60, 6);
+            setDataForNextReceiveCall(responseSupportedPid41_60, 6);
         } else if (buf[1] == (byte) SupportedPid61_80) {
-            setNextReceive(responseSupportedPid61_80, 6);
+            setDataForNextReceiveCall(responseSupportedPid61_80, 6);
         } else if (buf[1] == (byte) SupportedPid81_A0) {
-            setNextReceive(responseSupportedPid81_A0, 6);
+            setDataForNextReceiveCall(responseSupportedPid81_A0, 6);
         } else if (buf[1] == (byte) SupportedPidA1_C0) {
-            setNextReceive(responseSupportedPidA1_C0, 6);
+            setDataForNextReceiveCall(responseSupportedPidA1_C0, 6);
         } else if (buf[1] == (byte) SupportedPidC1_E0) {
-            setNextReceive(responseSupportedPidC1_E0, 6);
+            setDataForNextReceiveCall(responseSupportedPidC1_E0, 6);
         }
-
     }
 
-    return buflen;
+
+    if (recvCallbackSet) {
+        recvCallback(buf, bufSize, dataForNextRecv, dataForNextRecvSize);
+    }
+
+    memcpy(dataFromLastSend, buf, bufSize);
+    return bufSize;
 }
 
 int MockCommInterface::closeInterface() {
@@ -37,12 +54,38 @@ int MockCommInterface::openInterface() {
 };
 
 
-void MockCommInterface::receive(byte *buffer, int buffSize, int &readSize) {
-    memcpy(buffer, data, size);
-    readSize = size;
+void MockCommInterface::receive(byte *buf, int bufSize, int &readSize) {
+    if (dataForNextRecvSize > bufSize) {
+        LOG(ERROR) << "BUFFER TOO SMALL";
+        return;
+    }
+
+    memcpy(buf, dataForNextRecv, dataForNextRecvSize);
+    readSize = dataForNextRecvSize;
 }
 
-void MockCommInterface::setNextReceive(byte *data, int size) {
-    memcpy(this->data, data, size);
-    this->size = size;
+void MockCommInterface::setDataForNextReceiveCall(byte *data, int size) {
+    memcpy(this->dataForNextRecv, data, size);
+    this->dataForNextRecvSize = size;
 }
+
+void MockCommInterface::getDataFromLastSend(byte *buf, int bufSize, int &recvSize) {
+    if (dataFromLastSendSize > bufSize) {
+        recvSize = -1;
+        return;
+    }
+
+    memcpy(buf, dataFromLastSend, dataFromLastSendSize);
+    recvSize = dataFromLastSendSize;
+}
+
+void MockCommInterface::setDataReceivedCallback(
+        function<void(byte *inBuf, int inBufSize, byte *outBuf, int &outBufSize)> callBack, bool enable) {
+    recvCallbackSet = enable;
+    if (enable) {
+        recvCallback = std::move(callBack);
+    }
+
+
+}
+

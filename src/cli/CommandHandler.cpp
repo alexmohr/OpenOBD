@@ -394,13 +394,6 @@ DataObjectState CommandHandler::setDataViaPid(string val, Service service, Pid p
         }
     }
 
-    int i = 0;
-    byte *data = pid.getVehicleData(service, obdHandler->getVehicle(), i);
-    data = obdHandler->createAnswerFrame(service, pid, data, i);
-    i = com->send(data, i);
-
-    delete data;
-
     cout << "New value: " << frameObject.getPrintableData() << endl;
     return DataObjectState(SUCCESS);
 }

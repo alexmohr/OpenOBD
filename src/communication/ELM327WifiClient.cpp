@@ -5,73 +5,24 @@
 #include "ELM327WifiClient.h"
 #include "easylogging++.h"
 #include "../common/conversion.h"
-#include <sys/socket.h>
-#include <stdlib.h>
-#include <netinet/in.h>
-#include <libnet.h>
 #include <chrono>
 #include <iomanip>
 #include <thread>
-#include <spqr.hpp>
 
 using namespace std::chrono_literals;
 
-ELM327WifiClient::ELM327WifiClient(int port, char *host) {
-    this->port = port;
-    this->host = host;
+
+ELM327WifiClient::ELM327WifiClient(ICommunicationInterface *socketClient) {
+    this->socketClient = socketClient;
+
 }
 
-
 int ELM327WifiClient::openInterface() {
-    int res, valopt;
-    struct sockaddr_in addr;
-    long arg;
-    fd_set myset;
-    struct timeval tv;
-    socklen_t lon;
+    return socketClient->openInterface();
+}
 
-    // Create socket
-    socketHandle = socket(AF_INET, SOCK_STREAM, 0);
-
-    // Set non-blocking
-    arg = fcntl(socketHandle, F_GETFL, NULL);
-    arg |= O_NONBLOCK;
-    fcntl(socketHandle, F_SETFL, arg);
-
-    // Trying to connect with timeout
-    addr.sin_family = AF_INET;
-    addr.sin_port = htons(port);
-    addr.sin_addr.s_addr = inet_addr(host);
-    res = connect(socketHandle, (struct sockaddr *) &addr, sizeof(addr));
-    if (res < 0) {
-        if (errno == EINPROGRESS) {
-            tv.tv_sec = 15;
-            tv.tv_usec = 0;
-            FD_ZERO(&myset);
-            FD_SET(socketHandle, &myset);
-            if (select(socketHandle + 1, NULL, &myset, NULL, &tv) > 0) {
-                lon = sizeof(int);
-                getsockopt(socketHandle, SOL_SOCKET, SO_ERROR, (void *) (&valopt), &lon);
-                if (valopt) {
-                    LOG(ERROR) << "Error in connection() " << valopt << " - " << strerror(valopt);
-                    return 1;
-                }
-            } else {
-                LOG(ERROR) << "Timeout or error() " << valopt << " - " << strerror(valopt);
-                return 1;
-            }
-        } else {
-            LOG(ERROR) << "Error on connection" << errno << ": " << strerror(errno);
-            return 1;
-        }
-    }
-
-    // Set to blocking mode again...
-    arg = fcntl(socketHandle, F_GETFL, NULL);
-    arg &= (~O_NONBLOCK);
-    fcntl(socketHandle, F_SETFL, arg);
-
-    return 0;
+int ELM327WifiClient::closeInterface() {
+    return socketClient->closeInterface();
 }
 
 void ELM327WifiClient::receive(byte *buf, int bufSize, int &readSize) {
@@ -95,7 +46,7 @@ bool ELM327WifiClient::readDeviceBuffer(byte *buf, int bufSize, int &readSize) {
     int additionalReadSize;
     readSize = 0;
     do {
-        SocketCommunicationBase::receive(tempReadBuffer, bufSize, additionalReadSize);
+        socketClient->receive(tempReadBuffer, bufSize, additionalReadSize);
         if (additionalReadSize > 0) {
             if (readSize + readSize < bufSize) {
                 // append the additional received data to our existing buf.
@@ -123,10 +74,16 @@ void ELM327WifiClient::parseData(byte *buf, const int bufSize, int &readSize) {
         return;
     }
 
-    if (usedProtocol > maxSaeIndex) {
-        removeHeader(buf, bufSize, readSize, 5);
-    } else {
+    if (usedProtocol->canIdBitLength == 0) {
         removeHeader(buf, bufSize, readSize, 6);
+        removeFooter(buf, bufSize, readSize, 1);
+    } else {
+        if (usedProtocol->canIdBitLength == 11) {
+            removeHeader(buf, bufSize, readSize, 5);
+        } else {
+            removeHeader(buf, bufSize, readSize, 10);
+        }
+
     }
 
     byte *bufCopy = (byte *) malloc(readSize);
@@ -146,8 +103,23 @@ void ELM327WifiClient::parseData(byte *buf, const int bufSize, int &readSize) {
         byteValue = (byte) convertHexToInt(string(tempCharBuf));
         buf[dataIndex++] = byteValue;
     }
-
+    readSize = dataIndex - 2;
     delete bufCopy;
+}
+
+
+void ELM327WifiClient::removeFooter(byte *buf, int bufSize, int &readSize, int byteCountToRemove) const {
+    if (readSize < byteCountToRemove) {
+        readSize = -1;
+        return;
+    }
+
+    byte *tempCharBuf = (byte *) malloc(readSize);
+    memcpy(tempCharBuf, buf, readSize - byteCountToRemove);
+    memset(buf, 0, bufSize);
+    memcpy(buf, tempCharBuf, readSize);
+    readSize -= byteCountToRemove;
+    delete tempCharBuf;
 }
 
 void ELM327WifiClient::removeHeader(byte *buf, const int bufSize, int &readSize, int byteCountToRemove) const {
@@ -166,7 +138,7 @@ void ELM327WifiClient::removeHeader(byte *buf, const int bufSize, int &readSize,
 
 int ELM327WifiClient::getDataStartIndex(const byte *buf, const int recvSize) const {
     int startIndex = 0;
-    while (((char) buf[startIndex] == '\r' || (char) buf[startIndex] == '>')
+    while ((char) buf[startIndex] == '>'
            && startIndex < recvSize) {
         startIndex++;
     }
@@ -184,9 +156,9 @@ int ELM327WifiClient::getDataStartIndex(const byte *buf, const int recvSize) con
     return startIndex;
 }
 
-int ELM327WifiClient::send(byte *buf, int buflen) {
+int ELM327WifiClient::send(byte *buf, int bufSize) {
     std::stringstream ss;
-    for (int i(0); i < buflen; ++i) {
+    for (int i(0); i < bufSize; ++i) {
         ss << std::hex << std::setfill('0') << std::setw(2) << (int) buf[i];
     }
 
@@ -197,21 +169,27 @@ int ELM327WifiClient::send(byte *buf, int buflen) {
 
 int ELM327WifiClient::configureInterface() {
     int bufSize = 1024;
-    bool configSuccess = true;
-
     byte *buf = (byte *) malloc(bufSize);
 
     // echo OFF
-    configSuccess &= configurationCommandSendSuccessfully(buf, bufSize, "ATE0");
+    string command = CONFIG_ECHO + "0";
+    string log = "Did not receive positive response for command: ";
+    if (!configurationCommandSendSuccessfully(buf, bufSize, command)) {
+        LOG(ERROR) << log << command;
+        return 1;
+    }
 
     // headers ON
-    configSuccess &= configurationCommandSendSuccessfully(buf, bufSize, "ATH1");
+    command = CONFIG_HEADER + "1";
+    if (!configurationCommandSendSuccessfully(buf, bufSize, command)) {
+        LOG(ERROR) << log << command;
+        return 1;
+    }
 
     // spaces OFF
-    configSuccess &= configurationCommandSendSuccessfully(buf, bufSize, "ATS0");
-
-    if (!configSuccess) {
-        LOG(ERROR) << "Configuration of interface failed.";
+    command = CONFIG_SPACES + "0";
+    if (!configurationCommandSendSuccessfully(buf, bufSize, command)) {
+        LOG(ERROR) << log << command;
         return 1;
     }
 
@@ -224,17 +202,16 @@ int ELM327WifiClient::findProtocol(int bufSize, byte *buf) {
             const_cast<char *>("BUS INIT")
     };
 
-    const int protocolCount = 10;
-    int protocolNumber;
-
     bool protocolFound = false;
-    for (protocolNumber = 1; protocolNumber <= protocolCount; protocolNumber++) {
-        protocolFound = isProtocolWorking(bufSize, buf, searchStrings, protocolNumber);
+    ElmProtocol *protocol = nullptr;
+    for (auto &availableProtocol : ELM327WifiClient::availableProtocols) {
+        protocol = &availableProtocol.second;
+        protocolFound = isProtocolWorking(bufSize, buf, searchStrings, protocol->id);
         if (protocolFound) {
             break;
         }
 
-        LOG(DEBUG) << "Protocol " << protocolNumber << " failed: " << (char *) buf;
+        LOG(DEBUG) << "Protocol " << protocol->id << " failed: " << (char *) buf;
     }
 
     if (!protocolFound) {
@@ -242,8 +219,8 @@ int ELM327WifiClient::findProtocol(int bufSize, byte *buf) {
         return 1;
     }
 
-    LOG(DEBUG) << "Protocol can be used: " << protocolNumber;
-    usedProtocol = protocolNumber;
+    LOG(DEBUG) << "Protocol can be used: " << protocol->name;
+    usedProtocol = protocol;
     return 0;
 }
 
@@ -253,7 +230,9 @@ bool ELM327WifiClient::isProtocolWorking(
     int strCompRes = 0;
     const string protocolTestMessage = "0101\r";
 
-    if (!configurationCommandSendSuccessfully(buf, bufSize, "ATSP" + to_string(protocolNumber))) {
+    string id = convertIntToHex(protocolNumber);
+    transform(id.begin(), id.end(), id.begin(), ::toupper);
+    if (!configurationCommandSendSuccessfully(buf, bufSize, "ATSP" + id)) {
         return false;
     }
 
@@ -318,5 +297,5 @@ bool ELM327WifiClient::messageContains(const byte *buf, int recvSize, string dat
 
 int ELM327WifiClient::sendString(const string &data) {
     LOG(DEBUG) << "Sending: " << data;
-    return SocketCommunicationBase::send((byte *) data.c_str(), static_cast<int>(data.size()));
+    return socketClient->send((byte *) data.c_str(), static_cast<int>(data.size()));
 }

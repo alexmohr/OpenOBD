@@ -10,9 +10,9 @@
 #include <mutex>
 #include <condition_variable>
 #include "../OBD/Pid.h"
-#include "../CAN/CanIsoTP.h"
-#include "../CAN/ELM327WifiClient.h"
-#include "../CAN/ELM327WifiServer.h"
+#include "../communication/CanIsoTP.h"
+#include "../communication/ELM327WifiClient.h"
+#include "../communication/ELM327WifiServer.h"
 #include "../OBD/OBDHandler.h"
 #include "CommandInfo.h"
 
@@ -137,7 +137,6 @@ public:
             {"AcceleratorPedalPositionD",        CommandInfo(Service::POWERTRAIN, AcceleratorPedalPositionD)},
             {"AcceleratorPedalPositionE",        CommandInfo(Service::POWERTRAIN, AcceleratorPedalPositionE)},
             {"AcceleratorPedalPositionF",        CommandInfo(Service::POWERTRAIN, AcceleratorPedalPositionF)},
-
     };
 
 

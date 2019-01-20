@@ -21,7 +21,7 @@ public:
 
     virtual int configureInterface() = 0;
 
-   // virtual ~ICommunicationInterface() = 0;
+    virtual ~ICommunicationInterface() = default;
 
 };
 

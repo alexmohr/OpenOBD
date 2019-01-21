@@ -85,7 +85,7 @@ int CanIsoTP::openInterface() {
     addr.can_addr.tp.tx_id = addr.can_addr.tp.rx_id = NO_CAN_ID;
 
     addr.can_addr.tp.tx_id = static_cast<canid_t>(txId);
-    if (txId > MAX_CAN_ID_NORMAL){
+    if (txId > MAX_CAN_ID_NORMAL) { // set extended flag
         addr.can_addr.tp.tx_id |= CAN_EFF_FLAG;
     }
 
@@ -94,9 +94,8 @@ int CanIsoTP::openInterface() {
         addr.can_addr.tp.rx_id |= CAN_EFF_FLAG;
     }
 
-
     opts.flags |= (CAN_ISOTP_TX_PADDING | CAN_ISOTP_RX_PADDING);
-    opts.flags |= (CAN_ISOTP_CHK_PAD_LEN | CAN_ISOTP_CHK_PAD_DATA);
+    //opts.flags |= (CAN_ISOTP_CHK_PAD_LEN | CAN_ISOTP_CHK_PAD_DATA);
 
 
     if ((socketHandle = socket(PF_CAN, SOCK_DGRAM, CAN_ISOTP)) < 0) {

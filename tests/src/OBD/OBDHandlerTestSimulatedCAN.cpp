@@ -37,7 +37,7 @@ TEST(OBDHandler, PIDSupported01_20_With_VirtualCAN) {
     testerCAN->send(request.data(), static_cast<int>(request.size()));
     vehicleCAN->receive(buf, static_cast<int>(request.size()), readSize);
 
-    int dataSize = 0;
+    int dataSize = request.size();
     byte *val = handler->createAnswerFrame(buf, dataSize);
     EXPECT_EQ(dataSize, response.size());
     compareResponse(response, val);
@@ -72,7 +72,8 @@ TEST(OBDHandler, AmbientTemperature_46_With_VirtualCAN) {
     testerCAN->send(request.data(), static_cast<int>(request.size()));
     vehicleCAN->receive(buf, static_cast<int>(request.size()), readSize);
 
-    int dataSize = 0;
+    int dataSize = static_cast<int>(request.size());
+    handler->getVehicle()->getPidSupport().setPidSupported(Service::POWERTRAIN, AmbientAirTemperature, true);
     byte *val = handler->createAnswerFrame(buf, dataSize);
     vehicleCAN->send(val, dataSize);
     EXPECT_EQ(dataSize, response.size());

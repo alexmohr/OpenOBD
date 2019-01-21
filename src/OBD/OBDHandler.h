@@ -9,6 +9,12 @@
 #include "../Vehicle.h"
 
 #define ANSWER_OFFSET 0x40
+#define NEGATIVE_RESPONSE 0x7F
+#define SUB_FUNCTION_NOT_SUPPORTED 0x12
+#define INCORRECT_MESSAGE_LENGTH_OR_FORMAT 0x13
+#define CONDITIONS_NOT_CORRECT 0x22
+#define SECURITY_ACCESS_DENIED 0x33
+
 
 class OBDHandler{
 private:
@@ -30,6 +36,8 @@ public:
 
     byte *createAnswerFrame(Service service, Pid pid, byte *data, int &size);
 
+    byte *createErrorFrame(int type, int &size, byte &attemptedFunction);
+
     /**
      * Updates the vehicle with received data.
      * @param frame The CAN frame received which contains the data.
@@ -42,7 +50,7 @@ public:
 
     int getServiceAndPidInfo(int pidId, int serviceId, Pid &pid, Service &service);
 
-
+    DataObjectState isPidSupported(Service service, int pid);
 };
 
 #endif //OPEN_OBD2_OBDHANDLER_H

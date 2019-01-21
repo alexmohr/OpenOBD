@@ -15,9 +15,14 @@
 int SocketCommunicationBase::send(byte *buf, int buflen) {
     int returnValue = 0;
 
+    if (-1 == socketHandle) {
+        openInterface();
+    }
+
     returnValue = static_cast<int>(::send(socketHandle, buf, buflen, MSG_NOSIGNAL));
     if (returnValue < 0) {
         PLOG(ERROR) << "Failed to write to socket";
+        closeInterface();
         return returnValue;
     }
 

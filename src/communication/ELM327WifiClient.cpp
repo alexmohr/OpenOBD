@@ -45,6 +45,7 @@ bool ELM327WifiClient::readDeviceBuffer(byte *buf, int bufSize, int &readSize) {
 
     int additionalReadSize;
     readSize = 0;
+    auto startTime = chrono::high_resolution_clock::now();
     do {
         socketClient->receive(tempReadBuffer, bufSize, additionalReadSize);
         if (additionalReadSize > 0) {
@@ -57,12 +58,12 @@ bool ELM327WifiClient::readDeviceBuffer(byte *buf, int bufSize, int &readSize) {
                 readSize = -1;
                 return false;
             }
-
         }
-
         hasTimeout = chrono::_V2::system_clock::now() - t0 > 500ms;
     } while ((char) buf[readSize - 1] != '>' && !hasTimeout);
-
+    auto runTime = (chrono::high_resolution_clock::now() - startTime);
+    LOG(DEBUG) << "Getting value from ecu took: " << chrono::duration_cast<chrono::milliseconds>(runTime).count()
+               << "ms";
     delete tempReadBuffer;
     return readSize > 0;
 }
@@ -83,7 +84,9 @@ void ELM327WifiClient::parseData(byte *buf, const int bufSize, int &readSize) {
         } else {
             removeHeader(buf, bufSize, readSize, 10);
         }
-
+    }
+    if (readSize < 1) {
+        return;
     }
 
     byte *bufCopy = (byte *) malloc(readSize);

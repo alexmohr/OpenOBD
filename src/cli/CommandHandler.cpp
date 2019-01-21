@@ -1,3 +1,5 @@
+#include <utility>
+
 //
 // Created by me on 02/01/19.
 //
@@ -34,12 +36,9 @@ int CommandHandler::start() {
     open = true;
     tCmdHandler = thread(&CommandHandler::cmdHandler, this);
 
-    if (type != ELM) {
-        tCanHandler = thread(&CommandHandler::comHandler, this, com);
-    }
-
     if (type == ECU) {
         configureVirtualVehicle(obdHandler->getVehicle());
+        tRecv = thread(&CommandHandler::ecuRecvThread, this, com);
     } else {
         // run in background to give user to chance to abort if
         // the requests to the vehicle time out.
@@ -57,11 +56,9 @@ void CommandHandler::stopHandler() {
     exitRequested = true;
 
     LOG(DEBUG) << "Closing command handler";
-    if (type != ELM) {
-        tCanHandler.join();
-    }
-
-    if (type != ECU) {
+    if (type == ECU) {
+        tRecv.join();
+    } else {
         tInit.join();
     }
 
@@ -115,12 +112,12 @@ void CommandHandler::configureVehicle() {
 }
 
 
-void CommandHandler::comHandler(ICommunicationInterface *com) {
+void CommandHandler::ecuRecvThread(ICommunicationInterface *com) {
     int bufSize = 255;
     byte *buf = (byte *) malloc(bufSize);
     int readSize = 0;
 
-    // will not run for ELM
+
     while (!exitRequested) {
         com->receive(buf, bufSize, readSize);
         if (readSize <= 0) {
@@ -129,27 +126,13 @@ void CommandHandler::comHandler(ICommunicationInterface *com) {
 
         // Answer frame
         if ((int) buf[0] >= ANSWER_OFFSET) {
-            obdHandler->updateFromFrame(buf, readSize);
-            if (expectedPid == -1) {
-                continue;
-            }
-
-            if ((int) buf[1] == expectedPid) {
-                dataCv.notify_one();
-            }
-        } else {
-            if (ECU != type) {
-                continue;
-            }
-
-            byte *answer;
-            answer = obdHandler->createAnswerFrame(buf, readSize);
-            if (nullptr != answer) {
-                com->send(answer, readSize);
-                delete answer;
-            }
+            continue;
         }
 
+        byte *answer;
+        answer = obdHandler->createAnswerFrame(buf, readSize);
+        com->send(answer, readSize);
+        delete answer;
         usleep(100);
     }
 
@@ -278,13 +261,13 @@ DataObjectState CommandHandler::getData(std::vector<std::string> &cmd) {
 
     if (!getPid(cmd, pid, service)) {
         return getDataSpecial(cmd);
-
     }
 
-    state = isPidSupported(service, pid);
+    state = obdHandler->isPidSupported(service, pid.id);
     if (state.type != SUCCESS){
         return state;
     }
+
 
     // query data from ecu if we are not one
     if (ECU != type) {
@@ -313,7 +296,8 @@ DataObjectState CommandHandler::getDataSpecial(std::vector<std::string> &cmd) {
             pid = convertHexToInt(cmd.at(3));
         }
 
-        bool supported = obdHandler->getVehicle()->getPidSupport().getPidSupported((Service) service, pid);
+        bool supported =
+                obdHandler->getVehicle()->getPidSupport().getPidSupported((Service) service, pid);
         cout << hex << "Support for pid " << pid << " new value: " << to_string(supported) << endl;
         return DataObjectState(ErrorType::SUCCESS);
     } else {
@@ -358,13 +342,13 @@ DataObjectState CommandHandler::setData(std::vector<std::string> &cmd) {
 
 
 DataObjectState CommandHandler::setDataViaPid(string val, Service service, Pid pid) {
-    DataObjectState state = isPidSupported(service, pid);
+    DataObjectState state = obdHandler->isPidSupported(service, pid.id);
     if (state.type != SUCCESS){
         return state;
     }
     // Try to update vehicle from data.
     auto &frameObject = pid.getFrameObject(obdHandler->getVehicle());
-    DataObjectStateCollection sc = frameObject.setValueFromString(val);
+    DataObjectStateCollection sc = frameObject.setValueFromString(std::move(val));
     if (!sc.msg.empty()) {
         cout << sc.msg;
     }
@@ -416,20 +400,20 @@ DataObjectState CommandHandler::setDataSpecial(std::vector<std::string> &cmd) {
         }
 
         int val = convertStringToT<int>(cmd.at(4));
-
         obdHandler->getVehicle()->getPidSupport().setPidSupported((Service) service, pid, val > 0);
         return DataObjectState(ErrorType::SUCCESS);
     } else {
         cout << "Command " << cmd.at(1) << " is invalid." << endl;
         return DataObjectState(ErrorType::DATA_ERROR);
     }
-
 }
-
-
 
 // Queries the vehicle and updates internal stored object
 DataObjectState CommandHandler::queryECU(Pid pid, Service service) {
+    if (obdHandler->isPidSupported(service, pid.id).type != SUCCESS) {
+        return NOT_SUPPORTED;
+    }
+
     const int maxTries = 3;
     int tries = 0;
     int frameLen = 0;
@@ -439,64 +423,32 @@ DataObjectState CommandHandler::queryECU(Pid pid, Service service) {
                                   + " in service " + to_string(service) + " in " + to_string(maxTries) + " tries";
 
     byte *frame = pid.getQueryForService(service, frameLen);
+    int bufSize = 255;
+    byte *buf = (byte *) malloc(bufSize);
+    int readSize = 0;
+    bool success;
 
-    if (type == TESTER) {
-        cv_status result;
-        // try 3 times to receive the data. Give ecu 500ms each.
-        do {
-            com->send(frame, frameLen);
-
-            // wait until answer is received.
-            expectedPid = pid.id;
-            std::unique_lock<std::mutex> lk(dataMutex);
-            result = dataCv.wait_for(lk, timeout);
-        } while (result != cv_status::no_timeout && tries++ < maxTries);
-
-        if (cv_status::timeout == result) {
-            LOG(WARNING) << timeoutWarning;
-            retVal = DataObjectState(TIMEOUT);
+    do {
+        com->send(frame, frameLen);
+        bool hasTimeout = false;
+        auto t0 = chrono::high_resolution_clock::now();
+        while (readSize <= 0 && !hasTimeout) {
+            com->receive(buf, bufSize, readSize);
+            hasTimeout = (chrono::high_resolution_clock::now() - t0) > timeout;
         }
 
-    } else {
-        // make space for answer
-        int buflen = 255;
-        byte *buf = (byte *) malloc(buflen);
-        int readSize = 0;
-        bool success;
-        int i;
-
-        do {
-            com->send(frame, frameLen);
-
-            bool hasTimeout = false;
-            auto t0 = chrono::high_resolution_clock::now();
-            while (readSize <= 0 && !hasTimeout) {
-                com->receive(buf, buflen, readSize);
-                hasTimeout = (chrono::high_resolution_clock::now() - t0) > timeout;
-            }
-
-            if (hasTimeout || readSize < 1) {
-                continue;
-            }
-
-            int rs = readSize + 1;
-            byte *nbuf = (byte *) (malloc(rs));
-            for (i = 0; i < readSize; i++) {
-                nbuf[i + 1] = buf[i];
-            }
-
-            nbuf[0] = (byte) (service + ANSWER_OFFSET);
-            obdHandler->updateFromFrame(buf, readSize);
-            success = true;
-            delete nbuf;
-        } while (!success && tries++ < maxTries);
-
-        if (!success) {
-            LOG(WARNING) << timeoutWarning;
-            retVal = DataObjectState(TIMEOUT);
+        if (hasTimeout || readSize < 1) {
+            continue;
         }
 
-        delete buf;
+        obdHandler->updateFromFrame(buf, readSize);
+        success = true;
+    } while (!success && tries++ < maxTries);
+
+
+    if (!success) {
+        LOG(WARNING) << timeoutWarning;
+        retVal = DataObjectState(TIMEOUT);
     }
 
     delete frame;
@@ -510,13 +462,5 @@ OBDHandler &CommandHandler::getObdHandler() {
 
 bool CommandHandler::isInitDone() {
     return initDone;
-}
-
-DataObjectState CommandHandler::isPidSupported(Service service, Pid pid) {
-    if (!(obdHandler->getVehicle()->getPidSupport().getPidSupported(service, pid.id))) {
-        cout << "The requested command is not supported by the vehicle" << endl;
-        return DataObjectState(NOT_SUPPORTED);
-    }
-    return DataObjectState(SUCCESS);
 }
 

@@ -122,7 +122,7 @@ TEST(OBDHandler, PID_00_PIDSupported01_20_Single) {
         EXPECT_TRUE(handler->getVehicle()->getPidSupport().getPidSupported(Service::POWERTRAIN, value));
     }
 
-    int dataSize = 0;
+    int dataSize = static_cast<int>(request.size());
     byte *val = handler->createAnswerFrame(request.data(), dataSize);
     EXPECT_EQ(dataSize, response.size());
     compareResponse(response, val);
@@ -147,7 +147,7 @@ TEST(OBDHandler, PID_00_PIDSupported01_20_Setter) {
         EXPECT_TRUE(handler->getVehicle()->getPidSupport().getPidSupported(service, value));
     }
 
-    int dataSize = 0;
+    int dataSize = static_cast<int>(request.size());
     byte *val = handler->createAnswerFrame(request.data(), dataSize);
     EXPECT_EQ(dataSize, response.size());
     compareResponse(response, val);
@@ -175,6 +175,8 @@ TEST(OBDHandler, PID_00_PIDSupportedGeneric) {
 
     for (const auto &pid: pids) {
         k = pidsPerCall;
+        vehicle->getPidSupport().setPidSupported(service, pid, true);
+        EXPECT_TRUE(vehicle->getPidSupport().getPidSupported(service, pid));
         for (j = 1; j <= pidsPerCall; j++) {
             currentPid++;
             EXPECT_FALSE(vehicle->getPidSupport().getPidSupported(service, currentPid));
@@ -182,8 +184,9 @@ TEST(OBDHandler, PID_00_PIDSupportedGeneric) {
             vehicle->getPidSupport().setPidSupported(service, currentPid, true);
             EXPECT_TRUE(vehicle->getPidSupport().getPidSupported(service, currentPid));
 
+
             vector<byte> request = {RequestServiceID, (byte) pid};
-            int dataSize = 0;
+            int dataSize = static_cast<int>(request.size());
             byte *val = handler->createAnswerFrame(request.data(), dataSize);
             auto *response = (byte *) malloc(sizeof(byte) * 8);
             response[0] = ResponseServiceID;
@@ -277,12 +280,14 @@ TEST(OBDHandler, PID_01_AND_40_MonitoringStatus) {
 // make sure that the application can generate the request on its own and does not need can frames to init.
 TEST(OBDHandler, PID_01_Test_MIL) {
     OBDHandler *handler = getHandler();
+    handler->getVehicle()->getPidSupport().setPidSupported(Service::POWERTRAIN,
+                                                           Service1Pids::MonitoringStatusSinceDTCsCleared, true);
     MonitorStatus &monitoringStatus = handler->getVehicle()->getMonitorStatusSinceDTCsCleared();
-// validate object state
+    // validate object state
     monitoringStatus.setMil(true);
     const auto pid = (byte) 0x01;
     vector<byte> request{(RequestServiceID), pid};
-    int dataSize = 0;
+    int dataSize = static_cast<int>(request.size());
     byte *val = handler->createAnswerFrame(request.data(), dataSize);
     vector<byte> response{ResponseServiceID, pid, (byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00};
     compareResponse(response, val);
@@ -292,9 +297,11 @@ TEST(OBDHandler, PID_01_Test_MIL) {
 // make sure that the application can generate the request on its own and does not need can frames to init.
 TEST(OBDHandler, PID_01_MonitoringStatusInitViaVehicle) {
     OBDHandler *handler = getHandler();
+    handler->getVehicle()->getPidSupport().setPidSupported(Service::POWERTRAIN,
+                                                           Service1Pids::MonitoringStatusSinceDTCsCleared, true);
     MonitorStatus &monitoringStatus = handler->getVehicle()->getMonitorStatusSinceDTCsCleared();
 
-// validate object state
+    // validate object state
     monitoringStatus.setMil(true);
     monitoringStatus.setDtcCount(113);
 
@@ -330,7 +337,7 @@ TEST(OBDHandler, PID_01_MonitoringStatusInitViaVehicle) {
 
     const auto pid = (byte) 0x01;
     vector<byte> request{(RequestServiceID), pid};
-    int dataSize;
+    int dataSize = request.size();
     byte *val = handler->createAnswerFrame(request.data(), dataSize);
     vector<byte> response{ResponseServiceID, pid, (byte) 0xf1, (byte) 0x6f, (byte) 0xe3, (byte) 0xf1};
     EXPECT_EQ(dataSize, response.size());

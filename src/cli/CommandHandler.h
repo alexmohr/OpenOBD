@@ -141,7 +141,7 @@ public:
 
 
 private:
-    std::thread tCanHandler;
+    std::thread tRecv;
     std::thread tCmdHandler;
     std::thread tInit;
     bool exitRequested;
@@ -151,10 +151,6 @@ private:
     CLI_TYPE type;
     ICommunicationInterface *com;
 
-    std::mutex dataMutex;
-    std::condition_variable dataCv;
-
-    int expectedPid;
 
 public:
     CommandHandler(CLI_TYPE type, ICommunicationInterface *com);
@@ -189,16 +185,13 @@ private:
 
     void configureVehicle();
 
-    void comHandler(ICommunicationInterface *com);
+    void ecuRecvThread(ICommunicationInterface *com);
 
     void cmdHandler();
 
     void printHelp(std::vector<std::string> &cmd);
 
     DataObjectState queryECU(Pid pid, Service service);
-
-    DataObjectState isPidSupported(Service service, Pid pid);
-
 };
 
 

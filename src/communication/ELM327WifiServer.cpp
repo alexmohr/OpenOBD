@@ -174,6 +174,7 @@ void ELM327WifiServer::serveClient(int clientSockFd) {
         // send prompt string
         if (send(clientSockFd, prompt.c_str(), prompt.size(), MSG_NOSIGNAL) < 0) {
             PLOG(ERROR) << "Failed to write to socket";
+            closeInterface();
             break;
         }
         // read data from input

@@ -115,10 +115,10 @@ set(CPPSRC
         src/communication/ELM327WifiServer.h
         src/communication/SocketClient.cpp
         src/communication/SocketClient.h
-        src/communication/ELM327.h src/communication/ELM327.cpp src/communication/SocketServer.cpp src/communication/SocketServer.h)
+        src/communication/ELM327.h src/communication/ELM327.cpp src/communication/SocketServer.cpp src/communication/SocketServer.h src/communication/ISocketServer.h src/communication/ISocketServerClientHandler.h)
 
 
-add_executable(open_obd2 src/main.cpp ${CPPSRC})
+add_executable(open_obd2 src/main.cpp ${CPPSRC} src/communication/ICloseable.h)
 target_link_libraries(open_obd2 pthread)
 
 add_executable(Test

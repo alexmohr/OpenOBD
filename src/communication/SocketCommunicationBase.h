@@ -31,6 +31,8 @@ public:
     static void receive(byte *buf, int bufSize, int &readSize, int socketHandle);
 
     static int socketSelectTimeout(int socketHandle);
+
+    static int send(byte *buf, int buflen, int socketHandle);
 };
 
 #endif //OPEN_OBD2_ICOMHANDLER_H

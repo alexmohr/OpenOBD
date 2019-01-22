@@ -17,13 +17,21 @@ int SocketCommunicationBase::send(byte *buf, int buflen) {
         openInterface();
     }
 
-    int sendBytes = 0;
-    sendBytes = static_cast<int>(::send(socketHandle, buf, buflen, MSG_NOSIGNAL));
+    int sendBytes = SocketCommunicationBase::send(buf, buflen, socketHandle);
+
     if (sendBytes < 0) {
         PLOG(ERROR) << "Failed to write to socket";
         closeInterface();
-        return sendBytes;
+
     }
+
+    return sendBytes;
+}
+
+
+int SocketCommunicationBase::send(byte *buf, int buflen, int socketHandle) {
+    int sendBytes = 0;
+    sendBytes = static_cast<int>(::send(socketHandle, buf, buflen, MSG_NOSIGNAL));
 
     if (sendBytes != buflen) {
         el::Loggers::getLogger("default")->warn("wrote only %d from %d byte\n", sendBytes, buflen);
@@ -31,6 +39,8 @@ int SocketCommunicationBase::send(byte *buf, int buflen) {
 
     return sendBytes;
 }
+
+
 
 void SocketCommunicationBase::receive(byte *buffer, int buffSize, int &readSize) {
     SocketCommunicationBase::receive(buffer, buffSize, readSize, socketHandle);

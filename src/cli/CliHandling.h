@@ -10,6 +10,7 @@
 #include <csignal>
 #include <unistd.h>
 #include "CommandHandler.h"
+#include "../communication/SocketServer.h"
 #include "easylogging++.h"
 
 
@@ -18,6 +19,7 @@ private:
     bool running;
     unique_ptr<ELM327WifiServer> elmServer;
     unique_ptr<CommandHandler> cmdHandler;
+    unique_ptr<ISocketServer> socketServer;
     unique_ptr<ICommunicationInterface> physicalComInterface;
     unique_ptr<ICommunicationInterface> logicalComInterface;
 public:

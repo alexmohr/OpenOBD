@@ -48,7 +48,9 @@ int CliHandling::openCli(int argc, char *argv[]) {
             return EXIT_FAILURE;
         }
 
-        elmServer = make_unique<ELM327WifiServer>(port, logicalComInterface.get());
+        socketServer = make_unique<SocketServer>(port);
+        elmServer = make_unique<ELM327WifiServer>(
+                port, logicalComInterface.get(), socketServer.get());
         if (elmServer->openInterface() != EXIT_SUCCESS) {
             return EXIT_FAILURE;
         }
@@ -70,6 +72,9 @@ void CliHandling::closeCli() {
     }
     if (elmServer != nullptr) {
         elmServer->closeInterface();
+    }
+    if (socketServer != nullptr){
+        socketServer->closeInterface();
     }
 }
 

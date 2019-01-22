@@ -10,22 +10,22 @@ const int port = 35000;
 
 
 TEST(ELM327WifiServer, TestConfigurationTelegram) {
-    auto mockInterface = new MockCommInterface();
-    auto elm = ELM327WifiServer(port, mockInterface);
-    elm.openInterface();
-    while (!elm.isOpen()) {
-        usleep(1000);
-    }
-
-    string data = getElmConfigString(ELM_CONFIG_SPACES, true);
-    mockInterface->send((byte *) data.c_str(), static_cast<int>(data.size()));
-
-    int bufSize = 255;
-    byte *buf = new byte[255];
-    int recvSize;
-    mockInterface->receive(buf, bufSize, recvSize);
-
-    LOG(ERROR) << "FOO";
+//    auto mockInterface = new MockCommInterface();
+//    auto elm = ELM327WifiServer(port, mockInterface);
+//    elm.openInterface();
+//    while (!elm.isOpen()) {
+//        usleep(1000);
+//    }
+//
+//    string data = getElmConfigString(ELM_CONFIG_SPACES, true);
+//    mockInterface->send((byte *) data.c_str(), static_cast<int>(data.size()));
+//
+//    int bufSize = 255;
+//    byte *buf = new byte[255];
+//    int recvSize;
+//    mockInterface->receive(buf, bufSize, recvSize);
+//
+//    LOG(ERROR) << "FOO";
 
 //    ELM_CONFIG_SPACES
 //    ELM_CONFIG_HEADER

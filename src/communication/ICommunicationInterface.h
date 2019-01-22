@@ -6,18 +6,15 @@
 #define OPEN_OBD2_ICOMMUNICATIONINTERFACE_H
 
 #include <cstddef>
+#include "ICloseable.h"
 
 using namespace std;
 
-class ICommunicationInterface {
+class ICommunicationInterface : public ICloseable {
 public:
     virtual int send(byte *buf, int buflen) = 0;
 
     virtual void receive(byte *buffer, int buffSize, int &readSize) = 0;
-
-    virtual int closeInterface() = 0;
-
-    virtual int openInterface() = 0;
 
     virtual int configureInterface() = 0;
 

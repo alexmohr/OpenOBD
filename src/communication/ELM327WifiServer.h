@@ -9,51 +9,52 @@
 #include <thread>
 #include "easylogging++.h"
 #include "ICommunicationInterface.h"
+#include "ISocketServerClientHandler.h"
+#include "ISocketServer.h"
 #include "ELM327WifiClient.h"
 #include "../OBD/OBDHandler.h"
 
 using namespace std;
 
-class ELM327WifiServer {
+class ELM327WifiServer : public ISocketServerClientHandler, public ICloseable {
 private: // config
     bool sendHeaders = false;
     bool sendSpaces = false;
     // todo this should be configured.
-    const string supportedProtocol = "6";
+    char supportedProtocol = '6';
 private:
+    bool exitRequested;
     int port;
     string interface;
-    bool exitRequested;
-    std::thread tServeThread;
     bool open;
-    int socketHandle;
     ICommunicationInterface *commInterface;
+    ISocketServer *socketServer;
 public:
-    ELM327WifiServer(int port, ICommunicationInterface *commInterface);
+    ELM327WifiServer(int port,
+                     ICommunicationInterface *commInterface,
+                     ISocketServer *socketServer);
 
     bool isOpen();
 
+public: // ISocketServerClientHandler
+    void handleClient(int clientSockFd) override;
 
 public:
-    int closeInterface();
+    int closeInterface() override;
 
-    int openInterface();
+    int openInterface() override;
 
 private:
 
     int sendResponse(byte *buf, int bufSize, int &recvSize, int &clientSockFd);
 
-    void serve();
-
-    void sendDataAnswer(int clientSockFd, int dataSize, byte *cmdBuf, int bufSize) const;
+    int sendDataAnswer(int clientSockFd, int dataSize, byte *cmdBuf, int bufSize) const;
 
     bool parseConfiguration(byte *buf, int &recvSize);
 
     int parseData(byte *data, int &size) const;
 
-    void serveClient(int clientSockFd);
-
-    void sendConfigurationAnswer(int clientSockFd, bool &success) const;
+    int sendConfigurationAnswer(int clientSockFd, bool &success) const;
 
     int sendString(int clientSockFd, const string &st) const;
 

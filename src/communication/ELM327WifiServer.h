@@ -18,7 +18,8 @@ class ELM327WifiServer {
 private: // config
     bool sendHeaders = false;
     bool sendSpaces = false;
-
+    // todo this should be configured.
+    const string supportedProtocol = "6";
 private:
     int port;
     string interface;
@@ -33,27 +34,30 @@ public:
     bool isOpen();
 
 
-public: // ELM327WifiClient
+public:
     int closeInterface();
 
     int openInterface();
 
-    int parseMessage(byte *data, int &size);
-
 private:
+
+    int sendResponse(byte *buf, int bufSize, int &recvSize, int &clientSockFd);
+
     void serve();
 
     void sendDataAnswer(int clientSockFd, int dataSize, byte *cmdBuf, int bufSize) const;
 
-    int parseConfiguration(byte *data, int &size);
+    bool parseConfiguration(byte *buf, int &recvSize);
 
     int parseData(byte *data, int &size) const;
 
     void serveClient(int clientSockFd);
 
-    void sendConfigurationAnswer(int clientSockFd, const byte *cmdBuf, int rs) const;
+    void sendConfigurationAnswer(int clientSockFd, bool &success) const;
 
-    void sendString(int clientSockFd, const string &st) const;
+    int sendString(int clientSockFd, const string &st) const;
+
+    string getHeader() const;
 };
 
 

@@ -1,0 +1,88 @@
+EESchema Schematic File Version 4
+LIBS:74xx
+LIBS:switcher
+LIBS:adc-dac
+LIBS:analog-switches
+LIBS:atmel
+LIBS:bjt
+LIBS:can
+LIBS:capacitive
+LIBS:cmos4000
+LIBS:conn
+LIBS:device
+LIBS:digital-audio
+LIBS:digpot
+LIBS:diode
+LIBS:display
+LIBS:fet
+LIBS:hc11
+LIBS:i2c
+LIBS:inductive
+LIBS:intel
+LIBS:interface
+LIBS:linear
+LIBS:memory
+LIBS:microchip
+LIBS:opto
+LIBS:periph
+LIBS:power
+LIBS:protection
+LIBS:regul
+LIBS:renesas
+LIBS:resist
+LIBS:supervisor
+LIBS:video
+LIBS:figaro
+LIBS:radio
+LIBS:automation
+LIBS:graphic
+LIBS:xilinx
+LIBS:openelm-cache
+EELAYER 26 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L power:+12C #PWR0101
+U 1 1 5C3F78BF
+P 800 800
+F 0 "#PWR0101" H 800 650 50  0001 C CNN
+F 1 "+12C" H 815 973 50  0000 C CNN
+F 2 "" H 800 800 50  0001 C CNN
+F 3 "" H 800 800 50  0001 C CNN
+	1    800  800 
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_02x08_Top_Bottom J?
+U 1 1 5C3F7FD2
+P 2600 3250
+F 0 "J?" V 2604 2762 50  0000 R CNN
+F 1 "Conn_02x08_Top_Bottom" V 2695 2762 50  0000 R CNN
+F 2 "SparkFun-Connectors:OBDII" H 2600 3250 50  0001 C CNN
+F 3 "~" H 2600 3250 50  0001 C CNN
+	1    2600 3250
+	0    -1   1    0   
+$EndComp
+$Comp
+L Connector-ML:RPi_GPIO J?
+U 1 1 5C3F82F0
+P 8700 2100
+F 0 "J?" H 9450 2387 60  0000 C CNN
+F 1 "RPi_GPIO" H 9450 2281 60  0000 C CNN
+F 2 "" H 8700 2100 60  0000 C CNN
+F 3 "" H 8700 2100 60  0000 C CNN
+	1    8700 2100
+	1    0    0    -1  
+$EndComp
+$EndSCHEMATC

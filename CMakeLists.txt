@@ -114,7 +114,8 @@ set(CPPSRC
         src/communication/ELM327WifiServer.cpp
         src/communication/ELM327WifiServer.h
         src/communication/SocketClient.cpp
-        src/communication/SocketClient.h)
+        src/communication/SocketClient.h
+        src/communication/ELM327.h src/communication/ELM327.cpp src/communication/SocketServer.cpp src/communication/SocketServer.h)
 
 
 add_executable(open_obd2 src/main.cpp ${CPPSRC})

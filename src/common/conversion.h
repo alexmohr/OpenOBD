@@ -35,6 +35,11 @@ bool isNumber(byte b);
 
 bool isNumber(char c);
 
+string convertCharToString(char c);
+
+bool messageContains(const byte *buf, int recvSize, string data);
+
+
 
 template<typename T>
 T convertStringToT(const string &value) {

@@ -7,7 +7,7 @@ The standard defines 250 kbit/s or 500 kbit/s.
 Please note that all configuration of the can interfaces must be done before using this software.
 
 ## Features
-### Simualte a vehicle
+### Simulate a vehicle
 With the vehicle simulation an OBD dongle can be used without an actual vehicle. This can be used for testing new implementations.
 ### OBD Tester
 The software can be used to communicate with a vehicle to read OBD data from it. This requires a can connection to the vehicle. 
@@ -19,6 +19,8 @@ connect to the interface via socket so will not be able to configure baud rates.
 The current version supports a very basic implementation for ELM interfaces using WIFI. 
 Interfaces using USB, serial adpaters or bluetooth won't be supported due to the lack of hardware on my side. 
 A pull request or a sponsered interface to add support for these would be welcome.
+This software offers to functionality to serve as an ELM server as well. 
+When using this software as ELM server caution is advised because only a very small subset of functions is supported.  
 
 ## Building and running
 As this is a work in progress, no pre built binaries are available at the moment.
@@ -36,7 +38,11 @@ cmake ../
 make
 sudo make install
 ````
+
 ## CLI
 The CLI is a terminal like frontend which allows setting and reading values. It can act as a tester or as an ecu. 
-At the moment it is very basic and does only support Service 1 and a small subset of pids.-0
+At the moment it is very basic and does only support Service 1 and a small subset of pids.
 ![CLI Example](https://github.com/alexmohr/OpenOBD/blob/master/doc/cli_example.png)
+
+## Web interface
+Coming in the future <3

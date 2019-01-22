@@ -26,6 +26,11 @@ public: // ICommunicationInterface-
     int closeInterface() override;
 
     int configureInterface() override { return 0; };
+
+public:
+    static void receive(byte *buf, int bufSize, int &readSize, int socketHandle);
+
+    static int socketSelectTimeout(int socketHandle);
 };
 
 #endif //OPEN_OBD2_ICOMHANDLER_H

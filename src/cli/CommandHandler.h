@@ -22,9 +22,7 @@ using namespace std;
 enum CLI_TYPE {
     ECU,
     TESTER,
-    ELM,
-    ELM_TESTER,
-
+    ELM
 };
 
 class CommandHandler {

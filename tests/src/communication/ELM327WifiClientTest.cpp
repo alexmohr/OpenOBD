@@ -12,23 +12,19 @@ const int port = 35000;
 string selectedProtocol = "1";
 char lastRequestedProtocol = '0';
 
-string canHeader = "7E8";
-string canHeader29Bit = "000007E8";
-string saeHeader = "486B10";
-
 
 void protocolRequest(string &result) {
-    const string successCan = canHeader + "064100FFFFFFFF00";
-    const string successCan29Bit = canHeader29Bit + "064100FFFFFFFF00";
-    const string successSae = saeHeader + "4100FFFFFFFFXX";
+    const string successCan = ELM_HEADER_CAN_11_BIT + "064100FFFFFFFF00";
+    const string successCan29Bit = ELM_HEADER_CAN_29_BIT + "064100FFFFFFFF00";
+    const string successSae = ELM_HEADER_SAE + "4100FFFFFFFFXX";
 
     if (lastRequestedProtocol != selectedProtocol.c_str()[0]) {
-        result = "ERROR";
+        result = ELM_FLOW_ERROR;
         return;
     }
 
     int protocol = convertHexToInt(selectedProtocol);
-    ElmProtocol &elmProtocol = ELM327WifiClient::availableProtocols.at(protocol);
+    ElmProtocol &elmProtocol = availableProtocols.at(protocol);
     if (elmProtocol.canIdBitLength == 0) {
         result = successSae;
     } else {
@@ -41,15 +37,13 @@ void protocolRequest(string &result) {
 }
 
 
-function<void(byte *, int, byte *, int &)> cb =
+function<void(byte *, int, byte *, int &)> dataReceivedCallback =
         [](byte *inBuf, int inBufSize, byte *outBuf, int &outBufSize) {
-
-            const string ok = "OK";
             // config command
             string result;
-            if ((byte) 'A' == inBuf[0] && (byte) 'T' == inBuf[1]) {
-                result = ok;
-                if ((byte) 'S' == inBuf[2] && (byte) 'P' == inBuf[3]) {
+            if (messageContains(inBuf, inBufSize, ELM_CONFIG_PREFIX)) {
+                result = ELM_FLOW_OK;
+                if (messageContains(inBuf, inBufSize, ELM_CONFIG_PROTOCOL)) {
                     lastRequestedProtocol = (char) inBuf[4];
                 }
             } else if ((byte) '0' == inBuf[0]) {
@@ -57,7 +51,7 @@ function<void(byte *, int, byte *, int &)> cb =
                     protocolRequest(result);
                 }
             }
-            result += "\r>";
+            result += ELM_FLOW_NEWLINE_PROMPT;
             memcpy(outBuf, (byte *) result.c_str(), result.size());
             outBufSize = static_cast<int>(result.size());
         };
@@ -67,18 +61,18 @@ string createResponse(const string &data, int &dataLength) {
     dataLength = static_cast<int>(data.size() / 2);
     if (selectedProtocol.c_str()[0] < '6') {
         string suffix = "XX";
-        response = saeHeader + data + "XX";
+        response = ELM_HEADER_SAE + data + "XX";
     } else {
         string header;
         if (selectedProtocol.c_str()[0] == '7' || selectedProtocol.c_str()[0] == '9') {
-            header = canHeader29Bit;
+            header = ELM_HEADER_CAN_29_BIT;
         } else {
-            header = canHeader;
+            header = ELM_HEADER_CAN_11_BIT;
         }
         string prefix = header + "0" + to_string(dataLength);
         response = prefix + data;
     }
-    string prompt = "\r>";
+    string prompt = ELM_FLOW_NEWLINE_PROMPT;
     response += prompt;
     return response;
 }
@@ -146,7 +140,7 @@ void testProtocol(char protocol) {
     EXPECT_EQ(result, 0);
 
 
-    mockInterface->setDataReceivedCallback(cb, true);
+    mockInterface->setDataReceivedCallback(dataReceivedCallback, true);
     result = elm.configureInterface();
     EXPECT_EQ(result, 0);
 

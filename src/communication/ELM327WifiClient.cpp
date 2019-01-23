@@ -27,10 +27,7 @@ int ELM327WifiClient::closeInterface() {
 
 void ELM327WifiClient::receive(byte *buf, int bufSize, int &readSize) {
     bool successFullRead = readDeviceBuffer(buf, bufSize, readSize);
-    if (!successFullRead) {
-        LOG(ERROR) << "failed to retrieve data";
-        readSize = -1;
-    } else {
+    if (successFullRead) {
         parseData(buf, bufSize, readSize);
     }
 }
@@ -60,12 +57,19 @@ bool ELM327WifiClient::readDeviceBuffer(byte *buf, int bufSize, int &readSize) {
             }
         }
         hasTimeout = chrono::_V2::system_clock::now() - t0 > 500ms;
-    } while ((char) buf[readSize - 1] != '>' && !hasTimeout);
+    } while ((char) buf[readSize - 1] != ELM_FLOW_PROMPT && !hasTimeout);
+
     auto runTime = (chrono::high_resolution_clock::now() - startTime);
-    LOG(DEBUG) << "Getting value from ecu took: " << chrono::duration_cast<chrono::milliseconds>(runTime).count()
+    LOG(DEBUG) << "Getting value from ecu took: "
+               << chrono::duration_cast<chrono::milliseconds>(runTime).count()
                << "ms";
+
     delete tempReadBuffer;
-    return readSize > 0;
+    if (readSize < 1) {
+        closeInterface();
+        return false;
+    }
+    return true;
 }
 
 void ELM327WifiClient::parseData(byte *buf, const int bufSize, int &readSize) {
@@ -141,12 +145,11 @@ void ELM327WifiClient::removeHeader(byte *buf, const int bufSize, int &readSize,
 
 int ELM327WifiClient::getDataStartIndex(const byte *buf, const int recvSize) const {
     int startIndex = 0;
-    while ((char) buf[startIndex] == '>'
-           && startIndex < recvSize) {
+    while ((char) buf[startIndex] == ELM_FLOW_PROMPT && startIndex < recvSize) {
         startIndex++;
     }
 
-    if (messageContains(buf, recvSize, "STOP")) {
+    if (messageContains(buf, recvSize, ELM_FLOW_STOP)) {
         LOG(DEBUG) << "Adapter received interrupt.";
         return -1;
     }
@@ -166,7 +169,7 @@ int ELM327WifiClient::send(byte *buf, int bufSize) {
     }
 
     string dataString = ss.str();
-    dataString = dataString + '\r';
+    dataString = dataString + ELM_FLOW_NEWLINE;
     return sendString(dataString);
 }
 
@@ -175,7 +178,7 @@ int ELM327WifiClient::configureInterface() {
     byte *buf = (byte *) malloc(bufSize);
 
     // echo OFF
-    string command = CONFIG_ECHO + "0";
+    string command = getElmConfigString(ELM_CONFIG_ECHO, false);
     string log = "Did not receive positive response for command: ";
     if (!configurationCommandSendSuccessfully(buf, bufSize, command)) {
         LOG(ERROR) << log << command;
@@ -183,14 +186,14 @@ int ELM327WifiClient::configureInterface() {
     }
 
     // headers ON
-    command = CONFIG_HEADER + "1";
+    command = getElmConfigString(ELM_CONFIG_HEADER, true);
     if (!configurationCommandSendSuccessfully(buf, bufSize, command)) {
         LOG(ERROR) << log << command;
         return 1;
     }
 
     // spaces OFF
-    command = CONFIG_SPACES + "0";
+    command = getElmConfigString(ELM_CONFIG_SPACES, false);
     if (!configurationCommandSendSuccessfully(buf, bufSize, command)) {
         LOG(ERROR) << log << command;
         return 1;
@@ -200,6 +203,7 @@ int ELM327WifiClient::configureInterface() {
 }
 
 int ELM327WifiClient::findProtocol(int bufSize, byte *buf) {
+    LOG(INFO) << "Search ELM protocol";
     vector<char *> searchStrings{
             const_cast<char *>("SEARCHING"),
             const_cast<char *>("BUS INIT")
@@ -207,7 +211,7 @@ int ELM327WifiClient::findProtocol(int bufSize, byte *buf) {
 
     bool protocolFound = false;
     ElmProtocol *protocol = nullptr;
-    for (auto &availableProtocol : ELM327WifiClient::availableProtocols) {
+    for (auto &availableProtocol : availableProtocols) {
         protocol = &availableProtocol.second;
         protocolFound = isProtocolWorking(bufSize, buf, searchStrings, protocol->id);
         if (protocolFound) {
@@ -231,16 +235,15 @@ bool ELM327WifiClient::isProtocolWorking(
         int bufSize, byte *buf, const vector<char *> &searchStrings, int protocolNumber) {
     bool searchRunning, readSuccess;
     int strCompRes = 0;
-    const string protocolTestMessage = "0101\r";
 
     string id = convertIntToHex(protocolNumber);
     transform(id.begin(), id.end(), id.begin(), ::toupper);
-    if (!configurationCommandSendSuccessfully(buf, bufSize, "ATSP" + id)) {
+    if (!configurationCommandSendSuccessfully(buf, bufSize, ELM_CONFIG_PROTOCOL + id)) {
         return false;
     }
 
     // will trigger search.
-    int recvSize = sendString(protocolTestMessage);
+    int recvSize = sendString(ELM_PROTOCOL_TEST_MESSAGE);
     auto t0 = chrono::high_resolution_clock::now();
     auto maxTime = 2s;
     do {
@@ -268,10 +271,7 @@ bool ELM327WifiClient::isProtocolWorking(
 
 bool ELM327WifiClient::configurationCommandSendSuccessfully(byte *buf, int bufSize, string data) {
     int recvSize = 0;
-    data += '\r';
-
-    closeInterface();
-    openInterface();
+    data += ELM_FLOW_NEWLINE;
 
     LOG(DEBUG) << "Sending configuration command: " << data;
     sendString(data);
@@ -281,21 +281,7 @@ bool ELM327WifiClient::configurationCommandSendSuccessfully(byte *buf, int bufSi
         return false;
     }
 
-    return messageContains(buf, recvSize, "OK");
-}
-
-bool ELM327WifiClient::messageContains(const byte *buf, int recvSize, string data) const {
-    if (recvSize < (int) data.size()) {
-        return false;
-    }
-
-    int i;
-    for (i = 0; i < (int) (recvSize - data.size()); i++) {
-        if (0 == strncmp(data.c_str(), (char *) buf + i, data.size())) {
-            return true;
-        }
-    }
-    return false;
+    return messageContains(buf, recvSize, ELM_FLOW_OK);
 }
 
 int ELM327WifiClient::sendString(const string &data) {

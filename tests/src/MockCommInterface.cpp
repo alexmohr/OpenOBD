@@ -10,6 +10,8 @@
 MockCommInterface::MockCommInterface() {
     dataForNextRecv = (byte *) malloc(255);
     dataFromLastSend = (byte *) malloc(255);
+    dataForNextRecvSize = 0;
+    dataForNextRecvSize = 0;
 }
 
 MockCommInterface::~MockCommInterface() {

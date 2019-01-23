@@ -3,6 +3,7 @@
 //
 #include <sstream>
 #include <iterator>
+#include <cstring>
 #include "conversion.h"
 
 unsigned short byteArrayToUShort(byte *data) {
@@ -87,4 +88,26 @@ bool isNumber(byte b) {
 bool isNumber(char c) {
     return c >= '0' && c <= '9';
 }
+
+bool messageContains(const byte *buf, int recvSize, string data) {
+    if (recvSize < (int) data.size()) {
+        return false;
+    }
+
+    int i;
+    for (i = 0; i < (int) (recvSize - data.size()+1); i++) {
+        if (0 == strncmp(data.c_str(), (char *) buf + i, data.size())) {
+            return true;
+        }
+    }
+    return false;
+}
+
+string convertCharToString(char c) {
+    char* cc = new char[1]{c};
+    string value = string(cc);
+    delete[] cc;
+    return value;
+}
+
 

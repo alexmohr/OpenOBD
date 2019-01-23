@@ -167,7 +167,7 @@ public:
         const int size = stopByte - startByte + 1;
         if (size > bufferSize || stopByte > bufferSize) {
             //return -1;
-            throw std::invalid_argument("Buffer overflow in DataObject.h");
+            throw std::invalid_argument("Prevented buffer overflow in DataObject.h");
         }
 
         auto dataBytes = (byte *) malloc((size_t) size);

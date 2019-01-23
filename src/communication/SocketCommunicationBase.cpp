@@ -13,39 +13,56 @@
 
 
 int SocketCommunicationBase::send(byte *buf, int buflen) {
-    int returnValue = 0;
-
     if (-1 == socketHandle) {
         openInterface();
     }
 
-    returnValue = static_cast<int>(::send(socketHandle, buf, buflen, MSG_NOSIGNAL));
-    if (returnValue < 0) {
+    int sendBytes = SocketCommunicationBase::send(buf, buflen, socketHandle);
+
+    if (sendBytes < 0) {
         PLOG(ERROR) << "Failed to write to socket";
         closeInterface();
-        return returnValue;
+
     }
 
-    if (returnValue != buflen) {
-        el::Loggers::getLogger("default")->warn("wrote only %d from %d byte\n", returnValue, buflen);
-    }
-
-    return returnValue;
+    return sendBytes;
 }
 
+
+int SocketCommunicationBase::send(byte *buf, int buflen, int socketHandle) {
+    int sendBytes = 0;
+    sendBytes = static_cast<int>(::send(socketHandle, buf, buflen, MSG_NOSIGNAL));
+
+    if (sendBytes != buflen) {
+        el::Loggers::getLogger("default")->warn("wrote only %d from %d byte\n", sendBytes, buflen);
+    }
+
+    return sendBytes;
+}
+
+
+
 void SocketCommunicationBase::receive(byte *buffer, int buffSize, int &readSize) {
-    struct timeval timeout = {1, 0};
-    fd_set readSet;
-    FD_ZERO(&readSet);
-    FD_SET(socketHandle, &readSet);
-    int t = select((socketHandle + 1), &readSet, nullptr, nullptr, &timeout);
+    SocketCommunicationBase::receive(buffer, buffSize, readSize, socketHandle);
+}
+
+void SocketCommunicationBase::receive(byte *buf, int bufSize, int &readSize, int socketHandle) {
+    int t = socketSelectTimeout(socketHandle);
     if (t > 0) {
-        readSize = static_cast<int>(read(socketHandle, buffer, static_cast<size_t>(buffSize)));
+        readSize = static_cast<int>(read(socketHandle, buf, static_cast<size_t>(bufSize)));
     } else {
         readSize = 0;
     }
 }
 
+int SocketCommunicationBase::socketSelectTimeout(int socketHandle) {
+    struct timeval timeout = {1, 0};
+    fd_set readSet;
+    FD_ZERO(&readSet);
+    FD_SET(socketHandle, &readSet);
+    int t = select((socketHandle + 1), &readSet, nullptr, nullptr, &timeout);
+    return t;
+}
 
 int SocketCommunicationBase::closeInterface() {
     close(socketHandle);

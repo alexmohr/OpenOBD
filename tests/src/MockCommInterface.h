@@ -25,7 +25,7 @@ public:
 
     MockCommInterface();
 
-    ~MockCommInterface();
+    ~MockCommInterface() override;
 
     bool supportEverything = false;
 

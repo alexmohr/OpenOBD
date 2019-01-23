@@ -128,6 +128,9 @@ bool ELM327WifiServer::parseConfiguration(byte *buf, int &recvSize) {
         if (param != supportedProtocol) {
             result = false;
         }
+    } else if (ELM_CONFIG_ECHO == cmd && param == ELM_CONFIG_ENABLE[0]) {
+        // no echo support.
+        result = false;
     }
 
     delete[] cmd;

@@ -95,7 +95,7 @@ bool messageContains(const byte *buf, int recvSize, string data) {
     }
 
     int i;
-    for (i = 0; i < (int) (recvSize - data.size()); i++) {
+    for (i = 0; i < (int) (recvSize - data.size()+1); i++) {
         if (0 == strncmp(data.c_str(), (char *) buf + i, data.size())) {
             return true;
         }

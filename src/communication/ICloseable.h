@@ -10,6 +10,8 @@ public:
     virtual int closeInterface() = 0;
 
     virtual int openInterface() = 0;
+
+    virtual ~ICloseable() = default;
 };
 
 

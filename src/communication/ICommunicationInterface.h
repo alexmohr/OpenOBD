@@ -18,7 +18,6 @@ public:
 
     virtual int configureInterface() = 0;
 
-    virtual ~ICommunicationInterface() = default;
 
 };
 

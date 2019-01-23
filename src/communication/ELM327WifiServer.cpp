@@ -219,7 +219,11 @@ int ELM327WifiServer::sendDataAnswer(int clientSockFd, int dataSize, byte *cmdBu
     if (sendHeaders) {
         std::stringstream ss2;
         ss2 << std::hex << std::setfill('0') << std::setw(2) << j;
-        message = getHeader() + ss2.str() + message;
+        string space = "";
+        if (sendSpaces) {
+            space = " ";
+        }
+        message = getHeader() + space + ss2.str() + space + message;
     }
 
     std::transform(message.begin(), message.end(), message.begin(), ::toupper);

@@ -47,7 +47,7 @@ void TestCommandHandler(CLI_TYPE type) {
 
 
     initCommandHandler(mockComm, cmdHandler);
-    
+
     Pid pid;
     Service service;
     bool descriptionsNotNull;
@@ -113,7 +113,6 @@ void TestCommandHandler(CLI_TYPE type) {
             }
         }
     }
-    cmdHandler->stopHandler();
 }
 
 TEST(CommandHandlerTest, setData_getData_TESTER) {
@@ -184,10 +183,7 @@ TEST(CommandHandlerTest, set_special) {
     EXPECT_EQ(res.type, ErrorType::SUCCESS);
     res = cmdHandler->setData(cmd);
     EXPECT_FALSE(cmdHandler->getObdHandler().getVehicle()->getPidSupport().getPidSupported(Service::POWERTRAIN, 0x0d));
-
-    cmdHandler->stopHandler();
 }
-
 
 
 TEST(CommandHandlerTest, tryBreakStuff) {
@@ -228,7 +224,5 @@ TEST(CommandHandlerTest, tryBreakStuff) {
     // todo invalid int is not handled.
     data = {"set", "VehicleSpeed", "asdhasdlsad"};
     EXPECT_EQ(SUCCESS, cmdHandler->setData(data).type);
-
-    cmdHandler->stopHandler();
 
 }

@@ -25,14 +25,12 @@ language: cpp
 compiler:
   - gcc
 
-
 script:
   - mkdir build
   - cd build
   - cmake ../ -DCOVERAGE=1
   - cmake --build .
   - ./Test --gtest_filter=-` tr '\n' ':' < ../tests/travis.excludes`
-
 
 after_success:
   - coveralls --root . -E ".*gtest.*" -E ".*CMakeFiles.*"

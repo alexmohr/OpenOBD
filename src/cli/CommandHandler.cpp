@@ -149,7 +149,7 @@ void CommandHandler::cmdHandler() {
     console.registerCommand(command_help, std::bind(&CommandHandler::printHelp, this, std::placeholders::_1));
     console.registerCommand(command_get, std::bind(&CommandHandler::getDataCommand, this, std::placeholders::_1));
     console.registerCommand(command_set, std::bind(&CommandHandler::setDataCommand, this, std::placeholders::_1));
-    console.registerCommand(command_get + " ", std::bind(&CommandHandler::printHelp, this, std::placeholders::_1));
+
 
     int retVal = 0;
     do {

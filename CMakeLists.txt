@@ -153,7 +153,7 @@ add_executable(Test
 
 
 install(TARGETS open_obd2 EXPORT open_obd2 DESTINATION bin)
-target_link_libraries(Test PRIVATE gtest)
+target_link_libraries(Test PRIVATE gtest readline)
 
 if (COVERAGE)
     target_compile_options(Test PRIVATE --coverage)

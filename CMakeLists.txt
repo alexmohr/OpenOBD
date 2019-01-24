@@ -4,6 +4,7 @@ project(open_obd2)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "-Wall -pedantic")
 SET(COVERAGE OFF CACHE BOOL "Coverage")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules")
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 link_directories(${PROJECT_SOURCE_DIR}/lib)
@@ -28,13 +29,17 @@ endif ()
 # settings on Windows
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
+
+find_package(Readline REQUIRED)
+
+
 # Add googletest directly to our build. This defines
 # the gtest and gtest_main targets.
 add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
         ${CMAKE_CURRENT_BINARY_DIR}/googletest-build
         EXCLUDE_FROM_ALL)
 
-include_directories("${gtest_SOURCE_DIR}/include include//*")
+include_directories("${gtest_SOURCE_DIR}/include include//* ${Readline_INCLUDE_DIRS}")
 
 set(cpp-readline
         submodules/cpp-readline/src/Console.cpp

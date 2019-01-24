@@ -30,7 +30,7 @@ private:
 
     const string command_get = "get";
     const string command_set = "set";
-    const string command_help = "help";
+    const string command_help = "?";
     const string command_cmd = "cmd";
     const string command_pid = "pid";
     const string prompt = ">> ";
@@ -162,12 +162,14 @@ public:
 
     bool isOpen();
 
+    bool isExitRequested();
+
 public: // public for testing
-    DataObjectState setData(std::vector<std::string> &cmd);
+    DataObjectState setData(const vector<string> &cmd);
 
-    DataObjectState getData(std::vector<std::string> &cmd);
+    DataObjectState getData(const vector<string> &cmd);
 
-    bool getPid(std::vector<std::string> &cmd, Pid &pid, Service &service);
+    bool getPid(const vector<string> &cmd, Pid &pid, Service &service);
 
     bool isInitDone();
 
@@ -175,11 +177,15 @@ public: // public for testing
 
 private:
 
+    int getDataCommand(const vector<string> &cmd);
+
+    int setDataCommand(const vector<string> &cmd);
+
     DataObjectState setDataViaPid(string val, Service service, Pid pid);
 
-    DataObjectState setDataSpecial(std::vector<std::string> &cmd);
+    DataObjectState setDataSpecial(const vector<string> &cmd);
 
-    DataObjectState getDataSpecial(std::vector<std::string> &cmd);
+    DataObjectState getDataSpecial(const vector<string> &cmd);
 
     void configureVirtualVehicle(Vehicle *vehicle);
 
@@ -189,11 +195,10 @@ private:
 
     void cmdHandler();
 
-    void printHelp(std::vector<std::string> &cmd);
+    int printHelp(const vector<string> &cmd);
 
     DataObjectState queryECU(Pid pid, Service service);
 
-    void readLineHandler(char *line);
 };
 
 

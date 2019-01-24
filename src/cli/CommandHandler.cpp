@@ -12,6 +12,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+#include "../../submodules/cpp-readline/src/Console.hpp"
+
 CommandHandler::CommandHandler(CLI_TYPE type, ICommunicationInterface *interface) {
     obdHandler = OBDHandler::createInstance();
     com = interface;
@@ -143,47 +145,37 @@ void CommandHandler::ecuRecvThread(ICommunicationInterface *com) {
 }
 
 void CommandHandler::cmdHandler() {
-    char *buf;
-    while (!exitRequested) {
-        buf = readline(prompt.c_str());
-        if (strlen(buf) > 0) {
-            add_history(buf);
-        }
+    CppReadline::Console console(prompt);
+    console.registerCommand(command_help, std::bind(&CommandHandler::printHelp, this, std::placeholders::_1));
+    console.registerCommand(command_get, std::bind(&CommandHandler::getDataCommand, this, std::placeholders::_1));
+    console.registerCommand(command_set, std::bind(&CommandHandler::setDataCommand, this, std::placeholders::_1));
+    console.registerCommand(command_get + " ", std::bind(&CommandHandler::printHelp, this, std::placeholders::_1));
 
-        std::vector<std::string> cmd = splitString(buf);
-        if (cmd.empty()) {
-            delete buf;
-            continue;
+    int retVal = 0;
+    do {
+        retVal = console.readLine();
+        // We can also change the prompt based on last return value:
+        if (retVal == CppReadline::Console::Ok) {
+            console.setGreeting(prompt);
+        } else {
+            console.setGreeting("!>");
         }
+    } while (retVal != CppReadline::Console::Quit && !exitRequested);
 
-        if (std::find(commands.begin(), commands.end(), cmd.at(0)) == commands.end()) {
-            cout << "Command " << buf << " is invalid\n";
-            cout << "Type 'help' to get more information" << endl;
-            delete buf;
-            continue;
-        }
-
-        if (cmd.at(0) == command_help) {
-            printHelp(cmd);
-        } else if (cmd.at(0) == command_get) {
-            getData(cmd);
-        } else if (cmd.at(0) == command_set) {
-            setData(cmd);
-        }
-
+    if (!exitRequested) {
+        exitRequested = true;
     }
-
 }
 
 bool CommandHandler::isOpen() {
     return open;
 }
 
-void CommandHandler::printHelp(vector<string> &cmd) {
+int CommandHandler::printHelp(const vector<string> &cmd) {
     if (cmd.size() == 1) {
         cout << "Usage cmd system [value]\n";
         cout << "Type 'help cmd' or 'help pid' to get more information." << endl;
-        return;
+        return 0;
     }
 
     if (cmd.at(1) == command_cmd) {
@@ -217,9 +209,10 @@ void CommandHandler::printHelp(vector<string> &cmd) {
     } else {
         cout << err_invalid_input << endl;
     }
+    return 0;
 }
 
-bool CommandHandler::getPid(std::vector<std::string> &cmd, Pid &pid, Service &service) {
+bool CommandHandler::getPid(const vector<string> &cmd, Pid &pid, Service &service) {
     if (cmd.size() == 1) {
         return false;
     }
@@ -244,7 +237,7 @@ bool CommandHandler::getPid(std::vector<std::string> &cmd, Pid &pid, Service &se
     return true;
 }
 
-DataObjectState CommandHandler::getData(std::vector<std::string> &cmd) {
+DataObjectState CommandHandler::getData(const vector<string> &cmd) {
     Service service;
     Pid pid;
     DataObjectState state;
@@ -274,7 +267,7 @@ DataObjectState CommandHandler::getData(std::vector<std::string> &cmd) {
     return DataObjectState(SUCCESS);
 }
 
-DataObjectState CommandHandler::getDataSpecial(std::vector<std::string> &cmd) {
+DataObjectState CommandHandler::getDataSpecial(const vector<string> &cmd) {
     const string usage = "Argument missing. Usage: command <SERVICE> <PID>";
     if (cmd.at(1) == command_pid_by_number || cmd.at(1) == command_set_by_hex_number) {
         if (cmd.size() < 4) {
@@ -301,7 +294,7 @@ DataObjectState CommandHandler::getDataSpecial(std::vector<std::string> &cmd) {
 
 }
 
-DataObjectState CommandHandler::setData(std::vector<std::string> &cmd) {
+DataObjectState CommandHandler::setData(const vector<string> &cmd) {
     if (ECU != type) {
         cout << "Only ECU does support setting values" << endl;
         return DataObjectState(NOT_SUPPORTED);
@@ -377,7 +370,7 @@ DataObjectState CommandHandler::setDataViaPid(string val, Service service, Pid p
 }
 
 
-DataObjectState CommandHandler::setDataSpecial(std::vector<std::string> &cmd) {
+DataObjectState CommandHandler::setDataSpecial(const vector<string> &cmd) {
     const string usage = "Argument missing. Usage: command <SERVICE> <PID> <0|1>";
     if (cmd.at(1) == command_pid_by_number || cmd.at(1) == command_set_by_hex_number) {
         if (cmd.size() < 5) {
@@ -456,5 +449,17 @@ OBDHandler &CommandHandler::getObdHandler() {
 
 bool CommandHandler::isInitDone() {
     return initDone;
+}
+
+bool CommandHandler::isExitRequested() {
+    return exitRequested;
+}
+
+int CommandHandler::getDataCommand(const vector<string> &cmd) {
+    return getData(cmd).type;
+}
+
+int CommandHandler::setDataCommand(const vector<string> &cmd) {
+    return setData(cmd).type;
 }
 

@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
     }
 
     while (handler.isOpen()) {
-        if (exitRequested) {
+        if (exitRequested || handler.isExitRequested()) {
             handler.closeCli();
         }
         sleep(1);

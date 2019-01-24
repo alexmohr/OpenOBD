@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 project(open_obd2)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-Wall")
+set(CMAKE_CXX_FLAGS "-Wall -pedantic")
 SET(COVERAGE OFF CACHE BOOL "Coverage")
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
@@ -35,6 +35,10 @@ add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
         EXCLUDE_FROM_ALL)
 
 include_directories("${gtest_SOURCE_DIR}/include include//*")
+
+set(cpp-readline
+        submodules/cpp-readline/src/Console.cpp
+        submodules/cpp-readline/src/Console.hpp)
 
 set(CPPSRC
         lib/easylogging++.cc
@@ -120,11 +124,12 @@ set(CPPSRC
         src/communication/ISocketServerClientHandler.h)
 
 
-add_executable(open_obd2 src/main.cpp ${CPPSRC})
+add_executable(open_obd2 src/main.cpp ${CPPSRC} ${cpp-readline})
 target_link_libraries(open_obd2 pthread readline)
 
 add_executable(Test
         ${CPPSRC}
+        ${cpp-readline}
         tests/src/cli/CommandHandlerTest.cpp tests/main.cpp
         tests/src/communication/CanIsoTPTests.cpp
         tests/src/communication/ELM327WifiClientTest.cpp

@@ -13,16 +13,16 @@ link_directories(${PROJECT_SOURCE_DIR}/lib)
 configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
 execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
         RESULT_VARIABLE result
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
-if(result)
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download)
+if (result)
     message(FATAL_ERROR "CMake step for googletest failed: ${result}")
-endif()
+endif ()
 execute_process(COMMAND ${CMAKE_COMMAND} --build .
         RESULT_VARIABLE result
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
-if(result)
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download)
+if (result)
     message(FATAL_ERROR "Build step for googletest failed: ${result}")
-endif()
+endif ()
 
 # Prevent overriding the parent project's compiler/linker
 # settings on Windows
@@ -114,12 +114,14 @@ set(CPPSRC
         src/communication/ELM327WifiServer.cpp
         src/communication/ELM327WifiServer.h
         src/communication/SocketClient.cpp
-        src/communication/SocketClient.h
-        src/communication/ELM327.h src/communication/ELM327.cpp src/communication/SocketServer.cpp src/communication/SocketServer.h src/communication/ISocketServer.h src/communication/ISocketServerClientHandler.h)
+        src/communication/SocketClient.h src/communication/ICloseable.h
+        src/communication/ELM327.h src/communication/ELM327.cpp
+        src/communication/SocketServer.cpp src/communication/SocketServer.h src/communication/ISocketServer.h
+        src/communication/ISocketServerClientHandler.h)
 
 
-add_executable(open_obd2 src/main.cpp ${CPPSRC} src/communication/ICloseable.h)
-target_link_libraries(open_obd2 pthread)
+add_executable(open_obd2 src/main.cpp ${CPPSRC})
+target_link_libraries(open_obd2 pthread readline)
 
 add_executable(Test
         ${CPPSRC}

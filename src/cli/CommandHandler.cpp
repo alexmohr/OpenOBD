@@ -9,6 +9,9 @@
 #include <unistd.h>
 #include <poll.h>
 
+#include <readline/readline.h>
+#include <readline/history.h>
+
 CommandHandler::CommandHandler(CLI_TYPE type, ICommunicationInterface *interface) {
     obdHandler = OBDHandler::createInstance();
     com = interface;
@@ -107,7 +110,7 @@ void CommandHandler::configureVehicle() {
         LOG(INFO) << "Could not read all data from vehicle. Available commands may be incomplete.";
     }
 
-    cout << ">>" << flush;
+    cout << prompt << flush;
     initDone = true;
 }
 
@@ -140,32 +143,23 @@ void CommandHandler::ecuRecvThread(ICommunicationInterface *com) {
 }
 
 void CommandHandler::cmdHandler() {
-    std::string input;
-    cout << ">>" << std::flush;
+    char *buf;
     while (!exitRequested) {
-        struct pollfd pfd = {STDIN_FILENO, POLLIN, 0};
-
-        int ret = 0;
-        ret = poll(&pfd, 1, 500);  // timeout of 500ms
-        if (ret == 1) // there is something to read
-        {
-            std::getline(std::cin, input);
-        } else if (ret == -1) {
-            LOG(ERROR) << "Error: " << strerror(errno) << std::endl;
-        } else {
-            continue;
+        buf = readline(prompt.c_str());
+        if (strlen(buf) > 0) {
+            add_history(buf);
         }
 
-        std::vector<std::string> cmd = splitString(const_cast<char *>(input.c_str()));
+        std::vector<std::string> cmd = splitString(buf);
         if (cmd.empty()) {
-            cout << ">>" << std::flush;
+            delete buf;
             continue;
         }
 
         if (std::find(commands.begin(), commands.end(), cmd.at(0)) == commands.end()) {
-            cout << "Command " << input << " is invalid\n";
+            cout << "Command " << buf << " is invalid\n";
             cout << "Type 'help' to get more information" << endl;
-            cout << ">>" << std::flush;
+            delete buf;
             continue;
         }
 
@@ -177,8 +171,8 @@ void CommandHandler::cmdHandler() {
             setData(cmd);
         }
 
-        cout << ">>" << std::flush;
     }
+
 }
 
 bool CommandHandler::isOpen() {
@@ -264,7 +258,7 @@ DataObjectState CommandHandler::getData(std::vector<std::string> &cmd) {
     }
 
     state = obdHandler->isPidSupported(service, pid.id);
-    if (state.type != SUCCESS){
+    if (state.type != SUCCESS) {
         return state;
     }
 
@@ -343,7 +337,7 @@ DataObjectState CommandHandler::setData(std::vector<std::string> &cmd) {
 
 DataObjectState CommandHandler::setDataViaPid(string val, Service service, Pid pid) {
     DataObjectState state = obdHandler->isPidSupported(service, pid.id);
-    if (state.type != SUCCESS){
+    if (state.type != SUCCESS) {
         return state;
     }
     // Try to update vehicle from data.

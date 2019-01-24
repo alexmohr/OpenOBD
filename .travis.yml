@@ -17,7 +17,8 @@ install:
   - sudo modprobe can
   - sudo insmod ./net/can/can-isotp.ko
   - cd ..
-  - git submodule update --init --recursive
+  - git submodule init
+  - git submodule update
 
 language: cpp
 

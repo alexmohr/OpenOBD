@@ -17,12 +17,13 @@ install:
   - sudo modprobe can
   - sudo insmod ./net/can/can-isotp.ko
   - cd ..
+  - git submodule init
+  - git submodule update
 
 language: cpp
 
 compiler:
   - gcc
-
 
 script:
   - mkdir build
@@ -30,7 +31,6 @@ script:
   - cmake ../ -DCOVERAGE=1
   - cmake --build .
   - ./Test --gtest_filter=-` tr '\n' ':' < ../tests/travis.excludes`
-
 
 after_success:
   - coveralls --root . -E ".*gtest.*" -E ".*CMakeFiles.*"

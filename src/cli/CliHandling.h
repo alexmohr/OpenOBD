@@ -24,11 +24,15 @@ private:
     unique_ptr<ICommunicationInterface> logicalComInterface;
 public:
     CliHandling();
+
 public:
     int openCli(int argc, char *argv[]);
+
     void closeCli();
 
     bool isOpen();
+
+    bool isExitRequested();
 
 private:
     void display_help(char *progname);

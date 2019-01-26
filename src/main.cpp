@@ -23,7 +23,6 @@ static void handleSignal(const int signum) {
             LOG(DEBUG) << "received signal " << signum;
             exit_code = EXIT_FAILURE;
             exitRequested = true;
-            LOG(ERROR) << "bar";
             break;
         case SIGINT:
         case SIGTERM:
@@ -48,7 +47,7 @@ int main(int argc, char *argv[]) {
     }
 
     while (handler.isOpen()) {
-        if (exitRequested) {
+        if (exitRequested || handler.isExitRequested()) {
             handler.closeCli();
         }
         sleep(1);

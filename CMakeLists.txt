@@ -2,8 +2,9 @@ cmake_minimum_required(VERSION 3.12)
 project(open_obd2)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-Wall")
+set(CMAKE_CXX_FLAGS "-Wall -pedantic")
 SET(COVERAGE OFF CACHE BOOL "Coverage")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules")
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 link_directories(${PROJECT_SOURCE_DIR}/lib)
@@ -13,20 +14,24 @@ link_directories(${PROJECT_SOURCE_DIR}/lib)
 configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
 execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
         RESULT_VARIABLE result
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
-if(result)
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download)
+if (result)
     message(FATAL_ERROR "CMake step for googletest failed: ${result}")
-endif()
+endif ()
 execute_process(COMMAND ${CMAKE_COMMAND} --build .
         RESULT_VARIABLE result
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
-if(result)
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download)
+if (result)
     message(FATAL_ERROR "Build step for googletest failed: ${result}")
-endif()
+endif ()
 
 # Prevent overriding the parent project's compiler/linker
 # settings on Windows
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
+
+find_package(Readline REQUIRED)
+
 
 # Add googletest directly to our build. This defines
 # the gtest and gtest_main targets.
@@ -34,7 +39,11 @@ add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
         ${CMAKE_CURRENT_BINARY_DIR}/googletest-build
         EXCLUDE_FROM_ALL)
 
-include_directories("${gtest_SOURCE_DIR}/include include//*")
+include_directories("${gtest_SOURCE_DIR}/include include//* ${Readline_INCLUDE_DIRS}")
+
+set(cpp-readline
+        submodules/cpp-readline/src/Console.cpp
+        submodules/cpp-readline/src/Console.hpp)
 
 set(CPPSRC
         lib/easylogging++.cc
@@ -114,15 +123,18 @@ set(CPPSRC
         src/communication/ELM327WifiServer.cpp
         src/communication/ELM327WifiServer.h
         src/communication/SocketClient.cpp
-        src/communication/SocketClient.h
-        src/communication/ELM327.h src/communication/ELM327.cpp src/communication/SocketServer.cpp src/communication/SocketServer.h src/communication/ISocketServer.h src/communication/ISocketServerClientHandler.h)
+        src/communication/SocketClient.h src/communication/ICloseable.h
+        src/communication/ELM327.h src/communication/ELM327.cpp
+        src/communication/SocketServer.cpp src/communication/SocketServer.h src/communication/ISocketServer.h
+        src/communication/ISocketServerClientHandler.h)
 
 
-add_executable(open_obd2 src/main.cpp ${CPPSRC} src/communication/ICloseable.h)
-target_link_libraries(open_obd2 pthread)
+add_executable(open_obd2 src/main.cpp ${CPPSRC} ${cpp-readline})
+target_link_libraries(open_obd2 pthread readline)
 
 add_executable(Test
         ${CPPSRC}
+        ${cpp-readline}
         tests/src/cli/CommandHandlerTest.cpp tests/main.cpp
         tests/src/communication/CanIsoTPTests.cpp
         tests/src/communication/ELM327WifiClientTest.cpp
@@ -141,7 +153,7 @@ add_executable(Test
 
 
 install(TARGETS open_obd2 EXPORT open_obd2 DESTINATION bin)
-target_link_libraries(Test PRIVATE gtest)
+target_link_libraries(Test PRIVATE gtest readline)
 
 if (COVERAGE)
     target_compile_options(Test PRIVATE --coverage)

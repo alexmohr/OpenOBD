@@ -40,9 +40,17 @@ sudo make install
 ````
 
 ## CLI
-The CLI is a terminal like frontend which allows setting and reading values. It can act as a tester or as an ecu. 
-At the moment it is very basic and does only support Service 1 and a small subset of pids.
 ![CLI Example](https://github.com/alexmohr/OpenOBD/blob/master/doc/cli_example.png)
+The CLI is a terminal like frontend which allows setting and reading values. It can act as a tester or as an ecu. 
+It supports:
+* Autocomplete via tab
+* History
+* Very simple scripting engine
+
+The "scripting" is not really a fully fledged programming language like lua or python but allows to execute commands
+in the order of how they are written down in a plain text file. 
+To slow down the execution of the commands the sleep command can be used which delays the execution by the given 
+amount of milliseconds. 
 
 ## Web interface
 Coming in the future <3

@@ -7,10 +7,8 @@
 #include <chrono>         // std::chrono::seconds
 
 
-
 CliHandling::CliHandling() {
 }
-
 
 
 int CliHandling::openCli(int argc, char *argv[]) {
@@ -61,10 +59,10 @@ int CliHandling::openCli(int argc, char *argv[]) {
 }
 
 void CliHandling::closeCli() {
-    if (logicalComInterface!= nullptr) {
+    if (logicalComInterface != nullptr) {
         logicalComInterface->closeInterface();
     }
-    if (physicalComInterface != nullptr){
+    if (physicalComInterface != nullptr) {
         physicalComInterface->closeInterface();
     }
     if (cmdHandler != nullptr) {
@@ -73,7 +71,7 @@ void CliHandling::closeCli() {
     if (elmServer != nullptr) {
         elmServer->closeInterface();
     }
-    if (socketServer != nullptr){
+    if (socketServer != nullptr) {
         socketServer->closeInterface();
     }
 }
@@ -168,5 +166,9 @@ bool CliHandling::isOpen() {
         return elmServer->isOpen();
     }
     return false;
+}
+
+bool CliHandling::isExitRequested() {
+    return cmdHandler->isExitRequested();
 }
 

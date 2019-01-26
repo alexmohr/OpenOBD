@@ -30,9 +30,11 @@ private:
 
     const string command_get = "get";
     const string command_set = "set";
-    const string command_help = "help";
+    const string command_sleep = "sleep";
+    const string command_help = "?";
     const string command_cmd = "cmd";
     const string command_pid = "pid";
+    const string prompt = ">> ";
 
     const string command_pid_by_number = "PidByNumber";
     const string command_set_by_hex_number = "PidByHexNumber";
@@ -53,18 +55,18 @@ public:
 
     map<string, CommandInfo> commandMapping{
 
-            {"SupportedPid01_20",                CommandInfo(Service::POWERTRAIN, SupportedPid01_20)},
-            {"SupportedPid21_40",                CommandInfo(Service::POWERTRAIN, SupportedPid21_40)},
-            {"SupportedPid41_60",                CommandInfo(Service::POWERTRAIN, SupportedPid41_60)},
-            {"SupportedPid61_80",                CommandInfo(Service::POWERTRAIN, SupportedPid61_80)},
-            {"SupportedPid81_A0",                CommandInfo(Service::POWERTRAIN, SupportedPid81_A0)},
-            {"SupportedPidA1_C0",                CommandInfo(Service::POWERTRAIN, SupportedPidA1_C0)},
-            {"SupportedPidC1_E0",                CommandInfo(Service::POWERTRAIN, SupportedPidC1_E0)},
-            {"MonitoringStatusSinceDTCsCleared", CommandInfo(Service::POWERTRAIN, MonitoringStatusSinceDTCsCleared)},
-            {"FreezeDTCPid",                     CommandInfo(Service::POWERTRAIN, FreezeDTCPid)},
-            {"FuelSystemStatus",                 CommandInfo(Service::POWERTRAIN, FuelSystemStatus)},
-            {"CalculatedEngineLoad",             CommandInfo(Service::POWERTRAIN, CalculatedEngineLoad)},
-            {"EngineCoolantTemperature",         CommandInfo(Service::POWERTRAIN, EngineCoolantTemperature)},
+            {"SupportedPid01_20",                   CommandInfo(Service::POWERTRAIN, SupportedPid01_20)},
+            {"SupportedPid21_40",                   CommandInfo(Service::POWERTRAIN, SupportedPid21_40)},
+            {"SupportedPid41_60",                   CommandInfo(Service::POWERTRAIN, SupportedPid41_60)},
+            {"SupportedPid61_80",                   CommandInfo(Service::POWERTRAIN, SupportedPid61_80)},
+            {"SupportedPid81_A0",                   CommandInfo(Service::POWERTRAIN, SupportedPid81_A0)},
+            {"SupportedPidA1_C0",                   CommandInfo(Service::POWERTRAIN, SupportedPidA1_C0)},
+            {"SupportedPidC1_E0",                   CommandInfo(Service::POWERTRAIN, SupportedPidC1_E0)},
+            {"MonitoringStatusSinceDTCsCleared",    CommandInfo(Service::POWERTRAIN, MonitoringStatusSinceDTCsCleared)},
+            {"FreezeDTCPid",                        CommandInfo(Service::POWERTRAIN, FreezeDTCPid)},
+            {"FuelSystemStatus",                    CommandInfo(Service::POWERTRAIN, FuelSystemStatus)},
+            {"CalculatedEngineLoad",                CommandInfo(Service::POWERTRAIN, CalculatedEngineLoad)},
+            {"EngineCoolantTemperature",            CommandInfo(Service::POWERTRAIN, EngineCoolantTemperature)},
             {"ShortTermFuelTrimBank1",              CommandInfo(Service::POWERTRAIN, ShortTermFuelTrimBank1)},
             {"LongTermFuelTrimBank1",               CommandInfo(Service::POWERTRAIN, LongTermFuelTrimBank1)},
             {"ShortTermFuelTrimBank2",              CommandInfo(Service::POWERTRAIN, ShortTermFuelTrimBank2)},
@@ -115,26 +117,26 @@ public:
             {"ExtendedRangeOxygenSensor1",          CommandInfo(Service::POWERTRAIN, ExtendedRangeOxygenSensor1)},
             {"ExtendedRangeOxygenSensor2",          CommandInfo(Service::POWERTRAIN, ExtendedRangeOxygenSensor2)},
             {"ExtendedRangeOxygenSensor3",          CommandInfo(Service::POWERTRAIN, ExtendedRangeOxygenSensor3)},
-            {"ExtendedRangeOxygenSensor4",       CommandInfo(Service::POWERTRAIN, ExtendedRangeOxygenSensor4)},
-            {"ExtendedRangeOxygenSensor5",       CommandInfo(Service::POWERTRAIN, ExtendedRangeOxygenSensor5)},
-            {"ExtendedRangeOxygenSensor6",       CommandInfo(Service::POWERTRAIN, ExtendedRangeOxygenSensor6)},
-            {"ExtendedRangeOxygenSensor7",       CommandInfo(Service::POWERTRAIN, ExtendedRangeOxygenSensor7)},
-            {"ExtendedRangeOxygenSensor8",       CommandInfo(Service::POWERTRAIN, ExtendedRangeOxygenSensor8)},
-            {"CatalystTemperatureBank1Sensor1",  CommandInfo(Service::POWERTRAIN, CatalystTemperatureBank1Sensor1)},
-            {"CatalystTemperatureBank2Sensor1",  CommandInfo(Service::POWERTRAIN, CatalystTemperatureBank2Sensor1)},
-            {"CatalystTemperatureBank1Sensor2",  CommandInfo(Service::POWERTRAIN, CatalystTemperatureBank1Sensor2)},
-            {"CatalystTemperatureBank2Sensor2",  CommandInfo(Service::POWERTRAIN, CatalystTemperatureBank2Sensor2)},
-            {"MonitorStatusThisDriveCycle",      CommandInfo(Service::POWERTRAIN, MonitorStatusThisDriveCycle)},
-            {"ControlModuleVoltage",             CommandInfo(Service::POWERTRAIN, ControlModuleVoltage)},
-            {"AbsoluteLoadValue",                CommandInfo(Service::POWERTRAIN, AbsoluteLoadValue)},
-            {"FuelAirCommandedEquivalenceRatio", CommandInfo(Service::POWERTRAIN, FuelAirCommandedEquivalenceRatio)},
-            {"RelativeThrottlePosition",         CommandInfo(Service::POWERTRAIN, RelativeThrottlePosition)},
-            {"AmbientAirTemperature",            CommandInfo(Service::POWERTRAIN, AmbientAirTemperature)},
-            {"AbsoluteThrottlePositionB",        CommandInfo(Service::POWERTRAIN, AbsoluteThrottlePositionB)},
-            {"AbsoluteThrottlePositionC",        CommandInfo(Service::POWERTRAIN, AbsoluteThrottlePositionC)},
-            {"AcceleratorPedalPositionD",        CommandInfo(Service::POWERTRAIN, AcceleratorPedalPositionD)},
-            {"AcceleratorPedalPositionE",        CommandInfo(Service::POWERTRAIN, AcceleratorPedalPositionE)},
-            {"AcceleratorPedalPositionF",        CommandInfo(Service::POWERTRAIN, AcceleratorPedalPositionF)},
+            {"ExtendedRangeOxygenSensor4",          CommandInfo(Service::POWERTRAIN, ExtendedRangeOxygenSensor4)},
+            {"ExtendedRangeOxygenSensor5",          CommandInfo(Service::POWERTRAIN, ExtendedRangeOxygenSensor5)},
+            {"ExtendedRangeOxygenSensor6",          CommandInfo(Service::POWERTRAIN, ExtendedRangeOxygenSensor6)},
+            {"ExtendedRangeOxygenSensor7",          CommandInfo(Service::POWERTRAIN, ExtendedRangeOxygenSensor7)},
+            {"ExtendedRangeOxygenSensor8",          CommandInfo(Service::POWERTRAIN, ExtendedRangeOxygenSensor8)},
+            {"CatalystTemperatureBank1Sensor1",     CommandInfo(Service::POWERTRAIN, CatalystTemperatureBank1Sensor1)},
+            {"CatalystTemperatureBank2Sensor1",     CommandInfo(Service::POWERTRAIN, CatalystTemperatureBank2Sensor1)},
+            {"CatalystTemperatureBank1Sensor2",     CommandInfo(Service::POWERTRAIN, CatalystTemperatureBank1Sensor2)},
+            {"CatalystTemperatureBank2Sensor2",     CommandInfo(Service::POWERTRAIN, CatalystTemperatureBank2Sensor2)},
+            {"MonitorStatusThisDriveCycle",         CommandInfo(Service::POWERTRAIN, MonitorStatusThisDriveCycle)},
+            {"ControlModuleVoltage",                CommandInfo(Service::POWERTRAIN, ControlModuleVoltage)},
+            {"AbsoluteLoadValue",                   CommandInfo(Service::POWERTRAIN, AbsoluteLoadValue)},
+            {"FuelAirCommandedEquivalenceRatio",    CommandInfo(Service::POWERTRAIN, FuelAirCommandedEquivalenceRatio)},
+            {"RelativeThrottlePosition",            CommandInfo(Service::POWERTRAIN, RelativeThrottlePosition)},
+            {"AmbientAirTemperature",               CommandInfo(Service::POWERTRAIN, AmbientAirTemperature)},
+            {"AbsoluteThrottlePositionB",           CommandInfo(Service::POWERTRAIN, AbsoluteThrottlePositionB)},
+            {"AbsoluteThrottlePositionC",           CommandInfo(Service::POWERTRAIN, AbsoluteThrottlePositionC)},
+            {"AcceleratorPedalPositionD",           CommandInfo(Service::POWERTRAIN, AcceleratorPedalPositionD)},
+            {"AcceleratorPedalPositionE",           CommandInfo(Service::POWERTRAIN, AcceleratorPedalPositionE)},
+            {"AcceleratorPedalPositionF",           CommandInfo(Service::POWERTRAIN, AcceleratorPedalPositionF)},
     };
 
 
@@ -161,23 +163,32 @@ public:
 
     bool isOpen();
 
+    bool isExitRequested();
+
 public: // public for testing
-    DataObjectState setData(std::vector<std::string> &cmd);
+    DataObjectState setData(const vector<string> &cmd);
 
-    DataObjectState getData(std::vector<std::string> &cmd);
+    DataObjectState getData(const vector<string> &cmd);
 
-    bool getPid(std::vector<std::string> &cmd, Pid &pid, Service &service);
+    bool getPid(const vector<string> &cmd, Pid &pid, Service &service);
 
     bool isInitDone();
 
     OBDHandler &getObdHandler();
+
 private:
+
+    int sleep(const vector<string> &cmd);
+
+    int getDataCommand(const vector<string> &cmd);
+
+    int setDataCommand(const vector<string> &cmd);
 
     DataObjectState setDataViaPid(string val, Service service, Pid pid);
 
-    DataObjectState setDataSpecial(std::vector<std::string> &cmd);
+    DataObjectState setDataSpecial(const vector<string> &cmd);
 
-    DataObjectState getDataSpecial(std::vector<std::string> &cmd);
+    DataObjectState getDataSpecial(const vector<string> &cmd);
 
     void configureVirtualVehicle(Vehicle *vehicle);
 
@@ -187,9 +198,11 @@ private:
 
     void cmdHandler();
 
-    void printHelp(std::vector<std::string> &cmd);
+    int printHelp(const vector<string> &cmd);
 
     DataObjectState queryECU(Pid pid, Service service);
+
+    vector<string> getSupportedPids() const;
 };
 
 

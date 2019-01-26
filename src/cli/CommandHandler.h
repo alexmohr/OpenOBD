@@ -30,6 +30,7 @@ private:
 
     const string command_get = "get";
     const string command_set = "set";
+    const string command_sleep = "sleep";
     const string command_help = "?";
     const string command_cmd = "cmd";
     const string command_pid = "pid";
@@ -177,6 +178,8 @@ public: // public for testing
 
 private:
 
+    int sleep(const vector<string> &cmd);
+
     int getDataCommand(const vector<string> &cmd);
 
     int setDataCommand(const vector<string> &cmd);
@@ -199,6 +202,7 @@ private:
 
     DataObjectState queryECU(Pid pid, Service service);
 
+    vector<string> getSupportedPids() const;
 };
 
 

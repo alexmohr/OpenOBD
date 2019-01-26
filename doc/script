@@ -1,0 +1,48 @@
+#
+# This is an example how scripting can be used.
+# Here we simulate a vehicle driving
+# The scripting is just executing commands and therefore does
+# not support loops or variables.
+
+# set value
+set VehicleSpeed 0
+set EngineRPM 0
+
+# sleep milliseconds
+sleep 800
+
+set VehicleSpeed 20
+set EngineRPM 1000
+sleep 800
+
+set VehicleSpeed 40
+set EngineRPM 2000
+sleep 800
+
+set VehicleSpeed 50
+set EngineRPM 3000
+sleep 800
+
+set VehicleSpeed 60
+set EngineRPM 4000
+sleep 800
+
+set VehicleSpeed 70
+set EngineRPM 5000
+sleep 800
+
+set VehicleSpeed 80
+set EngineRPM 6000
+sleep 800
+
+set VehicleSpeed 90
+set EngineRPM 7000
+sleep 800
+
+set VehicleSpeed 100
+set EngineRPM 8000
+sleep 800
+
+sleep 10000
+set VehicleSpeed 0
+set EngineRPM 0

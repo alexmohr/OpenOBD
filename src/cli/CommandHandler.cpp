@@ -112,7 +112,6 @@ void CommandHandler::configureVehicle() {
         LOG(INFO) << "Could not read all data from vehicle. Available commands may be incomplete.";
     }
 
-    cout << prompt << flush;
     initDone = true;
 }
 
@@ -145,11 +144,25 @@ void CommandHandler::ecuRecvThread(ICommunicationInterface *com) {
 }
 
 void CommandHandler::cmdHandler() {
-    CppReadline::Console console(prompt);
-    console.registerCommand(command_help, std::bind(&CommandHandler::printHelp, this, std::placeholders::_1));
-    console.registerCommand(command_get, std::bind(&CommandHandler::getDataCommand, this, std::placeholders::_1));
-    console.registerCommand(command_set, std::bind(&CommandHandler::setDataCommand, this, std::placeholders::_1));
 
+    while (!initDone || exitRequested) {
+        this_thread::sleep_for(1ms);
+    }
+
+    CppReadline::Console console(prompt);
+    vector<string> supportedPids = getSupportedPids();
+
+    console.registerCommand(command_help,
+                            {std::bind(&CommandHandler::printHelp, this, std::placeholders::_1), vector<string>{}});
+
+    console.registerCommand(command_get,
+                            {std::bind(&CommandHandler::getDataCommand, this, std::placeholders::_1), supportedPids});
+
+    console.registerCommand(command_set,
+                            {std::bind(&CommandHandler::setDataCommand, this, std::placeholders::_1), supportedPids});
+
+    console.registerCommand(command_sleep,
+                            {std::bind(&CommandHandler::sleep, this, std::placeholders::_1), vector<string>{}});
 
     int retVal = 0;
     do {
@@ -186,20 +199,9 @@ int CommandHandler::printHelp(const vector<string> &cmd) {
         }
         cout << endl;
     } else if (cmd.at(1) == command_pid) {
-        Service service;
-        Pid pid;
         cout << "Supported Pids:\n";
-        for (const auto &cmdName : commandMapping) {
-            if (obdHandler->getServiceAndPidInfo(
-                    cmdName.second.getPidId(), cmdName.second.getService(), pid, service) != 0) {
-
-                LOG(FATAL) << "Pid with ID " << pid.id << "does only exist in cmdHandler";
-                continue;
-            }
-
-            if (obdHandler->getVehicle()->getPidSupport().getPidSupported(service, pid.id)) {
-                cout << cmdName.first << " ";
-            }
+        for (const auto &pid: getSupportedPids()) {
+            cout << pid << " ";
         }
         cout << endl << "These additional commands can follow a set as well:" << endl;
         for (const auto &cmdName : specialSetCommands) {
@@ -210,6 +212,24 @@ int CommandHandler::printHelp(const vector<string> &cmd) {
         cout << err_invalid_input << endl;
     }
     return 0;
+}
+
+vector<string> CommandHandler::getSupportedPids() const {
+    Service service;
+    Pid pid;
+    vector<string> supportedPids = vector<string>();
+    for (const auto &cmdName : commandMapping) {
+        if (obdHandler->getServiceAndPidInfo(
+                cmdName.second.getPidId(), cmdName.second.getService(), pid, service) != 0) {
+            LOG(FATAL) << "Pid with ID " << pid.id << "does only exist in cmdHandler";
+            continue;
+        }
+
+        if (obdHandler->getVehicle()->getPidSupport().getPidSupported(service, pid.id)) {
+            supportedPids.push_back(cmdName.first);
+        }
+    }
+    return supportedPids;
 }
 
 bool CommandHandler::getPid(const vector<string> &cmd, Pid &pid, Service &service) {
@@ -461,5 +481,16 @@ int CommandHandler::getDataCommand(const vector<string> &cmd) {
 
 int CommandHandler::setDataCommand(const vector<string> &cmd) {
     return setData(cmd).type;
+}
+
+int CommandHandler::sleep(const vector<string> &cmd) {
+    if (cmd.size() < 2) {
+        cout << "Give a sleep time in milli seconds";
+        return 1;
+    }
+
+    int sleepTime = convertStringToT<int>(cmd.at(1));
+    std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
+    return 0;
 }
 

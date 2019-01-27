@@ -24,28 +24,36 @@
 
 SerialClient::SerialClient(int baudrate, char *ttyDevice) {
     this->baudrate = baudrate;
-    this->ttyDevice = ttyDevice;
+
+    size_t ttyLen = static_cast<int>(strlen(ttyDevice));
+    if (ttyLen > 0) {
+        this->ttyDevice = static_cast<char *>(malloc(ttyLen));
+        strcpy(this->ttyDevice, ttyDevice);
+    }
+}
+
+SerialClient::~SerialClient() {
+    delete ttyDevice;
 }
 
 
 int SerialClient::openInterface() {
+    ttyFd = open(ttyDevice, O_RDWR | O_NOCTTY | O_NONBLOCK);
+    if (ttyFd == -1) {
+        LOG(ERROR) << "Failed to open Interface: '" << ttyDevice << "': " << strerror(errno);
+        return -1;
+    }
+
     if (0 == this->baudrate) {
         return openSerialPortAutoBaud();
     }
 
     return openSerialPort();
-
 }
 
 int SerialClient::openSerialPort() {
     int result;
     struct termios2 tio;
-
-    ttyFd = open(ttyDevice, O_RDWR | O_NOCTTY | O_NONBLOCK);
-    if (ttyFd == -1) {
-        LOG(ERROR) << "open(%s) failed: " << ttyDevice << ": " << strerror(errno);
-        return -1;
-    }
 
     result = ioctl(ttyFd, TCGETS2, &tio);
     if (result == -1) {

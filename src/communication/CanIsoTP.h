@@ -17,9 +17,9 @@
 
 using namespace std;
 
-enum TP_ERRORS{
+enum TP_ERRORS {
     InvalidIds = 1,
-    FailedToOpenSocket =2
+    FailedToOpenSocket = 2
 };
 
 class CanIsoTP : public SocketCommunicationBase {
@@ -29,6 +29,8 @@ private:
     char *ifname;
 public:
     CanIsoTP(unsigned int rxId, unsigned int txId, char *ifname);
+
+    ~CanIsoTP() override;
 
 public: // Overides SocketCommunicationBase
     int openInterface() override;

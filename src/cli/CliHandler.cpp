@@ -13,31 +13,33 @@ CliHandler::CliHandler() {
 
 int CliHandler::openCli(int argc, char *argv[]) {
 
-    char *target = static_cast<char *>(malloc(255));
+    int targetSize = 255;
+    char *interface = new char[targetSize];
+    memset(interface, 0, targetSize);
     int port = 0;
     bool enableElm = false;
 
     CLI_TYPE type;
 
-    if (getCommandLineArgs(argc, argv, *target, port, type, enableElm) == EXIT_FAILURE) {
+    if (getCommandLineArgs(argc, argv, *interface, port, type, enableElm) == EXIT_FAILURE) {
         return EXIT_FAILURE;
     }
 
     switch (type) {
         case WIFI_ELM:
             if (0 == port) { port = wifiDefaultPort; }
-            physicalComInterface = make_unique<SocketClient>(port, target);
+            physicalComInterface = make_unique<SocketClient>(port, interface);
             logicalComInterface = make_unique<ELMClient>(physicalComInterface.get());
             break;
         case SERIAL_ELM:
-            physicalComInterface = make_unique<SerialClient>(port, target);
+            physicalComInterface = make_unique<SerialClient>(port, interface);
             logicalComInterface = make_unique<ELMClient>(physicalComInterface.get());
             break;
         case TESTER:
-            logicalComInterface = make_unique<CanIsoTP>(VEHICLE_ID, TESTER_ID, target);
+            logicalComInterface = make_unique<CanIsoTP>(VEHICLE_ID, TESTER_ID, interface);
             break;
         case ECU:
-            logicalComInterface = make_unique<CanIsoTP>(TESTER_ID, VEHICLE_ID, target);
+            logicalComInterface = make_unique<CanIsoTP>(TESTER_ID, VEHICLE_ID, interface);
             break;
         default:
             LOG(ERROR) << "Unsupported interface type";
@@ -59,6 +61,7 @@ int CliHandler::openCli(int argc, char *argv[]) {
     }
 
     cmdHandler = make_unique<CommandHandler>(type, logicalComInterface.get());
+    delete[] interface;
     return cmdHandler->start();
 }
 
@@ -107,13 +110,6 @@ CliHandler::getCommandLineArgs(int argc, char **argv, char &interface, int &port
 
     type = ECU;
 
-    char *canAdapter = static_cast<char *>(malloc(255));
-    char *elm = static_cast<char *>(malloc(255));
-    strcpy(canAdapter, "can0");
-    strcpy(&interface, canAdapter);
-    strcpy(elm, "192.168.0.10");
-
-
     bool logDebug = false;
 
     int c;
@@ -135,10 +131,8 @@ CliHandler::getCommandLineArgs(int argc, char **argv, char &interface, int &port
                     type = ECU;
                 } else if (strncmp(typeWElm, optarg, sizeof(&typeWElm)) == 0) {
                     type = WIFI_ELM;
-                    strcpy(&interface, elm);
                 } else if (strncmp(typeSElm, optarg, sizeof(&typeSElm)) == 0) {
                     type = SERIAL_ELM;
-                    strcpy(&interface, elm);
                 } else {
                     fprintf(stderr, "Specified type %s is invalid.\n", optarg);
                     return EXIT_FAILURE;
@@ -157,6 +151,21 @@ CliHandler::getCommandLineArgs(int argc, char **argv, char &interface, int &port
             default:
                 display_help(argv[0]);
                 return EXIT_FAILURE;
+        }
+    }
+
+    // set defaults if necessary
+    if ((&interface)[0] == 0) {
+        switch (type) {
+            case ECU:
+            case TESTER:
+                strcpy(&interface, "can0");
+                break;
+            case WIFI_ELM:
+                strcpy(&interface, "192.168.0.10");
+                break;
+            case SERIAL_ELM:
+                strcpy(&interface, "/dev/ttyUSB0");
         }
     }
 

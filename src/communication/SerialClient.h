@@ -11,6 +11,7 @@
 #include "ELM327.h"
 #include <vector>
 
+
 class SerialClient : public ICommunicationInterface {
 private:
     int baudrate;
@@ -18,6 +19,8 @@ private:
     int ttyFd;
 public:
     SerialClient(int baudrate, char *ttyDevice);
+
+    ~SerialClient();
 
 public: // override ICloseable
     int closeInterface() override;

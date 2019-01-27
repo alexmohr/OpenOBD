@@ -11,9 +11,16 @@
 
 SocketClient::SocketClient(int port, char *host) {
     this->port = port;
-    this->host = host;
+    size_t hostLen = static_cast<int>(strlen(host));
+    if (hostLen > 0) {
+        this->host = static_cast<char *>(malloc(hostLen));
+        strcpy(this->host, host);
+    }
 }
 
+SocketClient::~SocketClient() {
+    delete host;
+}
 
 int SocketClient::openInterface() {
     int res, valopt;

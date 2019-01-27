@@ -40,7 +40,7 @@ script:
   - LD_RUN_PATH=~/usr/local/lib:LD_RUN_PATH
   - mkdir build
   - cd build
-  - sudo cp /usr/local/lib/libuv.so
+  - sudo cp /usr/local/lib/libuv.so .
   - cmake ../ -DCOVERAGE=1
   - cmake --build .
   - ./Test --gtest_filter=-` tr '\n' ':' < ../tests/travis.excludes`

@@ -42,7 +42,6 @@ script:
   - cd build
   - cmake ../ -DCOVERAGE=1
   - cmake --build .
-  - - PATH=~/opt/bin:$PATH
   - ./Test --gtest_filter=-` tr '\n' ':' < ../tests/travis.excludes`
 
 after_success:

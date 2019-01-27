@@ -15,6 +15,8 @@ private:
 public:
     SocketClient(int port, char *host);
 
+    ~SocketClient() override;
+
 public: // override ICommunicationInterface
     int openInterface() override;
 

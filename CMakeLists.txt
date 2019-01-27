@@ -100,7 +100,7 @@ set(CPPSRC
         src/OBD/data/Enumerated/FuelSystemStates.h
         src/OBD/data/BitEncoded/Oxygen/BankOxygenSensorsCollection.cpp
         src/OBD/data/BitEncoded/Oxygen/BankOxygenSensorsCollection.h
-        src/cli/CliHandling.cpp src/cli/CliHandling.h
+        src/cli/CliHandler.cpp src/cli/CliHandler.h
         src/OBD/data/BitEncoded/Oxygen/BankOxygenSensors4BankCollection.cpp
         src/OBD/data/BitEncoded/Oxygen/BankOxygenSensors4BankCollection.h
         src/OBD/data/BitEncoded/Throttle.cpp src/OBD/data/BitEncoded/Throttle.h
@@ -108,8 +108,8 @@ set(CPPSRC
         src/OBD/data/dataObject/CalculatedDataObjectFactory.h
         src/cli/CommandHandler.cpp
         src/cli/CommandHandler.h
-        src/communication/ELM327WifiClient.cpp
-        src/communication/ELM327WifiClient.h
+        src/communication/ELMClient.cpp
+        src/communication/ELMClient.h
         src/communication/SocketCommunicationBase.h
         src/communication/SocketCommunicationBase.cpp
         src/communication/ICommunicationInterface.h
@@ -126,7 +126,7 @@ set(CPPSRC
         src/communication/SocketClient.h src/communication/ICloseable.h
         src/communication/ELM327.h src/communication/ELM327.cpp
         src/communication/SocketServer.cpp src/communication/SocketServer.h src/communication/ISocketServer.h
-        src/communication/ISocketServerClientHandler.h)
+        src/communication/ISocketServerClientHandler.h src/communication/SerialClient.cpp src/communication/SerialClient.h)
 
 
 add_executable(open_obd2 src/main.cpp ${CPPSRC} ${cpp-readline})

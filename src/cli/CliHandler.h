@@ -11,19 +11,24 @@
 #include <unistd.h>
 #include "CommandHandler.h"
 #include "../communication/SocketServer.h"
+#include "../communication/SerialClient.h"
 #include "easylogging++.h"
 
 
-class CliHandling {
+class CliHandler {
 private:
-    bool running;
     unique_ptr<ELM327WifiServer> elmServer;
     unique_ptr<CommandHandler> cmdHandler;
     unique_ptr<ISocketServer> socketServer;
     unique_ptr<ICommunicationInterface> physicalComInterface;
     unique_ptr<ICommunicationInterface> logicalComInterface;
+
+private:
+    bool running;
+    int wifiDefaultPort = 35000;
+
 public:
-    CliHandling();
+    CliHandler();
 
 public:
     int openCli(int argc, char *argv[]);

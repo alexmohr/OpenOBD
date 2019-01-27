@@ -65,14 +65,24 @@
 CanIsoTP::CanIsoTP(unsigned int rxId, unsigned int txId, char *ifname) {
     this->rxId = rxId;
     this->txId = txId;
-    this->ifname = ifname;
+
+    size_t nameLen = static_cast<int>(strlen(ifname));
+    if (nameLen > 0) {
+        this->ifname = static_cast<char *>(malloc(nameLen));
+        strcpy(this->ifname, ifname);
+    }
+}
+
+
+CanIsoTP::~CanIsoTP() {
+    delete ifname;
 }
 
 
 int CanIsoTP::openInterface() {
     if (rxId > MAX_CAN_ID_EXTENDED || rxId == 0 ||
         txId > MAX_CAN_ID_EXTENDED || txId == 0
-        || txId == rxId){
+        || txId == rxId) {
         return InvalidIds;
     }
 
@@ -90,7 +100,7 @@ int CanIsoTP::openInterface() {
     }
 
     addr.can_addr.tp.rx_id = static_cast<canid_t>(rxId);
-    if (rxId > MAX_CAN_ID_NORMAL){
+    if (rxId > MAX_CAN_ID_NORMAL) {
         addr.can_addr.tp.rx_id |= CAN_EFF_FLAG;
     }
 
@@ -114,8 +124,9 @@ int CanIsoTP::openInterface() {
         }
     }
 
-    if (opts.flags & CAN_ISOTP_FORCE_RXSTMIN)
+    if (opts.flags & CAN_ISOTP_FORCE_RXSTMIN) {
         setsockopt(socketHandle, SOL_CAN_ISOTP, CAN_ISOTP_RX_STMIN, &force_rx_stmin, sizeof(force_rx_stmin));
+    }
 
     addr.can_family = AF_CAN;
     addr.can_ifindex = if_nametoindex(ifname);
@@ -125,10 +136,10 @@ int CanIsoTP::openInterface() {
     setsockopt(socketHandle, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(struct timeval));
 
 
-    if (bind(socketHandle, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
+    if (bind(socketHandle, (struct sockaddr *) &addr, sizeof(addr)) < 0) {
         perror("bind");
         closeInterface();
-        return  FailedToOpenSocket;
+        return FailedToOpenSocket;
     }
 
     return 0;

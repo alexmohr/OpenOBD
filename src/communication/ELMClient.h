@@ -13,15 +13,15 @@
 #include <map>
 
 
-class ELM327WifiClient : public ICommunicationInterface {
+class ELMClient : public ICommunicationInterface {
 private:
-    ICommunicationInterface *socketClient;
+    ICommunicationInterface *elmInterface;
 
     ElmProtocol *usedProtocol;
 
 
 public:
-    explicit ELM327WifiClient(ICommunicationInterface *socketClient);
+    explicit ELMClient(ICommunicationInterface *socketClient);
 
 
 public: // override ICommunicationInterface
@@ -34,6 +34,7 @@ public: // override ICommunicationInterface
     int closeInterface() override;
 
     int configureInterface() override;
+
 private:
     bool configurationCommandSendSuccessfully(byte *buf, int bufSize, string data);
 

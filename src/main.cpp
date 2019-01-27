@@ -3,7 +3,7 @@
 #include <map>
 #include <string>
 #include "easylogging++.h"
-#include "cli/CliHandling.h"
+#include "cli/CliHandler.h"
 
 
 INITIALIZE_EASYLOGGINGPP
@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
     signal(SIGINT, handleSignal);
     signal(SIGTERM, handleSignal);
 
-    CliHandling handler = CliHandling();
+    CliHandler handler = CliHandler();
     if (EXIT_SUCCESS != handler.openCli(argc, argv)) {
         return EXIT_FAILURE;
     }

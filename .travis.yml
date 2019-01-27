@@ -26,6 +26,7 @@ install:
   - sudo make install
   - git submodule init
   - git submodule update
+  - cd ..
 
 language: cpp
 

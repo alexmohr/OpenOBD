@@ -16,11 +16,8 @@ This means you need a CAN connection to the vehicle. The baud rate must be set o
 connect to the interface via socket so will not be able to configure baud rates.
 
 ### ELM 327 
-The current version supports a very basic implementation for ELM interfaces using WIFI. 
-Interfaces using USB, serial adpaters or bluetooth won't be supported due to the lack of hardware on my side. 
-A pull request or a sponsered interface to add support for these would be welcome.
-This software offers to functionality to serve as an ELM server as well. 
-When using this software as ELM server caution is advised because only a very small subset of functions is supported.  
+This software supportes ELM interfaces using wifi and serial.
+Furthermore can expose the CAN interface with the ELM API altough only a very small command subset is implemented
 
 ## Building and running
 As this is a work in progress, no pre built binaries are available at the moment.

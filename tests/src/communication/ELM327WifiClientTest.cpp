@@ -5,7 +5,7 @@
 
 
 #include <gtest/gtest.h>
-#include "../../../src/communication/ELM327WifiClient.h"
+#include "../../../src/communication/ELMClient.h"
 #include "../MockCommInterface.h"
 
 const int port = 35000;
@@ -78,13 +78,13 @@ string createResponse(const string &data, int &dataLength) {
 }
 
 
-void recvData(ELM327WifiClient &elm, int &readSize, byte *&buf) {
+void recvData(ELMClient &elm, int &readSize, byte *&buf) {
     int bufSize = 255;
     buf = (byte *) malloc(bufSize);
     elm.receive(buf, bufSize, readSize);
 }
 
-void testVehicleSpeed(MockCommInterface *mockInterface, ELM327WifiClient &elm) {
+void testVehicleSpeed(MockCommInterface *mockInterface, ELMClient &elm) {
     byte request[2] = {(byte) 0x01, (byte) VehicleSpeed};
     mockInterface->setDataReceivedCallback(nullptr, false);
 
@@ -105,7 +105,7 @@ void testVehicleSpeed(MockCommInterface *mockInterface, ELM327WifiClient &elm) {
     delete buf;
 }
 
-void testSupportedPids(MockCommInterface *mockInterface, ELM327WifiClient &elm) {
+void testSupportedPids(MockCommInterface *mockInterface, ELMClient &elm) {
     byte request[2] = {(byte) 0x01, (byte) VehicleSpeed};
     mockInterface->setDataReceivedCallback(nullptr, false);
 
@@ -135,7 +135,7 @@ void testSupportedPids(MockCommInterface *mockInterface, ELM327WifiClient &elm) 
 void testProtocol(char protocol) {
     selectedProtocol = protocol;
     auto mockInterface = new MockCommInterface();
-    auto elm = ELM327WifiClient(mockInterface);
+    auto elm = ELMClient(mockInterface);
     int result = elm.openInterface();
     EXPECT_EQ(result, 0);
 

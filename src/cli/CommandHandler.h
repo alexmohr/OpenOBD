@@ -11,7 +11,7 @@
 #include <condition_variable>
 #include "../OBD/Pid.h"
 #include "../communication/CanIsoTP.h"
-#include "../communication/ELM327WifiClient.h"
+#include "../communication/ELMClient.h"
 #include "../communication/ELM327WifiServer.h"
 #include "../OBD/OBDHandler.h"
 #include "CommandInfo.h"
@@ -22,7 +22,8 @@ using namespace std;
 enum CLI_TYPE {
     ECU,
     TESTER,
-    ELM
+    WIFI_ELM,
+    SERIAL_ELM
 };
 
 class CommandHandler {

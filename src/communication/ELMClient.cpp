@@ -2,7 +2,7 @@
 // Created by me on 03/01/19.
 //
 
-#include "ELM327WifiClient.h"
+#include "ELMClient.h"
 #include "easylogging++.h"
 #include "../common/conversion.h"
 #include <chrono>
@@ -12,27 +12,27 @@
 using namespace std::chrono_literals;
 
 
-ELM327WifiClient::ELM327WifiClient(ICommunicationInterface *socketClient) {
-    this->socketClient = socketClient;
+ELMClient::ELMClient(ICommunicationInterface *socketClient) {
+    this->elmInterface = socketClient;
 
 }
 
-int ELM327WifiClient::openInterface() {
-    return socketClient->openInterface();
+int ELMClient::openInterface() {
+    return elmInterface->openInterface();
 }
 
-int ELM327WifiClient::closeInterface() {
-    return socketClient->closeInterface();
+int ELMClient::closeInterface() {
+    return elmInterface->closeInterface();
 }
 
-void ELM327WifiClient::receive(byte *buf, int bufSize, int &readSize) {
+void ELMClient::receive(byte *buf, int bufSize, int &readSize) {
     bool successFullRead = readDeviceBuffer(buf, bufSize, readSize);
     if (successFullRead) {
         parseData(buf, bufSize, readSize);
     }
 }
 
-bool ELM327WifiClient::readDeviceBuffer(byte *buf, int bufSize, int &readSize) {
+bool ELMClient::readDeviceBuffer(byte *buf, int bufSize, int &readSize) {
     auto t0 = chrono::high_resolution_clock::now();
     bool hasTimeout;
 
@@ -44,7 +44,7 @@ bool ELM327WifiClient::readDeviceBuffer(byte *buf, int bufSize, int &readSize) {
     readSize = 0;
     auto startTime = chrono::high_resolution_clock::now();
     do {
-        socketClient->receive(tempReadBuffer, bufSize, additionalReadSize);
+        elmInterface->receive(tempReadBuffer, bufSize, additionalReadSize);
         if (additionalReadSize > 0) {
             if (readSize + readSize < bufSize) {
                 // append the additional received data to our existing buf.
@@ -72,7 +72,7 @@ bool ELM327WifiClient::readDeviceBuffer(byte *buf, int bufSize, int &readSize) {
     return true;
 }
 
-void ELM327WifiClient::parseData(byte *buf, const int bufSize, int &readSize) {
+void ELMClient::parseData(byte *buf, const int bufSize, int &readSize) {
     int startIndex = getDataStartIndex(buf, readSize);
     if (startIndex < 0 || readSize < 1) {
         readSize = -1;
@@ -115,7 +115,7 @@ void ELM327WifiClient::parseData(byte *buf, const int bufSize, int &readSize) {
 }
 
 
-void ELM327WifiClient::removeFooter(byte *buf, int bufSize, int &readSize, int byteCountToRemove) const {
+void ELMClient::removeFooter(byte *buf, int bufSize, int &readSize, int byteCountToRemove) const {
     if (readSize < byteCountToRemove) {
         readSize = -1;
         return;
@@ -129,7 +129,7 @@ void ELM327WifiClient::removeFooter(byte *buf, int bufSize, int &readSize, int b
     delete tempCharBuf;
 }
 
-void ELM327WifiClient::removeHeader(byte *buf, const int bufSize, int &readSize, int byteCountToRemove) const {
+void ELMClient::removeHeader(byte *buf, const int bufSize, int &readSize, int byteCountToRemove) const {
     if (readSize < byteCountToRemove) {
         readSize = -1;
         return;
@@ -143,7 +143,7 @@ void ELM327WifiClient::removeHeader(byte *buf, const int bufSize, int &readSize,
     delete tempCharBuf;
 }
 
-int ELM327WifiClient::getDataStartIndex(const byte *buf, const int recvSize) const {
+int ELMClient::getDataStartIndex(const byte *buf, const int recvSize) const {
     int startIndex = 0;
     while ((char) buf[startIndex] == ELM_FLOW_PROMPT && startIndex < recvSize) {
         startIndex++;
@@ -162,7 +162,7 @@ int ELM327WifiClient::getDataStartIndex(const byte *buf, const int recvSize) con
     return startIndex;
 }
 
-int ELM327WifiClient::send(byte *buf, int bufSize) {
+int ELMClient::send(byte *buf, int bufSize) {
     std::stringstream ss;
     for (int i(0); i < bufSize; ++i) {
         ss << std::hex << std::setfill('0') << std::setw(2) << (int) buf[i];
@@ -173,9 +173,11 @@ int ELM327WifiClient::send(byte *buf, int bufSize) {
     return sendString(dataString);
 }
 
-int ELM327WifiClient::configureInterface() {
+int ELMClient::configureInterface() {
     int bufSize = 1024;
     byte *buf = (byte *) malloc(bufSize);
+
+    elmInterface->configureInterface();
 
     // echo OFF
     string command = getElmConfigString(ELM_CONFIG_ECHO, false);
@@ -202,7 +204,7 @@ int ELM327WifiClient::configureInterface() {
     return findProtocol(bufSize, buf);
 }
 
-int ELM327WifiClient::findProtocol(int bufSize, byte *buf) {
+int ELMClient::findProtocol(int bufSize, byte *buf) {
     LOG(INFO) << "Search ELM protocol";
     vector<char *> searchStrings{
             const_cast<char *>("SEARCHING"),
@@ -231,7 +233,7 @@ int ELM327WifiClient::findProtocol(int bufSize, byte *buf) {
     return 0;
 }
 
-bool ELM327WifiClient::isProtocolWorking(
+bool ELMClient::isProtocolWorking(
         int bufSize, byte *buf, const vector<char *> &searchStrings, int protocolNumber) {
     bool searchRunning, readSuccess;
     int strCompRes = 0;
@@ -269,7 +271,7 @@ bool ELM327WifiClient::isProtocolWorking(
     return isNumber(buf[0]) || isNumber(buf[1]);
 }
 
-bool ELM327WifiClient::configurationCommandSendSuccessfully(byte *buf, int bufSize, string data) {
+bool ELMClient::configurationCommandSendSuccessfully(byte *buf, int bufSize, string data) {
     int recvSize = 0;
     data += ELM_FLOW_NEWLINE;
 
@@ -284,7 +286,7 @@ bool ELM327WifiClient::configurationCommandSendSuccessfully(byte *buf, int bufSi
     return messageContains(buf, recvSize, ELM_FLOW_OK);
 }
 
-int ELM327WifiClient::sendString(const string &data) {
+int ELMClient::sendString(const string &data) {
     LOG(DEBUG) << "Sending: " << data;
-    return socketClient->send((byte *) data.c_str(), static_cast<int>(data.size()));
+    return elmInterface->send((byte *) data.c_str(), static_cast<int>(data.size()));
 }

@@ -11,7 +11,7 @@ Please note that all configuration of the can interfaces must be done before usi
 With the vehicle simulation an OBD dongle can be used without an actual vehicle. This can be used for testing new implementations.
 ### OBD Tester
 The software can be used to communicate with a vehicle to read OBD data from it. This requires a can connection to the vehicle. 
-Note that the tester mode cannot be used together with an interface like ELM327WifiClient but is rather a full implementation of the CAN protocol. 
+Note that the tester mode cannot be used together with an interface like ELMClient but is rather a full implementation of the CAN protocol. 
 This means you need a CAN connection to the vehicle. The baud rate must be set on the connected can interface. This software will only 
 connect to the interface via socket so will not be able to configure baud rates.
 

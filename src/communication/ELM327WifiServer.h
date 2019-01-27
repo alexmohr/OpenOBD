@@ -11,7 +11,7 @@
 #include "ICommunicationInterface.h"
 #include "ISocketServerClientHandler.h"
 #include "ISocketServer.h"
-#include "ELM327WifiClient.h"
+#include "ELMClient.h"
 #include "../OBD/OBDHandler.h"
 
 using namespace std;

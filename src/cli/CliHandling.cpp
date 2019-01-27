@@ -24,10 +24,14 @@ int CliHandling::openCli(int argc, char *argv[]) {
     }
 
     switch (type) {
-        case ELM:
-            // todo support other interfaces, like serial or blue tooth.
+        case WIFI_ELM:
+            if (0 == port) { port = wifiDefaultPort; }
             physicalComInterface = make_unique<SocketClient>(port, target);
-            logicalComInterface = make_unique<ELM327WifiClient>(physicalComInterface.get());
+            logicalComInterface = make_unique<ELMClient>(physicalComInterface.get());
+            break;
+        case SERIAL_ELM:
+            physicalComInterface = make_unique<SerialClient>(port, target);
+            logicalComInterface = make_unique<ELMClient>(physicalComInterface.get());
             break;
         case TESTER:
             logicalComInterface = make_unique<CanIsoTP>(VEHICLE_ID, TESTER_ID, target);
@@ -81,13 +85,14 @@ void CliHandling::display_help(char *progname) {
     fprintf(stderr, "Options:\n"
                     "  -h                              Display this help and exit.\n"
                     "  -d CAN_DEVICE                   Select the can device which is used. Defaults to can0.\n"
-                    "  -t ecu|tester|elm               Define if the software is used as tester or simulates a ECU. Defaults to ecu.\n"
+                    "  -t ecu|tester|welm|selm         Define if the software is used as tester or simulates a ECU. Defaults to ecu.\n"
                     "                                  ecu: Simulates an ecu on the can interface given\n"
                     "                                  tester: Tester on the given can interface\n"
+                    "                                  welm: Wifi Elm Interface.\n"
+                    "                                  selm: Serial Elm Interface.\n"
                     "                                  Note that tester does not work together with an elm interface\n"
-                    "                                  ELM does only work with wifi interfaces.\n"
-                    "  -i ADDRESS                      IP Address of the ELM interface.\n"
-                    "  -p PORT IP                      PORT of the ELM interface\n."
+                    "  -i ADDRESS                      IP Address or tty device of the ELM interface.\n"
+                    "  -p PORT                         PORT or baudrate of the ELM interface, set baudrate to 0 for auto baud.\n."
                     "  -x                              Set logging to debug\n."
                     "  -e                              Enable elm server\n."
                     "\n");
@@ -97,7 +102,8 @@ int
 CliHandling::getCommandLineArgs(int argc, char **argv, char &interface, int &port, CLI_TYPE &type, bool &enableElm) {
     char *typeTester = const_cast<char *>("tester");
     char *typeEcu = const_cast<char *>("ecu");
-    char *typeElm = const_cast<char *>("elm");
+    char *typeWElm = const_cast<char *>("welm");
+    char *typeSElm = const_cast<char *>("selm");
 
     type = ECU;
 
@@ -107,7 +113,6 @@ CliHandling::getCommandLineArgs(int argc, char **argv, char &interface, int &por
     strcpy(&interface, canAdapter);
     strcpy(elm, "192.168.0.10");
 
-    port = 35000;
 
     bool logDebug = false;
 
@@ -128,8 +133,11 @@ CliHandling::getCommandLineArgs(int argc, char **argv, char &interface, int &por
                     type = TESTER;
                 } else if (strncmp(typeEcu, optarg, sizeof(&typeEcu)) == 0) {
                     type = ECU;
-                } else if (strncmp(typeElm, optarg, sizeof(&typeElm)) == 0) {
-                    type = ELM;
+                } else if (strncmp(typeWElm, optarg, sizeof(&typeWElm)) == 0) {
+                    type = WIFI_ELM;
+                    strcpy(&interface, elm);
+                } else if (strncmp(typeSElm, optarg, sizeof(&typeSElm)) == 0) {
+                    type = SERIAL_ELM;
                     strcpy(&interface, elm);
                 } else {
                     fprintf(stderr, "Specified type %s is invalid.\n", optarg);
@@ -152,8 +160,7 @@ CliHandling::getCommandLineArgs(int argc, char **argv, char &interface, int &por
         }
     }
 
-    Config::configureLogging(logDebug,
-                             false);
+    Config::configureLogging(logDebug, false);
 
     return EXIT_SUCCESS;
 }

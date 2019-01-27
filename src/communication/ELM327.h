@@ -18,6 +18,7 @@ const string ELM_CONFIG_SPACES = ELM_CONFIG_PREFIX + "S";
 const string ELM_CONFIG_HEADER = ELM_CONFIG_PREFIX + "H";
 const string ELM_CONFIG_ECHO = ELM_CONFIG_PREFIX + "E";
 const string ELM_CONFIG_PROTOCOL = ELM_CONFIG_PREFIX + "SP";
+const string ELM_DEVICE_RESET = ELM_CONFIG_PREFIX + "Z";
 
 const string ELM_CONFIG_ENABLE = "1";
 const string ELM_CONFIG_DISABLE = "0";

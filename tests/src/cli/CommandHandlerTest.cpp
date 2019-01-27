@@ -124,10 +124,14 @@ TEST(CommandHandlerTest, setData_getData_ECU) {
     TestCommandHandler(CLI_TYPE::ECU);
 }
 
-TEST(CommandHandlerTest, setData_getData_ELM) {
-    TestCommandHandler(CLI_TYPE::ELM);
-
+TEST(CommandHandlerTest, setData_getData_WIFI_ELM) {
+    TestCommandHandler(CLI_TYPE::WIFI_ELM);
 }
+
+TEST(CommandHandlerTest, setData_getData_SERIAL_ELM) {
+    TestCommandHandler(CLI_TYPE::SERIAL_ELM);
+}
+
 
 TEST(CommandHandlerTest, set_special) {
     auto *mockComm = new MockCommInterface();

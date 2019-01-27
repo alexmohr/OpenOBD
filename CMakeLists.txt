@@ -100,7 +100,7 @@ set(CPPSRC
         src/OBD/data/Enumerated/FuelSystemStates.h
         src/OBD/data/BitEncoded/Oxygen/BankOxygenSensorsCollection.cpp
         src/OBD/data/BitEncoded/Oxygen/BankOxygenSensorsCollection.h
-        src/cli/CliHandling.cpp src/cli/CliHandling.h
+        src/cli/CliHandler.cpp src/cli/CliHandler.h
         src/OBD/data/BitEncoded/Oxygen/BankOxygenSensors4BankCollection.cpp
         src/OBD/data/BitEncoded/Oxygen/BankOxygenSensors4BankCollection.h
         src/OBD/data/BitEncoded/Throttle.cpp src/OBD/data/BitEncoded/Throttle.h

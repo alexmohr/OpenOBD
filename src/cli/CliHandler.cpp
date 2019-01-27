@@ -2,16 +2,16 @@
 // Created by me on 02/01/19.
 //
 
-#include "CliHandling.h"
+#include "CliHandler.h"
 #include "easylogging++.h"
 #include <chrono>         // std::chrono::seconds
 
 
-CliHandling::CliHandling() {
+CliHandler::CliHandler() {
 }
 
 
-int CliHandling::openCli(int argc, char *argv[]) {
+int CliHandler::openCli(int argc, char *argv[]) {
 
     char *target = static_cast<char *>(malloc(255));
     int port = 0;
@@ -62,7 +62,7 @@ int CliHandling::openCli(int argc, char *argv[]) {
     return cmdHandler->start();
 }
 
-void CliHandling::closeCli() {
+void CliHandler::closeCli() {
     if (logicalComInterface != nullptr) {
         logicalComInterface->closeInterface();
     }
@@ -80,7 +80,7 @@ void CliHandling::closeCli() {
     }
 }
 
-void CliHandling::display_help(char *progname) {
+void CliHandler::display_help(char *progname) {
     fprintf(stderr, "Usage: %s <options>\n", progname);
     fprintf(stderr, "Options:\n"
                     "  -h                              Display this help and exit.\n"
@@ -99,7 +99,7 @@ void CliHandling::display_help(char *progname) {
 }
 
 int
-CliHandling::getCommandLineArgs(int argc, char **argv, char &interface, int &port, CLI_TYPE &type, bool &enableElm) {
+CliHandler::getCommandLineArgs(int argc, char **argv, char &interface, int &port, CLI_TYPE &type, bool &enableElm) {
     char *typeTester = const_cast<char *>("tester");
     char *typeEcu = const_cast<char *>("ecu");
     char *typeWElm = const_cast<char *>("welm");
@@ -165,7 +165,7 @@ CliHandling::getCommandLineArgs(int argc, char **argv, char &interface, int &por
     return EXIT_SUCCESS;
 }
 
-bool CliHandling::isOpen() {
+bool CliHandler::isOpen() {
     if (nullptr != cmdHandler) {
         return cmdHandler->isOpen();
     }
@@ -175,7 +175,7 @@ bool CliHandling::isOpen() {
     return false;
 }
 
-bool CliHandling::isExitRequested() {
+bool CliHandler::isExitRequested() {
     return cmdHandler->isExitRequested();
 }
 

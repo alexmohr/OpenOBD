@@ -54,7 +54,6 @@ int SerialClient::openSerialPort() {
         return -1;
     }
 
-
     tio.c_cflag &= ~CSTOPB;            // 1 stop bit
     tio.c_cflag &= ~CRTSCTS;           // Disable hardware flow control
     tio.c_cflag &= ~CBAUD;

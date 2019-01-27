@@ -66,7 +66,9 @@ bool ELMClient::readDeviceBuffer(byte *buf, int bufSize, int &readSize) {
 
     delete tempReadBuffer;
     if (readSize < 1) {
+        // reset interface
         closeInterface();
+        openInterface();
         return false;
     }
     return true;

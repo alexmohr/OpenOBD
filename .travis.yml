@@ -6,7 +6,7 @@ before_install:
   - sudo pip install cpp-coveralls
 
 install:
-  - sudo apt-get install -qq cmake gcc-8 can-utils g++-8 libnet1-dev libtool libssl-dev  libjansson-dev libuv1
+  - sudo apt-get install -qq cmake gcc-8 can-utils g++-8 libnet1-dev libtool libssl-dev libjansson-dev libuv1 libuv-dev
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 50
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 50
   - git clone https://github.com/hartkopp/can-isotp.git

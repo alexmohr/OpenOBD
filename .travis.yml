@@ -27,6 +27,8 @@ install:
   - git submodule init
   - git submodule update
   - cd ..
+  - sudo sh -c 'echo /usr/local/lib >> /etc/ld.so.conf'
+
 
 language: cpp
 

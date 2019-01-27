@@ -36,13 +36,11 @@ compiler:
   - gcc
 
 script:
-  - LD_LIBRARY_PATH=~/usr/local/lib:$PATH
-  - LD_RUN_PATH=~/usr/local/lib:LD_RUN_PATH
   - mkdir build
   - cd build
-  - sudo cp /usr/local/lib/libuv.so ./libuv.so.1
   - cmake ../ -DCOVERAGE=1
   - cmake --build .
+  - export LD_PRELOAD=/usr/local/lib/libuv.so
   - ./Test --gtest_filter=-` tr '\n' ':' < ../tests/travis.excludes`
 
 after_success:

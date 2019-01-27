@@ -145,8 +145,12 @@ void CommandHandler::ecuRecvThread(ICommunicationInterface *com) {
 
 void CommandHandler::cmdHandler() {
 
-    while (!initDone || exitRequested) {
+    while (!initDone) {
         this_thread::sleep_for(1ms);
+    }
+
+    if (exitRequested) {
+        return;
     }
 
     CppReadline::Console console(prompt);

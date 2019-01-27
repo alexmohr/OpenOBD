@@ -38,7 +38,6 @@ int MockCommInterface::send(byte *buf, int bufSize) {
         }
     }
 
-
     if (recvCallbackSet) {
         recvCallback(buf, bufSize, dataForNextRecv, dataForNextRecvSize);
     }
@@ -53,7 +52,7 @@ int MockCommInterface::closeInterface() {
 
 int MockCommInterface::openInterface() {
     return 0;
-};
+}
 
 
 void MockCommInterface::receive(byte *buf, int bufSize, int &readSize) {

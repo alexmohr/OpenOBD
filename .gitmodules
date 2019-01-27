@@ -1,3 +1,6 @@
 [submodule "submodules/cpp-readline"]
 	path = submodules/cpp-readline
 	url = https://github.com/alexmohr/cpp-readline
+[submodule "submodules/wampcc"]
+	path = submodules/wampcc
+	url = https://github.com/darrenjs/wampcc

@@ -38,6 +38,7 @@ sudo make install
 
 ## CLI
 ![CLI Example](https://github.com/alexmohr/OpenOBD/blob/master/doc/cli_example.png)
+
 The CLI is a terminal like frontend which allows setting and reading values. It can act as a tester or as an ecu. 
 It supports:
 * Autocomplete via tab

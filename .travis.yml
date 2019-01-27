@@ -21,6 +21,7 @@ install:
   - unzip v1.25.0.zip
   - cd libuv-1.25.0
   - ./autogen.sh
+  - ./configure
   - make
   - sudo make install
   - git submodule init

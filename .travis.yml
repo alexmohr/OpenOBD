@@ -1,4 +1,4 @@
-dist: disco
+dist: xenial
 
 before_install:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
@@ -6,7 +6,7 @@ before_install:
   - sudo pip install cpp-coveralls
 
 install:
-  - sudo apt-get install -qq cmake gcc-8 can-utils g++-8 libnet1-dev libtool libssl-dev libjansson-dev libuv1 libuv-dev
+  - sudo apt-get install -qq cmake gcc-8 can-utils g++-8 libnet1-dev libtool libssl-dev libjansson-dev autogen make wget unzip libtool
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 50
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 50
   - git clone https://github.com/hartkopp/can-isotp.git
@@ -17,6 +17,12 @@ install:
   - sudo modprobe can
   - sudo insmod ./net/can/can-isotp.ko
   - cd ..
+  - wget https://github.com/libuv/libuv/archive/v1.25.0.zip
+  - unzip v1.25.0.zip
+  - cd v1.25.0
+  - ./autogen.sh
+  - make
+  - sudo make install
   - git submodule init
   - git submodule update
 

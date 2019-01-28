@@ -71,6 +71,7 @@ int CliHandler::openCli(int argc, char *argv[]) {
         cmdHandler->executeFile(string(script));
     }
 
+    delete[] script;
     return val;
 }
 

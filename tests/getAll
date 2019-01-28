@@ -158,3 +158,4 @@ get AcceleratorPedalPositionE
 sleep 10
 get AcceleratorPedalPositionF
 sleep 10
+exit

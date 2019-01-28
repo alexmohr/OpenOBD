@@ -19,7 +19,7 @@
 using namespace std;
 
 
-enum ByteIndex{
+enum ByteIndex {
     A = 0,
     B = 1,
     C = 2,
@@ -37,12 +37,12 @@ enum ByteIndex{
 
 
 
-template <class T>
+template<class T>
 class DataObject : public IFrameObject, public IDataObject<T> {
 private:
     ByteIndex startByte;
     unsigned int startIndex;
-    ByteIndex  stopByte;
+    ByteIndex stopByte;
     unsigned int stopIndex;
     T value;
     bool isBool = false;
@@ -66,12 +66,6 @@ private:
 
 public:
 
-//    // boolean C'tor
-//    DataObject(ByteIndex startByte, unsigned int startIndex) :
-//            DataObject(startByte, startIndex, startByte, startIndex, unit_bool, false, true, "") {
-//    }
-//
-
     // boolean C'tor
     DataObject(ByteIndex startByte, unsigned int startIndex, const string description) :
             DataObject(startByte, startIndex, startByte, startIndex, unit_bool, false, true, description) {
@@ -86,14 +80,14 @@ public:
     DataObject(ByteIndex startByte, unsigned int startIndex,
                ByteIndex stopByte, unsigned int stopIndex, const DataObjectUnit &unit, T min, T max) :
             DataObject(startByte, startIndex, stopByte, stopIndex) {
-        this->description = make_unique<DataObjectDescription>(unit, (double)min, (double)max, "");
+        this->description = make_unique<DataObjectDescription>(unit, (double) min, (double) max, "");
     }
 
     DataObject(ByteIndex startByte, unsigned int startIndex,
                ByteIndex stopByte, unsigned int stopIndex, const DataObjectUnit &unit, T min, T max,
                const string &description) :
             DataObject(startByte, startIndex, stopByte, stopIndex) {
-        this->description = make_unique<DataObjectDescription>(unit, (double)min, (double)max, description);
+        this->description = make_unique<DataObjectDescription>(unit, (double) min, (double) max, description);
     }
 
     // c'tors without description
@@ -108,7 +102,7 @@ public:
                ByteIndex stopByte, unsigned int stopIndex) {
         this->startByte = startByte;
         this->startIndex = startIndex;
-        this->stopByte= stopByte;
+        this->stopByte = stopByte;
         this->stopIndex = stopIndex;
         this->description = nullptr;
 
@@ -128,8 +122,8 @@ public:
     DataObjectState setValue(T value) override {
         DataObjectState i;
         if (nullptr != this->description) {
-            i = description->checkBounds((double)value);
-            if (i.type != SUCCESS){
+            i = description->checkBounds((double) value);
+            if (i.type != SUCCESS) {
                 return i;
             }
         }
@@ -166,11 +160,10 @@ public:
         unsigned int data = 0;
         const int size = stopByte - startByte + 1;
         if (size > bufferSize || stopByte > bufferSize) {
-            //return -1;
             throw std::invalid_argument("Prevented buffer overflow in DataObject.h");
         }
 
-        auto dataBytes = (byte *) malloc((size_t) size);
+        auto dataBytes = new byte[size];
         memset(dataBytes, 0, size);
         memcpy(dataBytes, frame, size);
 
@@ -202,10 +195,12 @@ public:
                 value = (T) (((data << startBitIndex) - 1) & mask);
             }
         }
+
+        delete[] dataBytes;
     }
 
     string getPrintableData() override {
-        string unit = "";
+        string unit;
         if (nullptr != description) {
             unit = description->getUnit().toShortString();
         }

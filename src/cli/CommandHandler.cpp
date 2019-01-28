@@ -135,7 +135,6 @@ void CommandHandler::ecuRecvThread(ICommunicationInterface *com) {
             continue;
         }
 
-
         answer = obdHandler->createAnswerFrame(buf, readSize);
         com->send(answer, readSize);
         usleep(100);

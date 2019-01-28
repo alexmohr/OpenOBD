@@ -14,7 +14,7 @@ install:
   - sudo apt-get install build-essential linux-headers-$(uname -r)
   - make
   - sudo make modules_install
-  - sudo modprobe can
+  - sudo modprobe can vcan
   - sudo insmod ./net/can/can-isotp.ko
   - cd ..
   - wget https://github.com/libuv/libuv/archive/v1.25.0.zip

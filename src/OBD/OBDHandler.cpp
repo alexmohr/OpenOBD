@@ -54,7 +54,9 @@ byte *OBDHandler::createAnswerFrame(byte *request, int &size) {
                    "ServiceID: " << service << ", PID: " << pid.id;
         return createErrorFrame(SUB_FUNCTION_NOT_SUPPORTED, size, request[1]);
     }
-    return createAnswerFrame(service, pid, data, size);
+    byte *answerData = createAnswerFrame(service, pid, data, size);
+    delete[] data;
+    return answerData;
 }
 
 byte *OBDHandler::createAnswerFrame(Service service, Pid pid, byte *data, int &size) {

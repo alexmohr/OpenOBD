@@ -31,7 +31,7 @@ void compareResponse(vector<byte> expectedResponse, byte *actualResponse) {
 }
 
 
-OBDHandler* doTest(vector<byte> request, vector<byte> response) {
+OBDHandler *doTest(vector<byte> request, vector<byte> response) {
     OBDHandler *handler = getHandler();
 
     // enable support for the requested pid.
@@ -44,6 +44,7 @@ OBDHandler* doTest(vector<byte> request, vector<byte> response) {
     EXPECT_EQ(dataSize, response.size());
 
     compareResponse(response, val);
+    delete[] val;
 
     return handler;
 }

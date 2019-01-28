@@ -53,14 +53,14 @@ void dataTest(IDataObject<T> *system, vector<pair<T, ErrorType>> values, float o
 }
 
 
-
 template<class T, class S>
 void TestCalculatedData(Service1Pids pid,
                         function<CalculatedDataObject<T, S> *(Vehicle &vehicle)> dataCallback,
                         float offset, function<S(int)> dataConversion) {
 
     unsigned int value = 0;
-    auto &vehicle = *genericTest<T>(pid, value)->getVehicle();
+    auto *handler = genericTest<T>(pid, value);
+    auto &vehicle = *handler->getVehicle();
     auto system = dataCallback(vehicle);
     if (nullptr != dataConversion) {
         EXPECT_FLOAT_EQ(system->getValue(), dataConversion(value));
@@ -76,6 +76,7 @@ void TestCalculatedData(Service1Pids pid,
     };
 
     dataTest<S>(system, values, offset);
+    delete handler;
 }
 
 
@@ -84,22 +85,24 @@ void TestDataObject(Service1Pids pid,
                     function<DataObject<T> *(Vehicle &vehicle)> dataCallback,
                     float offset = 0, function<T(int)> dataConversion = nullptr) {
     unsigned int value = 0;
-    auto &vehicle = *genericTest<T>(pid, value)->getVehicle();
+    auto *handler = genericTest<T>(pid, value);
+    auto &vehicle = *handler->getVehicle();
     auto system = dataCallback(vehicle);
     if (nullptr != dataConversion) {
         EXPECT_EQ(system->getValue(), dataConversion(value));
     }
 
     vector<pair<T, ErrorType>> values;
-        values = {
-                {(T) (system->getDescriptions().at(0)->getMin()),         SUCCESS},
-                {(T) (system->getDescriptions().at(0)->getMax()),         SUCCESS},
-                {(T) (system->getDescriptions().at(0)->getMax() / (T) 2), SUCCESS},
-                {(T) (system->getDescriptions().at(0)->getMax() / (T) 3), SUCCESS},
-                {(T) (system->getDescriptions().at(0)->getMax() / (T) 4), SUCCESS},
-                {(T) (system->getDescriptions().at(0)->getMax() / (T) 5), SUCCESS}};
+    values = {
+            {(T) (system->getDescriptions().at(0)->getMin()),         SUCCESS},
+            {(T) (system->getDescriptions().at(0)->getMax()),         SUCCESS},
+            {(T) (system->getDescriptions().at(0)->getMax() / (T) 2), SUCCESS},
+            {(T) (system->getDescriptions().at(0)->getMax() / (T) 3), SUCCESS},
+            {(T) (system->getDescriptions().at(0)->getMax() / (T) 4), SUCCESS},
+            {(T) (system->getDescriptions().at(0)->getMax() / (T) 5), SUCCESS}};
 
     dataTest<T>(system, values, offset);
+    delete handler;
 }
 
 template<>
@@ -113,7 +116,6 @@ void TestDataObject<byte>(Service1Pids pid,
 
 
     auto handler = doTest(request, response);
-
     auto &vehicle = *handler->getVehicle();
     auto system = dataCallback(vehicle);
     if (nullptr != dataConversion) {
@@ -138,35 +140,8 @@ void TestDataObject<byte>(Service1Pids pid,
             EXPECT_NEAR((double) system->getValue(), (double) val.first, offset);
         }
     }
+    delete handler;
 }
-//
-//template<>
-//void TestDataObject<bool>(Service1Pids pid,
-//                          function<DataObject<bool> *(Vehicle &vehicle)> dataCallback,
-//                          float offset, function<bool(int)> dataConversion) {
-//    vector<byte> request{(RequestServiceID), (byte) pid};
-//
-//    vector<byte> response = {ResponseServiceID, (byte) pid, (byte) 0xca};;
-//    unsigned int value = 0xca;;
-//
-//
-//    auto handler = doTest(request, response);
-//
-//    auto &vehicle = *handler->getVehicle();
-//    auto system = dataCallback(vehicle);
-//    if (nullptr != dataConversion) {
-//        EXPECT_EQ(system->getValue(), dataConversion(value));
-//    }
-//
-//    vector<pair<bool, ErrorType>>
-//            values{{false, SUCCESS},
-//                   {true,  SUCCESS},
-//                   {false, SUCCESS},
-//                   {true,  SUCCESS}};
-//    dataTest<bool>(system, values, offset);
-//}
-//
-
 
 TEST(OBDHandler, PID_0A_FuelPressure) {
 
@@ -374,7 +349,7 @@ TEST(OBDHandler, PID_33_AbsoluteBarometricPressure) {
     function<DataObject<byte> *(Vehicle &vehicle)> cb =
             [](Vehicle &vehicle) { return &vehicle.getAbsoluteBarometricPressure(); };
     TestDataObject(AbsoluteBarometricPressure, cb);
-    }
+}
 
 
 TEST(OBDHandler, PID_42_ControlModuleVoltage) {
@@ -424,15 +399,16 @@ TEST(OBDHandler, PID_46_AmbientAirTemperature) {
 }
 
 
-TEST(OBDHandler, PID_47_AbsoluteThrottlePositionB){
-    function<CalculatedDataObject<byte,float> *(Vehicle &vehicle)> cb =
+TEST(OBDHandler, PID_47_AbsoluteThrottlePositionB) {
+    function<CalculatedDataObject<byte, float> *(Vehicle &vehicle)> cb =
             [](Vehicle &vehicle) { return &vehicle.getThrottle().getAbsoluteThrottlePositionB(); };
 
     function<float(int)> dc = [](int value) { return 100.0f / 255 * value; };
 
     TestCalculatedData(AbsoluteThrottlePositionB, cb, 0.5f, dc);
 }
-TEST(OBDHandler, PID_48_AbsoluteThrottlePositionC){
+
+TEST(OBDHandler, PID_48_AbsoluteThrottlePositionC) {
     function<CalculatedDataObject<byte, float> *(Vehicle &vehicle)> cb =
             [](Vehicle &vehicle) { return &vehicle.getThrottle().getAbsoluteThrottlePositionC(); };
 
@@ -440,7 +416,8 @@ TEST(OBDHandler, PID_48_AbsoluteThrottlePositionC){
 
     TestCalculatedData(AbsoluteThrottlePositionC, cb, 0.5f, dc);
 }
-TEST(OBDHandler, PID_49_AcceleratorPedalPositionD){
+
+TEST(OBDHandler, PID_49_AcceleratorPedalPositionD) {
     function<CalculatedDataObject<byte, float> *(Vehicle &vehicle)> cb =
             [](Vehicle &vehicle) { return &vehicle.getThrottle().getAcceleratorPedalPositionD(); };
 
@@ -448,7 +425,8 @@ TEST(OBDHandler, PID_49_AcceleratorPedalPositionD){
 
     TestCalculatedData(AcceleratorPedalPositionD, cb, 0.5f, dc);
 }
-TEST(OBDHandler, PID_4A_AcceleratorPedalPositionE){
+
+TEST(OBDHandler, PID_4A_AcceleratorPedalPositionE) {
     function<CalculatedDataObject<byte, float> *(Vehicle &vehicle)> cb =
             [](Vehicle &vehicle) { return &vehicle.getThrottle().getAcceleratorPedalPositionE(); };
 
@@ -456,7 +434,8 @@ TEST(OBDHandler, PID_4A_AcceleratorPedalPositionE){
 
     TestCalculatedData(AcceleratorPedalPositionE, cb, 0.5f, dc);
 }
-TEST(OBDHandler, PID_4B_AcceleratorPedalPositionF){
+
+TEST(OBDHandler, PID_4B_AcceleratorPedalPositionF) {
     function<CalculatedDataObject<byte, float> *(Vehicle &vehicle)> cb =
             [](Vehicle &vehicle) { return &vehicle.getThrottle().getAcceleratorPedalPositionF(); };
 

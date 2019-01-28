@@ -58,7 +58,7 @@ byte *OBDHandler::createAnswerFrame(byte *request, int &size) {
 }
 
 byte *OBDHandler::createAnswerFrame(Service service, Pid pid, byte *data, int &size) {
-    byte *result = (byte *) malloc(size + 2);
+    byte *result = new byte[size + 2];
 
     result[0] = (byte) (service + ANSWER_OFFSET);
     result[1] = (byte) (pid.id);
@@ -99,7 +99,7 @@ void OBDHandler::updateFromFrame(byte *frame, int frameSize) {
     const int startByte = 2;
     // 1 byte is service, 1 byte is pid. rest is data
     int dataSize = frameSize - 2;
-    byte *data = (byte *) malloc(sizeof(byte) * dataSize);
+    byte *data = new byte[dataSize];
     memcpy(data, frame + startByte, static_cast<size_t>(dataSize));
 
     Vehicle *updateVehicle = vehicle.get();
@@ -108,7 +108,7 @@ void OBDHandler::updateFromFrame(byte *frame, int frameSize) {
     }
     pid.updateVehicle(service, updateVehicle, data, dataSize);
     LOG(DEBUG) << "\nUpdated vehicle, PID: " << pid.description;
-    delete data;
+    delete[] data;
 }
 
 int OBDHandler::getServiceAndPidInfo(int pidId, int serviceId, Pid &pid, Service &service) {

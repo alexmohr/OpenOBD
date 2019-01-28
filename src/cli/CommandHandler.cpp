@@ -118,7 +118,9 @@ void CommandHandler::configureVehicle() {
 
 void CommandHandler::ecuRecvThread(ICommunicationInterface *com) {
     int bufSize = 255;
-    byte *buf = (byte *) malloc(bufSize);
+    byte *answer;
+    byte *buf = new byte[bufSize];
+    memset(buf, 0, bufSize);
     int readSize = 0;
 
 
@@ -133,14 +135,14 @@ void CommandHandler::ecuRecvThread(ICommunicationInterface *com) {
             continue;
         }
 
-        byte *answer;
+
         answer = obdHandler->createAnswerFrame(buf, readSize);
         com->send(answer, readSize);
-        delete answer;
         usleep(100);
     }
 
-    delete buf;
+    delete[] answer;
+    delete[] buf;
 }
 
 void CommandHandler::cmdHandler() {
@@ -435,7 +437,7 @@ DataObjectState CommandHandler::queryECU(Pid pid, Service service) {
 
     byte *frame = pid.getQueryForService(service, frameLen);
     int bufSize = 255;
-    byte *buf = (byte *) malloc(bufSize);
+    byte *buf = new byte[bufSize];
     int readSize = 0;
     bool success;
 
@@ -462,7 +464,8 @@ DataObjectState CommandHandler::queryECU(Pid pid, Service service) {
         retVal = DataObjectState(TIMEOUT);
     }
 
-    delete frame;
+    delete[] frame;
+    delete[] buf;
     return retVal;
 }
 

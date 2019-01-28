@@ -90,7 +90,8 @@ void TestCommandHandler(CLI_TYPE type) {
                     {smallData, SUCCESS},
                     {largeData, SUCCESS}};
 
-
+            byte *vehicleData = nullptr;
+            byte *answerData = nullptr;
             for (auto &cmd : commands) {
 
                 cout << "testing command: " << vectorToString(cmd.first) << endl;
@@ -100,16 +101,21 @@ void TestCommandHandler(CLI_TYPE type) {
 
                 int size = 0;
 
-                byte *data = pid.getVehicleData(service, cmdHandler->getObdHandler().getVehicle(), size);
-                data = cmdHandler->getObdHandler().createAnswerFrame(service, pid, data, size);
-                mockComm->setDataForNextReceiveCall(data, size);
-                delete data;
+                vehicleData = pid.getVehicleData(service, cmdHandler->getObdHandler().getVehicle(), size);
+                answerData = cmdHandler->getObdHandler().createAnswerFrame(service, pid, vehicleData, size);
+                mockComm->setDataForNextReceiveCall(answerData, size);
 
                 // modify command to make getter
                 cmd.first.erase(cmd.first.begin() + 2, cmd.first.end());
                 cmd.first.at(0) = "get";
                 cout << "testing command: " << vectorToString(cmd.first) << endl;
                 EXPECT_EQ(SUCCESS, cmdHandler->getData(cmd.first).type);
+            }
+            if (nullptr != vehicleData) {
+                delete[] vehicleData;
+            }
+            if (nullptr != answerData) {
+                delete[] answerData;
             }
         }
     }

@@ -6,7 +6,7 @@
 
 
 void Pid::updateVehicle(Service service, Vehicle *vehicle, byte *data, int dataSize) {
-    switch (service){
+    switch (service) {
         case POWERTRAIN:
         case FREEZE_FRAME:
             writeService1_2(vehicle, data, dataSize);
@@ -32,8 +32,8 @@ void Pid::updateVehicle(Service service, Vehicle *vehicle, byte *data, int dataS
 }
 
 byte *Pid::getVehicleData(Service service, Vehicle *vehicle, int &size) {
-    byte* data = nullptr;
-    switch (service){
+    byte *data = nullptr;
+    switch (service) {
         case POWERTRAIN:
         case FREEZE_FRAME:
             data = readService1_2(vehicle, size);
@@ -240,11 +240,11 @@ byte *Pid::readService1_2(Vehicle *vehicle, int &size) {
     return retVal;
 }
 
-byte *Pid::getQueryForService(Service service, int& buflen) {
+byte *Pid::getQueryForService(Service service, int &buflen) {
     buflen = 2;
-    byte* frame = (byte*)malloc(buflen);
-    frame[0] = (byte)service;
-    frame[1] = (byte)id;
+    byte *frame = new byte[buflen];
+    frame[0] = (byte) service;
+    frame[1] = (byte) id;
     return frame;
 }
 

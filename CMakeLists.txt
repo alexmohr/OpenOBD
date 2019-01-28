@@ -179,7 +179,7 @@ set(CPPSRC
 
 
 add_executable(open_obd2 src/main.cpp ${CPPSRC} ${cpp-readline} ${wamp})
-target_link_libraries(open_obd2 pthread readline crypto uv ssl ${JANSSON_LIBRARIES})
+target_link_libraries(open_obd2 pthread readline crypto uv ssl ${JANSSON_LIBRARIES} atomic)
 
 add_executable(Test
         ${wamp}
@@ -203,7 +203,7 @@ add_executable(Test
 
 
 install(TARGETS open_obd2 EXPORT open_obd2 DESTINATION bin)
-target_link_libraries(Test PRIVATE gtest readline pthread readline crypto uv ssl ${JANSSON_LIBRARIES})
+target_link_libraries(Test PRIVATE gtest readline pthread readline crypto uv ssl atomic ${JANSSON_LIBRARIES})
 
 if (COVERAGE)
     target_compile_options(Test PRIVATE --coverage)

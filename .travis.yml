@@ -28,6 +28,7 @@ install:
   - git submodule update
   - cd ..
   - sudo sh -c 'echo /usr/local/lib >> /etc/ld.so.conf'
+  - sudo ldconfig
 
 
 language: cpp
@@ -40,7 +41,6 @@ script:
   - cd build
   - cmake ../ -DCOVERAGE=1
   - cmake --build .
-  - export LD_PRELOAD=/usr/local/lib/libuv.so
   - ./Test --gtest_filter=-` tr '\n' ':' < ../tests/travis.excludes`
 
 after_success:

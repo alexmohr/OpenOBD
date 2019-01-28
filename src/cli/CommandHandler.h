@@ -15,6 +15,7 @@
 #include "../communication/ELM327WifiServer.h"
 #include "../OBD/OBDHandler.h"
 #include "CommandInfo.h"
+#include "../../submodules/cpp-readline/src/Console.hpp"
 
 using namespace std;
 
@@ -51,6 +52,8 @@ private:
             command_pid_by_number,
             command_set_by_hex_number
     };
+
+    unique_ptr<CppReadline::Console> console;
 
 public:
 
@@ -149,6 +152,7 @@ private:
     unique_ptr<OBDHandler> obdHandler;
     bool open;
     bool initDone;
+    bool cmdHandlerRdy;
     CLI_TYPE type;
     ICommunicationInterface *com;
 
@@ -165,6 +169,8 @@ public:
     bool isOpen();
 
     bool isExitRequested();
+
+    void executeFile(string fileName);
 
 public: // public for testing
     DataObjectState setData(const vector<string> &cmd);

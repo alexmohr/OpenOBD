@@ -13,15 +13,19 @@ CliHandler::CliHandler() {
 
 int CliHandler::openCli(int argc, char *argv[]) {
 
-    int targetSize = 255;
+    int targetSize = 1024;
     char *interface = new char[targetSize];
     memset(interface, 0, targetSize);
+
+    char *script = new char[targetSize];
+    memset(script, 0, targetSize);
+
     int port = 0;
     bool enableElm = false;
 
     CLI_TYPE type;
 
-    if (getCommandLineArgs(argc, argv, *interface, port, type, enableElm) == EXIT_FAILURE) {
+    if (getCommandLineArgs(argc, argv, *interface, port, type, enableElm, *script) == EXIT_FAILURE) {
         return EXIT_FAILURE;
     }
 
@@ -62,7 +66,12 @@ int CliHandler::openCli(int argc, char *argv[]) {
 
     cmdHandler = make_unique<CommandHandler>(type, logicalComInterface.get());
     delete[] interface;
-    return cmdHandler->start();
+    int val = cmdHandler->start();
+    if (script[0] != 0) {
+        cmdHandler->executeFile(string(script));
+    }
+
+    return val;
 }
 
 void CliHandler::closeCli() {
@@ -98,11 +107,13 @@ void CliHandler::display_help(char *progname) {
                     "  -p PORT                         PORT or baudrate of the ELM interface, set baudrate to 0 for auto baud.\n."
                     "  -x                              Set logging to debug\n."
                     "  -e                              Enable elm server\n."
+                    "  -r                              Run a script directly before showing console.\n"
                     "\n");
 }
 
 int
-CliHandler::getCommandLineArgs(int argc, char **argv, char &interface, int &port, CLI_TYPE &type, bool &enableElm) {
+CliHandler::getCommandLineArgs(int argc, char **argv, char &interface, int &port, CLI_TYPE &type, bool &enableElm,
+                               char &script) {
     char *typeTester = const_cast<char *>("tester");
     char *typeEcu = const_cast<char *>("ecu");
     char *typeWElm = const_cast<char *>("welm");
@@ -113,7 +124,7 @@ CliHandler::getCommandLineArgs(int argc, char **argv, char &interface, int &port
     bool logDebug = false;
 
     int c;
-    while ((c = getopt(argc, argv, "d:t:i:p:xe")) != -1) {
+    while ((c = getopt(argc, argv, "d:t:i:r:p:xe")) != -1) {
         switch (c) {
             case 'e':
                 enableElm = true;
@@ -143,6 +154,9 @@ CliHandler::getCommandLineArgs(int argc, char **argv, char &interface, int &port
                 break;
             case 'p':
                 port = static_cast<int>(strtol(optarg, nullptr, 0));
+                break;
+            case 'r':
+                strcpy(&script, optarg);
                 break;
             case '?':
             case 'h':

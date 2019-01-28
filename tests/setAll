@@ -1,0 +1,161 @@
+set SupportedPid01_20 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+sleep 10
+set SupportedPid21_40 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+sleep 10
+set SupportedPid41_60 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+sleep 10
+set SupportedPid61_80 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+sleep 10
+set SupportedPid81_A0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+sleep 10
+set SupportedPidA1_C0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+sleep 10
+set SupportedPidC1_E0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+sleep 10
+set MonitoringStatusSinceDTCsCleared 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+sleep 10
+set FreezeDTCPid 1
+sleep 10
+set FuelSystemStatus 1 1
+sleep 10
+set CalculatedEngineLoad 1
+sleep 10
+set EngineCoolantTemperature 1
+sleep 10
+set ShortTermFuelTrimBank1 1
+sleep 10
+set LongTermFuelTrimBank1 1
+sleep 10
+set ShortTermFuelTrimBank2 1
+sleep 10
+set LongTermFuelTrimBank2 1
+sleep 10
+set FuelPressure 1
+sleep 10
+set IntakeManifoldAbsolutePressure 1
+sleep 10
+set EngineRPM 1
+sleep 10
+set VehicleSpeed 1
+sleep 10
+set TimingAdvance 1
+sleep 10
+set IntakeAirTemperature 1
+sleep 10
+set MAFAirFlowRate 1
+sleep 10
+set ThrottlePosition 1
+sleep 10
+set CommandedSecondaryAirStatus 1
+sleep 10
+set OxygenSensorsPresent 1 1 1 1 1 1 1 1
+sleep 10
+set BankOxygenSensor1 1 1
+sleep 10
+set BankOxygenSensor2 1 1
+sleep 10
+set BankOxygenSensor3 1 1
+sleep 10
+set BankOxygenSensor4 1 1
+sleep 10
+set BankOxygenSensor5 1 1
+sleep 10
+set BankOxygenSensor6 1 1
+sleep 10
+set BankOxygenSensor7 1 1
+sleep 10
+set BankOxygenSensor8 1 1
+sleep 10
+set OBDStandardsVehicleConformsTo 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+sleep 10
+set OxygenSensorsPresent4Banks 1 1 1 1 1 1 1 1
+sleep 10
+set AuxiliaryInputStatus 1
+sleep 10
+set RunTimeSinceEngineStart 1
+sleep 10
+set DistanceTraveledWithMilOn 1
+sleep 10
+set FuelRailPressure 1
+sleep 10
+set FuelRailGaugePressure 1 1
+sleep 10
+set FuelRailOxygenSensor1 1 1
+sleep 10
+set FuelRailOxygenSensor2 1 1
+sleep 10
+set FuelRailOxygenSensor3 1 1
+sleep 10
+set FuelRailOxygenSensor4 1 1
+sleep 10
+set FuelRailOxygenSensor5 1 1
+sleep 10
+set FuelRailOxygenSensor6 1 1
+sleep 10
+set FuelRailOxygenSensor7 1 1
+sleep 10
+set FuelRailOxygenSensor8 1 1
+sleep 10
+set CommandedEGR 1
+sleep 10
+set EGRError 1
+sleep 10
+set CommandedEvaporativePurge 1
+sleep 10
+set FuelTankLevelInput 1
+sleep 10
+set WarmUpsSinceCodesCleared 1
+sleep 10
+set DistanceTraveledSinceCodesCleared 1
+sleep 10
+set EvaporativePurgeSystemVaporPressure 1
+sleep 10
+set AbsoluteBarometricPressure 1
+sleep 10
+set ExtendedRangeOxygenSensor1 1 1
+sleep 10
+set ExtendedRangeOxygenSensor2 1 1
+sleep 10
+set ExtendedRangeOxygenSensor3 1 1
+sleep 10
+set ExtendedRangeOxygenSensor4 1 1
+sleep 10
+set ExtendedRangeOxygenSensor5 1 1
+sleep 10
+set ExtendedRangeOxygenSensor6 1 1
+sleep 10
+set ExtendedRangeOxygenSensor7 1 1
+sleep 10
+set ExtendedRangeOxygenSensor8 1 1
+sleep 10
+set CatalystTemperatureBank1Sensor1 1
+sleep 10
+set CatalystTemperatureBank2Sensor1 1
+sleep 10
+set CatalystTemperatureBank1Sensor2 1
+sleep 10
+set CatalystTemperatureBank2Sensor2 1
+sleep 10
+set MonitorStatusThisDriveCycle 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+sleep 10
+set ControlModuleVoltage 1
+sleep 10
+set AbsoluteLoadValue 1
+sleep 10
+set FuelAirCommandedEquivalenceRatio 1
+sleep 10
+set RelativeThrottlePosition 1
+sleep 10
+set AmbientAirTemperature 1
+sleep 10
+set AbsoluteThrottlePositionB 1
+sleep 10
+set AbsoluteThrottlePositionC 1
+sleep 10
+set AcceleratorPedalPositionD 1
+sleep 10
+set AcceleratorPedalPositionE 1
+sleep 10
+set AcceleratorPedalPositionF 1
+exit
+exit

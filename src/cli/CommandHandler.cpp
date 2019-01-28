@@ -12,7 +12,6 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-#include "../../submodules/cpp-readline/src/Console.hpp"
 
 CommandHandler::CommandHandler(CLI_TYPE type, ICommunicationInterface *interface) {
     obdHandler = OBDHandler::createInstance();
@@ -29,6 +28,7 @@ int CommandHandler::start() {
     LOG(INFO) << "Starting CLI";
     exitRequested = false;
     initDone = false;
+    cmdHandlerRdy = false;
 
     if (com->openInterface() != 0) {
         return 1;
@@ -155,35 +155,40 @@ void CommandHandler::cmdHandler() {
         return;
     }
 
-    CppReadline::Console console(prompt);
+    console = make_unique<CppReadline::Console>(prompt);
+
     vector<string> supportedPids = getSupportedPids();
 
-    console.registerCommand(command_help,
-                            {std::bind(&CommandHandler::printHelp, this, std::placeholders::_1), vector<string>{}});
+    console->registerCommand(command_help,
+                             {std::bind(&CommandHandler::printHelp, this, std::placeholders::_1), vector<string>{}});
 
-    console.registerCommand(command_get,
-                            {std::bind(&CommandHandler::getDataCommand, this, std::placeholders::_1), supportedPids});
+    console->registerCommand(command_get,
+                             {std::bind(&CommandHandler::getDataCommand, this, std::placeholders::_1), supportedPids});
 
-    console.registerCommand(command_set,
-                            {std::bind(&CommandHandler::setDataCommand, this, std::placeholders::_1), supportedPids});
+    console->registerCommand(command_set,
+                             {std::bind(&CommandHandler::setDataCommand, this, std::placeholders::_1), supportedPids});
 
-    console.registerCommand(command_sleep,
-                            {std::bind(&CommandHandler::sleep, this, std::placeholders::_1), vector<string>{}});
+    console->registerCommand(command_sleep,
+                             {std::bind(&CommandHandler::sleep, this, std::placeholders::_1), vector<string>{}});
+
+    cmdHandlerRdy = true;
 
     int retVal = 0;
     do {
-        retVal = console.readLine();
+        retVal = console->readLine();
         // We can also change the prompt based on last return value:
         if (retVal == CppReadline::Console::Ok) {
-            console.setGreeting(prompt);
+            console->setGreeting(prompt);
         } else {
-            console.setGreeting("!>");
+            console->setGreeting("!>");
         }
     } while (retVal != CppReadline::Console::Quit && !exitRequested);
 
     if (!exitRequested) {
         exitRequested = true;
     }
+
+    cmdHandlerRdy = false;
 }
 
 bool CommandHandler::isOpen() {
@@ -499,5 +504,12 @@ int CommandHandler::sleep(const vector<string> &cmd) {
     int sleepTime = convertStringToT<int>(cmd.at(1));
     std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
     return 0;
+}
+
+void CommandHandler::executeFile(string fileName) {
+    while (!cmdHandlerRdy) {
+        this_thread::sleep_for(100ms);
+    }
+    console->executeFile(fileName);
 }
 

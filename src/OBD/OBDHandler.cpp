@@ -98,9 +98,9 @@ void OBDHandler::updateFromFrame(byte *frame, int frameSize) {
 
     const int startByte = 2;
     // 1 byte is service, 1 byte is pid. rest is data
-    int dataSize = frameSize -2;
-    byte* data = (byte*)malloc(sizeof(byte)*dataSize);
-    memcpy(data, frame+startByte, static_cast<size_t>(dataSize));
+    int dataSize = frameSize - 2;
+    byte *data = (byte *) malloc(sizeof(byte) * dataSize);
+    memcpy(data, frame + startByte, static_cast<size_t>(dataSize));
 
     Vehicle *updateVehicle = vehicle.get();
     if (FREEZE_FRAME == service) {
@@ -124,7 +124,7 @@ int OBDHandler::getServiceAndPidInfo(int pidId, int serviceId, Pid &pid, Service
 }
 
 
-Vehicle * OBDHandler::getVehicle() {
+Vehicle *OBDHandler::getVehicle() {
     return vehicle.get();
 }
 

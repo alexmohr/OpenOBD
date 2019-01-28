@@ -68,14 +68,14 @@ CanIsoTP::CanIsoTP(unsigned int rxId, unsigned int txId, char *ifname) {
 
     size_t nameLen = static_cast<int>(strlen(ifname));
     if (nameLen > 0) {
-        this->ifname = static_cast<char *>(malloc(nameLen));
+        this->ifname = new char[nameLen + 1];
         strcpy(this->ifname, ifname);
     }
 }
 
 
 CanIsoTP::~CanIsoTP() {
-    delete ifname;
+    delete[] ifname;
 }
 
 

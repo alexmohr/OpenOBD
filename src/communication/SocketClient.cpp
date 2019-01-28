@@ -13,13 +13,13 @@ SocketClient::SocketClient(int port, char *host) {
     this->port = port;
     size_t hostLen = static_cast<int>(strlen(host));
     if (hostLen > 0) {
-        this->host = static_cast<char *>(malloc(hostLen));
+        this->host = new char[hostLen + 1];
         strcpy(this->host, host);
     }
 }
 
 SocketClient::~SocketClient() {
-    delete host;
+    delete[] host;
 }
 
 int SocketClient::openInterface() {
@@ -57,7 +57,7 @@ int SocketClient::openInterface() {
                     return 1;
                 }
             } else {
-                LOG(ERROR) << "Timeout or error() " << valopt << " - " << strerror(valopt);
+                LOG(ERROR) << "Timeout or error() ";
                 return 1;
             }
         } else {

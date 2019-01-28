@@ -27,13 +27,13 @@ SerialClient::SerialClient(int baudrate, char *ttyDevice) {
 
     size_t ttyLen = static_cast<int>(strlen(ttyDevice));
     if (ttyLen > 0) {
-        this->ttyDevice = static_cast<char *>(malloc(ttyLen));
+        this->ttyDevice = new char[ttyLen + 1];
         strcpy(this->ttyDevice, ttyDevice);
     }
 }
 
 SerialClient::~SerialClient() {
-    delete ttyDevice;
+    delete[] ttyDevice;
 }
 
 

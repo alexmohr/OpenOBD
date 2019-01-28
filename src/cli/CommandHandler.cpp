@@ -118,7 +118,7 @@ void CommandHandler::configureVehicle() {
 
 void CommandHandler::ecuRecvThread(ICommunicationInterface *com) {
     int bufSize = 255;
-    byte *answer;
+    byte *answer = nullptr;
     byte *buf = new byte[bufSize];
     memset(buf, 0, bufSize);
     int readSize = 0;

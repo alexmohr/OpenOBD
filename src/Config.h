@@ -26,16 +26,15 @@ public:
 };
 
 
+void from_json(const json &jsdata, map<Service, PidCollection> &pcmap);
 
-void from_json(const json& jsdata, map<Service, PidCollection>& pcmap);
-void from_json(const json& jsdata, Pid& pid);
+void from_json(const json &jsdata, Pid &pid);
 
 void from_json(const json &jsData, map<int, DataTroubleCode> &dtcMap);
 
 
-template <typename T>
+template<typename T>
 void copyToVector(const json &jsdata, vector<T> &target);
-
 
 
 class Config {
@@ -47,12 +46,12 @@ public:
     template<typename T>
     bool parseJson(const string &filename, T &t) {
         // read a JSON file
-        std::ifstream fs(filename);
         json j;
         try {
+            std::ifstream fs(filename);
             fs >> j;
             t = j.get<T>();
-        } catch (exception &ex){
+        } catch (exception &ex) {
             LOG(ERROR) << "Failed to read json " << ex.what();
             return false;
         }
@@ -70,7 +69,6 @@ public:
     string findConfigFolder(vector<string> additionalSearchPaths);
 
 };
-
 
 
 #endif //OPEN_OBD2_CONFIGPARSER_H

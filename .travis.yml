@@ -41,8 +41,7 @@ script:
   - cd build
   - cmake ../ -DCOVERAGE=1
   - cmake --build .
-  - ./Test
-  # - ./Test  --gtest_filter=-` tr '\n' ':' < ../tests/travis.excludes`
+  - ./Test  --gtest_filter=-` tr '\n' ':' < ../tests/travis.excludes`
 
 after_success:
   - coveralls --root . -E ".*gtest.*" -E ".*CMakeFiles.*"

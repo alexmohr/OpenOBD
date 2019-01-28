@@ -75,7 +75,9 @@ byte CalculatedValues::fromADivided200(float val) {
 float CalculatedValues::to0_079_Times256APlusB(unsigned short val) {
     // 0.079(256A+B)}
     byte *bVal = ushortToByteArray(val);
-    return (float) 0.079 * (256 * (int) bVal[0] + (int) bVal[1]);
+    auto retVal = (float) (0.079 * (256 * (int) bVal[0] + (int) bVal[1]));
+    delete[] bVal;
+    return retVal;
 }
 
 unsigned short CalculatedValues::from0_079_Times256APlusB(float val) {
@@ -97,11 +99,11 @@ unsigned short CalculatedValues::from0_079_Times256APlusB(float val) {
 }
 
 unsigned int CalculatedValues::toUShortTimes10(unsigned short val) {
-   return (unsigned int)val*10;
+    return (unsigned int) val * 10;
 }
 
 unsigned short CalculatedValues::fromUShortTimes10(unsigned int val) {
-    return (unsigned short)(val/10);
+    return (unsigned short) (val / 10);
 }
 
 
@@ -134,7 +136,9 @@ unsigned short CalculatedValues::from256APlusBDivided4TwoComplement(float val) {
 
 float CalculatedValues::toAPlusBDivided256Minus128(unsigned short val) {
     byte *bVal = ushortToByteArray(val);
-    return (float) (bVal[0]) + ((float) bVal[1] / 256) - 128;
+    float value = (float) (bVal[0]) + ((float) bVal[1] / 256) - 128;
+    delete[] bVal;
+    return value;
 
 }
 

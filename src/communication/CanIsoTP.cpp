@@ -87,6 +87,7 @@ int CanIsoTP::openInterface() {
     }
 
     struct sockaddr_can addr;
+    memset(&addr, 0, sizeof(sockaddr_can));
     static struct can_isotp_options opts;
     static struct can_isotp_fc_options fcopts;
     static struct can_isotp_ll_options llopts;
@@ -130,8 +131,8 @@ int CanIsoTP::openInterface() {
 
     addr.can_family = AF_CAN;
     addr.can_ifindex = if_nametoindex(ifname);
-
     struct timeval tv;
+    memset(&tv, 0, sizeof(timeval));
     tv.tv_sec = 1;  /* 1 sec timeout */
     setsockopt(socketHandle, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(struct timeval));
 

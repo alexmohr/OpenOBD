@@ -96,7 +96,7 @@ string MonitorStatus::getPrintableData() {
 
 DataObjectStateCollection MonitorStatus::setValueFromString(string data) {
     vector<string> parts;
-    auto rs = DataObjectStateFactory::boundCheck(24, data, parts);
+    auto rs = DataObjectStateFactory::boundCheck(25, data, parts);
     if (!rs.resultSet.empty()) {
         rs.msg = "\n\tMil:           1"
                  "\n\tDtcCount:      1"

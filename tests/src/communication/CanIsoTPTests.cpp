@@ -19,7 +19,7 @@ void doTest(vector<byte> &request) {
     testerCAN->openInterface();
     testerCAN->send(request.data(), static_cast<int>(request.size()));
 
-    auto buf = (byte *) malloc(request.size());
+    auto buf = new byte[request.size()];
     int readSize;
     vehicleCAN->receive(buf, static_cast<int>(request.size()), readSize);
 
@@ -29,10 +29,11 @@ void doTest(vector<byte> &request) {
     for (i = 0; i < (long) request.size(); i++) {
         EXPECT_EQ(request.at(i), buf[i]);
     }
+    delete[] buf;
 }
 
 TEST(CanIsoTp, SingleFrameMessageVirtualCAN) { // NOLINT(cert-err58-cpp)
-    vector<byte> request  {(byte) 0x09 , (byte)0x02};
+    vector<byte> request{(byte) 0x09, (byte) 0x02};
 
     doTest(request);
 }
@@ -59,8 +60,9 @@ TEST(OBDHandler, Test_timeout) {
 
     vehicleCAN->openInterface();
 
-    byte *buf = (byte *) malloc(255);
+    byte *buf = new byte[255];
     int readSize;
     vehicleCAN->receive(buf, 255, readSize);
     EXPECT_EQ(readSize, 0);
+    delete[] buf;
 }

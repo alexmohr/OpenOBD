@@ -36,7 +36,7 @@ bool ELMClient::readDeviceBuffer(byte *buf, int bufSize, int &readSize) {
     auto t0 = chrono::high_resolution_clock::now();
     bool hasTimeout;
 
-    byte *tempReadBuffer = (byte *) malloc(bufSize);
+    byte *tempReadBuffer = new byte[bufSize];
     memset(buf, 0, bufSize);
     memset(tempReadBuffer, 0, bufSize);
 
@@ -64,7 +64,7 @@ bool ELMClient::readDeviceBuffer(byte *buf, int bufSize, int &readSize) {
                << chrono::duration_cast<chrono::milliseconds>(runTime).count()
                << "ms";
 
-    delete tempReadBuffer;
+    delete[] tempReadBuffer;
     if (readSize < 1) {
         // reset interface
         closeInterface();
@@ -95,7 +95,7 @@ void ELMClient::parseData(byte *buf, const int bufSize, int &readSize) {
         return;
     }
 
-    byte *bufCopy = (byte *) malloc(readSize);
+    byte *bufCopy = new byte[readSize];
     memcpy(bufCopy, buf, readSize);
     memset(buf, 0, bufSize);
 
@@ -113,7 +113,7 @@ void ELMClient::parseData(byte *buf, const int bufSize, int &readSize) {
         buf[dataIndex++] = byteValue;
     }
     readSize = dataIndex - 2;
-    delete bufCopy;
+    delete[] bufCopy;
 }
 
 
@@ -123,12 +123,12 @@ void ELMClient::removeFooter(byte *buf, int bufSize, int &readSize, int byteCoun
         return;
     }
 
-    byte *tempCharBuf = (byte *) malloc(readSize);
+    byte *tempCharBuf = new byte[readSize];
     memcpy(tempCharBuf, buf, readSize - byteCountToRemove);
     memset(buf, 0, bufSize);
     memcpy(buf, tempCharBuf, readSize);
     readSize -= byteCountToRemove;
-    delete tempCharBuf;
+    delete[] tempCharBuf;
 }
 
 void ELMClient::removeHeader(byte *buf, const int bufSize, int &readSize, int byteCountToRemove) const {
@@ -137,12 +137,12 @@ void ELMClient::removeHeader(byte *buf, const int bufSize, int &readSize, int by
         return;
     }
 
-    byte *tempCharBuf = (byte *) malloc(readSize);
+    byte *tempCharBuf = new byte[readSize];
     memcpy(tempCharBuf, buf + byteCountToRemove, readSize);
     memset(buf, 0, bufSize);
     memcpy(buf, tempCharBuf, readSize);
     readSize -= byteCountToRemove;
-    delete tempCharBuf;
+    delete[] tempCharBuf;
 }
 
 int ELMClient::getDataStartIndex(const byte *buf, const int recvSize) const {
@@ -177,7 +177,7 @@ int ELMClient::send(byte *buf, int bufSize) {
 
 int ELMClient::configureInterface() {
     int bufSize = 1024;
-    byte *buf = (byte *) malloc(bufSize);
+    byte *buf = new byte[bufSize];
 
     elmInterface->configureInterface();
 
@@ -186,6 +186,7 @@ int ELMClient::configureInterface() {
     string log = "Did not receive positive response for command: ";
     if (!configurationCommandSendSuccessfully(buf, bufSize, command)) {
         LOG(ERROR) << log << command;
+        delete[] buf;
         return 1;
     }
 
@@ -193,6 +194,7 @@ int ELMClient::configureInterface() {
     command = getElmConfigString(ELM_CONFIG_HEADER, true);
     if (!configurationCommandSendSuccessfully(buf, bufSize, command)) {
         LOG(ERROR) << log << command;
+        delete[] buf;
         return 1;
     }
 
@@ -200,6 +202,7 @@ int ELMClient::configureInterface() {
     command = getElmConfigString(ELM_CONFIG_SPACES, false);
     if (!configurationCommandSendSuccessfully(buf, bufSize, command)) {
         LOG(ERROR) << log << command;
+        delete[] buf;
         return 1;
     }
 
@@ -227,11 +230,13 @@ int ELMClient::findProtocol(int bufSize, byte *buf) {
 
     if (!protocolFound) {
         LOG(ERROR) << "Unable to find protocol";
+        delete[] buf;
         return 1;
     }
 
     LOG(DEBUG) << "Protocol can be used: " << protocol->name;
     usedProtocol = protocol;
+    delete[] buf;
     return 0;
 }
 

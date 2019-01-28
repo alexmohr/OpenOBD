@@ -8,15 +8,15 @@
 
 
 MockCommInterface::MockCommInterface() {
-    dataForNextRecv = (byte *) malloc(255);
-    dataFromLastSend = (byte *) malloc(255);
+    dataForNextRecv = new byte[255];
+    dataFromLastSend = new byte[255];
     dataForNextRecvSize = 0;
     dataForNextRecvSize = 0;
 }
 
 MockCommInterface::~MockCommInterface() {
-    delete dataForNextRecv;
-    delete dataFromLastSend;
+    delete[] dataForNextRecv;
+    delete[] dataFromLastSend;
 }
 
 int MockCommInterface::send(byte *buf, int bufSize) {

@@ -157,7 +157,7 @@ TEST(OBDHandler, PID_00_PIDSupportedGeneric) {
     const int pidsPerCall = 32;
     int j, k, currentPid;
 
-    vector<Service1Pids> pids = {
+    vector <Service1Pids> pids = {
             SupportedPid01_20,
             SupportedPid21_40,
             SupportedPid41_60,
@@ -185,23 +185,24 @@ TEST(OBDHandler, PID_00_PIDSupportedGeneric) {
             EXPECT_TRUE(vehicle->getPidSupport().getPidSupported(service, currentPid));
 
 
-            vector<byte> request = {RequestServiceID, (byte) pid};
+            vector <byte> request = {RequestServiceID, (byte) pid};
             int dataSize = static_cast<int>(request.size());
             byte *val = handler->createAnswerFrame(request.data(), dataSize);
-            auto *response = (byte *) malloc(sizeof(byte) * 8);
+            auto *response = new byte[8];
             response[0] = ResponseServiceID;
             response[1] = request.at(1);
 
             unsigned int data = 0;
             data |= 1 << --k;
 
-            response[5] = (byte) (data & 0xFF);
-            response[4] = (byte) ((data >> 8U) & 0xFF);
-            response[3] = (byte) ((data >> 16U) & 0xFF);
-            response[2] = (byte) ((data >> 24U) & 0xFF);
+            response[5] = (byte)(data & 0xFF);
+            response[4] = (byte)((data >> 8U) & 0xFF);
+            response[3] = (byte)((data >> 16U) & 0xFF);
+            response[2] = (byte)((data >> 24U) & 0xFF);
 
             compareResponse(response, val, 8);
             vehicle->getPidSupport().setPidSupported(service, currentPid, false);
+            delete[] response;
         }
     }
 }

@@ -72,7 +72,7 @@ byte *OBDHandler::createAnswerFrame(Service service, Pid pid, byte *data, int &s
 
 byte *OBDHandler::createErrorFrame(int type, int &size, byte &attemptedFunction) {
     size = 3;
-    byte *result = (byte *) malloc(size);
+    byte *result = new byte[size];
     result[0] = (byte) NEGATIVE_RESPONSE;
     result[1] = attemptedFunction;
     result[2] = (byte) type;

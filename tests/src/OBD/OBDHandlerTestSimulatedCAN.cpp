@@ -25,7 +25,7 @@ TEST(OBDHandler, PIDSupported01_20_With_VirtualCAN) {
     int readSize;
 
     // setup vehicle
-    buf = (byte *) malloc(response.size());
+    buf = new byte[response.size()];
     vehicleCAN->send(response.data(), static_cast<int>(response.size()));
     testerCAN->receive(buf, static_cast<int>(response.size()), readSize);
 
@@ -37,10 +37,13 @@ TEST(OBDHandler, PIDSupported01_20_With_VirtualCAN) {
     testerCAN->send(request.data(), static_cast<int>(request.size()));
     vehicleCAN->receive(buf, static_cast<int>(request.size()), readSize);
 
-    int dataSize = request.size();
+    int dataSize = static_cast<int>(request.size());
     byte *val = handler->createAnswerFrame(buf, dataSize);
     EXPECT_EQ(dataSize, response.size());
     compareResponse(response, val);
+    delete[] buf;
+    delete[] val;
+    delete handler;
 }
 
 TEST(OBDHandler, AmbientTemperature_46_With_VirtualCAN) {
@@ -60,17 +63,17 @@ TEST(OBDHandler, AmbientTemperature_46_With_VirtualCAN) {
     int readSize;
 
     // setup vehicle
-    buf = (byte *) malloc(response.size());
+    buf = new byte[response.size()];
     vehicleCAN->send(response.data(), static_cast<int>(response.size()));
     testerCAN->receive(buf, static_cast<int>(response.size()), readSize);
-
     assert(readSize > 0);
 
     handler->updateFromFrame(buf, readSize);
 
-    buf = (byte *) malloc(request.size());
+    buf = new byte[response.size()];
     testerCAN->send(request.data(), static_cast<int>(request.size()));
     vehicleCAN->receive(buf, static_cast<int>(request.size()), readSize);
+
 
     int dataSize = static_cast<int>(request.size());
     handler->getVehicle()->getPidSupport().setPidSupported(Service::POWERTRAIN, AmbientAirTemperature, true);
@@ -78,4 +81,6 @@ TEST(OBDHandler, AmbientTemperature_46_With_VirtualCAN) {
     vehicleCAN->send(val, dataSize);
     EXPECT_EQ(dataSize, response.size());
     compareResponse(response, val);
+    delete[] buf;
+    delete[] val;
 }

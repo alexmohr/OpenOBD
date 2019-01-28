@@ -80,7 +80,7 @@ string createResponse(const string &data, int &dataLength) {
 
 void recvData(ELMClient &elm, int &readSize, byte *&buf) {
     int bufSize = 255;
-    buf = (byte *) malloc(bufSize);
+    buf = new byte[bufSize];
     elm.receive(buf, bufSize, readSize);
 }
 
@@ -102,7 +102,7 @@ void testVehicleSpeed(MockCommInterface *mockInterface, ELMClient &elm) {
     EXPECT_EQ(buf[0], (byte) 0x41);
     EXPECT_EQ(buf[1], (byte) Service1Pids::VehicleSpeed);
     EXPECT_EQ(buf[2], (byte) 0x7F);
-    delete buf;
+    delete[] buf;
 }
 
 void testSupportedPids(MockCommInterface *mockInterface, ELMClient &elm) {
@@ -129,7 +129,7 @@ void testSupportedPids(MockCommInterface *mockInterface, ELMClient &elm) {
         EXPECT_EQ(buf[i], (byte) 0xFF);
     }
 
-    delete buf;
+    delete[] buf;
 }
 
 void testProtocol(char protocol) {

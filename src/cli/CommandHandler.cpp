@@ -285,7 +285,6 @@ DataObjectState CommandHandler::getData(const vector<string> &cmd) {
         return state;
     }
 
-
     // query data from ecu if we are not one
     if (ECU != type) {
         state = queryECU(pid, service);
@@ -293,6 +292,7 @@ DataObjectState CommandHandler::getData(const vector<string> &cmd) {
             return state;
         }
     }
+
     cout << pid.getFrameObject(obdHandler->getVehicle()).getPrintableData() << endl;
     return DataObjectState(SUCCESS);
 }
@@ -443,7 +443,7 @@ DataObjectState CommandHandler::queryECU(Pid pid, Service service) {
     int bufSize = 255;
     byte *buf = new byte[bufSize];
     int readSize = 0;
-    bool success;
+    bool success = false;
 
     do {
         com->send(frame, frameLen);

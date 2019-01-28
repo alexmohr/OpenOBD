@@ -81,7 +81,7 @@ int ELM327WifiServer::parseData(byte *data, int &size) const {
     size /= 2;
     int i, j = 0;
     char charBuf[2];
-    byte *outBuf = (byte *) malloc(size + 1);
+    byte *outBuf = new byte[size + 1];
 
     // used as temporary value for parsing data
     unsigned int value;
@@ -96,7 +96,7 @@ int ELM327WifiServer::parseData(byte *data, int &size) const {
 
     outBuf[j] = (byte) ELM_FLOW_PROMPT;
     memcpy(data, outBuf, size);
-
+    delete[] outBuf;
     return 0;
 }
 
@@ -141,8 +141,8 @@ bool ELM327WifiServer::parseConfiguration(byte *buf, int &recvSize) {
 void ELM327WifiServer::handleClient(int clientSockFd) {
     int readSize;
     int bufSize = 1024;
-    byte *inBuf = (byte *) malloc(bufSize);
-    byte *buf = (byte *) malloc(bufSize);
+    byte *inBuf = new byte[bufSize];
+    byte *buf = new byte[bufSize];
     auto message = vector<byte>();
 
     int i;
@@ -175,8 +175,8 @@ void ELM327WifiServer::handleClient(int clientSockFd) {
         message.clear();
     }
 
-    delete inBuf;
-    delete buf;
+    delete[] inBuf;
+    delete[] buf;
 }
 
 int ELM327WifiServer::sendConfigurationAnswer(int clientSockFd, bool &success) const {

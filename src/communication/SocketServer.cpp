@@ -47,14 +47,14 @@ int SocketServer::openInterface() {
         return -1;
     }
 
-    tServeThread = thread(&SocketServer::serve, this);
     exitRequested = false;
+    tServeThread = thread(&SocketServer::serve, this);
     isOpen = true;
     return 0;
 }
 
 int SocketServer::closeInterface() {
-    if (!isOpen){
+    if (!isOpen) {
         return 0;
     }
 

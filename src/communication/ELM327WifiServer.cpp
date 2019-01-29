@@ -146,9 +146,14 @@ void ELM327WifiServer::handleClient(int clientSockFd) {
     auto message = vector<byte>();
 
     int i;
+    auto maxTimeWithoutReceive = 20s;
+    auto t0 = chrono::high_resolution_clock::now();
     while (!exitRequested) {
         socketServer->receive(inBuf, bufSize, readSize, clientSockFd);
         if (readSize < 1) {
+            if ((chrono::high_resolution_clock::now() - t0) > maxTimeWithoutReceive) {
+                break;
+            }
             continue;
         }
 
@@ -174,6 +179,8 @@ void ELM327WifiServer::handleClient(int clientSockFd) {
 
         message.clear();
     }
+
+    LOG(DEBUG) << "Client disconnected";
 
     delete[] inBuf;
     delete[] buf;
@@ -239,7 +246,6 @@ int ELM327WifiServer::sendString(int clientSockFd, const string &st) const {
     if (retVal < 0) {
         PLOG(ERROR) << "Failed to send frame to elm client";
     }
-    LOG(DEBUG) << "WifiServer sending: \"" << st << "\"";
     return retVal;
 }
 

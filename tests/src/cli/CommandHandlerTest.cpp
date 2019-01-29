@@ -57,13 +57,13 @@ void TestCommandHandler(CLI_TYPE type) {
         vector<string> smallData{"set", cmdMap.first};
         vector<string> largeData{"set", cmdMap.first};
         EXPECT_EQ(true, cmdHandler->getPid(validData, pid, service));
-        auto &fo = pid.getFrameObject(cmdHandler->getObdHandler().getVehicle());
+        auto *fo = pid.getFrameObject(cmdHandler->getObdHandler().getVehicle());
         if (nullptr == fo) {
             continue;
         }
         descriptionsNotNull = true;
 
-        for (const auto &desc : fo.getDescriptions()) {
+        for (const auto &desc : fo->getDescriptions()) {
             EXPECT_FALSE(desc == nullptr);
             if (desc == nullptr) {
                 cout << hex << "0x" << pid.id << " has no description!" << endl;
@@ -74,7 +74,6 @@ void TestCommandHandler(CLI_TYPE type) {
             // do not overwrite supported pids
             if (cmdMap.first.find("SupportedPid") != std::string::npos) {
                 validData.push_back(to_string(1));
-                // offset because double and float would give under/overflow
                 smallData.push_back(to_string(1));
                 largeData.push_back(to_string(1));
             } else {

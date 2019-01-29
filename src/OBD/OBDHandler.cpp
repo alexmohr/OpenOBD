@@ -137,7 +137,8 @@ Vehicle *OBDHandler::getVehicleFreezeFrame() {
 
 DataObjectState OBDHandler::isPidSupported(Service service, int pid) {
     if (!(vehicle->getPidSupport().getPidSupported(service, pid))) {
-        LOG(INFO) << "Requested command is not supported by vehicle" << endl;
+        LOG(INFO) << "Requested command is not supported by vehicle, service:" << to_string(service)
+                  << ", pid: " << to_string(pid) << endl;
         return DataObjectState(NOT_SUPPORTED);
     }
     return DataObjectState(SUCCESS);

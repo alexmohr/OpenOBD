@@ -43,6 +43,7 @@ bool ELMClient::readDeviceBuffer(byte *buf, int bufSize, int &readSize) {
     int additionalReadSize;
     readSize = 0;
     auto startTime = chrono::high_resolution_clock::now();
+    bool hasPrompt;
     do {
         elmInterface->receive(tempReadBuffer, bufSize, additionalReadSize);
         if (additionalReadSize > 0) {
@@ -57,7 +58,8 @@ bool ELMClient::readDeviceBuffer(byte *buf, int bufSize, int &readSize) {
             }
         }
         hasTimeout = chrono::_V2::system_clock::now() - t0 > 500ms;
-    } while ((char) buf[readSize - 1] != ELM_FLOW_PROMPT && !hasTimeout);
+        hasPrompt = readSize > 0 && (char) buf[readSize - 1] == ELM_FLOW_PROMPT;
+    } while (!hasPrompt && !hasTimeout);
 
     auto runTime = (chrono::high_resolution_clock::now() - startTime);
     LOG(DEBUG) << "Getting value from ecu took: "
@@ -104,15 +106,14 @@ void ELMClient::parseData(byte *buf, const int bufSize, int &readSize) {
     byte byteValue;
     char tempCharBuf[2];
 
-
-    for (bufIndex = 0; bufIndex <= readSize; bufIndex += 2) {
+    for (bufIndex = 0; bufIndex < readSize - 1; bufIndex += 2) {
         memset(&tempCharBuf, 0, 2);
         memcpy(tempCharBuf, bufCopy + bufIndex, 2);
 
         byteValue = (byte) convertHexToInt(string(tempCharBuf));
         buf[dataIndex++] = byteValue;
     }
-    readSize = dataIndex - 2;
+    readSize = dataIndex - 1;
     delete[] bufCopy;
 }
 

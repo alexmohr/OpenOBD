@@ -293,7 +293,11 @@ DataObjectState CommandHandler::getData(const vector<string> &cmd) {
         }
     }
 
-    cout << pid.getFrameObject(obdHandler->getVehicle()).getPrintableData() << endl;
+    auto *frameObject = pid.getFrameObject(obdHandler->getVehicle());
+    if (frameObject == nullptr) {
+        return DataObjectState(NOT_SUPPORTED);
+    }
+    cout << frameObject->getPrintableData() << endl;
     return DataObjectState(SUCCESS);
 }
 
@@ -364,8 +368,13 @@ DataObjectState CommandHandler::setDataViaPid(string val, Service service, Pid p
         return state;
     }
     // Try to update vehicle from data.
-    auto &frameObject = pid.getFrameObject(obdHandler->getVehicle());
-    DataObjectStateCollection sc = frameObject.setValueFromString(std::move(val));
+    auto *frameObject = pid.getFrameObject(obdHandler->getVehicle());
+    if (nullptr == frameObject) {
+        cout << "Not supported Pid or service";
+        return NOT_SUPPORTED;
+    }
+
+    DataObjectStateCollection sc = frameObject->setValueFromString(std::move(val));
     if (!sc.msg.empty()) {
         cout << sc.msg;
     }
@@ -395,7 +404,7 @@ DataObjectState CommandHandler::setDataViaPid(string val, Service service, Pid p
         }
     }
 
-    cout << "New value: " << frameObject.getPrintableData() << endl;
+    cout << "New value: " << frameObject->getPrintableData() << endl;
     return DataObjectState(SUCCESS);
 }
 

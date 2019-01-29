@@ -222,7 +222,7 @@ int ELM327WifiServer::sendDataAnswer(int clientSockFd, int dataSize, byte *cmdBu
     if (sendHeaders) {
         std::stringstream ss2;
         ss2 << std::hex << std::setfill('0') << std::setw(2) << j;
-        string space = "";
+        string space;
         if (sendSpaces) {
             space = " ";
         }

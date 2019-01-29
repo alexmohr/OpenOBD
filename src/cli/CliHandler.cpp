@@ -20,7 +20,7 @@ int CliHandler::openCli(int argc, char *argv[]) {
     char *script = new char[targetSize];
     memset(script, 0, targetSize);
 
-    int port = 0;
+    int port = 35000;
     bool enableElm = false;
 
     CLI_TYPE type;

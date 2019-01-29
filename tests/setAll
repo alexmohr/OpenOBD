@@ -157,5 +157,3 @@ sleep 10
 set AcceleratorPedalPositionE 1
 sleep 10
 set AcceleratorPedalPositionF 1
-exit
-exit

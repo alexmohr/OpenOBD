@@ -120,7 +120,7 @@ public:
 
     byte *getQueryForService(Service service, int &buflen);
 
-    IFrameObject &getFrameObject(Vehicle *vehicle);
+    IFrameObject *getFrameObject(Vehicle *vehicle);
 };
 
 

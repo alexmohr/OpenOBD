@@ -58,6 +58,9 @@ void TestCommandHandler(CLI_TYPE type) {
         vector<string> largeData{"set", cmdMap.first};
         EXPECT_EQ(true, cmdHandler->getPid(validData, pid, service));
         auto &fo = pid.getFrameObject(cmdHandler->getObdHandler().getVehicle());
+        if (nullptr == fo) {
+            continue;
+        }
         descriptionsNotNull = true;
 
         for (const auto &desc : fo.getDescriptions()) {

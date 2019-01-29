@@ -157,7 +157,7 @@ TEST(OBDHandler, PID_00_PIDSupportedGeneric) {
     const int pidsPerCall = 32;
     int j, k, currentPid;
 
-    vector <Service1Pids> pids = {
+    vector<Service1Pids> pids = {
             SupportedPid01_20,
             SupportedPid21_40,
             SupportedPid41_60,
@@ -185,7 +185,7 @@ TEST(OBDHandler, PID_00_PIDSupportedGeneric) {
             EXPECT_TRUE(vehicle->getPidSupport().getPidSupported(service, currentPid));
 
 
-            vector <byte> request = {RequestServiceID, (byte) pid};
+            vector<byte> request = {RequestServiceID, (byte) pid};
             int dataSize = static_cast<int>(request.size());
             byte *val = handler->createAnswerFrame(request.data(), dataSize);
             auto *response = new byte[8];
@@ -195,14 +195,15 @@ TEST(OBDHandler, PID_00_PIDSupportedGeneric) {
             unsigned int data = 0;
             data |= 1 << --k;
 
-            response[5] = (byte)(data & 0xFF);
-            response[4] = (byte)((data >> 8U) & 0xFF);
-            response[3] = (byte)((data >> 16U) & 0xFF);
-            response[2] = (byte)((data >> 24U) & 0xFF);
+            response[5] = (byte) (data & 0xFF);
+            response[4] = (byte) ((data >> 8U) & 0xFF);
+            response[3] = (byte) ((data >> 16U) & 0xFF);
+            response[2] = (byte) ((data >> 24U) & 0xFF);
 
             compareResponse(response, val, 8);
             vehicle->getPidSupport().setPidSupported(service, currentPid, false);
             delete[] response;
+            delete[] val;
         }
     }
 }
@@ -292,7 +293,7 @@ TEST(OBDHandler, PID_01_Test_MIL) {
     byte *val = handler->createAnswerFrame(request.data(), dataSize);
     vector<byte> response{ResponseServiceID, pid, (byte) 0x80, (byte) 0x00, (byte) 0x00, (byte) 0x00};
     compareResponse(response, val);
-
+    delete handler;
 }
 
 // make sure that the application can generate the request on its own and does not need can frames to init.
@@ -343,6 +344,7 @@ TEST(OBDHandler, PID_01_MonitoringStatusInitViaVehicle) {
     vector<byte> response{ResponseServiceID, pid, (byte) 0xf1, (byte) 0x6f, (byte) 0xe3, (byte) 0xf1};
     EXPECT_EQ(dataSize, response.size());
     compareResponse(response, val);
+    delete handler;
 }
 
 TEST(OBDHandler, PID_02_FreezeDTC) {

@@ -33,7 +33,7 @@ TEST(OBDHandler, PIDSupported01_20_With_VirtualCAN) {
 
     handler->updateFromFrame(buf, readSize);
 
-    buf = (byte *) malloc(request.size());
+    buf = new byte[request.size()];
     testerCAN->send(request.data(), static_cast<int>(request.size()));
     vehicleCAN->receive(buf, static_cast<int>(request.size()), readSize);
 

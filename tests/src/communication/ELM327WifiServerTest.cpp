@@ -23,7 +23,11 @@ private:
 public:
     bool hasSend = false;
     bool hasReceived = false;
-
+public:
+    ~MockSocketServer() {
+        delete[] recvBuf;
+        delete[] sendBuf;
+    }
 
 public:
     void setNextReceive(byte *buf, int readSize) {
@@ -193,4 +197,5 @@ TEST(ELM327WifiServer, TestEverything) {
     tServer.join();
     delete mockSocketServer;
     delete mockComInterface;
+    delete[] buf;
 }

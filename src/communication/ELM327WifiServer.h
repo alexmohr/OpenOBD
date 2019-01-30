@@ -27,12 +27,12 @@ private:
     int port;
     string interface;
     bool open;
-    ICommunicationInterface *commInterface;
-    ISocketServer *socketServer;
+    shared_ptr<ICommunicationInterface> commInterface;
+    shared_ptr<ISocketServer> socketServer;
 public:
     ELM327WifiServer(int port,
-                     ICommunicationInterface *commInterface,
-                     ISocketServer *socketServer);
+                     shared_ptr<ICommunicationInterface> commInterface,
+                     shared_ptr<ISocketServer> socketServer);
 
     bool isOpen();
 

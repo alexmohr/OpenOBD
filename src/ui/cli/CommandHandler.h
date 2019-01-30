@@ -15,6 +15,7 @@
 #include "../../communication/ELM327WifiServer.h"
 #include "../../OBD/OBDHandler.h"
 #include "../CommandInfo.h"
+#include "../VehicleDataProvider.h"
 #include "../../../submodules/cpp-readline/src/Console.hpp"
 
 using namespace std;
@@ -53,27 +54,25 @@ private:
             command_set_by_hex_number
     };
 
-    unique_ptr<CppReadline::Console> console;
-
-public:
-
-
-
 private:
+
     std::thread tRecv;
     std::thread tCmdHandler;
     std::thread tInit;
-    bool exitRequested;
-    unique_ptr<OBDHandler> obdHandler;
+    shared_ptr<OBDHandler> obdHandler;
+    shared_ptr<ICommunicationInterface> comInterface;
+    unique_ptr<VehicleDataProvider> vehicleDataProvider;
+    unique_ptr<CppReadline::Console> console;
     bool open;
     bool initDone;
     bool cmdHandlerRdy;
+    bool exitRequested;
     CLI_TYPE type;
-    ICommunicationInterface *com;
 
 
 public:
-    CommandHandler(CLI_TYPE type, ICommunicationInterface *com);
+    CommandHandler(CLI_TYPE type, shared_ptr<ICommunicationInterface> comInterface,
+                   shared_ptr<OBDHandler> obdHandler);
 
 public:
 
@@ -116,15 +115,11 @@ private:
 
     void configureVehicle();
 
-    void ecuRecvThread(ICommunicationInterface *com);
+    void ecuRecvThread();
 
     void cmdHandler();
 
     int printHelp(const vector<string> &cmd);
-
-    DataObjectState queryECU(Pid pid, Service service);
-
-    vector<string> getSupportedPids() const;
 };
 
 

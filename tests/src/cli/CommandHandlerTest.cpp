@@ -30,7 +30,7 @@ string vectorToString(vector<string> v) {
     return s;
 }
 
-void initCommandHandler(MockCommInterface *mockComm, CommandHandler *cmdHandler) {
+void initCommandHandler(shared_ptr<MockCommInterface> mockComm, CommandHandler *cmdHandler) {
     mockComm->supportEverything = true;
 
     cmdHandler->start();
@@ -42,9 +42,9 @@ void initCommandHandler(MockCommInterface *mockComm, CommandHandler *cmdHandler)
 }
 
 void TestCommandHandler(CLI_TYPE type) {
-    auto *mockComm = new MockCommInterface();
-    auto *cmdHandler = new CommandHandler(type, mockComm);
-
+    shared_ptr<MockCommInterface> mockComm = make_shared<MockCommInterface>();
+    shared_ptr<OBDHandler> obdHandler = OBDHandler::createInstance();
+    auto *cmdHandler = new CommandHandler(type, mockComm, obdHandler);
 
     initCommandHandler(mockComm, cmdHandler);
 
@@ -142,8 +142,9 @@ TEST(CommandHandlerTest, setData_getData_SERIAL_ELM) {
 
 
 TEST(CommandHandlerTest, set_special) {
-    auto *mockComm = new MockCommInterface();
-    auto *cmdHandler = new CommandHandler(CLI_TYPE::ECU, mockComm);
+    shared_ptr<MockCommInterface> mockComm = make_shared<MockCommInterface>();
+    shared_ptr<OBDHandler> obdHandler = OBDHandler::createInstance();
+    auto *cmdHandler = new CommandHandler(CLI_TYPE::ECU, mockComm, obdHandler);
     initCommandHandler(mockComm, cmdHandler);
 
     // invalid
@@ -199,8 +200,9 @@ TEST(CommandHandlerTest, set_special) {
 
 
 TEST(CommandHandlerTest, tryBreakStuff) {
-    auto *mockComm = new MockCommInterface();
-    auto *cmdHandler = new CommandHandler(CLI_TYPE::ECU, mockComm);
+    shared_ptr<MockCommInterface> mockComm = make_shared<MockCommInterface>();
+    shared_ptr<OBDHandler> obdHandler = OBDHandler::createInstance();
+    auto *cmdHandler = new CommandHandler(CLI_TYPE::ECU, mockComm, obdHandler);
     vector<string> data = {"set"};
     cmdHandler->setData(data);
 

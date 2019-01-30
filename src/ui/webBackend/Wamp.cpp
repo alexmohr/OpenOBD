@@ -4,6 +4,15 @@
 
 #include "Wamp.h"
 
+int Wamp::openInterface() {
+    return 0;
+}
+
+int Wamp::closeInterface() {
+    return 0;
+}
+
+
 void Wamp::foo() {
     try {
         /* Create the wampcc kernel. */
@@ -38,3 +47,4 @@ void Wamp::foo() {
         return;
     }
 }
+

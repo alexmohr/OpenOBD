@@ -7,8 +7,7 @@
 #include <chrono>         // std::chrono::seconds
 
 
-CliHandler::CliHandler() {
-}
+CliHandler::CliHandler() = default;
 
 
 int CliHandler::openCli(int argc, char *argv[]) {
@@ -32,18 +31,18 @@ int CliHandler::openCli(int argc, char *argv[]) {
     switch (type) {
         case WIFI_ELM:
             if (0 == port) { port = wifiDefaultPort; }
-            physicalComInterface = make_unique<SocketClient>(port, interface);
-            logicalComInterface = make_unique<ELMClient>(physicalComInterface.get());
+            physicalComInterface = make_shared<SocketClient>(port, interface);
+            logicalComInterface = make_shared<ELMClient>(physicalComInterface.get());
             break;
         case SERIAL_ELM:
-            physicalComInterface = make_unique<SerialClient>(port, interface);
-            logicalComInterface = make_unique<ELMClient>(physicalComInterface.get());
+            physicalComInterface = make_shared<SerialClient>(port, interface);
+            logicalComInterface = make_shared<ELMClient>(physicalComInterface.get());
             break;
         case TESTER:
-            logicalComInterface = make_unique<CanIsoTP>(VEHICLE_ID, TESTER_ID, interface);
+            logicalComInterface = make_shared<CanIsoTP>(VEHICLE_ID, TESTER_ID, interface);
             break;
         case ECU:
-            logicalComInterface = make_unique<CanIsoTP>(TESTER_ID, VEHICLE_ID, interface);
+            logicalComInterface = make_shared<CanIsoTP>(TESTER_ID, VEHICLE_ID, interface);
             break;
         default:
             LOG(ERROR) << "Unsupported interface type";
@@ -58,13 +57,14 @@ int CliHandler::openCli(int argc, char *argv[]) {
 
         socketServer = make_unique<SocketServer>(port);
         elmServer = make_unique<ELM327WifiServer>(
-                port, logicalComInterface.get(), socketServer.get());
+                port, logicalComInterface, socketServer);
         if (elmServer->openInterface() != EXIT_SUCCESS) {
             return EXIT_FAILURE;
         }
     }
 
-    cmdHandler = make_unique<CommandHandler>(type, logicalComInterface.get());
+    shared_ptr<OBDHandler> obdHandler = OBDHandler::createInstance();
+    cmdHandler = make_unique<CommandHandler>(type, logicalComInterface, obdHandler);
     delete[] interface;
     int val = cmdHandler->start();
     if (script[0] != 0) {

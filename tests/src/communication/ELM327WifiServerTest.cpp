@@ -86,13 +86,13 @@ public: // ISocketServer
 const string CONFIG_OK = ELM_FLOW_OK + ELM_FLOW_NEWLINE_PROMPT;
 const string CONFIG_NOT_OK = ELM_FLOW_ERROR + ELM_FLOW_NEWLINE_PROMPT;
 
-void waitForData(MockSocketServer *mockSocketServer) {
+void waitForData(shared_ptr<MockSocketServer> mockSocketServer) {
     while (!mockSocketServer->hasSend || !mockSocketServer->hasReceived) {
         usleep(100);
     }
 }
 
-void testResult(MockSocketServer *mockSocketServer, byte *buf, const string &result) {
+void testResult(shared_ptr<MockSocketServer> mockSocketServer, byte *buf, const string &result) {
     waitForData(mockSocketServer);
 
     int recvSize;
@@ -101,7 +101,7 @@ void testResult(MockSocketServer *mockSocketServer, byte *buf, const string &res
     EXPECT_TRUE(contains);
 }
 
-void testConfiguredData(MockSocketServer *mockSocketServer, byte *buf,
+void testConfiguredData(shared_ptr<MockSocketServer> mockSocketServer, byte *buf,
                         bool sendsSpaces, bool sendsHeader) {
 
     const string DATA_QUERY = "0100";
@@ -120,14 +120,14 @@ void testConfiguredData(MockSocketServer *mockSocketServer, byte *buf,
 }
 
 
-void testSetConfig(MockSocketServer *mockSocketServer, byte *buf, bool value,
+void testSetConfig(shared_ptr<MockSocketServer> mockSocketServer, byte *buf, bool value,
                    const string &configOption, const string &result) {
     string config = getElmConfigString(configOption, value) + ELM_FLOW_NEWLINE;
     mockSocketServer->setNextReceive((byte *) config.c_str(), static_cast<int>(config.size()));
     testResult(mockSocketServer, buf, result);
 }
 
-void testProtocols(MockSocketServer *mockSocketServer, byte *buf) {
+void testProtocols(shared_ptr<MockSocketServer> mockSocketServer, byte *buf) {
     string config;
     for (auto &protocol: availableProtocols) {
         config = ELM_CONFIG_PROTOCOL + to_string(protocol.first) + ELM_FLOW_NEWLINE;
@@ -144,13 +144,13 @@ void testProtocols(MockSocketServer *mockSocketServer, byte *buf) {
 }
 
 
-void testConfigWithData(MockSocketServer *mockSocketServer, byte *buf, bool sendSpaces, bool sendHeader) {
+void testConfigWithData(shared_ptr<MockSocketServer> mockSocketServer, byte *buf, bool sendSpaces, bool sendHeader) {
     testSetConfig(mockSocketServer, buf, sendSpaces, ELM_CONFIG_SPACES, CONFIG_OK);
     testSetConfig(mockSocketServer, buf, sendHeader, ELM_CONFIG_HEADER, CONFIG_OK);
     testConfiguredData(mockSocketServer, buf, sendSpaces, sendHeader);
 }
 
-void testConfig(MockSocketServer *mockSocketServer, byte *buf) {
+void testConfig(shared_ptr<MockSocketServer> mockSocketServer, byte *buf) {
     bool sendSpaces = false;
     bool sendHeader = false;
     testConfigWithData(mockSocketServer, buf, sendSpaces, sendHeader);
@@ -171,8 +171,8 @@ void testConfig(MockSocketServer *mockSocketServer, byte *buf) {
 }
 
 TEST(ELM327WifiServer, TestEverything) {
-    auto mockSocketServer = new MockSocketServer();
-    auto mockComInterface = new MockCommInterface();
+    shared_ptr<MockSocketServer> mockSocketServer = make_shared<MockSocketServer>();
+    shared_ptr<MockCommInterface> mockComInterface = make_shared<MockCommInterface>();
     mockComInterface->supportEverything = true;
 
     auto elm = ELM327WifiServer(port, mockComInterface, mockSocketServer);
@@ -195,7 +195,5 @@ TEST(ELM327WifiServer, TestEverything) {
     }
 
     tServer.join();
-    delete mockSocketServer;
-    delete mockComInterface;
     delete[] buf;
 }

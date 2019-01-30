@@ -12,7 +12,7 @@ OBDHandler::OBDHandler(unique_ptr<map<Service, PidCollection>> pidConfig, map<in
     this->pidConfig = move(pidConfig);
 }
 
-unique_ptr<OBDHandler> OBDHandler::createInstance() {
+shared_ptr<OBDHandler> OBDHandler::createInstance() {
     Config p = Config();
 
     // todo make paths configurable
@@ -22,7 +22,7 @@ unique_ptr<OBDHandler> OBDHandler::createInstance() {
     auto dtcMap = map<int, DataTroubleCode>();
     p.parseJson("../configuration/dtcConfig.json", dtcMap);
 
-    return make_unique<OBDHandler>(
+    return make_shared<OBDHandler>(
             make_unique<map<Service, PidCollection>>(pcMap),
             dtcMap);
 }

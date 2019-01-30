@@ -17,11 +17,11 @@
 
 class CliHandler {
 private:
-    unique_ptr<ELM327WifiServer> elmServer;
-    unique_ptr<CommandHandler> cmdHandler;
-    unique_ptr<ISocketServer> socketServer;
-    unique_ptr<ICommunicationInterface> physicalComInterface;
-    unique_ptr<ICommunicationInterface> logicalComInterface;
+    shared_ptr<ELM327WifiServer> elmServer;
+    shared_ptr<CommandHandler> cmdHandler;
+    shared_ptr<ISocketServer> socketServer;
+    shared_ptr<ICommunicationInterface> physicalComInterface;
+    shared_ptr<ICommunicationInterface> logicalComInterface;
 
 private:
     bool running;

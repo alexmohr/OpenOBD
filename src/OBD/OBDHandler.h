@@ -16,7 +16,7 @@
 #define SECURITY_ACCESS_DENIED 0x33
 
 
-class OBDHandler{
+class OBDHandler {
 private:
 
     unique_ptr<Vehicle> vehicle;
@@ -25,7 +25,7 @@ private:
 public:
     explicit OBDHandler(unique_ptr<map<Service, PidCollection>> pidConfig, map<int, DataTroubleCode> dtcMap);
 
-    static unique_ptr<OBDHandler> createInstance();
+    static shared_ptr<OBDHandler> createInstance();
 
     /**
      * Create a response for a request
@@ -44,7 +44,7 @@ public:
      */
     void updateFromFrame(byte *frame, int i);
 
-    Vehicle * getVehicle();
+    Vehicle *getVehicle();
 
     Vehicle *getVehicleFreezeFrame();
 

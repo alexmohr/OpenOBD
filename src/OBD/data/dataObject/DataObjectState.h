@@ -29,6 +29,7 @@ struct DataObjectState {
     double count;
     double expectedCount;
     double value;
+    string message;
 
     DataObjectState() {
         this->type = SUCCESS;

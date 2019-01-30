@@ -13,9 +13,11 @@
 #include <readline/history.h>
 
 
-CommandHandler::CommandHandler(CLI_TYPE type, ICommunicationInterface *interface) {
-    obdHandler = OBDHandler::createInstance();
-    com = interface;
+CommandHandler::CommandHandler(CLI_TYPE type, shared_ptr<ICommunicationInterface> comInterface,
+                               shared_ptr<OBDHandler> obdHandler) {
+    this->obdHandler = obdHandler;
+    this->comInterface = comInterface;
+    this->vehicleDataProvider = make_unique<VehicleDataProvider>(obdHandler, comInterface);
     open = false;
     this->type = type;
 }
@@ -30,11 +32,11 @@ int CommandHandler::start() {
     initDone = false;
     cmdHandlerRdy = false;
 
-    if (com->openInterface() != 0) {
+    if (comInterface->openInterface() != 0) {
         return 1;
     }
 
-    if (com->configureInterface() != 0) {
+    if (comInterface->configureInterface() != 0) {
         return 1;
     }
 
@@ -43,7 +45,7 @@ int CommandHandler::start() {
 
     if (type == ECU) {
         configureVirtualVehicle(obdHandler->getVehicle());
-        tRecv = thread(&CommandHandler::ecuRecvThread, this, com);
+        tRecv = thread(&CommandHandler::ecuRecvThread, this);
     } else {
         // run in background to give user to chance to abort if
         // the requests to the vehicle time out.
@@ -68,7 +70,7 @@ void CommandHandler::stopHandler() {
     }
 
     tCmdHandler.join();
-    com->closeInterface();
+    comInterface->closeInterface();
     open = false;
     LOG(DEBUG) << "Closed command handler";
 }
@@ -85,27 +87,7 @@ void CommandHandler::configureVirtualVehicle(Vehicle *vehicle) {
 void CommandHandler::configureVehicle() {
     LOG(INFO) << "Getting supported pids from vehicle";
 
-    // query the vehicle which PID's it supports
-    vector<Service1Pids> pidIds{
-            SupportedPid01_20, SupportedPid21_40, SupportedPid41_60, SupportedPid61_80,
-            SupportedPid81_A0, SupportedPidA1_C0, SupportedPidC1_E0,
-    };
-
-    auto service = POWERTRAIN;
-    bool anyError = false;
-    for (const auto &id: pidIds) {
-        Pid pid;
-        if (obdHandler->getServiceAndPidInfo(id, service, pid, service) < 0) {
-            LOG(ERROR) << "failed to get pid information";
-        }
-
-        anyError |= queryECU(pid, service).type != SUCCESS;
-
-        if (exitRequested) {
-            return;
-        }
-    }
-
+    bool anyError = vehicleDataProvider->configureVehicle();
     if (!anyError) {
         LOG(INFO) << "Successfully configured vehicle.";
     } else {
@@ -116,7 +98,7 @@ void CommandHandler::configureVehicle() {
 }
 
 
-void CommandHandler::ecuRecvThread(ICommunicationInterface *com) {
+void CommandHandler::ecuRecvThread() {
     int bufSize = 255;
     byte *answer = nullptr;
     byte *buf = new byte[bufSize];
@@ -125,7 +107,7 @@ void CommandHandler::ecuRecvThread(ICommunicationInterface *com) {
 
 
     while (!exitRequested) {
-        com->receive(buf, bufSize, readSize);
+        comInterface->receive(buf, bufSize, readSize);
         if (readSize <= 0) {
             continue;
         }
@@ -136,7 +118,7 @@ void CommandHandler::ecuRecvThread(ICommunicationInterface *com) {
         }
 
         answer = obdHandler->createAnswerFrame(buf, readSize);
-        com->send(answer, readSize);
+        comInterface->send(answer, readSize);
         usleep(100);
     }
 
@@ -156,7 +138,7 @@ void CommandHandler::cmdHandler() {
 
     console = make_unique<CppReadline::Console>(prompt);
 
-    vector<string> supportedPids = getSupportedPids();
+    vector<string> supportedPids = vehicleDataProvider->getSupportedPids();
 
     console->registerCommand(command_help,
                              {std::bind(&CommandHandler::printHelp, this, std::placeholders::_1), vector<string>{}});
@@ -210,7 +192,7 @@ int CommandHandler::printHelp(const vector<string> &cmd) {
         cout << endl;
     } else if (cmd.at(1) == command_pid) {
         cout << "Supported Pids:\n";
-        for (const auto &pid: getSupportedPids()) {
+        for (const auto &pid: vehicleDataProvider->getSupportedPids()) {
             cout << pid << " ";
         }
         cout << endl << "These additional commands can follow a set as well:" << endl;
@@ -222,24 +204,6 @@ int CommandHandler::printHelp(const vector<string> &cmd) {
         cout << err_invalid_input << endl;
     }
     return 0;
-}
-
-vector<string> CommandHandler::getSupportedPids() const {
-    Service service;
-    Pid pid;
-    vector<string> supportedPids = vector<string>();
-    for (const auto &cmdName : COMMAND_MAPPING) {
-        if (obdHandler->getServiceAndPidInfo(
-                cmdName.second.getPidId(), cmdName.second.getService(), pid, service) != 0) {
-            LOG(FATAL) << "Pid with ID " << pid.id << "does only exist in cmdHandler";
-            continue;
-        }
-
-        if (obdHandler->getVehicle()->getPidSupport().getPidSupported(service, pid.id)) {
-            supportedPids.push_back(cmdName.first);
-        }
-    }
-    return supportedPids;
 }
 
 bool CommandHandler::getPid(const vector<string> &cmd, Pid &pid, Service &service) {
@@ -287,7 +251,7 @@ DataObjectState CommandHandler::getData(const vector<string> &cmd) {
 
     // query data from ecu if we are not one
     if (ECU != type) {
-        state = queryECU(pid, service);
+        state = vehicleDataProvider->queryVehicle(pid, service);
         if (state.type != SUCCESS) {
             return state;
         }
@@ -408,7 +372,6 @@ DataObjectState CommandHandler::setDataViaPid(string val, Service service, Pid p
     return DataObjectState(SUCCESS);
 }
 
-
 DataObjectState CommandHandler::setDataSpecial(const vector<string> &cmd) {
     const string usage = "Argument missing. Usage: command <SERVICE> <PID> <0|1>";
     if (cmd.at(1) == command_pid_by_number || cmd.at(1) == command_set_by_hex_number) {
@@ -433,55 +396,6 @@ DataObjectState CommandHandler::setDataSpecial(const vector<string> &cmd) {
         return DataObjectState(ErrorType::DATA_ERROR);
     }
 }
-
-// Queries the vehicle and updates internal stored object
-DataObjectState CommandHandler::queryECU(Pid pid, Service service) {
-    if (obdHandler->isPidSupported(service, pid.id).type != SUCCESS) {
-        return NOT_SUPPORTED;
-    }
-
-    const int maxTries = 3;
-    int tries = 0;
-    int frameLen = 0;
-    auto retVal = DataObjectState(SUCCESS);
-    auto timeout = 500ms;
-    const string timeoutWarning = "Failed to retrieve pid " + to_string(pid.id)
-                                  + " in service " + to_string(service) + " in " + to_string(maxTries) + " tries";
-
-    byte *frame = pid.getQueryForService(service, frameLen);
-    int bufSize = 255;
-    byte *buf = new byte[bufSize];
-    int readSize = 0;
-    bool success = false;
-
-    do {
-        com->send(frame, frameLen);
-        bool hasTimeout = false;
-        auto t0 = chrono::high_resolution_clock::now();
-        while (readSize <= 0 && !hasTimeout) {
-            com->receive(buf, bufSize, readSize);
-            hasTimeout = (chrono::high_resolution_clock::now() - t0) > timeout;
-        }
-
-        if (hasTimeout || readSize < 1) {
-            continue;
-        }
-
-        obdHandler->updateFromFrame(buf, readSize);
-        success = true;
-    } while (!success && tries++ < maxTries);
-
-
-    if (!success) {
-        LOG(WARNING) << timeoutWarning;
-        retVal = DataObjectState(TIMEOUT);
-    }
-
-    delete[] frame;
-    delete[] buf;
-    return retVal;
-}
-
 
 OBDHandler &CommandHandler::getObdHandler() {
     return *obdHandler;

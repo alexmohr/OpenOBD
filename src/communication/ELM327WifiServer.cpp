@@ -12,8 +12,8 @@
 #include "ELM327WifiServer.h"
 
 ELM327WifiServer::ELM327WifiServer(int port,
-                                   ICommunicationInterface *commInterface,
-                                   ISocketServer *socketServer) {
+                                   shared_ptr<ICommunicationInterface> commInterface,
+                                   shared_ptr<ISocketServer> socketServer) {
 
     this->commInterface = commInterface;
     this->socketServer = socketServer;

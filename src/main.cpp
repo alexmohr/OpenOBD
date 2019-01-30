@@ -3,7 +3,7 @@
 #include <map>
 #include <string>
 #include "easylogging++.h"
-#include "cli/CliHandler.h"
+#include "ui/cli/CliHandler.h"
 
 
 INITIALIZE_EASYLOGGINGPP

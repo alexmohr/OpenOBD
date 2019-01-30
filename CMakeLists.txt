@@ -90,10 +90,10 @@ set(cpp-readline
 
 set(CPPSRC
         lib/easylogging++.cc
-        src/cli/CliHandler.cpp src/cli/CliHandler.h
-        src/cli/CommandHandler.cpp
-        src/cli/CommandHandler.h
-        src/cli/CommandInfo.cpp src/cli/CommandInfo.h
+        src/ui/cli/CliHandler.cpp src/ui/cli/CliHandler.h
+        src/ui/cli/CommandHandler.cpp
+        src/ui/cli/CommandHandler.h
+        src/ui/cli/CommandInfo.cpp src/ui/cli/CommandInfo.h
         src/common/conversion.cpp
         src/common/conversion.h
         src/common/endian.h
@@ -175,7 +175,7 @@ set(CPPSRC
         src/OBD/Pid.h
         src/OBD/Service.h
         src/Vehicle.cpp
-        src/Vehicle.h src/web/Wamp.cpp src/web/Wamp.h)
+        src/Vehicle.h src/ui/web/Wamp.cpp src/ui/web/Wamp.h)
 
 
 add_executable(open_obd2 src/main.cpp ${CPPSRC} ${cpp-readline} ${wamp})

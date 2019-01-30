@@ -10,8 +10,8 @@
 #include <csignal>
 #include <unistd.h>
 #include "CommandHandler.h"
-#include "../communication/SocketServer.h"
-#include "../communication/SerialClient.h"
+#include "../../communication/SocketServer.h"
+#include "../../communication/SerialClient.h"
 #include "easylogging++.h"
 
 

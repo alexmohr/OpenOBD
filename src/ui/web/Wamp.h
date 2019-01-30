@@ -7,9 +7,13 @@
 
 #include "wampcc/wampcc.h"
 
+
 class Wamp {
 private:
     void foo();
+
+public:
+    inline static const std::string REALM = "openobd";
 };
 
 

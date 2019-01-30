@@ -6,7 +6,7 @@
 #define OPEN_OBD2_COMMANDINFO_H
 
 
-#include "../OBD/Service.h"
+#include "../../OBD/Service.h"
 
 class CommandInfo {
 

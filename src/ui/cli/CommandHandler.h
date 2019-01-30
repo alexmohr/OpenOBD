@@ -9,13 +9,13 @@
 #include <map>
 #include <mutex>
 #include <condition_variable>
-#include "../OBD/Pid.h"
-#include "../communication/CanIsoTP.h"
-#include "../communication/ELMClient.h"
-#include "../communication/ELM327WifiServer.h"
-#include "../OBD/OBDHandler.h"
+#include "../../OBD/Pid.h"
+#include "../../communication/CanIsoTP.h"
+#include "../../communication/ELMClient.h"
+#include "../../communication/ELM327WifiServer.h"
+#include "../../OBD/OBDHandler.h"
 #include "CommandInfo.h"
-#include "../../submodules/cpp-readline/src/Console.hpp"
+#include "../../../submodules/cpp-readline/src/Console.hpp"
 
 using namespace std;
 

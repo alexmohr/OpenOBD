@@ -93,7 +93,7 @@ set(CPPSRC
         src/ui/cli/CliHandler.cpp src/ui/cli/CliHandler.h
         src/ui/cli/CommandHandler.cpp
         src/ui/cli/CommandHandler.h
-        src/ui/cli/CommandInfo.cpp src/ui/cli/CommandInfo.h
+        src/ui/CommandInfo.cpp src/ui/CommandInfo.h
         src/common/conversion.cpp
         src/common/conversion.h
         src/common/endian.h
@@ -175,7 +175,8 @@ set(CPPSRC
         src/OBD/Pid.h
         src/OBD/Service.h
         src/Vehicle.cpp
-        src/Vehicle.h src/ui/web/Wamp.cpp src/ui/web/Wamp.h)
+        src/ui/VehicleDataProvider.cpp src/ui/VehicleDataProvider.h
+        src/Vehicle.h src/ui/webBackend/Wamp.cpp src/ui/webBackend/Wamp.h)
 
 
 add_executable(open_obd2 src/main.cpp ${CPPSRC} ${cpp-readline} ${wamp})

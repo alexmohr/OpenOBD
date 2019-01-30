@@ -75,7 +75,7 @@ void CommandHandler::stopHandler() {
 
 
 void CommandHandler::configureVirtualVehicle(Vehicle *vehicle) {
-    for (auto &cmd: commandMapping) {
+    for (auto &cmd: COMMAND_MAPPING) {
         vehicle->getPidSupport().setPidSupported(cmd.second.getService(), cmd.second.getPidId(), true);
     }
 
@@ -228,7 +228,7 @@ vector<string> CommandHandler::getSupportedPids() const {
     Service service;
     Pid pid;
     vector<string> supportedPids = vector<string>();
-    for (const auto &cmdName : commandMapping) {
+    for (const auto &cmdName : COMMAND_MAPPING) {
         if (obdHandler->getServiceAndPidInfo(
                 cmdName.second.getPidId(), cmdName.second.getService(), pid, service) != 0) {
             LOG(FATAL) << "Pid with ID " << pid.id << "does only exist in cmdHandler";
@@ -248,7 +248,7 @@ bool CommandHandler::getPid(const vector<string> &cmd, Pid &pid, Service &servic
     }
 
     const CommandInfo *info = nullptr;
-    for (const auto &cmdName : commandMapping) {
+    for (const auto &cmdName : COMMAND_MAPPING) {
         if (cmd.at(1) == cmdName.first) {
             info = &cmdName.second;
         }

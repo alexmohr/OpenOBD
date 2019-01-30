@@ -5,7 +5,7 @@
 
 #include <gtest/gtest.h>
 #include <vector>
-#include "../../../src/cli/CommandHandler.h"
+#include "../../../src/ui/cli/CommandHandler.h"
 #include "../../../src/communication/CanIsoTP.h"
 #include "../MockCommInterface.h"
 #include <random>
@@ -52,7 +52,7 @@ void TestCommandHandler(CLI_TYPE type) {
     Service service;
     bool descriptionsNotNull;
 
-    for (const auto &cmdMap: cmdHandler->commandMapping) {
+    for (const auto &cmdMap: COMMAND_MAPPING) {
         vector<string> validData{"set", cmdMap.first};
         vector<string> smallData{"set", cmdMap.first};
         vector<string> largeData{"set", cmdMap.first};

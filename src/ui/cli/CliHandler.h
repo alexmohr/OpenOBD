@@ -10,6 +10,7 @@
 #include <csignal>
 #include <unistd.h>
 #include "CommandHandler.h"
+#include "../webBackend/Wamp.h"
 #include "../../communication/SocketServer.h"
 #include "../../communication/SerialClient.h"
 #include "easylogging++.h"
@@ -19,6 +20,7 @@ class CliHandler {
 private:
     shared_ptr<ELM327WifiServer> elmServer;
     shared_ptr<CommandHandler> cmdHandler;
+    shared_ptr<Wamp> wampHandler;
     shared_ptr<ISocketServer> socketServer;
     shared_ptr<ICommunicationInterface> physicalComInterface;
     shared_ptr<ICommunicationInterface> logicalComInterface;

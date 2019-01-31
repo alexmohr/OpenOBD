@@ -32,14 +32,6 @@ int CommandHandler::start() {
     initDone = false;
     cmdHandlerRdy = false;
 
-    if (comInterface->openInterface() != 0) {
-        return 1;
-    }
-
-    if (comInterface->configureInterface() != 0) {
-        return 1;
-    }
-
     open = true;
     tCmdHandler = thread(&CommandHandler::cmdHandler, this);
 

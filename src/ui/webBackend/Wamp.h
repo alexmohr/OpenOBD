@@ -7,12 +7,25 @@
 
 #include "wampcc/wampcc.h"
 #include "../../communication/ICloseable.h"
+#include "../../communication/ICommunicationInterface.h"
+#include "../../OBD/OBDHandler.h"
+#include "../VehicleDataProvider.h"
 
 class Wamp : public ICloseable {
 public:
     inline static const std::string REALM = "openobd";
 
-//public:
+private:
+    shared_ptr<ICommunicationInterface> comInterface;
+    shared_ptr<OBDHandler> obdHandler;
+    unique_ptr<VehicleDataProvider> vehicleDataProvider;
+private:
+    /* Create the wampcc kernel. */
+    wampcc::kernel the_kernel;
+
+public:
+    Wamp(shared_ptr<ICommunicationInterface> comInterface,
+         shared_ptr<OBDHandler> obdHandler);
 
 
 public: // Implements ICloseable
@@ -22,7 +35,7 @@ public: // Implements ICloseable
 
 private:
 
-    void foo();
+    void foo(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_info info, std::string cmd);
 };
 
 

@@ -66,10 +66,24 @@ int CliHandler::openCli(int argc, char *argv[]) {
     shared_ptr<OBDHandler> obdHandler = OBDHandler::createInstance();
     cmdHandler = make_unique<CommandHandler>(type, logicalComInterface, obdHandler);
     delete[] interface;
+
+
+    if (logicalComInterface->openInterface() != 0) {
+        return EXIT_FAILURE;
+    }
+
+    if (logicalComInterface->configureInterface() != 0) {
+        return EXIT_FAILURE;
+    }
+
     int val = cmdHandler->start();
     if (script[0] != 0) {
         cmdHandler->executeFile(string(script));
     }
+    
+    // todo only enable if configured.
+    wampHandler = make_shared<Wamp>(logicalComInterface, obdHandler);
+    wampHandler->openInterface();
 
     delete[] script;
     return val;

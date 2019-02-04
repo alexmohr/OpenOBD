@@ -80,7 +80,7 @@ int CliHandler::openCli(int argc, char *argv[]) {
     if (script[0] != 0) {
         cmdHandler->executeFile(string(script));
     }
-    
+
     // todo only enable if configured.
     wampHandler = make_shared<Wamp>(logicalComInterface, obdHandler);
     wampHandler->openInterface();
@@ -104,6 +104,9 @@ void CliHandler::closeCli() {
     }
     if (socketServer != nullptr) {
         socketServer->closeInterface();
+    }
+    if (wampHandler != nullptr) {
+        wampHandler->closeInterface();
     }
 }
 

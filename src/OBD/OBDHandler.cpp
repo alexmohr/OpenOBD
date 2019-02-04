@@ -151,6 +151,10 @@ DataObjectState OBDHandler::isPidSupported(Service service, int pid) {
     return DataObjectState(SUCCESS);
 }
 
+map<Service, PidCollection> *OBDHandler::getPidConfig() {
+    return this->pidConfig.get();
+}
+
 
 
 

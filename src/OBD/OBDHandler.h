@@ -51,6 +51,8 @@ public:
     ErrorType getServiceAndPidInfo(int pidId, int serviceId, Pid &pid, Service &service);
 
     DataObjectState isPidSupported(Service service, int pid);
+
+    map<Service, PidCollection> *getPidConfig();
 };
 
 #endif //OPEN_OBD2_OBDHANDLER_H

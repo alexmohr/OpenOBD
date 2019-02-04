@@ -5,12 +5,12 @@
 
 #include "Config.h"
 #include "easylogging++.h"
+
 using namespace std;
 
 
-
-template <typename T>
-void copyToVector(const json &jsData, vector<T> &target){
+template<typename T>
+void copyToVector(const json &jsData, vector<T> &target) {
     target.resize(jsData.size());
     std::copy(jsData.begin(), jsData.end(), target.begin());
 }
@@ -36,17 +36,17 @@ void from_json(const json &jsData, map<int, DataTroubleCode> &dtcMap) {
     }
 }
 
-void from_json(const json& jsData, map<Service, PidCollection>& pcmap) {
+void from_json(const json &jsData, map<Service, PidCollection> &pcmap) {
     long unsigned int i;
 
-    for (i = 0; i < jsData.size(); i++){
+    for (i = 0; i < jsData.size(); i++) {
         const auto jsonPC = jsData[i];
-        const vector<int> services = jsonPC .at("validForServices");
-        for (auto &serviceId : services){
+        const vector<int> services = jsonPC.at("validForServices");
+        for (auto &serviceId : services) {
             PidCollection pc;
 
             for (auto const &element : jsonPC["pidList"]) {
-                pc.pidList.insert(pair<int,Pid>(element["id"], element));
+                pc.pidList.insert(pair<int, Pid>(element["id"], element));
             }
 
             copyToVector(services, pc.validForServices);
@@ -57,11 +57,12 @@ void from_json(const json& jsData, map<Service, PidCollection>& pcmap) {
     }
 }
 
-void from_json(const json& jsData, Pid& pid) {
+void from_json(const json &jsData, Pid &pid) {
     pid.id = jsData.at("id");
     pid.size = jsData.at("size");
     pid.description = jsData.at("description");
     pid.datafields = jsData.at("dataFields");
+    pid.name = jsData.at("name");
 
     copyToVector(jsData.at("maxValues"), pid.maxValues);
     copyToVector(jsData.at("minValues"), pid.minValues);

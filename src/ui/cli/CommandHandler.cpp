@@ -187,7 +187,7 @@ bool CommandHandler::isOpen() {
 int CommandHandler::printHelp(const vector<string> &cmd) const {
     if (cmd.size() == 1) {
         cout << "Usage cmd system [value]\n";
-        cout << "Type 'help cmd' or 'help pid' to get more information." << endl;
+        cout << "Type '? cmd' or '? pid' to get more information." << endl;
         return 0;
     }
 
@@ -199,13 +199,14 @@ int CommandHandler::printHelp(const vector<string> &cmd) const {
         }
         cout << endl;
     } else if (cmd.at(1) == command_pid) {
-        cout << "Supported pids look like Action_ServiceId" << endl;
-        cout << "Supported Pids:\n";
+        cout << "List of supported pids Supported Pids:\n";
+        cout << "Supported pids look like Action_ServiceId\n";
         for (auto const&[service, pidCollection] : *obdHandler->getPidConfig()) {
-            cout << "Supported Pids for service " << service;
+            cout << "\nSupported Pids for service " << service << "\n";
             for (auto &pid: pidCollection.getPidNames()) {
                 cout << pid << " ";
             }
+            cout << "\n";
         }
         cout << endl << "These additional commands can follow a set as well:" << endl;
         for (const auto &cmdName : specialSetCommands) {
@@ -428,7 +429,7 @@ void CommandHandler::executeFile(string fileName) {
     console->executeFile(fileName);
 }
 
-VehicleDataProvider * CommandHandler::getVehicleDataProvider() {
+VehicleDataProvider *CommandHandler::getVehicleDataProvider() {
     return vehicleDataProvider.get();
 }
 

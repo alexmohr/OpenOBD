@@ -5,11 +5,13 @@
 #ifndef OPEN_OBD2_WAMP_H
 #define OPEN_OBD2_WAMP_H
 
+#include <thread>
 #include "wampcc/wampcc.h"
 #include "../../communication/ICloseable.h"
 #include "../../communication/ICommunicationInterface.h"
 #include "../../OBD/OBDHandler.h"
 #include "../VehicleDataProvider.h"
+
 
 class Wamp : public ICloseable {
 public:
@@ -20,8 +22,11 @@ private:
     shared_ptr<OBDHandler> obdHandler;
     unique_ptr<VehicleDataProvider> vehicleDataProvider;
 private:
+    bool exitRequested;
+private:
     /* Create the wampcc kernel. */
     wampcc::kernel the_kernel;
+    std::thread tServe;
 
 public:
     Wamp(shared_ptr<ICommunicationInterface> comInterface,
@@ -35,7 +40,13 @@ public: // Implements ICloseable
 
 private:
 
-    void foo(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_info info, std::string cmd);
+    void serve();
+
+private:
+    void getPid(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_info info, Pid pid,
+                Service service);
+
+    void getSupportedPids(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_info info);
 };
 
 

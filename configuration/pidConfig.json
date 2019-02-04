@@ -1,1947 +1,2161 @@
 [{
-        "validForServices": [1, 2],
-        "pidList": [{
-                "id": 0,
-                "size": 4,
-                "description": "PIDs supported [01 - 20]",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 1,
-                "size": 4,
-                "description": "Monitor status since DTCs cleared. (Includes malfunction indicator lamp (MIL) status and number of DTCs.)",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 2,
-                "size": 2,
-                "description": "Freeze DTC",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 3,
-                "size": 2,
-                "description": "Fuel system status",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 4,
-                "size": 1,
-                "description": "Calculated engine load",
-                "minValues": [0],
-                "maxValues": [100],
-                "units": ["%"],
-                "dataFields": 1
-            },
-            {
-                "id": 5,
-                "size": 1,
-                "description": "Engine coolant temperature",
-                "minValues": [-40],
-                "maxValues": [215],
-                "units": ["°C"],
-                "dataFields": 1
-            },
-            {
-                "id": 6,
-                "size": 1,
-                "description": "Short term fuel trim—Bank 1",
-                "minValues": [-100],
-                "maxValues": [99.2],
-                "units": ["%"],
-                "dataFields": 1
-            },
-            {
-                "id": 7,
-                "size": 1,
-                "description": "Long term fuel trim—Bank 1",
-                "minValues": [-100],
-                "maxValues": [99.2],
-                "units": ["%"],
-                "dataFields": 1
-            },
-            {
-                "id": 8,
-                "size": 1,
-                "description": "Short term fuel trim—Bank 2",
-                "minValues": [-100],
-                "maxValues": [99.2],
-                "units": ["%"],
-                "dataFields": 1
-            },
-            {
-                "id": 9,
-                "size": 1,
-                "description": "Long term fuel trim—Bank 2",
-                "minValues": [-100],
-                "maxValues": [99.2],
-                "units": ["%"],
-                "dataFields": 1
-            },
-            {
-                "id": 10,
-                "size": 1,
-                "description": "Fuel pressure (gauge pressure)",
-                "minValues": [0],
-                "maxValues": [765],
-                "units": ["kPa"],
-                "dataFields": 1
-            },
-            {
-                "id": 11,
-                "size": 1,
-                "description": "Intake manifold absolute pressure",
-                "minValues": [0],
-                "maxValues": [255],
-                "units": ["kPa"],
-                "dataFields": 1
-            },
-            {
-                "id": 12,
-                "size": 2,
-                "description": "Engine RPM",
-                "minValues": [0],
-                "maxValues": [16383.75],
-                "units": ["rpm"],
-                "dataFields": 1
-            },
-            {
-                "id": 13,
-                "size": 1,
-                "description": "Vehicle speed",
-                "minValues": [0],
-                "maxValues": [255],
-                "units": ["km/h"],
-                "dataFields": 1
-            },
-            {
-                "id": 14,
-                "size": 1,
-                "description": "Timing advance",
-                "minValues": [-64],
-                "maxValues": [63.5],
-                "units": ["° before TDC"],
-                "dataFields": 1
-            },
-            {
-                "id": 15,
-                "size": 1,
-                "description": "Intake air temperature",
-                "minValues": [-40],
-                "maxValues": [215],
-                "units": ["°C"],
-                "dataFields": 1
-            },
-            {
-                "id": 16,
-                "size": 2,
-                "description": "MAF air flow rate",
-                "minValues": [0],
-                "maxValues": [655.35],
-                "units": ["grams/sec"],
-                "dataFields": 1
-            },
-            {
-                "id": 17,
-                "size": 1,
-                "description": "Throttle position",
-                "minValues": [0],
-                "maxValues": [100],
-                "units": ["%"],
-                "dataFields": 1
-            },
-            {
-                "id": 18,
-                "size": 1,
-                "description": "Commanded secondary air status",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 19,
-                "size": 1,
-                "description": "Oxygen sensors present (in 2 banks)",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 20,
-                "size": 2,
-                "description": "Oxygen Sensor 1 A: Voltage B: Short term fuel trim",
-                "minValues": [0, 100],
-                "maxValues": [1.275, 99.2],
-                "units": ["Volts”,”%"],
-                "dataFields": 2
-            },
-            {
-                "id": 21,
-                "size": 2,
-                "description": "Oxygen Sensor 2 A: Voltage B: Short term fuel trim",
-                "minValues": [0, 100],
-                "maxValues": [1.275, 99.2],
-                "units": ["Volts”,”%"],
-                "dataFields": 2
-            },
-            {
-                "id": 22,
-                "size": 2,
-                "description": "Oxygen Sensor 3 A: Voltage B: Short term fuel trim",
-                "minValues": [0, 100],
-                "maxValues": [1.275, 99.2],
-                "units": ["Volts”,”%"],
-                "dataFields": 2
-            },
-            {
-                "id": 23,
-                "size": 2,
-                "description": "Oxygen Sensor 4 A: Voltage B: Short term fuel trim",
-                "minValues": [0, 100],
-                "maxValues": [1.275, 99.2],
-                "units": ["Volts”,”%"],
-                "dataFields": 2
-            },
-            {
-                "id": 24,
-                "size": 2,
-                "description": "Oxygen Sensor 5 A: Voltage B: Short term fuel trim",
-                "minValues": [0, 100],
-                "maxValues": [1.275, 99.2],
-                "units": ["Volts”,”%"],
-                "dataFields": 2
-            },
-            {
-                "id": 25,
-                "size": 2,
-                "description": "Oxygen Sensor 6 A: Voltage B: Short term fuel trim",
-                "minValues": [0, 100],
-                "maxValues": [1.275, 99.2],
-                "units": ["Volts”,”%"],
-                "dataFields": 2
-            },
-            {
-                "id": 26,
-                "size": 2,
-                "description": "Oxygen Sensor 7 A: Voltage B: Short term fuel trim",
-                "minValues": [0, 100],
-                "maxValues": [1.275, 99.2],
-                "units": ["Volts”,”%"],
-                "dataFields": 2
-            },
-            {
-                "id": 27,
-                "size": 2,
-                "description": "Oxygen Sensor 8 A: Voltage B: Short term fuel trim",
-                "minValues": [0, 100],
-                "maxValues": [1.275, 99.2],
-                "units": ["Volts”,”%"],
-                "dataFields": 2
-            },
-            {
-                "id": 28,
-                "size": 1,
-                "description": "OBD standards this vehicle conforms to",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 29,
-                "size": 1,
-                "description": "Oxygen sensors present (in 4 banks)",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 30,
-                "size": 1,
-                "description": "Auxiliary input status",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 31,
-                "size": 2,
-                "description": "Run time since engine start",
-                "minValues": [0],
-                "maxValues": [65535],
-                "units": ["seconds"],
-                "dataFields": 1
-            },
-            {
-                "id": 32,
-                "size": 4,
-                "description": "PIDs supported [21 - 40]",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 33,
-                "size": 2,
-                "description": "Distance traveled with malfunction indicator lamp (MIL) on",
-                "minValues": [0],
-                "maxValues": [65535],
-                "units": ["km"],
-                "dataFields": 1
-            },
-            {
-                "id": 34,
-                "size": 2,
-                "description": "Fuel Rail Pressure (relative to manifold vacuum)",
-                "minValues": [0],
-                "maxValues": [5177.265],
-                "units": ["kPa"],
-                "dataFields": 1
-            },
-            {
-                "id": 35,
-                "size": 2,
-                "description": "Fuel Rail Gauge Pressure (diesel, or gasoline direct injection)",
-                "minValues": [0],
-                "maxValues": [655350],
-                "units": ["kPa"],
-                "dataFields": 1
-            },
-            {
-                "id": 36,
-                "size": 4,
-                "description": "Oxygen Sensor 1 AB: Fuel–Air Equivalence Ratio CD: Voltage",
-                "minValues": [0, 0],
-                "maxValues": [2, 8],
-                "units": ["Ratio”,”Volt"],
-                "dataFields": 2
-            },
-            {
-                "id": 37,
-                "size": 4,
-                "description": "Oxygen Sensor 2 AB: Fuel–Air Equivalence Ratio CD: Voltage",
-                "minValues": [0, 0],
-                "maxValues": [2, 8],
-                "units": ["Ratio”,”Volt"],
-                "dataFields": 2
-            },
-            {
-                "id": 38,
-                "size": 4,
-                "description": "Oxygen Sensor 3 AB: Fuel–Air Equivalence Ratio CD: Voltage",
-                "minValues": [0, 0],
-                "maxValues": [2, 8],
-                "units": ["Ratio”,”Volt"],
-                "dataFields": 2
-            },
-            {
-                "id": 39,
-                "size": 4,
-                "description": "Oxygen Sensor 4 AB: Fuel–Air Equivalence Ratio CD: Voltage",
-                "minValues": [0, 0],
-                "maxValues": [2, 8],
-                "units": ["Ratio”,”Volt"],
-                "dataFields": 2
-            },
-            {
-                "id": 40,
-                "size": 4,
-                "description": "Oxygen Sensor 5 AB: Fuel–Air Equivalence Ratio CD: Voltage",
-                "minValues": [0, 0],
-                "maxValues": [2, 8],
-                "units": ["Ratio”,”Volt"],
-                "dataFields": 2
-            },
-            {
-                "id": 41,
-                "size": 4,
-                "description": "Oxygen Sensor 6 AB: Fuel–Air Equivalence Ratio CD: Voltage",
-                "minValues": [0, 0],
-                "maxValues": [2, 8],
-                "units": ["Ratio”,”Volt"],
-                "dataFields": 2
-            },
-            {
-                "id": 42,
-                "size": 4,
-                "description": "Oxygen Sensor 7 AB: Fuel–Air Equivalence Ratio CD: Voltage",
-                "minValues": [0, 0],
-                "maxValues": [2, 8],
-                "units": ["Ratio”,”Volt"],
-                "dataFields": 2
-            },
-            {
-                "id": 43,
-                "size": 4,
-                "description": "Oxygen Sensor 8 AB: Fuel–Air Equivalence Ratio CD: Voltage",
-                "minValues": [0, 0],
-                "maxValues": [2, 8],
-                "units": ["Ratio”,”Volt"],
-                "dataFields": 2
-            },
-            {
-                "id": 44,
-                "size": 1,
-                "description": "Commanded EGR",
-                "minValues": [0],
-                "maxValues": [100],
-                "units": ["%"],
-                "dataFields": 1
-            },
-            {
-                "id": 45,
-                "size": 1,
-                "description": "EGR Error",
-                "minValues": [-100],
-                "maxValues": [99.2],
-                "units": ["%"],
-                "dataFields": 1
-            },
-            {
-                "id": 46,
-                "size": 1,
-                "description": "Commanded evaporative purge",
-                "minValues": [0],
-                "maxValues": [100],
-                "units": ["%"],
-                "dataFields": 1
-            },
-            {
-                "id": 47,
-                "size": 1,
-                "description": "Fuel Tank Level Input",
-                "minValues": [0],
-                "maxValues": [100],
-                "units": ["%"],
-                "dataFields": 1
-            },
-            {
-                "id": 48,
-                "size": 1,
-                "description": "Warm-ups since codes cleared",
-                "minValues": [0],
-                "maxValues": [255],
-                "units": ["count"],
-                "dataFields": 1
-            },
-            {
-                "id": 49,
-                "size": 2,
-                "description": "Distance traveled since codes cleared",
-                "minValues": [0],
-                "maxValues": [65535],
-                "units": ["km"],
-                "dataFields": 1
-            },
-            {
-                "id": 50,
-                "size": 2,
-                "description": "Evap. System Vapor Pressure",
-                "minValues": [-8192],
-                "maxValues": [8191.75],
-                "units": ["Pa"],
-                "dataFields": 1
-            },
-            {
-                "id": 51,
-                "size": 1,
-                "description": "Absolute Barometric Pressure",
-                "minValues": [0],
-                "maxValues": [255],
-                "units": ["kPa"],
-                "dataFields": 1
-            },
-            {
-                "id": 52,
-                "size": 4,
-                "description": "Oxygen Sensor 1 AB: Fuel–Air Equivalence Ratio CD: Current",
-                "minValues": [0, -128],
-                "maxValues": [2, 128],
-                "units": ["Ratio”,”mA"],
-                "dataFields": 2
-            },
-            {
-                "id": 53,
-                "size": 4,
-                "description": "Oxygen Sensor 2 AB: Fuel–Air Equivalence Ratio CD: Current",
-                "minValues": [0, -128],
-                "maxValues": [2, 128],
-                "units": ["Ratio”,”mA"],
-                "dataFields": 2
-            },
-            {
-                "id": 54,
-                "size": 4,
-                "description": "Oxygen Sensor 3 AB: Fuel–Air Equivalence Ratio CD: Current",
-                "minValues": [0, -128],
-                "maxValues": [2, 128],
-                "units": ["Ratio”,”mA"],
-                "dataFields": 2
-            },
-            {
-                "id": 55,
-                "size": 4,
-                "description": "Oxygen Sensor 4 AB: Fuel–Air Equivalence Ratio CD: Current",
-                "minValues": [0, -128],
-                "maxValues": [2, 128],
-                "units": ["Ratio”,”mA"],
-                "dataFields": 2
-            },
-            {
-                "id": 56,
-                "size": 4,
-                "description": "Oxygen Sensor 5 AB: Fuel–Air Equivalence Ratio CD: Current",
-                "minValues": [0, -128],
-                "maxValues": [2, 128],
-                "units": ["Ratio”,”mA"],
-                "dataFields": 2
-            },
-            {
-                "id": 57,
-                "size": 4,
-                "description": "Oxygen Sensor 6 AB: Fuel–Air Equivalence Ratio CD: Current",
-                "minValues": [0, -128],
-                "maxValues": [2, 128],
-                "units": ["Ratio”,”mA"],
-                "dataFields": 2
-            },
-            {
-                "id": 58,
-                "size": 4,
-                "description": "Oxygen Sensor 7 AB: Fuel–Air Equivalence Ratio CD: Current",
-                "minValues": [0, -128],
-                "maxValues": [2, 128],
-                "units": ["Ratio”,”mA"],
-                "dataFields": 2
-            },
-            {
-                "id": 59,
-                "size": 4,
-                "description": "Oxygen Sensor 8 AB: Fuel–Air Equivalence Ratio CD: Current",
-                "minValues": [0, -128],
-                "maxValues": [2, 128],
-                "units": ["Ratio”,”mA"],
-                "dataFields": 2
-            },
-            {
-                "id": 60,
-                "size": 2,
-                "description": "Catalyst Temperature: Bank 1, Sensor 1",
-                "minValues": [-40],
-                "maxValues": [6513.5],
-                "units": ["°C"],
-                "dataFields": 1
-            },
-            {
-                "id": 61,
-                "size": 2,
-                "description": "Catalyst Temperature: Bank 2, Sensor 1",
-                "minValues": [-40],
-                "maxValues": [6513.5],
-                "units": ["°C"],
-                "dataFields": 1
-            },
-            {
-                "id": 62,
-                "size": 2,
-                "description": "Catalyst Temperature: Bank 1, Sensor 2",
-                "minValues": [-40],
-                "maxValues": [6513.5],
-                "units": ["°C"],
-                "dataFields": 1
-            },
-            {
-                "id": 63,
-                "size": 2,
-                "description": "Catalyst Temperature: Bank 2, Sensor 2",
-                "minValues": [-40],
-                "maxValues": [6513.5],
-                "units": ["°C"],
-                "dataFields": 1
-            },
-            {
-                "id": 64,
-                "size": 4,
-                "description": "PIDs supported [41 - 60]",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 65,
-                "size": 4,
-                "description": "Monitor status this drive cycle",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 66,
-                "size": 2,
-                "description": "Control module voltage",
-                "minValues": [0],
-                "maxValues": [65.535],
-                "units": ["V"],
-                "dataFields": 1
-            },
-            {
-                "id": 67,
-                "size": 2,
-                "description": "Absolute load value",
-                "minValues": [0],
-                "maxValues": [25700],
-                "units": ["%"],
-                "dataFields": 1
-            },
-            {
-                "id": 68,
-                "size": 2,
-                "description": "Fuel–Air commanded equivalence ratio",
-                "minValues": [0],
-                "maxValues": [2],
-                "units": ["ratio"],
-                "dataFields": 1
-            },
-            {
-                "id": 69,
-                "size": 1,
-                "description": "Relative throttle position",
-                "minValues": [0],
-                "maxValues": [100],
-                "units": ["%"],
-                "dataFields": 1
-            },
-            {
-                "id": 70,
-                "size": 1,
-                "description": "Ambient air temperature",
-                "minValues": [-40],
-                "maxValues": [215],
-                "units": ["°C"],
-                "dataFields": 1
-            },
-            {
-                "id": 71,
-                "size": 1,
-                "description": "Absolute throttle position B",
-                "minValues": [0],
-                "maxValues": [100],
-                "units": ["%"],
-                "dataFields": 1
-            },
-            {
-                "id": 72,
-                "size": 1,
-                "description": "Absolute throttle position C",
-                "minValues": [0],
-                "maxValues": [100],
-                "units": ["%"],
-                "dataFields": 1
-            },
-            {
-                "id": 73,
-                "size": 1,
-                "description": "Accelerator pedal position D",
-                "minValues": [0],
-                "maxValues": [100],
-                "units": ["%"],
-                "dataFields": 1
-            },
-            {
-                "id": 74,
-                "size": 1,
-                "description": "Accelerator pedal position E",
-                "minValues": [0],
-                "maxValues": [100],
-                "units": ["%"],
-                "dataFields": 1
-            },
-            {
-                "id": 75,
-                "size": 1,
-                "description": "Accelerator pedal position F",
-                "minValues": [0],
-                "maxValues": [100],
-                "units": ["%"],
-                "dataFields": 1
-            },
-            {
-                "id": 76,
-                "size": 1,
-                "description": "Commanded throttle actuator",
-                "minValues": [0],
-                "maxValues": [100],
-                "units": ["%"],
-                "dataFields": 1
-            },
-            {
-                "id": 77,
-                "size": 2,
-                "description": "Time run with MIL on",
-                "minValues": [0],
-                "maxValues": [65535],
-                "units": ["minutes"],
-                "dataFields": 1
-            },
-            {
-                "id": 78,
-                "size": 2,
-                "description": "Time since trouble codes cleared",
-                "minValues": [],
-                "maxValues": [],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 79,
-                "size": 4,
-                "description": "Maximum value for Fuel–Air equivalence ratio, oxygen sensor voltage, oxygen sensor current, and intake manifold absolute pressure",
-                "minValues": [0, 0, 0, 0],
-                "maxValues": [255, 255, 255, 2550],
-                "units": ["ratio”, ”V”, ”mA”, ”kPa”"],
-                "dataFields": 1
-            },
-            {
-                "id": 80,
-                "size": 4,
-                "description": "Maximum value for air flow rate from mass air flow sensor",
-                "minValues": [0],
-                "maxValues": [2550],
-                "units": ["g/s"],
-                "dataFields": 1
-            },
-            {
-                "id": 81,
-                "size": 1,
-                "description": "Fuel Type",
-                "minValues": [],
-                "maxValues": [],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 82,
-                "size": 1,
-                "description": "Ethanol fuel %",
-                "minValues": [0],
-                "maxValues": [100],
-                "units": ["%"],
-                "dataFields": 1
-            },
-            {
-                "id": 83,
-                "size": 2,
-                "description": "Absolute Evap system Vapor Pressure",
-                "minValues": [0],
-                "maxValues": [327.675],
-                "units": ["kPa"],
-                "dataFields": 1
-            },
-            {
-                "id": 84,
-                "size": 2,
-                "description": "Evap system vapor pressure",
-                "minValues": [-32767],
-                "maxValues": [32768],
-                "units": ["Pa"],
-                "dataFields": 1
-            },
-            {
-                "id": 85,
-                "size": 2,
-                "description": "Short term secondary oxygen sensor trim, A: bank 1, B: bank 3",
-                "minValues": [-100],
-                "maxValues": [99.2],
-                "units": ["%"],
-                "dataFields": 2
-            },
-            {
-                "id": 86,
-                "size": 2,
-                "description": "Long term secondary oxygen sensor trim, A: bank 1, B: bank 3",
-                "minValues": [-100],
-                "maxValues": [99.2],
-                "units": [""],
-                "dataFields": 2
-            },
-            {
-                "id": 87,
-                "size": 2,
-                "description": "Short term secondary oxygen sensor trim, A: bank 2, B: bank 4",
-                "minValues": [-100],
-                "maxValues": [99.2],
-                "units": ["%"],
-                "dataFields": 2
-            },
-            {
-                "id": 88,
-                "size": 2,
-                "description": "Long term secondary oxygen sensor trim, A: bank 2, B: bank 4",
-                "minValues": [-100],
-                "maxValues": [99.2],
-                "units": ["%"],
-                "dataFields": 2
-            },
-            {
-                "id": 89,
-                "size": 2,
-                "description": "Fuel rail absolute pressure",
-                "minValues": [0],
-                "maxValues": [655350],
-                "units": ["kPa"],
-                "dataFields": 1
-            },
-            {
-                "id": 90,
-                "size": 1,
-                "description": "Relative accelerator pedal position",
-                "minValues": [0],
-                "maxValues": [100],
-                "units": ["%"],
-                "dataFields": 1
-            },
-            {
-                "id": 91,
-                "size": 1,
-                "description": "Hybrid battery pack remaining life",
-                "minValues": [0],
-                "maxValues": [100],
-                "units": ["%"],
-                "dataFields": 1
-            },
-            {
-                "id": 92,
-                "size": 1,
-                "description": "Engine oil temperature",
-                "minValues": [-40],
-                "maxValues": [210],
-                "units": ["°C"],
-                "dataFields": 1
-            },
-            {
-                "id": 93,
-                "size": 2,
-                "description": "Fuel injection timing",
-                "minValues": [-210],
-                "maxValues": [301.992],
-                "units": ["°"],
-                "dataFields": 1
-            },
-            {
-                "id": 94,
-                "size": 2,
-                "description": "Engine fuel rate",
-                "minValues": [0],
-                "maxValues": [3212.75],
-                "units": ["L/h"],
-                "dataFields": 1
-            },
-            {
-                "id": 95,
-                "size": 1,
-                "description": "Emission requirements to which vehicle is designed",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 96,
-                "size": 4,
-                "description": "PIDs supported [61 - 80]",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 97,
-                "size": 1,
-                "description": "Driver's demand engine - percent torque",
-                "minValues": [-125],
-                "maxValues": [130],
-                "units": ["%"],
-                "dataFields": 1
-            },
-            {
-                "id": 98,
-                "size": 1,
-                "description": "Actual engine - percent torque",
-                "minValues": [-125],
-                "maxValues": [130],
-                "units": ["%"],
-                "dataFields": 1
-            },
-            {
-                "id": 99,
-                "size": 2,
-                "description": "Engine reference torque",
-                "minValues": [0],
-                "maxValues": [65535],
-                "units": ["Nm"],
-                "dataFields": 1
-            },
-            {
-                "id": 100,
-                "size": 5,
-                "description": "Engine percent torque data",
-                "minValues": [-125],
-                "maxValues": [130],
-                "units": ["%"],
-                "dataFields": 5
-            },
-            {
-                "id": 101,
-                "size": 2,
-                "description": "Auxiliary input / output supported",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 102,
-                "size": 5,
-                "description": "Mass air flow sensor",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 103,
-                "size": 3,
-                "description": "Engine coolant temperature",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 104,
-                "size": 7,
-                "description": "Intake air temperature sensor",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 105,
-                "size": 7,
-                "description": "Commanded EGR and EGR Error",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 106,
-                "size": 5,
-                "description": "Commanded Diesel intake air flow control and relative intake air flow position",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 107,
-                "size": 5,
-                "description": "Exhaust gas recirculation temperature",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 108,
-                "size": 5,
-                "description": "Commanded throttle actuator control and relative throttle position",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 109,
-                "size": 6,
-                "description": "Fuel pressure control system",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 110,
-                "size": 5,
-                "description": "Injection pressure control system",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 111,
-                "size": 3,
-                "description": "Turbocharger compressor inlet pressure",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 112,
-                "size": 9,
-                "description": "Boost pressure control",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 113,
-                "size": 5,
-                "description": "Variable Geometry turbo (VGT) control",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 114,
-                "size": 5,
-                "description": "Wastegate control",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 115,
-                "size": 5,
-                "description": "Exhaust pressure",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 116,
-                "size": 5,
-                "description": "Turbocharger RPM",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 117,
-                "size": 7,
-                "description": "Turbocharger temperature",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 118,
-                "size": 7,
-                "description": "Turbocharger temperature",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 119,
-                "size": 5,
-                "description": "Charge air cooler temperature (CACT)",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 120,
-                "size": 9,
-                "description": "Exhaust Gas temperature (EGT) Bank 1",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 121,
-                "size": 9,
-                "description": "Exhaust Gas temperature (EGT) Bank 2",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 122,
-                "size": 7,
-                "description": "Diesel particulate filter (DPF)",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 123,
-                "size": 7,
-                "description": "Diesel particulate filter (DPF)",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 124,
-                "size": 9,
-                "description": "Diesel Particulate filter (DPF) temperature",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 125,
-                "size": 1,
-                "description": "NOx NTE (Not-To-Exceed) control area status",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 126,
-                "size": 1,
-                "description": "PM NTE (Not-To-Exceed) control area status",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 127,
-                "size": 13,
-                "description": "Engine run time",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 128,
-                "size": 4,
-                "description": "PIDs supported [81 - A0]",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 129,
-                "size": 21,
-                "description": "Engine run time for Auxiliary Emissions Control Device(AECD)",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 130,
-                "size": 21,
-                "description": "Engine run time for Auxiliary Emissions Control Device(AECD)",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 131,
-                "size": 5,
-                "description": "NOx sensor",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 132,
-                "size": 1,
-                "description": "Manifold surface temperature",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 133,
-                "size": 10,
-                "description": "NOx reagent system",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 134,
-                "size": 5,
-                "description": "Particulate matter (PM) sensor",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 135,
-                "size": 5,
-                "description": "Intake manifold absolute pressure",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 136,
-                "size": 13,
-                "description": "SCR Induce System",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 137,
-                "size": 41,
-                "description": "Run Time for AECD #11-#15",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 138,
-                "size": 41,
-                "description": "Run Time for AECD #16-#20",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 139,
-                "size": 7,
-                "description": "Diesel Aftertreatment",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 140,
-                "size": 16,
-                "description": "O2 Sensor (Wide Range)",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 141,
-                "size": 1,
-                "description": "Throttle Position G",
-                "minValues": [0],
-                "maxValues": [100],
-                "units": ["%"],
-                "dataFields": 1
-            },
-            {
-                "id": 142,
-                "size": 1,
-                "description": "Engine Friction - Percent Torque",
-                "minValues": [-125],
-                "maxValues": [130],
-                "units": ["%"],
-                "dataFields": 1
-            },
-            {
-                "id": 143,
-                "size": 5,
-                "description": "PM Sensor Bank 1 & 2",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 144,
-                "size": 3,
-                "description": "WWH-OBD Vehicle OBD System Information",
-                "minValues": [0],
-                "maxValues": [4095],
-                "units": ["hours"],
-                "dataFields": 1
-            },
-            {
-                "id": 145,
-                "size": 5,
-                "description": "WWH-OBD Vehicle OBD System Information",
-                "minValues": [0],
-                "maxValues": [4095],
-                "units": ["hours"],
-                "dataFields": 1
-            },
-            {
-                "id": 146,
-                "size": 2,
-                "description": "Fuel System Control",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 147,
-                "size": 3,
-                "description": "WWH-OBD Vehicle OBD Counters support",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": ["hours"],
-                "dataFields": 1
-            },
-            {
-                "id": 148,
-                "size": 12,
-                "description": "NOx Warning And Inducement System",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 152,
-                "size": 9,
-                "description": "Exhaust Gas Temperature Sensor",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 153,
-                "size": 9,
-                "description": "Exhaust Gas Temperature Sensor",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 154,
-                "size": 6,
-                "description": "Hybrid/EV Vehicle System Data, Battery, Voltage",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 155,
-                "size": 4,
-                "description": "Diesel Exhaust Fluid Sensor Data",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 156,
-                "size": 17,
-                "description": "O2 Sensor Data",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 157,
-                "size": 4,
-                "description": "Engine Fuel Rate",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": ["g/s"],
-                "dataFields": 1
-            },
-            {
-                "id": 158,
-                "size": 2,
-                "description": "Engine Exhaust Flow Rate",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": ["kg/h"],
-                "dataFields": 1
-            },
-            {
-                "id": 159,
-                "size": 9,
-                "description": "Fuel System Percentage Use",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 160,
-                "size": 4,
-                "description": "PIDs supported [A1 - C0]",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 161,
-                "size": 9,
-                "description": "NOx Sensor Corrected Data",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": ["ppm"],
-                "dataFields": 1
-            },
-            {
-                "id": 162,
-                "size": 2,
-                "description": "Cylinder Fuel Rate",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": ["mg/stroke"],
-                "dataFields": 1
-            },
-            {
-                "id": 163,
-                "size": 9,
-                "description": "Evap System Vapor Pressure",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": ["Pa"],
-                "dataFields": 1
-            },
-            {
-                "id": 164,
-                "size": 4,
-                "description": "Transmission Actual Gear",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 165,
-                "size": 4,
-                "description": "Diesel Exhaust Fluid Dosing",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 166,
-                "size": 4,
-                "description": "Odometer",
-                "minValues": [0],
-                "maxValues": [1048560],
-                "units": ["hm"],
-                "dataFields": 1
-            },
-            {
-                "id": 192,
-                "size": 4,
-                "description": "PIDs supported [C1 - E0]",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 195,
-                "size": -255,
-                "description": "",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 196,
-                "size": -255,
-                "description": "",
-                "minValues": [-255],
-                "maxValues": [-255],
-                "units": [""],
-                "dataFields": 1
-            }
-        ]
-    },
-    {
-        "validForServices": [3],
-        "pidList": [{
-            "id": 0,
-            "size": -255,
-            "description": "Request trouble codes",
-            "minValues": [-255],
-            "maxValues": [-255],
-            "units": [""],
-            "formulas": ["BitEncodingDTC"],
-            "dataFields": 1
-        }]
-    },
-    {
-        "validForServices": [4],
-        "pidList": [{
-            "id": 0,
-            "size": -255,
-            "description": "Clears all stored trouble codes and turns the MIL off.",
-            "minValues": [-255],
-            "maxValues": [-255],
-            "units": [""],
-            "formulas": [""],
-            "dataFields": 1
-        }]
-    },
-    {
-        "validForServices": [5],
-        "pidList": [{
-                "id": 256,
-                "size": 1,
-                "description": "OBD Monitor IDs supported ($01 – $20)",
-                "minValues": [],
-                "maxValues": [],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 257,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 1 Sensor 1",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 258,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 1 Sensor 2",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 259,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 1 Sensor 3",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 260,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 1 Sensor 4",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 261,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 2 Sensor 1",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 262,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 2 Sensor 2",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 263,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 2 Sensor 3",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 264,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 2 Sensor 4",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 265,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 3 Sensor 1",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 266,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 3 Sensor 2",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 267,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 3 Sensor 3",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 268,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 3 Sensor 4",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 269,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 4 Sensor 1",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 270,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 4 Sensor 2",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 271,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 4 Sensor 3",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 272,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 4 Sensor 4",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 513,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 1 Sensor 1",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 514,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 1 Sensor 2",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 515,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 1 Sensor 3",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 516,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 1 Sensor 4",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 517,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 2 Sensor 1",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 518,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 2 Sensor 2",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 519,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 2 Sensor 3",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 520,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 2 Sensor 4",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 521,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 3 Sensor 1",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 522,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 3 Sensor 2",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 523,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 3 Sensor 3",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 524,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 3 Sensor 4",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 525,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 4 Sensor 1",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 526,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 4 Sensor 2",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 527,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 4 Sensor 3",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            },
-            {
-                "id": 528,
-                "size": 1,
-                "description": "O2 Sensor Monitor Bank 4 Sensor 4",
-                "minValues": [0],
-                "maxValues": [1.275],
-                "units": ["volts"],
-                "dataFields": 1
-            }
-        ]
-    },
-    {
-        "validForServices": [9],
-        "pidList": [{
-                "id": 0,
-                "size": 4,
-                "description": "Service 9 supported PIDs (01 to 20)",
-                "minValues": [],
-                "maxValues": [],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 1,
-                "size": 1,
-                "description": "VIN Message Count in PID 02. Only for ISO 9141-2, ISO 14230-4 and SAE J1850.",
-                "minValues": [],
-                "maxValues": [],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 2,
-                "size": 17,
-                "description": "Vehicle Identification Number (VIN)",
-                "minValues": [],
-                "maxValues": [],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 3,
-                "size": 1,
-                "description": "Calibration ID message count for PID 04. Only for ISO 9141-2, ISO 14230-4 and SAE J1850.",
-                "minValues": [],
-                "maxValues": [],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 4,
-                "size": -255,
-                "description": "Calibration ID",
-                "minValues": [],
-                "maxValues": [],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 5,
-                "size": 1,
-                "description": "Calibration verification numbers (CVN) message count for PID 06. Only for ISO 9141-2, ISO 14230-4 and SAE J1850.",
-                "minValues": [],
-                "maxValues": [],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 6,
-                "size": -255,
-                "description": "Calibration Verification Numbers (CVN) Several CVN can be outputed (4 bytes each) the number of CVN and CALID must match",
-                "minValues": [],
-                "maxValues": [],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 7,
-                "size": 1,
-                "description": "In-use performance tracking message count for PID 08 and 0B. Only for ISO 9141-2, ISO 14230-4 and SAE J1850.",
-                "minValues": [8],
-                "maxValues": [10],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 8,
-                "size": 4,
-                "description": "In-use performance tracking for spark ignition vehicles",
-                "minValues": [],
-                "maxValues": [],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 9,
-                "size": 1,
-                "description": "ECU name message count for PID 0A",
-                "minValues": [],
-                "maxValues": [],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 10,
-                "size": 20,
-                "description": "ECU name",
-                "minValues": [],
-                "maxValues": [],
-                "units": [""],
-                "dataFields": 1
-            },
-            {
-                "id": 11,
-                "size": 4,
-                "description": "In-use performance tracking for compression ignition vehicles",
-                "minValues": [],
-                "maxValues": [],
-                "units": [""],
-                "dataFields": 1
-            }
-        ]
-    }
+    "validForServices": [1, 2],
+    "pidList": [{
+        "id": 0,
+        "size": 4,
+        "description": "PIDs supported [01 - 20]",
+        "name": "SupportedPid01_20",
+        "minValues": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "maxValues": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 1,
+        "size": 4,
+        "description": "Monitor status since DTCs cleared. (Includes malfunction indicator lamp (MIL) status and number of DTCs.)",
+        "name": "MonitoringStatusSinceDTCsCleared",
+        "minValues": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "maxValues": [1, 128, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 2,
+        "size": 2,
+        "description": "Freeze DTC",
+        "name": "FreezeDTCPid",
+        "minValues": [0],
+        "maxValues": [65535],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 3,
+        "size": 2,
+        "description": "Fuel system status",
+        "name": "FuelSystemStatus",
+        "minValues": [0, 0],
+        "maxValues": [16, 16],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 4,
+        "size": 1,
+        "description": "Calculated engine load",
+        "name": "CalculatedEngineLoad",
+        "minValues": [0],
+        "maxValues": [100],
+        "units": ["%"],
+        "dataFields": 1
+      },
+      {
+        "id": 5,
+        "size": 1,
+        "description": "Engine coolant temperature",
+        "name": "EngineCoolantTemperature",
+        "minValues": [-40],
+        "maxValues": [215],
+        "units": ["°C"],
+        "dataFields": 1
+      },
+      {
+        "id": 6,
+        "size": 1,
+        "description": "Short term fuel trim—Bank 1",
+        "name": "ShortTermFuelTrimBank1",
+        "minValues": [-100],
+        "maxValues": [99.2],
+        "units": ["%"],
+        "dataFields": 1
+      },
+      {
+        "id": 7,
+        "size": 1,
+        "description": "Long term fuel trim—Bank 1",
+        "name": "LongTermFuelTrimBank1",
+        "minValues": [-100],
+        "maxValues": [99.2],
+        "units": ["%"],
+        "dataFields": 1
+      },
+      {
+        "id": 8,
+        "size": 1,
+        "description": "Short term fuel trim—Bank 2",
+        "name": "ShortTermFuelTrimBank2",
+        "minValues": [-100],
+        "maxValues": [99.2],
+        "units": ["%"],
+        "dataFields": 1
+      },
+      {
+        "id": 9,
+        "size": 1,
+        "description": "Long term fuel trim—Bank 2",
+        "name": "LongTermFuelTrimBank2",
+        "minValues": [-100],
+        "maxValues": [99.2],
+        "units": ["%"],
+        "dataFields": 1
+      },
+      {
+        "id": 10,
+        "size": 1,
+        "description": "Fuel pressure (gauge pressure)",
+        "name": "FuelPressure",
+        "minValues": [0],
+        "maxValues": [765],
+        "units": ["kPa"],
+        "dataFields": 1
+      },
+      {
+        "id": 11,
+        "size": 1,
+        "description": "Intake manifold absolute pressure",
+        "name": "IntakeManifoldAbsolutePressure",
+        "minValues": [0],
+        "maxValues": [255],
+        "units": ["kPa"],
+        "dataFields": 1
+      },
+      {
+        "id": 12,
+        "size": 2,
+        "description": "Engine RPM",
+        "name": "EngineRPM",
+        "minValues": [0],
+        "maxValues": [16383.75],
+        "units": ["rpm"],
+        "dataFields": 1
+      },
+      {
+        "id": 13,
+        "size": 1,
+        "description": "Vehicle speed",
+        "name": "VehicleSpeed",
+        "minValues": [0],
+        "maxValues": [255],
+        "units": ["km/h"],
+        "dataFields": 1
+      },
+      {
+        "id": 14,
+        "size": 1,
+        "description": "Timing advance",
+        "name": "TimingAdvance",
+        "minValues": [-64],
+        "maxValues": [63.5],
+        "units": ["° before TDC"],
+        "dataFields": 1
+      },
+      {
+        "id": 15,
+        "size": 1,
+        "description": "Intake air temperature",
+        "name": "IntakeAirTemperature",
+        "minValues": [-40],
+        "maxValues": [215],
+        "units": ["°C"],
+        "dataFields": 1
+      },
+      {
+        "id": 16,
+        "size": 2,
+        "description": "MAF air flow rate",
+        "name": "MAFAirFlowRate",
+        "minValues": [0],
+        "maxValues": [655.35],
+        "units": ["grams/sec"],
+        "dataFields": 1
+      },
+      {
+        "id": 17,
+        "size": 1,
+        "description": "Throttle position",
+        "name": "ThrottlePosition",
+        "minValues": [0],
+        "maxValues": [100],
+        "units": ["%"],
+        "dataFields": 1
+      },
+      {
+        "id": 18,
+        "size": 1,
+        "description": "Commanded secondary air status",
+        "name": "CommandedSecondaryAirStatus",
+        "minValues": [0],
+        "maxValues": [8],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 19,
+        "size": 1,
+        "description": "Oxygen sensors present (in 2 banks)",
+        "name": "OxygenSensorsPresent",
+        "minValues": [0, 0, 0, 0, 0, 0, 0, 0],
+        "maxValues": [1, 1, 1, 1, 1, 1, 1, 1],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 20,
+        "size": 2,
+        "description": "Oxygen Sensor 1 A: Voltage B: Short term fuel trim",
+        "name": "BankOxygenSensor1",
+        "minValues": [0, 100],
+        "maxValues": [1.275, 99.2],
+        "units": ["Volts”,”%"],
+        "dataFields": 2
+      },
+      {
+        "id": 21,
+        "size": 2,
+        "description": "Oxygen Sensor 2 A: Voltage B: Short term fuel trim",
+        "name": "BankOxygenSensor2",
+        "minValues": [0, 100],
+        "maxValues": [1.275, 99.2],
+        "units": ["Volts”,”%"],
+        "dataFields": 2
+      },
+      {
+        "id": 22,
+        "size": 2,
+        "description": "Oxygen Sensor 3 A: Voltage B: Short term fuel trim",
+        "name": "BankOxygenSensor3",
+        "minValues": [0, 100],
+        "maxValues": [1.275, 99.2],
+        "units": ["Volts”,”%"],
+        "dataFields": 2
+      },
+      {
+        "id": 23,
+        "size": 2,
+        "description": "Oxygen Sensor 4 A: Voltage B: Short term fuel trim",
+        "name": "BankOxygenSensor4",
+        "minValues": [0, 100],
+        "maxValues": [1.275, 99.2],
+        "units": ["Volts”,”%"],
+        "dataFields": 2
+      },
+      {
+        "id": 24,
+        "size": 2,
+        "description": "Oxygen Sensor 5 A: Voltage B: Short term fuel trim",
+        "name": "BankOxygenSensor5",
+        "minValues": [0, 100],
+        "maxValues": [1.275, 99.2],
+        "units": ["Volts”,”%"],
+        "dataFields": 2
+      },
+      {
+        "id": 25,
+        "size": 2,
+        "description": "Oxygen Sensor 6 A: Voltage B: Short term fuel trim",
+        "name": "BankOxygenSensor6",
+        "minValues": [0, 100],
+        "maxValues": [1.275, 99.2],
+        "units": ["Volts”,”%"],
+        "dataFields": 2
+      },
+      {
+        "id": 26,
+        "size": 2,
+        "description": "Oxygen Sensor 7 A: Voltage B: Short term fuel trim",
+        "name": "BankOxygenSensor7",
+        "minValues": [0, 100],
+        "maxValues": [1.275, 99.2],
+        "units": ["Volts”,”%"],
+        "dataFields": 2
+      },
+      {
+        "id": 27,
+        "size": 2,
+        "description": "Oxygen Sensor 8 A: Voltage B: Short term fuel trim",
+        "name": "BankOxygenSensor8",
+        "minValues": [0, 100],
+        "maxValues": [1.275, 99.2],
+        "units": ["Volts”,”%"],
+        "dataFields": 2
+      },
+      {
+        "id": 28,
+        "size": 1,
+        "description": "OBD standards this vehicle conforms to",
+        "name": "OBDStandardsVehicleConformsTo",
+        "minValues": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "maxValues": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 29,
+        "size": 1,
+        "description": "Oxygen sensors present (in 4 banks)",
+        "name": "OxygenSensorsPresent4Banks",
+        "minValues": [0, 0, 0, 0, 0, 0, 0, 0],
+        "maxValues": [1, 1, 1, 1, 1, 1, 1, 1],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 30,
+        "size": 1,
+        "description": "Auxiliary input status",
+        "name": "AuxiliaryInputStatus",
+        "minValues": [0],
+        "maxValues": [1],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 31,
+        "size": 2,
+        "description": "Run time since engine start",
+        "name": "RunTimeSinceEngineStart",
+        "minValues": [0],
+        "maxValues": [65535],
+        "units": ["seconds"],
+        "dataFields": 1
+      },
+      {
+        "id": 32,
+        "size": 4,
+        "description": "SupportedPid21_40",
+        "name": "",
+        "minValues": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "maxValues": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 33,
+        "size": 2,
+        "description": "Distance traveled with malfunction indicator lamp (MIL) on",
+        "name": "DistanceTraveledWithMilOn",
+        "minValues": [0],
+        "maxValues": [65535],
+        "units": ["km"],
+        "dataFields": 1
+      },
+      {
+        "id": 34,
+        "size": 2,
+        "description": "Fuel Rail Pressure (relative to manifold vacuum)",
+        "name": "FuelRailPressure",
+        "minValues": [0],
+        "maxValues": [5177.265],
+        "units": ["kPa"],
+        "dataFields": 1
+      },
+      {
+        "id": 35,
+        "size": 2,
+        "description": "Fuel Rail Gauge Pressure (diesel, or gasoline direct injection)",
+        "name": "FuelRailGaugePressure",
+        "minValues": [0],
+        "maxValues": [655350],
+        "units": ["kPa"],
+        "dataFields": 1
+      },
+      {
+        "id": 36,
+        "size": 4,
+        "description": "Oxygen Sensor 1 AB: Fuel–Air Equivalence Ratio CD: Voltage",
+        "name": "FuelRailOxygenSensor1",
+        "minValues": [0, 0],
+        "maxValues": [2, 8],
+        "units": ["Ratio”,”Volt"],
+        "dataFields": 2
+      },
+      {
+        "id": 37,
+        "size": 4,
+        "description": "Oxygen Sensor 2 AB: Fuel–Air Equivalence Ratio CD: Voltage",
+        "name": "FuelRailOxygenSensor2",
+        "minValues": [0, 0],
+        "maxValues": [2, 8],
+        "units": ["Ratio”,”Volt"],
+        "dataFields": 2
+      },
+      {
+        "id": 38,
+        "size": 4,
+        "description": "Oxygen Sensor 3 AB: Fuel–Air Equivalence Ratio CD: Voltage",
+        "name": "FuelRailOxygenSensor3",
+        "minValues": [0, 0],
+        "maxValues": [2, 8],
+        "units": ["Ratio”,”Volt"],
+        "dataFields": 2
+      },
+      {
+        "id": 39,
+        "size": 4,
+        "description": "Oxygen Sensor 4 AB: Fuel–Air Equivalence Ratio CD: Voltage",
+        "name": "FuelRailOxygenSensor4",
+        "minValues": [0, 0],
+        "maxValues": [2, 8],
+        "units": ["Ratio”,”Volt"],
+        "dataFields": 2
+      },
+      {
+        "id": 40,
+        "size": 4,
+        "description": "Oxygen Sensor 5 AB: Fuel–Air Equivalence Ratio CD: Voltage",
+        "name": "FuelRailOxygenSensor5",
+        "minValues": [0, 0],
+        "maxValues": [2, 8],
+        "units": ["Ratio”,”Volt"],
+        "dataFields": 2
+      },
+      {
+        "id": 41,
+        "size": 4,
+        "description": "Oxygen Sensor 6 AB: Fuel–Air Equivalence Ratio CD: Voltage",
+        "name": "FuelRailOxygenSensor6",
+        "minValues": [0, 0],
+        "maxValues": [2, 8],
+        "units": ["Ratio”,”Volt"],
+        "dataFields": 2
+      },
+      {
+        "id": 42,
+        "size": 4,
+        "description": "Oxygen Sensor 7 AB: Fuel–Air Equivalence Ratio CD: Voltage",
+        "name": "FuelRailOxygenSensor7",
+        "minValues": [0, 0],
+        "maxValues": [2, 8],
+        "units": ["Ratio”,”Volt"],
+        "dataFields": 2
+      },
+      {
+        "id": 43,
+        "size": 4,
+        "description": "Oxygen Sensor 8 AB: Fuel–Air Equivalence Ratio CD: Voltage",
+        "name": "FuelRailOxygenSensor8",
+        "minValues": [0, 0],
+        "maxValues": [2, 8],
+        "units": ["Ratio”,”Volt"],
+        "dataFields": 2
+      },
+      {
+        "id": 44,
+        "size": 1,
+        "description": "Commanded EGR",
+        "name": "CommandedEGR",
+        "minValues": [0],
+        "maxValues": [100],
+        "units": ["%"],
+        "dataFields": 1
+      },
+      {
+        "id": 45,
+        "size": 1,
+        "description": "EGR Error",
+        "name": "EGRError",
+        "minValues": [-100],
+        "maxValues": [99.2],
+        "units": ["%"],
+        "dataFields": 1
+      },
+      {
+        "id": 46,
+        "size": 1,
+        "description": "Commanded evaporative purge",
+        "name": "CommandedEvaporativePurge",
+        "minValues": [0],
+        "maxValues": [100],
+        "units": ["%"],
+        "dataFields": 1
+      },
+      {
+        "id": 47,
+        "size": 1,
+        "description": "Fuel Tank Level Input",
+        "name": "FuelTankLevelInput",
+        "minValues": [0],
+        "maxValues": [100],
+        "units": ["%"],
+        "dataFields": 1
+      },
+      {
+        "id": 48,
+        "size": 1,
+        "description": "Warm-ups since codes cleared",
+        "name": "WarmUpsSinceCodesCleared",
+        "minValues": [0],
+        "maxValues": [255],
+        "units": ["count"],
+        "dataFields": 1
+      },
+      {
+        "id": 49,
+        "size": 2,
+        "description": "Distance traveled since codes cleared",
+        "name": "DistanceTraveledSinceCodesCleared",
+        "minValues": [0],
+        "maxValues": [65535],
+        "units": ["km"],
+        "dataFields": 1
+      },
+      {
+        "id": 50,
+        "size": 2,
+        "description": "Evap. System Vapor Pressure",
+        "name": "EvaporativePurgeSystemVaporPressure",
+        "minValues": [-8192],
+        "maxValues": [8191.75],
+        "units": ["Pa"],
+        "dataFields": 1
+      },
+      {
+        "id": 51,
+        "size": 1,
+        "description": "Absolute Barometric Pressure",
+        "name": "AbsoluteBarometricPressure",
+        "minValues": [0],
+        "maxValues": [255],
+        "units": ["kPa"],
+        "dataFields": 1
+      },
+      {
+        "id": 52,
+        "size": 4,
+        "description": "Oxygen Sensor 1 AB: Fuel–Air Equivalence Ratio CD: Current",
+        "name": "ExtendedRangeOxygenSensor1",
+        "minValues": [0, -128],
+        "maxValues": [2, 128],
+        "units": ["Ratio”,”mA"],
+        "dataFields": 2
+      },
+      {
+        "id": 53,
+        "size": 4,
+        "description": "Oxygen Sensor 2 AB: Fuel–Air Equivalence Ratio CD: Current",
+        "name": "ExtendedRangeOxygenSensor2",
+        "minValues": [0, -128],
+        "maxValues": [2, 128],
+        "units": ["Ratio”,”mA"],
+        "dataFields": 2
+      },
+      {
+        "id": 54,
+        "size": 4,
+        "description": "Oxygen Sensor 3 AB: Fuel–Air Equivalence Ratio CD: Current",
+        "name": "ExtendedRangeOxygenSensor3",
+        "minValues": [0, -128],
+        "maxValues": [2, 128],
+        "units": ["Ratio”,”mA"],
+        "dataFields": 2
+      },
+      {
+        "id": 55,
+        "size": 4,
+        "description": "Oxygen Sensor 4 AB: Fuel–Air Equivalence Ratio CD: Current",
+        "name": "ExtendedRangeOxygenSensor4",
+        "minValues": [0, -128],
+        "maxValues": [2, 128],
+        "units": ["Ratio”,”mA"],
+        "dataFields": 2
+      },
+      {
+        "id": 56,
+        "size": 4,
+        "description": "Oxygen Sensor 5 AB: Fuel–Air Equivalence Ratio CD: Current",
+        "name": "ExtendedRangeOxygenSensor5",
+        "minValues": [0, -128],
+        "maxValues": [2, 128],
+        "units": ["Ratio”,”mA"],
+        "dataFields": 2
+      },
+      {
+        "id": 57,
+        "size": 4,
+        "description": "Oxygen Sensor 6 AB: Fuel–Air Equivalence Ratio CD: Current",
+        "name": "ExtendedRangeOxygenSensor6",
+        "minValues": [0, -128],
+        "maxValues": [2, 128],
+        "units": ["Ratio”,”mA"],
+        "dataFields": 2
+      },
+      {
+        "id": 58,
+        "size": 4,
+        "description": "Oxygen Sensor 7 AB: Fuel–Air Equivalence Ratio CD: Current",
+        "name": "ExtendedRangeOxygenSensor7",
+        "minValues": [0, -128],
+        "maxValues": [2, 128],
+        "units": ["Ratio”,”mA"],
+        "dataFields": 2
+      },
+      {
+        "id": 59,
+        "size": 4,
+        "description": "Oxygen Sensor 8 AB: Fuel–Air Equivalence Ratio CD: Current",
+        "name": "ExtendedRangeOxygenSensor8",
+        "minValues": [0, -128],
+        "maxValues": [2, 128],
+        "units": ["Ratio”,”mA"],
+        "dataFields": 2
+      },
+      {
+        "id": 60,
+        "size": 2,
+        "description": "Catalyst Temperature: Bank 1, Sensor 1",
+        "name": "CatalystTemperatureBank1Sensor1",
+        "minValues": [-40],
+        "maxValues": [6513.5],
+        "units": ["°C"],
+        "dataFields": 1
+      },
+      {
+        "id": 61,
+        "size": 2,
+        "description": "Catalyst Temperature: Bank 2, Sensor 1",
+        "name": "CatalystTemperatureBank2Sensor1",
+        "minValues": [-40],
+        "maxValues": [6513.5],
+        "units": ["°C"],
+        "dataFields": 1
+      },
+      {
+        "id": 62,
+        "size": 2,
+        "description": "Catalyst Temperature: Bank 1, Sensor 2",
+        "name": "CatalystTemperatureBank1Sensor2",
+        "minValues": [-40],
+        "maxValues": [6513.5],
+        "units": ["°C"],
+        "dataFields": 1
+      },
+      {
+        "id": 63,
+        "size": 2,
+        "description": "Catalyst Temperature: Bank 2, Sensor 2",
+        "name": "CatalystTemperatureBank2Sensor2",
+        "minValues": [-40],
+        "maxValues": [6513.5],
+        "units": ["°C"],
+        "dataFields": 1
+      },
+      {
+        "id": 64,
+        "size": 4,
+        "description": "PIDs supported [41 - 60]",
+        "name": "SupportedPid41_60",
+        "minValues": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "maxValues": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 65,
+        "size": 4,
+        "description": "Monitor status this drive cycle",
+        "name": "MonitorStatusThisDriveCycle",
+        "minValues": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "maxValues": [1, 128, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 66,
+        "size": 2,
+        "description": "Control module voltage",
+        "name": "ControlModuleVoltage",
+        "minValues": [0],
+        "maxValues": [65.535],
+        "units": ["V"],
+        "dataFields": 1
+      },
+      {
+        "id": 67,
+        "size": 2,
+        "description": "Absolute load value",
+        "name": "AbsoluteLoadValue",
+        "minValues": [0],
+        "maxValues": [25700],
+        "units": ["%"],
+        "dataFields": 1
+      },
+      {
+        "id": 68,
+        "size": 2,
+        "description": "Fuel–Air commanded equivalence ratio",
+        "name": "FuelAirCommandedEquivalenceRatio",
+        "minValues": [0],
+        "maxValues": [1.99999],
+        "units": ["ratio"],
+        "dataFields": 1
+      },
+      {
+        "id": 69,
+        "size": 1,
+        "description": "Relative throttle position",
+        "name": "RelativeThrottlePosition",
+        "minValues": [0],
+        "maxValues": [100],
+        "units": ["%"],
+        "dataFields": 1
+      },
+      {
+        "id": 70,
+        "size": 1,
+        "description": "Ambient air temperature",
+        "name": "AmbientAirTemperature",
+        "minValues": [-40],
+        "maxValues": [215],
+        "units": ["°C"],
+        "dataFields": 1
+      },
+      {
+        "id": 71,
+        "size": 1,
+        "description": "Absolute throttle position B",
+        "name": "AbsoluteThrottlePositionB",
+        "minValues": [0],
+        "maxValues": [100],
+        "units": ["%"],
+        "dataFields": 1
+      },
+      {
+        "id": 72,
+        "size": 1,
+        "description": "Absolute throttle position C",
+        "name": "AbsoluteThrottlePositionC",
+        "minValues": [0],
+        "maxValues": [100],
+        "units": ["%"],
+        "dataFields": 1
+      },
+      {
+        "id": 73,
+        "size": 1,
+        "description": "Accelerator pedal position D",
+        "name": "AcceleratorPedalPositionD",
+        "minValues": [0],
+        "maxValues": [100],
+        "units": ["%"],
+        "dataFields": 1
+      },
+      {
+        "id": 74,
+        "size": 1,
+        "description": "Accelerator pedal position E",
+        "name": "AcceleratorPedalPositionE",
+        "minValues": [0],
+        "maxValues": [100],
+        "units": ["%"],
+        "dataFields": 1
+      },
+      {
+        "id": 75,
+        "size": 1,
+        "description": "Accelerator pedal position F",
+        "name": "AcceleratorPedalPositionF",
+        "minValues": [0],
+        "maxValues": [100],
+        "units": ["%"],
+        "dataFields": 1
+      },
+      {
+        "id": 76,
+        "size": 1,
+        "description": "Commanded throttle actuator",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [100],
+        "units": ["%"],
+        "dataFields": 1
+      },
+      {
+        "id": 77,
+        "size": 2,
+        "description": "Time run with MIL on",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [65535],
+        "units": ["minutes"],
+        "dataFields": 1
+      },
+      {
+        "id": 78,
+        "size": 2,
+        "description": "Time since trouble codes cleared",
+        "name": "",
+        "minValues": [],
+        "maxValues": [],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 79,
+        "size": 4,
+        "description": "Maximum value for Fuel–Air equivalence ratio, oxygen sensor voltage, oxygen sensor current, and intake manifold absolute pressure",
+        "name": "",
+        "minValues": [0, 0, 0, 0],
+        "maxValues": [255, 255, 255, 2550],
+        "units": ["ratio”, ”V”, ”mA”, ”kPa”"],
+        "dataFields": 1
+      },
+      {
+        "id": 80,
+        "size": 4,
+        "description": "Maximum value for air flow rate from mass air flow sensor",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [2550],
+        "units": ["g/s"],
+        "dataFields": 1
+      },
+      {
+        "id": 81,
+        "size": 1,
+        "description": "Fuel Type",
+        "name": "",
+        "minValues": [],
+        "maxValues": [],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 82,
+        "size": 1,
+        "description": "Ethanol fuel %",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [100],
+        "units": ["%"],
+        "dataFields": 1
+      },
+      {
+        "id": 83,
+        "size": 2,
+        "description": "Absolute Evap system Vapor Pressure",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [327.675],
+        "units": ["kPa"],
+        "dataFields": 1
+      },
+      {
+        "id": 84,
+        "size": 2,
+        "description": "Evap system vapor pressure",
+        "name": "",
+        "minValues": [-32767],
+        "maxValues": [32768],
+        "units": ["Pa"],
+        "dataFields": 1
+      },
+      {
+        "id": 85,
+        "size": 2,
+        "description": "Short term secondary oxygen sensor trim, A: bank 1, B: bank 3",
+        "name": "",
+        "minValues": [-100],
+        "maxValues": [99.2],
+        "units": ["%"],
+        "dataFields": 2
+      },
+      {
+        "id": 86,
+        "size": 2,
+        "description": "Long term secondary oxygen sensor trim, A: bank 1, B: bank 3",
+        "name": "",
+        "minValues": [-100],
+        "maxValues": [99.2],
+        "units": [""],
+        "dataFields": 2
+      },
+      {
+        "id": 87,
+        "size": 2,
+        "description": "Short term secondary oxygen sensor trim, A: bank 2, B: bank 4",
+        "name": "",
+        "minValues": [-100],
+        "maxValues": [99.2],
+        "units": ["%"],
+        "dataFields": 2
+      },
+      {
+        "id": 88,
+        "size": 2,
+        "description": "Long term secondary oxygen sensor trim, A: bank 2, B: bank 4",
+        "name": "",
+        "minValues": [-100],
+        "maxValues": [99.2],
+        "units": ["%"],
+        "dataFields": 2
+      },
+      {
+        "id": 89,
+        "size": 2,
+        "description": "Fuel rail absolute pressure",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [655350],
+        "units": ["kPa"],
+        "dataFields": 1
+      },
+      {
+        "id": 90,
+        "size": 1,
+        "description": "Relative accelerator pedal position",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [100],
+        "units": ["%"],
+        "dataFields": 1
+      },
+      {
+        "id": 91,
+        "size": 1,
+        "description": "Hybrid battery pack remaining life",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [100],
+        "units": ["%"],
+        "dataFields": 1
+      },
+      {
+        "id": 92,
+        "size": 1,
+        "description": "Engine oil temperature",
+        "name": "",
+        "minValues": [-40],
+        "maxValues": [210],
+        "units": ["°C"],
+        "dataFields": 1
+      },
+      {
+        "id": 93,
+        "size": 2,
+        "description": "Fuel injection timing",
+        "name": "",
+        "minValues": [-210],
+        "maxValues": [301.992],
+        "units": ["°"],
+        "dataFields": 1
+      },
+      {
+        "id": 94,
+        "size": 2,
+        "description": "Engine fuel rate",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [3212.75],
+        "units": ["L/h"],
+        "dataFields": 1
+      },
+      {
+        "id": 95,
+        "size": 1,
+        "description": "Emission requirements to which vehicle is designed",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 96,
+        "size": 4,
+        "description": "PIDs supported [61 - 80]",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 97,
+        "size": 1,
+        "description": "Driver's demand engine - percent torque",
+        "name": "",
+        "minValues": [-125],
+        "maxValues": [130],
+        "units": ["%"],
+        "dataFields": 1
+      },
+      {
+        "id": 98,
+        "size": 1,
+        "description": "Actual engine - percent torque",
+        "name": "",
+        "minValues": [-125],
+        "maxValues": [130],
+        "units": ["%"],
+        "dataFields": 1
+      },
+      {
+        "id": 99,
+        "size": 2,
+        "description": "Engine reference torque",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [65535],
+        "units": ["Nm"],
+        "dataFields": 1
+      },
+      {
+        "id": 100,
+        "size": 5,
+        "description": "Engine percent torque data",
+        "name": "",
+        "minValues": [-125],
+        "maxValues": [130],
+        "units": ["%"],
+        "dataFields": 5
+      },
+      {
+        "id": 101,
+        "size": 2,
+        "description": "Auxiliary input / output supported",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 102,
+        "size": 5,
+        "description": "Mass air flow sensor",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 103,
+        "size": 3,
+        "description": "Engine coolant temperature",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 104,
+        "size": 7,
+        "description": "Intake air temperature sensor",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 105,
+        "size": 7,
+        "description": "Commanded EGR and EGR Error",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 106,
+        "size": 5,
+        "description": "Commanded Diesel intake air flow control and relative intake air flow position",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 107,
+        "size": 5,
+        "description": "Exhaust gas recirculation temperature",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 108,
+        "size": 5,
+        "description": "Commanded throttle actuator control and relative throttle position",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 109,
+        "size": 6,
+        "description": "Fuel pressure control system",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 110,
+        "size": 5,
+        "description": "Injection pressure control system",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 111,
+        "size": 3,
+        "description": "Turbocharger compressor inlet pressure",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 112,
+        "size": 9,
+        "description": "Boost pressure control",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 113,
+        "size": 5,
+        "description": "Variable Geometry turbo (VGT) control",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 114,
+        "size": 5,
+        "description": "Wastegate control",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 115,
+        "size": 5,
+        "description": "Exhaust pressure",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 116,
+        "size": 5,
+        "description": "Turbocharger RPM",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 117,
+        "size": 7,
+        "description": "Turbocharger temperature",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 118,
+        "size": 7,
+        "description": "Turbocharger temperature",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 119,
+        "size": 5,
+        "description": "Charge air cooler temperature (CACT)",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 120,
+        "size": 9,
+        "description": "Exhaust Gas temperature (EGT) Bank 1",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 121,
+        "size": 9,
+        "description": "Exhaust Gas temperature (EGT) Bank 2",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 122,
+        "size": 7,
+        "description": "Diesel particulate filter (DPF)",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 123,
+        "size": 7,
+        "description": "Diesel particulate filter (DPF)",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 124,
+        "size": 9,
+        "description": "Diesel Particulate filter (DPF) temperature",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 125,
+        "size": 1,
+        "description": "NOx NTE (Not-To-Exceed) control area status",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 126,
+        "size": 1,
+        "description": "PM NTE (Not-To-Exceed) control area status",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 127,
+        "size": 13,
+        "description": "Engine run time",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 128,
+        "size": 4,
+        "description": "PIDs supported [81 - A0]",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 129,
+        "size": 21,
+        "description": "Engine run time for Auxiliary Emissions Control Device(AECD)",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 130,
+        "size": 21,
+        "description": "Engine run time for Auxiliary Emissions Control Device(AECD)",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 131,
+        "size": 5,
+        "description": "NOx sensor",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 132,
+        "size": 1,
+        "description": "Manifold surface temperature",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 133,
+        "size": 10,
+        "description": "NOx reagent system",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 134,
+        "size": 5,
+        "description": "Particulate matter (PM) sensor",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 135,
+        "size": 5,
+        "description": "Intake manifold absolute pressure",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 136,
+        "size": 13,
+        "description": "SCR Induce System",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 137,
+        "size": 41,
+        "description": "Run Time for AECD #11-#15",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 138,
+        "size": 41,
+        "description": "Run Time for AECD #16-#20",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 139,
+        "size": 7,
+        "description": "Diesel Aftertreatment",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 140,
+        "size": 16,
+        "description": "O2 Sensor (Wide Range)",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 141,
+        "size": 1,
+        "description": "Throttle Position G",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [100],
+        "units": ["%"],
+        "dataFields": 1
+      },
+      {
+        "id": 142,
+        "size": 1,
+        "description": "Engine Friction - Percent Torque",
+        "name": "",
+        "minValues": [-125],
+        "maxValues": [130],
+        "units": ["%"],
+        "dataFields": 1
+      },
+      {
+        "id": 143,
+        "size": 5,
+        "description": "PM Sensor Bank 1 & 2",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 144,
+        "size": 3,
+        "description": "WWH-OBD Vehicle OBD System Information",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [4095],
+        "units": ["hours"],
+        "dataFields": 1
+      },
+      {
+        "id": 145,
+        "size": 5,
+        "description": "WWH-OBD Vehicle OBD System Information",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [4095],
+        "units": ["hours"],
+        "dataFields": 1
+      },
+      {
+        "id": 146,
+        "size": 2,
+        "description": "Fuel System Control",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 147,
+        "size": 3,
+        "description": "WWH-OBD Vehicle OBD Counters support",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": ["hours"],
+        "dataFields": 1
+      },
+      {
+        "id": 148,
+        "size": 12,
+        "description": "NOx Warning And Inducement System",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 152,
+        "size": 9,
+        "description": "Exhaust Gas Temperature Sensor",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 153,
+        "size": 9,
+        "description": "Exhaust Gas Temperature Sensor",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 154,
+        "size": 6,
+        "description": "Hybrid/EV Vehicle System Data, Battery, Voltage",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 155,
+        "size": 4,
+        "description": "Diesel Exhaust Fluid Sensor Data",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 156,
+        "size": 17,
+        "description": "O2 Sensor Data",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 157,
+        "size": 4,
+        "description": "Engine Fuel Rate",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": ["g/s"],
+        "dataFields": 1
+      },
+      {
+        "id": 158,
+        "size": 2,
+        "description": "Engine Exhaust Flow Rate",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": ["kg/h"],
+        "dataFields": 1
+      },
+      {
+        "id": 159,
+        "size": 9,
+        "description": "Fuel System Percentage Use",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 160,
+        "size": 4,
+        "description": "PIDs supported [A1 - C0]",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 161,
+        "size": 9,
+        "description": "NOx Sensor Corrected Data",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": ["ppm"],
+        "dataFields": 1
+      },
+      {
+        "id": 162,
+        "size": 2,
+        "description": "Cylinder Fuel Rate",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": ["mg/stroke"],
+        "dataFields": 1
+      },
+      {
+        "id": 163,
+        "size": 9,
+        "description": "Evap System Vapor Pressure",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": ["Pa"],
+        "dataFields": 1
+      },
+      {
+        "id": 164,
+        "size": 4,
+        "description": "Transmission Actual Gear",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 165,
+        "size": 4,
+        "description": "Diesel Exhaust Fluid Dosing",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 166,
+        "size": 4,
+        "description": "Odometer",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1048560],
+        "units": ["hm"],
+        "dataFields": 1
+      },
+      {
+        "id": 192,
+        "size": 4,
+        "description": "PIDs supported [C1 - E0]",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 195,
+        "size": -255,
+        "description": "",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 196,
+        "size": -255,
+        "description": "",
+        "name": "",
+        "minValues": [-255],
+        "maxValues": [-255],
+        "units": [""],
+        "dataFields": 1
+      }
+    ]
+  },
+  {
+    "validForServices": [3],
+    "pidList": [{
+      "id": 0,
+      "size": -255,
+      "description": "Request trouble codes",
+      "name": "",
+      "minValues": [-255],
+      "maxValues": [-255],
+      "units": [""],
+      "formulas": ["BitEncodingDTC"],
+      "dataFields": 1
+    }]
+  },
+  {
+    "validForServices": [4],
+    "pidList": [{
+      "id": 0,
+      "size": -255,
+      "description": "Clears all stored trouble codes and turns the MIL off.",
+      "name": "",
+      "minValues": [-255],
+      "maxValues": [-255],
+      "units": [""],
+      "formulas": [""],
+      "dataFields": 1
+    }]
+  },
+  {
+    "validForServices": [5],
+    "pidList": [{
+        "id": 256,
+        "size": 1,
+        "description": "OBD Monitor IDs supported ($01 – $20)",
+        "name": "",
+        "minValues": [],
+        "maxValues": [],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 257,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 1 Sensor 1",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 258,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 1 Sensor 2",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 259,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 1 Sensor 3",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 260,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 1 Sensor 4",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 261,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 2 Sensor 1",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 262,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 2 Sensor 2",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 263,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 2 Sensor 3",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 264,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 2 Sensor 4",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 265,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 3 Sensor 1",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 266,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 3 Sensor 2",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 267,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 3 Sensor 3",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 268,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 3 Sensor 4",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 269,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 4 Sensor 1",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 270,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 4 Sensor 2",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 271,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 4 Sensor 3",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 272,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 4 Sensor 4",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 513,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 1 Sensor 1",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 514,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 1 Sensor 2",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 515,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 1 Sensor 3",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 516,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 1 Sensor 4",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 517,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 2 Sensor 1",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 518,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 2 Sensor 2",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 519,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 2 Sensor 3",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 520,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 2 Sensor 4",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 521,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 3 Sensor 1",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 522,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 3 Sensor 2",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 523,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 3 Sensor 3",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 524,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 3 Sensor 4",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 525,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 4 Sensor 1",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 526,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 4 Sensor 2",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 527,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 4 Sensor 3",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      },
+      {
+        "id": 528,
+        "size": 1,
+        "description": "O2 Sensor Monitor Bank 4 Sensor 4",
+        "name": "",
+        "minValues": [0],
+        "maxValues": [1.275],
+        "units": ["volts"],
+        "dataFields": 1
+      }
+    ]
+  },
+  {
+    "validForServices": [9],
+    "pidList": [{
+        "id": 0,
+        "size": 4,
+        "description": "Service 9 supported PIDs (01 to 20)",
+        "name": "",
+        "minValues": [],
+        "maxValues": [],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 1,
+        "size": 1,
+        "description": "VIN Message Count in PID 02. Only for ISO 9141-2, ISO 14230-4 and SAE J1850.",
+        "name": "",
+        "minValues": [],
+        "maxValues": [],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 2,
+        "size": 17,
+        "description": "Vehicle Identification Number (VIN)",
+        "name": "",
+        "minValues": [],
+        "maxValues": [],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 3,
+        "size": 1,
+        "description": "Calibration ID message count for PID 04. Only for ISO 9141-2, ISO 14230-4 and SAE J1850.",
+        "name": "",
+        "minValues": [],
+        "maxValues": [],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 4,
+        "size": -255,
+        "description": "Calibration ID",
+        "name": "",
+        "minValues": [],
+        "maxValues": [],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 5,
+        "size": 1,
+        "description": "Calibration verification numbers (CVN) message count for PID 06. Only for ISO 9141-2, ISO 14230-4 and SAE J1850.",
+        "name": "",
+        "minValues": [],
+        "maxValues": [],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 6,
+        "size": -255,
+        "description": "Calibration Verification Numbers (CVN) Several CVN can be outputed (4 bytes each) the number of CVN and CALID must match",
+        "name": "",
+        "minValues": [],
+        "maxValues": [],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 7,
+        "size": 1,
+        "description": "In-use performance tracking message count for PID 08 and 0B. Only for ISO 9141-2, ISO 14230-4 and SAE J1850.",
+        "name": "",
+        "minValues": [8],
+        "maxValues": [10],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 8,
+        "size": 4,
+        "description": "In-use performance tracking for spark ignition vehicles",
+        "name": "",
+        "minValues": [],
+        "maxValues": [],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 9,
+        "size": 1,
+        "description": "ECU name message count for PID 0A",
+        "name": "",
+        "minValues": [],
+        "maxValues": [],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 10,
+        "size": 20,
+        "description": "ECU name",
+        "name": "",
+        "minValues": [],
+        "maxValues": [],
+        "units": [""],
+        "dataFields": 1
+      },
+      {
+        "id": 11,
+        "size": 4,
+        "description": "In-use performance tracking for compression ignition vehicles",
+        "name": "",
+        "minValues": [],
+        "maxValues": [],
+        "units": [""],
+        "dataFields": 1
+      }
+    ]
+  }
 ]

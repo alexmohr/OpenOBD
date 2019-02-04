@@ -26,11 +26,11 @@ int Wamp::closeInterface() {
 }
 
 void Wamp::serve() {
-
-    /* Create an embedded wamp router. */
+/*
+    // Create an embedded wamp router.
     wampcc::wamp_router router(&the_kernel);
 
-    /* Accept clients on IPv4 port, without authentication. */
+    // Accept clients on IPv4 port, without authentication.
     auto lstFut = router.listen(wampcc::auth_provider::no_auth_required(), 55555);
     if (auto ec = lstFut.get()) {
         LOG(ERROR) << "Failed WAMP start" << ec.message();
@@ -57,13 +57,13 @@ void Wamp::serve() {
 
     while (!exitRequested) {
         this_thread::sleep_for(100ms);
-    }
+    }*/
 }
 
 void Wamp::getSupportedPids(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_info info) {
-    auto data = wampcc::json_array();
+    /*   auto data = wampcc::json_array();
 
-    auto supportedPids = vehicleDataProvider->getSupportedPids();
+       auto supportedPids = vehicleDataProvider->getSupportedPids();*/
 //    for (const auto &pid : supportedPids) {
 ////        data.emplace_back(pid);
 ////todo

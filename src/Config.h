@@ -10,7 +10,7 @@
 #include <fstream>
 #include "json.hpp"
 #include "easylogging++.h"
-#include "OBD/Pid.h"
+#include "OBD/PidCollection.h"
 #include "OBD/DataTroubleCode.h"
 
 using namespace std;
@@ -18,12 +18,6 @@ using json = nlohmann::json;
 
 #define TESTER_ID 0x7DF
 #define VEHICLE_ID 0x7E8
-
-class PidCollection {
-public:
-    vector<int> validForServices;
-    map<int, Pid> pidList;
-};
 
 
 void from_json(const json &jsdata, map<Service, PidCollection> &pcmap);

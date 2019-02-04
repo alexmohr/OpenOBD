@@ -40,7 +40,7 @@ byte *OBDHandler::createAnswerFrame(byte *request, int &size) {
 
     Service service;
     Pid pid;
-    if (getServiceAndPidInfo((int) request[1], (int) request[0], pid, service) < 0) {
+    if (getServiceAndPidInfo((int) request[1], (int) request[0], pid, service) != SUCCESS) {
         return createErrorFrame(SUB_FUNCTION_NOT_SUPPORTED, size, request[1]);
     }
 
@@ -94,7 +94,7 @@ void OBDHandler::updateFromFrame(byte *frame, int frameSize) {
 
     Service service;
     Pid pid;
-    if (getServiceAndPidInfo((int) frame[1], (int) frame[0] - ANSWER_OFFSET, pid, service) < 0) {
+    if (getServiceAndPidInfo((int) frame[1], (int) frame[0] - ANSWER_OFFSET, pid, service) != SUCCESS) {
         return;
     }
 
@@ -113,16 +113,23 @@ void OBDHandler::updateFromFrame(byte *frame, int frameSize) {
     delete[] data;
 }
 
-int OBDHandler::getServiceAndPidInfo(int pidId, int serviceId, Pid &pid, Service &service) {
+ErrorType OBDHandler::getServiceAndPidInfo(int pidId, int serviceId, Pid &pid, Service &service) {
     service = static_cast<Service>(serviceId);
-    if (pidConfig->find(service) == pidConfig->end()) {
-        LOG(WARNING) << "Invalid PID" << to_string(pidId)
-                     << " in service " << to_string(serviceId);
-        return -1;
+    auto it = pidConfig->find(service);
+    if (it == pidConfig->end()) {
+        LOG(INFO) << "Not supported service: " << serviceId;
+        return NOT_SUPPORTED;
     }
-    auto pc = pidConfig->at(service);
-    pid = pc.pidList.at(pidId);
-    return 0;
+
+    auto pidCollection = it->second;
+    auto pidIt = pidCollection.pidList.find(pidId);
+    if (pidIt == pidCollection.pidList.end() || pidIt->second.name.empty()) {
+        LOG(INFO) << "Not supported pid " << pidId << " in service " << serviceId;
+        return NOT_SUPPORTED;
+    }
+
+    pid = pidIt->second;
+    return SUCCESS;
 }
 
 
@@ -130,7 +137,7 @@ Vehicle *OBDHandler::getVehicle() {
     return vehicle.get();
 }
 
-Vehicle *OBDHandler::getVehicleFreezeFrame() {
+Vehicle *OBDHandler::getFreezeFrameVehicle() {
     return vehicleFreezeFrame.get();
 }
 

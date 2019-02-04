@@ -46,9 +46,9 @@ public:
 
     Vehicle *getVehicle();
 
-    Vehicle *getVehicleFreezeFrame();
+    Vehicle *getFreezeFrameVehicle();
 
-    int getServiceAndPidInfo(int pidId, int serviceId, Pid &pid, Service &service);
+    ErrorType getServiceAndPidInfo(int pidId, int serviceId, Pid &pid, Service &service);
 
     DataObjectState isPidSupported(Service service, int pid);
 };

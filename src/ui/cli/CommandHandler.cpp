@@ -130,19 +130,25 @@ void CommandHandler::cmdHandler() {
 
     console = make_unique<CppReadline::Console>(prompt);
 
-    vector<string> supportedPids = vehicleDataProvider->getSupportedPids();
 
-    console->registerCommand(command_help,
-                             {std::bind(&CommandHandler::printHelp, this, std::placeholders::_1), vector<string>{}});
+    const auto *pidCollection = obdHandler->getPidConfig();
 
-    console->registerCommand(command_get,
-                             {std::bind(&CommandHandler::getDataCommand, this, std::placeholders::_1), supportedPids});
+    console->registerCommand(command_help, {
+            std::bind(&CommandHandler::printHelp, this, std::placeholders::_1), vector<string>{}});
 
-    console->registerCommand(command_set,
-                             {std::bind(&CommandHandler::setDataCommand, this, std::placeholders::_1), supportedPids});
+    setDataGetCommand(*pidCollection, command_get_1, false);
+    setDataGetCommand(*pidCollection, command_get_2, true);
 
-    console->registerCommand(command_sleep,
-                             {std::bind(&CommandHandler::sleep, this, std::placeholders::_1), vector<string>{}});
+    console->registerCommand(command_get_1, {
+            std::bind(&CommandHandler::getDataCommand, this, placeholders::_1, false),
+            pidCollection->at(POWERTRAIN).getPidNames()});
+
+    console->registerCommand(command_set_1, {
+            std::bind(&CommandHandler::setDataCommand, this, std::placeholders::_1),
+            pidCollection->at(Service::POWERTRAIN).getPidNames()});
+
+    console->registerCommand(command_sleep, {
+            std::bind(&CommandHandler::sleep, this, std::placeholders::_1), vector<string>{}});
 
     cmdHandlerRdy = true;
 
@@ -164,11 +170,19 @@ void CommandHandler::cmdHandler() {
     cmdHandlerRdy = false;
 }
 
+void CommandHandler::setDataGetCommand(const map<Service, PidCollection> &pidCollection, string getCmd,
+                                       bool freezeFrameVehicle) {
+    console->registerCommand(getCmd, {
+            std::bind(&CommandHandler::getDataCommand, this, placeholders::_1, freezeFrameVehicle),
+            pidCollection.at(POWERTRAIN).getPidNames()});
+
+}
+
 bool CommandHandler::isOpen() {
     return open;
 }
 
-int CommandHandler::printHelp(const vector<string> &cmd) {
+int CommandHandler::printHelp(const vector<string> &cmd) const {
     if (cmd.size() == 1) {
         cout << "Usage cmd system [value]\n";
         cout << "Type 'help cmd' or 'help pid' to get more information." << endl;
@@ -183,9 +197,13 @@ int CommandHandler::printHelp(const vector<string> &cmd) {
         }
         cout << endl;
     } else if (cmd.at(1) == command_pid) {
+        cout << "Supported pids look like Action_ServiceId" << endl;
         cout << "Supported Pids:\n";
-        for (const auto &pid: vehicleDataProvider->getSupportedPids()) {
-            cout << pid << " ";
+        for (auto const&[service, pidCollection] : *obdHandler->getPidConfig()) {
+            cout << "Supported Pids for service " << service;
+            for (auto &pid: pidCollection.getPidNames()) {
+                cout << pid << " ";
+            }
         }
         cout << endl << "These additional commands can follow a set as well:" << endl;
         for (const auto &cmdName : specialSetCommands) {
@@ -215,15 +233,11 @@ bool CommandHandler::getPid(const vector<string> &cmd, Pid &pid, Service &servic
     }
 
     service = info->getService();
-    if (obdHandler->getServiceAndPidInfo(info->getPidId(), service, pid, service) < 0) {
-        cout << "Failed to retrieve info" << endl;
-        return false;
-    }
+    return obdHandler->getServiceAndPidInfo(info->getPidId(), service, pid, service) == SUCCESS;
 
-    return true;
 }
 
-DataObjectState CommandHandler::getData(const vector<string> &cmd) {
+DataObjectState CommandHandler::getData(const vector<string> &cmd, bool freezeFrameVehicle) {
     Service service;
     Pid pid;
     DataObjectState state;
@@ -249,7 +263,13 @@ DataObjectState CommandHandler::getData(const vector<string> &cmd) {
         }
     }
 
-    auto *frameObject = pid.getFrameObject(obdHandler->getVehicle());
+    IFrameObject *frameObject;
+    if (freezeFrameVehicle) {
+        frameObject = pid.getFrameObject(obdHandler->getFreezeFrameVehicle());
+    } else {
+        frameObject = pid.getFrameObject(obdHandler->getVehicle());
+    }
+
     if (frameObject == nullptr) {
         return DataObjectState(NOT_SUPPORTED);
     }
@@ -259,7 +279,7 @@ DataObjectState CommandHandler::getData(const vector<string> &cmd) {
 
 DataObjectState CommandHandler::getDataSpecial(const vector<string> &cmd) {
     const string usage = "Argument missing. Usage: command <SERVICE> <PID>";
-    if (cmd.at(1) == command_pid_by_number || cmd.at(1) == command_set_by_hex_number) {
+    if (cmd.at(1) == command_pid_by_number_1 || cmd.at(1) == command_set_by_hex_number_2) {
         if (cmd.size() < 4) {
             cout << usage << endl;
             return DataObjectState(ErrorType::MISSING_ARGUMENTS);
@@ -267,7 +287,7 @@ DataObjectState CommandHandler::getDataSpecial(const vector<string> &cmd) {
 
         int service = convertStringToT<int>(cmd.at(2));
         int pid;
-        if (cmd.at(1) == command_pid_by_number) {
+        if (cmd.at(1) == command_pid_by_number_1) {
             pid = convertStringToT<int>(cmd.at(3));
         } else {
             pid = convertHexToInt(cmd.at(3));
@@ -366,7 +386,7 @@ DataObjectState CommandHandler::setDataViaPid(string val, Service service, Pid p
 
 DataObjectState CommandHandler::setDataSpecial(const vector<string> &cmd) {
     const string usage = "Argument missing. Usage: command <SERVICE> <PID> <0|1>";
-    if (cmd.at(1) == command_pid_by_number || cmd.at(1) == command_set_by_hex_number) {
+    if (cmd.at(1) == command_pid_by_number_1 || cmd.at(1) == command_set_by_hex_number_2) {
         if (cmd.size() < 5) {
             cout << usage << endl;
             return DataObjectState(ErrorType::MISSING_ARGUMENTS);
@@ -374,7 +394,7 @@ DataObjectState CommandHandler::setDataSpecial(const vector<string> &cmd) {
 
         int service = convertStringToT<int>(cmd.at(2));
         int pid;
-        if (cmd.at(1) == command_pid_by_number) {
+        if (cmd.at(1) == command_pid_by_number_1) {
             pid = convertStringToT<int>(cmd.at(3));
         } else {
             pid = convertHexToInt(cmd.at(3));
@@ -401,8 +421,8 @@ bool CommandHandler::isExitRequested() {
     return exitRequested;
 }
 
-int CommandHandler::getDataCommand(const vector<string> &cmd) {
-    return getData(cmd).type;
+int CommandHandler::getDataCommand(const vector<string> &cmd, bool freezeFrameVehicle) {
+    return getData(cmd, freezeFrameVehicle).type;
 }
 
 int CommandHandler::setDataCommand(const vector<string> &cmd) {

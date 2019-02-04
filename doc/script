@@ -4,45 +4,45 @@
 # The scripting is just executing commands and therefore does
 # not support loops or variables.
 
-# set value
-set VehicleSpeed 0
-set EngineRPM 0
+# set_1 value
+set_1 VehicleSpeed 0
+set_1 EngineRPM 0
 
 # sleep milliseconds
 sleep 800
 
-set VehicleSpeed 20
-set EngineRPM 1000
+set_1 VehicleSpeed 20
+set_1 EngineRPM 1000
 sleep 800
 
-set VehicleSpeed 40
-set EngineRPM 2000
+set_1 VehicleSpeed 40
+set_1 EngineRPM 2000
 sleep 800
 
-set VehicleSpeed 50
-set EngineRPM 3000
+set_1 VehicleSpeed 50
+set_1 EngineRPM 3000
 sleep 800
 
-set VehicleSpeed 60
-set EngineRPM 4000
+set_1 VehicleSpeed 60
+set_1 EngineRPM 4000
 sleep 800
 
-set VehicleSpeed 70
-set EngineRPM 5000
+set_1 VehicleSpeed 70
+set_1 EngineRPM 5000
 sleep 800
 
-set VehicleSpeed 80
-set EngineRPM 6000
+set_1 VehicleSpeed 80
+set_1 EngineRPM 6000
 sleep 800
 
-set VehicleSpeed 90
-set EngineRPM 7000
+set_1 VehicleSpeed 90
+set_1 EngineRPM 7000
 sleep 800
 
-set VehicleSpeed 100
-set EngineRPM 8000
+set_1 VehicleSpeed 100
+set_1 EngineRPM 8000
 sleep 800
 
 sleep 10000
-set VehicleSpeed 0
-set EngineRPM 0
+set_1 VehicleSpeed 0
+set_1 EngineRPM 0

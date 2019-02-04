@@ -11,22 +11,15 @@ void Pid::updateVehicle(Service service, Vehicle *vehicle, byte *data, int dataS
         case FREEZE_FRAME:
             writeService1_2(vehicle, data, dataSize);
             break;
-        case CONFIRMED_DTCS:
-            break;
-        case CLEAR_DTCS:
-            break;
-        case OXYGEN_SENSOR:
-            break;
-//        case ONBOARD_MONITORING_TESTS:
-//            break;
-//        case EMISSION_RELATED_DTC:
-//            break;
-//        case ENABLE_OFF_BOARD_DIAGNOSIS:
-            break;
-        case VEHICLE_INFORMATION:
-            break;
-            //       case EMISSION_RELATED_PERMANENT_DTC:
-            break;
+            /*    case CONFIRMED_DTCS:
+                    break;
+                case CLEAR_DTCS:
+                    break;
+                case OXYGEN_SENSOR:
+                    break;*/
+            /*   case VEHICLE_INFORMATION:
+                   break;*/
+
     }
 
 }
@@ -38,22 +31,14 @@ byte *Pid::getVehicleData(Service service, Vehicle *vehicle, int &size) {
         case FREEZE_FRAME:
             data = readService1_2(vehicle, size);
             break;
-        case CONFIRMED_DTCS:
+/*        case CONFIRMED_DTCS:
             break;
         case CLEAR_DTCS:
             break;
         case OXYGEN_SENSOR:
             break;
-//        case ONBOARD_MONITORING_TESTS:
-//            break;
-//        case EMISSION_RELATED_DTC:
-//            break;
-//        case ENABLE_OFF_BOARD_DIAGNOSIS:
-//            break;
         case VEHICLE_INFORMATION:
-            break;
-            //      case EMISSION_RELATED_PERMANENT_DTC:
-            //   break;
+            break;*/
     }
     return data;
 }

@@ -46,11 +46,12 @@ void from_json(const json &jsData, map<Service, PidCollection> &pcmap) {
             PidCollection pc;
 
             for (auto const &element : jsonPC["pidList"]) {
-                pc.pidList.insert(pair<int, Pid>(element["id"], element));
+                if (!element["name"].empty()) {
+                    pc.pidList.insert(pair<int, Pid>(element["id"], element));
+                }
             }
 
             copyToVector(services, pc.validForServices);
-
             auto service = static_cast<Service>(serviceId);
             pcmap.insert(pair<Service, PidCollection>(service, pc));
         }

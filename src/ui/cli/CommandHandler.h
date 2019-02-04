@@ -31,27 +31,29 @@ enum CLI_TYPE {
 class CommandHandler {
 private:
 
-    const string command_get = "get";
-    const string command_set = "set";
+    const string command_get_1 = "get_1";
+    const string command_set_1 = "set_1";
+    const string command_get_2 = "get_2";
     const string command_sleep = "sleep";
     const string command_help = "?";
     const string command_cmd = "cmd";
     const string command_pid = "pid";
     const string prompt = ">> ";
 
-    const string command_pid_by_number = "PidByNumber";
-    const string command_set_by_hex_number = "PidByHexNumber";
+    const string command_pid_by_number_1 = "PidByNumber_1";
+    const string command_set_by_hex_number_2 = "PidByHexNumber_1";
 
     const string err_invalid_input = "Invalid usage. See help";
     vector<string> commands{
-            command_get,
-            command_set,
+            command_get_1,
+            command_set_1,
+            command_get_2,
             command_help
     };
 
     vector<string> specialSetCommands{
-            command_pid_by_number,
-            command_set_by_hex_number
+            command_pid_by_number_1,
+            command_set_by_hex_number_2
     };
 
 private:
@@ -89,7 +91,7 @@ public:
 public: // public for testing
     DataObjectState setData(const vector<string> &cmd);
 
-    DataObjectState getData(const vector<string> &cmd);
+    DataObjectState getData(const vector<string> &cmd, bool freezeFrameVehicle);
 
     bool getPid(const vector<string> &cmd, Pid &pid, Service &service);
 
@@ -101,7 +103,7 @@ private:
 
     int sleep(const vector<string> &cmd);
 
-    int getDataCommand(const vector<string> &cmd);
+    int getDataCommand(const vector<string> &cmd, bool freezeFrameVehicle);
 
     int setDataCommand(const vector<string> &cmd);
 
@@ -119,7 +121,9 @@ private:
 
     void cmdHandler();
 
-    int printHelp(const vector<string> &cmd);
+    int printHelp(const vector<string> &cmd) const;
+
+    void setDataGetCommand(const map<Service, PidCollection> &pidCollection, string getCmd, bool freezeFrameVehicle);
 };
 
 

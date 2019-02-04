@@ -176,7 +176,7 @@ set(CPPSRC
         src/OBD/Service.h
         src/Vehicle.cpp
         src/ui/VehicleDataProvider.cpp src/ui/VehicleDataProvider.h
-        src/Vehicle.h src/ui/webBackend/Wamp.cpp src/ui/webBackend/Wamp.h)
+        src/Vehicle.h src/ui/webBackend/Wamp.cpp src/ui/webBackend/Wamp.h src/OBD/PidCollection.cpp src/OBD/PidCollection.h src/OBD/data/dataObject/ErrorType.h)
 
 
 add_executable(open_obd2 src/main.cpp ${CPPSRC} ${cpp-readline} ${wamp})

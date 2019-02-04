@@ -7,19 +7,9 @@
 
 #include <vector>
 #include <string>
+#include "ErrorType.h"
 
 using namespace std;
-
-enum ErrorType {
-    SUCCESS = 0,
-    TOO_LARGE = 2,
-    TOO_SMALL = 4,
-    INVALID_NUMBER = 8,
-    MISSING_ARGUMENTS = 16,
-    NOT_SUPPORTED = 32,
-    DATA_ERROR = 64,
-    TIMEOUT = 128,
-};
 
 
 struct DataObjectState {

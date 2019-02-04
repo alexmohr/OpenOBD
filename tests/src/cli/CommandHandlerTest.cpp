@@ -53,9 +53,9 @@ void TestCommandHandler(CLI_TYPE type) {
     bool descriptionsNotNull;
 
     for (const auto &cmdMap: COMMAND_MAPPING) {
-        vector<string> validData{"set", cmdMap.first};
-        vector<string> smallData{"set", cmdMap.first};
-        vector<string> largeData{"set", cmdMap.first};
+        vector<string> validData{"set_1", cmdMap.first};
+        vector<string> smallData{"set_1", cmdMap.first};
+        vector<string> largeData{"set_1", cmdMap.first};
         EXPECT_EQ(true, cmdHandler->getPid(validData, pid, service));
         auto *fo = pid.getFrameObject(cmdHandler->getObdHandler().getVehicle());
         if (nullptr == fo) {
@@ -109,16 +109,14 @@ void TestCommandHandler(CLI_TYPE type) {
 
                 // modify command to make getter
                 cmd.first.erase(cmd.first.begin() + 2, cmd.first.end());
-                cmd.first.at(0) = "get";
+                cmd.first.at(0) = "get_1";
                 cout << "testing command: " << vectorToString(cmd.first) << endl;
-                EXPECT_EQ(SUCCESS, cmdHandler->getData(cmd.first).type);
+                EXPECT_EQ(SUCCESS, cmdHandler->getData(cmd.first, false).type);
             }
-            if (nullptr != vehicleData) {
-                delete[] vehicleData;
-            }
-            if (nullptr != answerData) {
-                delete[] answerData;
-            }
+
+            delete[] vehicleData;
+            delete[] answerData;
+
         }
     }
 }
@@ -152,47 +150,47 @@ TEST(CommandHandlerTest, set_special) {
     DataObjectState res = cmdHandler->setData(cmd);
     EXPECT_EQ(res.type, ErrorType::MISSING_ARGUMENTS);
 
-    cmd = {"set", "PidByNumber", "123"};
+    cmd = {"set", "PidByNumber_1", "123"};
     res = cmdHandler->setData(cmd);
     EXPECT_EQ(res.type, ErrorType::MISSING_ARGUMENTS);
 
-    cmd = {"set", "PidByHexNumber"};
+    cmd = {"set", "PidByHexNumber_1"};
     res = cmdHandler->setData(cmd);
     EXPECT_EQ(res.type, ErrorType::MISSING_ARGUMENTS);
 
-    cmd = {"set", "PidByNumber", "123"};
+    cmd = {"set", "PidByNumber_1", "123"};
     res = cmdHandler->setData(cmd);
     EXPECT_EQ(res.type, ErrorType::MISSING_ARGUMENTS);
 
-    cmd = {"set", "PidByHexNumber", "123"};
+    cmd = {"set", "PidByHexNumber_1", "123"};
     res = cmdHandler->setData(cmd);
     EXPECT_EQ(res.type, ErrorType::MISSING_ARGUMENTS);
 
-    cmd = {"set", "PidByNumber", "123", "test"};
+    cmd = {"set", "PidByNumber_1", "123", "test"};
     res = cmdHandler->setData(cmd);
     EXPECT_EQ(res.type, ErrorType::MISSING_ARGUMENTS);
 
-    cmd = {"set", "PidByHexNumber", "123", "test"};
+    cmd = {"set", "PidByHexNumber_1", "123", "test"};
     res = cmdHandler->setData(cmd);
     EXPECT_EQ(res.type, ErrorType::MISSING_ARGUMENTS);
 
     // valid
-    cmd = {"set", "PidByHexNumber", "1", "0x0D", "1"};
+    cmd = {"set", "PidByHexNumber_1", "1", "0x0D", "1"};
     res = cmdHandler->setData(cmd);
     EXPECT_EQ(res.type, ErrorType::SUCCESS);
     EXPECT_TRUE(cmdHandler->getObdHandler().getVehicle()->getPidSupport().getPidSupported(Service::POWERTRAIN, 0x0d));
 
-    cmd = {"set", "PidByHexNumber", "1", "0x0D", "0"};
+    cmd = {"set", "PidByHexNumber_1", "1", "0x0D", "0"};
     EXPECT_EQ(res.type, ErrorType::SUCCESS);
     res = cmdHandler->setData(cmd);
     EXPECT_FALSE(cmdHandler->getObdHandler().getVehicle()->getPidSupport().getPidSupported(Service::POWERTRAIN, 0x0d));
 
-    cmd = {"set", "PidByNumber", "1", "13", "1"};
+    cmd = {"set", "PidByNumber_1", "1", "13", "1"};
     res = cmdHandler->setData(cmd);
     EXPECT_EQ(res.type, ErrorType::SUCCESS);
     EXPECT_TRUE(cmdHandler->getObdHandler().getVehicle()->getPidSupport().getPidSupported(Service::POWERTRAIN, 0x0d));
 
-    cmd = {"set", "PidByNumber", "1", "13", "0"};
+    cmd = {"set", "PidByNumber_1", "1", "13", "0"};
     EXPECT_EQ(res.type, ErrorType::SUCCESS);
     res = cmdHandler->setData(cmd);
     EXPECT_FALSE(cmdHandler->getObdHandler().getVehicle()->getPidSupport().getPidSupported(Service::POWERTRAIN, 0x0d));
@@ -219,21 +217,21 @@ TEST(CommandHandlerTest, tryBreakStuff) {
     EXPECT_EQ(MISSING_ARGUMENTS, cmdHandler->setData(data).type);
 
     data = {"get"};
-    EXPECT_EQ(MISSING_ARGUMENTS, cmdHandler->getData(data).type);
+    EXPECT_EQ(MISSING_ARGUMENTS, cmdHandler->getData(data, false).type);
 
     data = {"get", "adsas"};
-    EXPECT_EQ(DATA_ERROR, cmdHandler->getData(data).type);
+    EXPECT_EQ(DATA_ERROR, cmdHandler->getData(data, false).type);
 
     data = {"get", "VehicleSpeed"};
-    EXPECT_EQ(NOT_SUPPORTED, cmdHandler->getData(data).type);
+    EXPECT_EQ(NOT_SUPPORTED, cmdHandler->getData(data, false).type);
 
     data = {"get", "VehicleSpeed", "aasdasd"};
-    EXPECT_EQ(NOT_SUPPORTED, cmdHandler->getData(data).type);
+    EXPECT_EQ(NOT_SUPPORTED, cmdHandler->getData(data, false).type);
 
 
     initCommandHandler(mockComm, cmdHandler);
     data = {"get", "VehicleSpeed"};
-    EXPECT_EQ(SUCCESS, cmdHandler->getData(data).type);
+    EXPECT_EQ(SUCCESS, cmdHandler->getData(data, false).type);
 
     // todo invalid int is not handled.
     data = {"set", "VehicleSpeed", "asdhasdlsad"};

@@ -104,6 +104,7 @@ public:
     // todo refactor to getter / setter methods
     int id;
     int size;
+    string name;
     string description;
     int datafields;
     vector<float> maxValues;

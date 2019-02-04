@@ -17,15 +17,15 @@ void Pid::updateVehicle(Service service, Vehicle *vehicle, byte *data, int dataS
             break;
         case OXYGEN_SENSOR:
             break;
-        case ONBOARD_MONITORING_TESTS:
-            break;
-        case EMISSION_RELATED_DTC:
-            break;
-        case ENABLE_OFF_BOARD_DIAGNOSIS:
+//        case ONBOARD_MONITORING_TESTS:
+//            break;
+//        case EMISSION_RELATED_DTC:
+//            break;
+//        case ENABLE_OFF_BOARD_DIAGNOSIS:
             break;
         case VEHICLE_INFORMATION:
             break;
-        case EMISSION_RELATED_PERMANENT_DTC:
+            //       case EMISSION_RELATED_PERMANENT_DTC:
             break;
     }
 
@@ -44,16 +44,16 @@ byte *Pid::getVehicleData(Service service, Vehicle *vehicle, int &size) {
             break;
         case OXYGEN_SENSOR:
             break;
-        case ONBOARD_MONITORING_TESTS:
-            break;
-        case EMISSION_RELATED_DTC:
-            break;
-        case ENABLE_OFF_BOARD_DIAGNOSIS:
-            break;
+//        case ONBOARD_MONITORING_TESTS:
+//            break;
+//        case EMISSION_RELATED_DTC:
+//            break;
+//        case ENABLE_OFF_BOARD_DIAGNOSIS:
+//            break;
         case VEHICLE_INFORMATION:
             break;
-        case EMISSION_RELATED_PERMANENT_DTC:
-            break;
+            //      case EMISSION_RELATED_PERMANENT_DTC:
+            //   break;
     }
     return data;
 }

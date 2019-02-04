@@ -93,7 +93,6 @@ set(CPPSRC
         src/ui/cli/CliHandler.cpp src/ui/cli/CliHandler.h
         src/ui/cli/CommandHandler.cpp
         src/ui/cli/CommandHandler.h
-        src/ui/CommandInfo.cpp src/ui/CommandInfo.h
         src/common/conversion.cpp
         src/common/conversion.h
         src/common/endian.h

@@ -14,7 +14,6 @@
 #include "../../communication/ELMClient.h"
 #include "../../communication/ELM327WifiServer.h"
 #include "../../OBD/OBDHandler.h"
-#include "../CommandInfo.h"
 #include "../VehicleDataProvider.h"
 #include "../../../submodules/cpp-readline/src/Console.hpp"
 
@@ -93,11 +92,11 @@ public: // public for testing
 
     DataObjectState getData(const vector<string> &cmd, bool freezeFrameVehicle);
 
-    bool getPid(const vector<string> &cmd, Pid &pid, Service &service);
-
     bool isInitDone();
 
     OBDHandler &getObdHandler();
+
+    VehicleDataProvider * getVehicleDataProvider();
 
 private:
 

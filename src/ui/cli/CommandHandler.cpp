@@ -218,31 +218,6 @@ int CommandHandler::printHelp(const vector<string> &cmd) const {
     return 0;
 }
 
-bool CommandHandler::getPid(const vector<string> &cmd, Pid &pid, Service &service) {
-    if (cmd.size() == 1) {
-        return false;
-    }
-
-    bool foundPid = false;
-    for (auto const&[serviceObj, pidCollection] :  *obdHandler->getPidConfig()) {
-        for (const auto &pidObj: pidCollection.get_pid_list_as_vector()) {
-            if (cmd.at(1) == pidObj.name) {
-                pid = pidObj;
-                service = serviceObj;
-                foundPid = true;
-                break;
-            }
-        }
-    }
-
-    if (!foundPid) {
-        return false;
-    }
-
-    return obdHandler->getServiceAndPidInfo(pid.id, service, pid, service) == SUCCESS;
-
-}
-
 DataObjectState CommandHandler::getData(const vector<string> &cmd, bool freezeFrameVehicle) {
     Service service;
     Pid pid;
@@ -252,7 +227,7 @@ DataObjectState CommandHandler::getData(const vector<string> &cmd, bool freezeFr
         return DataObjectState(MISSING_ARGUMENTS);;
     }
 
-    if (!getPid(cmd, pid, service)) {
+    if (cmd.size() == 1 || !vehicleDataProvider->getPid(cmd.at(1), pid, service)) {
         return getDataSpecial(cmd);
     }
 
@@ -335,7 +310,7 @@ DataObjectState CommandHandler::setData(const vector<string> &cmd) {
     Service service;
     Pid pid;
     // command is a pid.
-    if (getPid(cmd, pid, service)) {
+    if (cmd.size() > 1 && vehicleDataProvider->getPid(cmd.at(1), pid, service)) {
         return setDataViaPid(val, service, pid);
     } else {
         // try if it is special command
@@ -451,5 +426,9 @@ void CommandHandler::executeFile(string fileName) {
         this_thread::sleep_for(100ms);
     }
     console->executeFile(fileName);
+}
+
+VehicleDataProvider * CommandHandler::getVehicleDataProvider() {
+    return vehicleDataProvider.get();
 }
 

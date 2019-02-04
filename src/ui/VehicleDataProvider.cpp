@@ -12,45 +12,28 @@ VehicleDataProvider::VehicleDataProvider(shared_ptr<OBDHandler> obdHandler,
     this->comInterface = comInterface;
 }
 
-vector<string> VehicleDataProvider::getSupportedPids() const {
-    Service service;
-    Pid pid;
-    vector<string> supportedPids = vector<string>();
-    for (const auto &cmdName : COMMAND_MAPPING) {
-        if (obdHandler->getServiceAndPidInfo(
-                cmdName.second.getPidId(), cmdName.second.getService(), pid, service) != 0) {
-            LOG(FATAL) << "Pid with ID " << pid.id << "does only exist in cmdHandler";
-            continue;
-        }
-
-        if (obdHandler->getVehicle()->getPidSupport().getPidSupported(service, pid.id)) {
-            supportedPids.push_back(cmdName.first);
-        }
-    }
-    return supportedPids;
-}
-
 bool VehicleDataProvider::configureVehicle() const {
     // query the vehicle which PID's it supports
-    vector<Service1Pids> pidIds{
-            SupportedPid01_20, SupportedPid21_40, SupportedPid41_60, SupportedPid61_80,
-            SupportedPid81_A0, SupportedPidA1_C0, SupportedPidC1_E0,
-    };
+    Pid pidObj;
+    Service serviceObj;
+    DataObjectState state;
 
-    auto service = POWERTRAIN;
     bool anyError = false;
-    for (const auto &id: pidIds) {
-        Pid pid;
-        if (obdHandler->getServiceAndPidInfo(id, service, pid, service) < 0) {
-            LOG(ERROR) << "failed to get pid information";
-        }
+    for (auto &service: services) {
+        for (const auto &id: pidIds) {
+            if (obdHandler->getServiceAndPidInfo(id, service, pidObj, serviceObj) != SUCCESS) {
+                continue;
+            }
 
-        anyError |= queryVehicle(pid, service).type != SUCCESS;
+            if (!pidObj.name.empty()) {
+                state = queryVehicle(pidObj, serviceObj);
+                anyError |= state.type != (SUCCESS) && state.type != (NOT_SUPPORTED);
+            }
+        }
     }
 
     return anyError;
 }
-
 
 DataObjectState VehicleDataProvider::queryVehicle(Pid pid, Service service) const {
     if (obdHandler->isPidSupported(service, pid.id).type != SUCCESS) {
@@ -98,5 +81,31 @@ DataObjectState VehicleDataProvider::queryVehicle(Pid pid, Service service) cons
     delete[] buf;
     return retVal;
 }
+
+
+bool VehicleDataProvider::getPid(const string &pidName, Pid &pid, Service &service) const {
+    if (pidName.empty()) {
+        return false;
+    }
+
+    bool foundPid = false;
+    for (auto const&[serviceObj, pidCollection] :  *obdHandler->getPidConfig()) {
+        for (const auto &pidObj: pidCollection.get_pid_list_as_vector()) {
+            if (pidName == pidObj.name) {
+                pid = pidObj;
+                service = serviceObj;
+                foundPid = true;
+                break;
+            }
+        }
+    }
+
+    if (!foundPid) {
+        return false;
+    }
+
+    return obdHandler->getServiceAndPidInfo(pid.id, service, pid, service) == SUCCESS;
+}
+
 
 

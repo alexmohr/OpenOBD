@@ -11,13 +11,30 @@
 #include "../OBD/Pid.h"
 #include "../OBD/OBDHandler.h"
 #include "../OBD/Service.h"
-#include "CommandInfo.h"
 
 
 class VehicleDataProvider {
 private:
     shared_ptr<OBDHandler> obdHandler;
     shared_ptr<ICommunicationInterface> comInterface;
+private:
+    vector<Service1Pids> pidIds{
+            SupportedPid01_20, SupportedPid21_40, SupportedPid41_60, SupportedPid61_80,
+            SupportedPid81_A0, SupportedPidA1_C0, SupportedPidC1_E0,
+    };
+
+    vector<Service> services{
+            POWERTRAIN,
+            FREEZE_FRAME,
+//            CONFIRMED_DTCS,
+//            CLEAR_DTCS,
+//            OXYGEN_SENSOR,
+//            ONBOARD_MONITORING_TESTS,
+//            EMISSION_RELATED_DTC,
+//            ENABLE_OFF_BOARD_DIAGNOSIS,
+//            VEHICLE_INFORMATION,
+            //         EMISSION_RELATED_PERMANENT_DTC,
+    };
 
 public:
     VehicleDataProvider(shared_ptr<OBDHandler> obdHandler,
@@ -34,9 +51,12 @@ public:
      */
     DataObjectState queryVehicle(Pid pid, Service service) const;
 
-    vector<string> getSupportedPids() const;
-
     bool configureVehicle() const;
+
+    bool getPid(const string &pidName, Pid &pid, Service &service) const;
+
+private:
+    DataObjectState doVehicleQuery(const Pid &pid, const Service &service) const;
 };
 
 

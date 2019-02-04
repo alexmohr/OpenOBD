@@ -52,71 +52,73 @@ void TestCommandHandler(CLI_TYPE type) {
     Service service;
     bool descriptionsNotNull;
 
-    for (const auto &cmdMap: COMMAND_MAPPING) {
-        vector<string> validData{"set_1", cmdMap.first};
-        vector<string> smallData{"set_1", cmdMap.first};
-        vector<string> largeData{"set_1", cmdMap.first};
-        EXPECT_EQ(true, cmdHandler->getPid(validData, pid, service));
-        auto *fo = pid.getFrameObject(cmdHandler->getObdHandler().getVehicle());
-        if (nullptr == fo) {
-            continue;
-        }
-        descriptionsNotNull = true;
-
-        for (const auto &desc : fo->getDescriptions()) {
-            EXPECT_FALSE(desc == nullptr);
-            if (desc == nullptr) {
-                cout << hex << "0x" << pid.id << " has no description!" << endl;
-                descriptionsNotNull = false;
-                break;
+    for (auto const&[serviceObj, pidCollection] :  *obdHandler->getPidConfig()) {
+        for (const auto &pidObj: pidCollection.get_pid_list_as_vector()) {
+            if (pidObj.name.empty()) { continue; }
+            vector<string> validData{"set_1", pidObj.name};
+            vector<string> smallData{"set_1", pidObj.name};
+            vector<string> largeData{"set_1", pidObj.name};
+            EXPECT_EQ(true, cmdHandler->getVehicleDataProvider()->getPid(validData.at(1), pid, service));
+            auto *fo = pid.getFrameObject(cmdHandler->getObdHandler().getVehicle());
+            if (nullptr == fo) {
+                continue;
             }
+            descriptionsNotNull = true;
 
-            // do not overwrite supported pids
-            if (cmdMap.first.find("SupportedPid") != std::string::npos) {
-                validData.push_back(to_string(1));
-                smallData.push_back(to_string(1));
-                largeData.push_back(to_string(1));
-            } else {
-                validData.push_back(to_string(getRand(desc->getMin(), desc->getMax())));
-                // offset because double and float would give under/overflow
-                smallData.push_back(to_string(desc->getMin() + 0.01));
-                largeData.push_back(to_string(desc->getMax() - 0.01));
-            }
-
-
-        }
-        if (descriptionsNotNull) {
-            cout << "testing command: " << vectorToString(validData) << endl;
-            vector<pair<vector<string>, int>> commands{
-                    {validData, SUCCESS},
-                    {smallData, SUCCESS},
-                    {largeData, SUCCESS}};
-
-            byte *vehicleData = nullptr;
-            byte *answerData = nullptr;
-            for (auto &cmd : commands) {
-
-                cout << "testing command: " << vectorToString(cmd.first) << endl;
-                if (ECU == type) {
-                    EXPECT_EQ(cmd.second, cmdHandler->setData(cmd.first).type); // only ecu does support setting.
+            for (const auto &desc : fo->getDescriptions()) {
+                EXPECT_FALSE(desc == nullptr);
+                if (desc == nullptr) {
+                    cout << hex << "0x" << pid.id << " has no description!" << endl;
+                    descriptionsNotNull = false;
+                    break;
                 }
 
-                int size = 0;
+                // do not overwrite supported pids
+                if (pidObj.name.find("SupportedPid") != std::string::npos) {
+                    validData.push_back(to_string(1));
+                    smallData.push_back(to_string(1));
+                    largeData.push_back(to_string(1));
+                } else {
+                    validData.push_back(to_string(getRand(desc->getMin(), desc->getMax())));
+                    // offset because double and float would give under/overflow
+                    smallData.push_back(to_string(desc->getMin() + 0.01));
+                    largeData.push_back(to_string(desc->getMax() - 0.01));
+                }
 
-                vehicleData = pid.getVehicleData(service, cmdHandler->getObdHandler().getVehicle(), size);
-                answerData = cmdHandler->getObdHandler().createAnswerFrame(service, pid, vehicleData, size);
-                mockComm->setDataForNextReceiveCall(answerData, size);
 
-                // modify command to make getter
-                cmd.first.erase(cmd.first.begin() + 2, cmd.first.end());
-                cmd.first.at(0) = "get_1";
-                cout << "testing command: " << vectorToString(cmd.first) << endl;
-                EXPECT_EQ(SUCCESS, cmdHandler->getData(cmd.first, false).type);
             }
+            if (descriptionsNotNull) {
+                cout << "testing command: " << vectorToString(validData) << endl;
+                vector<pair<vector<string>, int>> commands{
+                        {validData, SUCCESS},
+                        {smallData, SUCCESS},
+                        {largeData, SUCCESS}};
 
-            delete[] vehicleData;
-            delete[] answerData;
+                byte *vehicleData = nullptr;
+                byte *answerData = nullptr;
+                for (auto &cmd : commands) {
 
+                    cout << "testing command: " << vectorToString(cmd.first) << endl;
+                    if (ECU == type) {
+                        EXPECT_EQ(cmd.second, cmdHandler->setData(cmd.first).type); // only ecu does support setting.
+                    }
+
+                    int size = 0;
+
+                    vehicleData = pid.getVehicleData(service, cmdHandler->getObdHandler().getVehicle(), size);
+                    answerData = cmdHandler->getObdHandler().createAnswerFrame(service, pid, vehicleData, size);
+                    mockComm->setDataForNextReceiveCall(answerData, size);
+
+                    // modify command to make getter
+                    cmd.first.erase(cmd.first.begin() + 2, cmd.first.end());
+                    cmd.first.at(0) = "get_1";
+                    cout << "testing command: " << vectorToString(cmd.first) << endl;
+                    EXPECT_EQ(SUCCESS, cmdHandler->getData(cmd.first, false).type);
+                }
+
+                delete[] vehicleData;
+                delete[] answerData;
+            }
         }
     }
 }

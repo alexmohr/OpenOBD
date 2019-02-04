@@ -69,8 +69,10 @@ void CommandHandler::stopHandler() {
 
 
 void CommandHandler::configureVirtualVehicle(Vehicle *vehicle) {
-    for (auto &cmd: COMMAND_MAPPING) {
-        vehicle->getPidSupport().setPidSupported(cmd.second.getService(), cmd.second.getPidId(), true);
+    for (auto const&[service, pidCollection] :  *obdHandler->getPidConfig()) {
+        for (const auto &pid: pidCollection.get_pid_list_as_vector()) {
+            vehicle->getPidSupport().setPidSupported(service, pid.id, true);
+        }
     }
 
     initDone = true;
@@ -221,19 +223,23 @@ bool CommandHandler::getPid(const vector<string> &cmd, Pid &pid, Service &servic
         return false;
     }
 
-    const CommandInfo *info = nullptr;
-    for (const auto &cmdName : COMMAND_MAPPING) {
-        if (cmd.at(1) == cmdName.first) {
-            info = &cmdName.second;
+    bool foundPid = false;
+    for (auto const&[serviceObj, pidCollection] :  *obdHandler->getPidConfig()) {
+        for (const auto &pidObj: pidCollection.get_pid_list_as_vector()) {
+            if (cmd.at(1) == pidObj.name) {
+                pid = pidObj;
+                service = serviceObj;
+                foundPid = true;
+                break;
+            }
         }
     }
 
-    if (nullptr == info) {
+    if (!foundPid) {
         return false;
     }
 
-    service = info->getService();
-    return obdHandler->getServiceAndPidInfo(info->getPidId(), service, pid, service) == SUCCESS;
+    return obdHandler->getServiceAndPidInfo(pid.id, service, pid, service) == SUCCESS;
 
 }
 

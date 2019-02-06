@@ -108,4 +108,20 @@ bool VehicleDataProvider::getPid(const string &pidName, Pid &pid, Service &servi
 }
 
 
+DataObjectState VehicleDataProvider::getPrintableDataForPid(bool freezeFrameVehicle, Pid &pid, string &value) const {
+    IFrameObject *frameObject;
+    if (freezeFrameVehicle) {
+        frameObject = pid.getFrameObject(obdHandler->getFreezeFrameVehicle());
+    } else {
+        frameObject = pid.getFrameObject(obdHandler->getVehicle());
+    }
+
+    if (frameObject == nullptr) {
+        return DataObjectState(NOT_SUPPORTED);
+    }
+    value = frameObject->getPrintableData();
+    return DataObjectState(SUCCESS);
+}
+
+
 

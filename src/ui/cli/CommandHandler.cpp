@@ -245,19 +245,16 @@ DataObjectState CommandHandler::getData(const vector<string> &cmd, bool freezeFr
         }
     }
 
-    IFrameObject *frameObject;
-    if (freezeFrameVehicle) {
-        frameObject = pid.getFrameObject(obdHandler->getFreezeFrameVehicle());
-    } else {
-        frameObject = pid.getFrameObject(obdHandler->getVehicle());
+    string value;
+
+    state = vehicleDataProvider->getPrintableDataForPid(freezeFrameVehicle, pid, value);
+    if (state.type == SUCCESS) {
+        cout << value << endl;
     }
 
-    if (frameObject == nullptr) {
-        return DataObjectState(NOT_SUPPORTED);
-    }
-    cout << frameObject->getPrintableData() << endl;
-    return DataObjectState(SUCCESS);
+    return state;
 }
+
 
 DataObjectState CommandHandler::getDataSpecial(const vector<string> &cmd) {
     const string usage = "Argument missing. Usage: command <SERVICE> <PID>";

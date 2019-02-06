@@ -21,10 +21,12 @@ int CliHandler::openCli(int argc, char *argv[]) {
 
     int port = 35000;
     bool enableElm = false;
+    bool enableWamp = false;
 
     CLI_TYPE type;
 
-    if (getCommandLineArgs(argc, argv, *interface, port, type, enableElm, *script) == EXIT_FAILURE) {
+    if (getCommandLineArgs(argc, argv, *interface, port, type, enableElm, *script,
+                           enableWamp) == EXIT_FAILURE) {
         return EXIT_FAILURE;
     }
 
@@ -81,9 +83,11 @@ int CliHandler::openCli(int argc, char *argv[]) {
         cmdHandler->executeFile(string(script));
     }
 
-    // todo only enable if configured.
-    wampHandler = make_shared<Wamp>(logicalComInterface, obdHandler);
-    wampHandler->openInterface();
+    if (enableWamp) {
+        wampHandler = make_shared<Wamp>(logicalComInterface, obdHandler);
+        wampHandler->openInterface();
+    }
+
 
     delete[] script;
     return val;
@@ -126,12 +130,13 @@ void CliHandler::display_help(char *progname) {
                     "  -x                              Set logging to debug\n."
                     "  -e                              Enable elm server\n."
                     "  -r                              Run a script directly before showing console.\n"
+                    "  -w                              Enable web server.\n"
                     "\n");
 }
 
 int
 CliHandler::getCommandLineArgs(int argc, char **argv, char &interface, int &port, CLI_TYPE &type, bool &enableElm,
-                               char &script) {
+                               char &script, bool &enableWamp) {
     char *typeTester = const_cast<char *>("tester");
     char *typeEcu = const_cast<char *>("ecu");
     char *typeWElm = const_cast<char *>("welm");
@@ -142,7 +147,7 @@ CliHandler::getCommandLineArgs(int argc, char **argv, char &interface, int &port
     bool logDebug = false;
 
     int c;
-    while ((c = getopt(argc, argv, "d:t:i:r:p:xe")) != -1) {
+    while ((c = getopt(argc, argv, "d:t:i:r:p:xew")) != -1) {
         switch (c) {
             case 'e':
                 enableElm = true;
@@ -175,6 +180,9 @@ CliHandler::getCommandLineArgs(int argc, char **argv, char &interface, int &port
                 break;
             case 'r':
                 strcpy(&script, optarg);
+                break;
+            case 'w':
+                enableWamp = true;
                 break;
             case '?':
             case 'h':

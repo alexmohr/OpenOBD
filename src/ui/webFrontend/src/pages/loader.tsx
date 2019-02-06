@@ -41,10 +41,15 @@ class Loader extends React.Component<WithStyles<typeof styles>, State> {
     connectionReady: false
   };
 
+  private initVehicle() : void{
+    stateStore.getState().autobahn.getServices();
+  }
+
   private waitForConnection(connectionOpenRequestTime: Date): void {
     setTimeout(() => {
       let elapsedTime = new Date().valueOf() - connectionOpenRequestTime.valueOf();
       if (stateStore.getState().autobahn.isOpen()) {
+        this.initVehicle();
         this.setState({
           connectionReady: true,
         });

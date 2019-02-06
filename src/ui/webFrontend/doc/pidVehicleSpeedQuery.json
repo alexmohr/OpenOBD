@@ -1,0 +1,15 @@
+{
+    "data": {
+        "string": "0 kph"
+    },
+    "pid": {
+        "datafields": 1,
+        "description": "Vehicle speed",
+        "id": 13,
+        "name": "VehicleSpeed",
+        "size": 1
+    },
+    "service": {
+        "id": 1
+    }
+}

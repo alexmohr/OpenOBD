@@ -18,21 +18,10 @@ export class Communication {
 
     private _isOpen: boolean = false;
 
-    private static _instance: Communication | null = null;
-
     public constructor() {
-        Communication._instance = this;
     }
 
 
-    public static getInstance() : Communication{
-        if (null == Communication._instance ){
-            Communication._instance = new Communication();
-        }
-        return Communication._instance;
-    }
-
-   
     /**
      * Opens the wamp connection
      */
@@ -40,11 +29,26 @@ export class Communication {
         var connection = new autobahn.Connection({ url: this._url, realm: this._realm });
         connection.onopen = (session: autobahn.Session) => this.connectionOpened(session);
         connection.open();
-        
+
     }
 
-    public isOpen(): boolean{
+    public isOpen(): boolean {
         return this._isOpen;
+    }
+
+    private foobar(result :{}) : void{
+        console.log(JSON.stringify(result))
+    }
+
+    public getServices(): void {
+        //this._session.call("service.get.1.VehicleSpeed").catch((error) => this.logWampError(error))
+        if (this._session == undefined) {
+            return;
+        }
+        
+        this._session.call("get.service.1").then(this.foobar)
+        this._session.call("get.service.1.VehicleSpeed").then(this.foobar)
+
     }
 
     private connectionOpened = (session: autobahn.Session): void => {

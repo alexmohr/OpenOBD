@@ -11,7 +11,7 @@ import createStyles from '@material-ui/core/styles/createStyles';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import withRoot from '../withRoot';
 import { Communication } from '../autobahn';
-import {stateStore} from '../redux/reducer'
+import { stateStore } from '../redux/reducer'
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -26,14 +26,14 @@ type State = {
 };
 
 class Dashboard extends React.Component<WithStyles<typeof styles>, State> {
-  
+
   state = {
     open: false,
   };
 
 
   componentDidMount() {
-    if (!stateStore.getState().autobahn.isOpen()){
+    if (!stateStore.getState().autobahn.isOpen()) {
       document.location.pathname = "/";
     }
   }

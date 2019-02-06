@@ -55,8 +55,7 @@ public:
 
     bool getPid(const string &pidName, Pid &pid, Service &service) const;
 
-private:
-    DataObjectState doVehicleQuery(const Pid &pid, const Service &service) const;
+    DataObjectState getPrintableDataForPid(bool freezeFrameVehicle, Pid &pid, string &value) const;
 };
 
 

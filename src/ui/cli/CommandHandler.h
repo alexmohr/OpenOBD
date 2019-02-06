@@ -96,7 +96,7 @@ public: // public for testing
 
     OBDHandler &getObdHandler();
 
-    VehicleDataProvider * getVehicleDataProvider();
+    VehicleDataProvider *getVehicleDataProvider();
 
 private:
 
@@ -123,6 +123,8 @@ private:
     int printHelp(const vector<string> &cmd) const;
 
     void setDataGetCommand(const map<Service, PidCollection> &pidCollection, string getCmd, bool freezeFrameVehicle);
+
+
 };
 
 

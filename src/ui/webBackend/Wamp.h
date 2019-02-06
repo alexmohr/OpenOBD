@@ -43,10 +43,10 @@ private:
     void serve();
 
 private:
-    void getPid(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_info info, Pid pid,
-                Service service);
 
-    void getSupportedPids(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_info info);
+    void getPidsInService(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_info info, Service service);
+
+    void getPid(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_info info, Service service, Pid pid);
 };
 
 

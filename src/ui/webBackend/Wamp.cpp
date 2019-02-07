@@ -37,11 +37,6 @@ void Wamp::serve() {
         return;
     }
 
-    router.callable("openobd", "greeting",
-                    [](wampcc::wamp_router &, wampcc::wamp_session &ws, wampcc::call_info info) {
-                        ws.result(info.request_id, {"hello"});
-                    });
-
     for (auto const&[service, pidCollection] :  *obdHandler->getPidConfig()) {
         std::string serviceUrl = "get.service." + to_string(service);
         router.callable(REALM, serviceUrl,
@@ -107,6 +102,10 @@ Wamp::getPid(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_i
     jsonPid["name"] = pid.name;
     jsonPid["description"] = pid.description;
     jsonPid["datafields"] = pid.datafields;
+    addVectorToJsonObject(jsonPid, "minValues", pid.minValues);
+    addVectorToJsonObject(jsonPid, "maxValues", pid.maxValues);
+    addVectorToJsonObject(jsonPid, "units", pid.units);
+
     rootObject["pid"] = jsonPid;
 
     auto jsonData = wampcc::json_value::make_object();
@@ -114,4 +113,12 @@ Wamp::getPid(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_i
     rootObject["data"] = jsonData;
 
     caller.result(info.request_id, v.as<wampcc::json_array>());
+}
+
+template<typename T>
+void Wamp::addVectorToJsonObject(wampcc::json_value &obj, string name, vector<T> vec) {
+    obj[name] = wampcc::json_value::make_array();
+    for (const auto &value : vec) {
+        obj[name].as<wampcc::json_array>().emplace_back(value);
+    }
 }

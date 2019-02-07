@@ -1,4 +1,4 @@
-import { Communication } from '../autobahn'
+import { Communication } from '../wamp/autobahn'
 
 export type Action = {
     type: 'INIT',

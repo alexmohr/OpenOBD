@@ -10,7 +10,7 @@ import { Theme } from '@material-ui/core/styles/createMuiTheme';
 import createStyles from '@material-ui/core/styles/createStyles';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import withRoot from '../withRoot';
-import { Communication } from '../autobahn';
+import { Communication } from '../wamp/autobahn';
 import { stateStore } from '../redux/reducer'
 
 const styles = (theme: Theme) =>
@@ -36,6 +36,13 @@ class Dashboard extends React.Component<WithStyles<typeof styles>, State> {
     if (!stateStore.getState().autobahn.isOpen()) {
       document.location.pathname = "/";
     }
+
+    let pidQuery = stateStore.getState().autobahn.getVehicleData("VehicleSpeed");
+    if (pidQuery == null) return;
+    pidQuery.done((pq) =>{
+      console.log(pq.getData().getStringData())
+    })
+    
   }
 
 

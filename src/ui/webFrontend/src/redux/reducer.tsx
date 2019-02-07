@@ -1,5 +1,5 @@
 import { createStore, Store as ReduxStore } from 'redux'
-import { Communication } from '../autobahn'
+import { Communication } from '../wamp/autobahn'
 import { Action } from './actions'
 
 /*

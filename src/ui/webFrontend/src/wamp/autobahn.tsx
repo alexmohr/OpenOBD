@@ -1,4 +1,5 @@
 import * as autobahn from "autobahn";
+import { PidQuery } from "./PidQuery";
 export class Communication {
     ////
     // Private fields
@@ -36,8 +37,8 @@ export class Communication {
         return this._isOpen;
     }
 
-    private foobar(result :{}) : void{
-        console.log(JSON.stringify(result))
+    private parsePidQuery(result: any): PidQuery {
+        return PidQuery.deserialize(result);
     }
 
     public getServices(): void {
@@ -45,10 +46,18 @@ export class Communication {
         if (this._session == undefined) {
             return;
         }
-        
-        this._session.call("get.service.1").then(this.foobar)
-        this._session.call("get.service.1.VehicleSpeed").then(this.foobar)
 
+        //this._session.call("get.service.1").then(this.foobar)
+
+
+    }
+
+    public getVehicleData(pidName: string): When.Promise<PidQuery> | null {
+        if (this._session == undefined) {
+            return null;
+        }
+
+        return this._session.call("get.service.1." + pidName + "").then(this.parsePidQuery)
     }
 
     private connectionOpened = (session: autobahn.Session): void => {

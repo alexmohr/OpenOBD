@@ -5,6 +5,7 @@
   "main": "src/index.tsx",
   "dependencies": {
     "@material-ui/core": "latest",
+    "@material-ui/icons": "latest",
     "@types/react": "*",
     "@types/react-dom": "*",
     "@types/react-router-dom": "*",

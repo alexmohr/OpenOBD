@@ -80,7 +80,7 @@ public:
     const static string getCurrent();
 
 public:
-    const static string getPidSupported();
+    const static string getPidSupported(int pid);
 
 public:
     const static string getThrottlePosition();

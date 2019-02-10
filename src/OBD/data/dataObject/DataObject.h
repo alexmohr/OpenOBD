@@ -73,12 +73,6 @@ public:
 
     }
 
-//    // boolean C'tor
-//    DataObject(ByteIndex startByte, unsigned int startIndex, T min, T max, const string description) :
-//            DataObject(startByte, startIndex, startByte, startIndex, unit_bool, min, max, description) {
-//
-//    }
-
     DataObject(ByteIndex startByte, unsigned int startIndex,
                ByteIndex stopByte, unsigned int stopIndex, const DataObjectUnit &unit, T min, T max,
                const string &description) :

@@ -88,8 +88,8 @@ const string DataObjectDescriptionText::getCurrent() {
     return "Current";
 }
 
-const string DataObjectDescriptionText::getPidSupported() {
-    return "Pid Supported";
+const string DataObjectDescriptionText::getPidSupported(int pid) {
+    return "Pid " + to_string(pid) + " Supported";
 }
 
 const string DataObjectDescriptionText::getThrottlePosition() {

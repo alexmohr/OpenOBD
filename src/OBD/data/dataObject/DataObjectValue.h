@@ -34,13 +34,26 @@ public:
         return value;
     }
 
-    shared_ptr<map<string, string>> getDetails() {
+    shared_ptr<map<string, string>> getDetails() const {
         return details;
     }
 
-    const shared_ptr<DataObjectDescription> getDescription() {
+    const shared_ptr<DataObjectDescription> getDescription() const {
         return description;
     };
+
+    string to_string() const {
+        string result = "Value: " + ::to_string(value) + "\n";
+        if (!details->empty()) {
+            result += "Details: ";
+            for (const auto &detail: *details) {
+                result += detail.first + ": " + detail.second;
+            }
+        }
+        result += "Unit: " + description->getUnit().toShortString() + "\n";
+        result += "Description: " + description->getDescriptionText();
+        return result;
+    }
 };
 
 class DataObjectValueCollection {
@@ -61,14 +74,18 @@ public:
         return values;
     }
 
-    void merge(shared_ptr<DataObjectValueCollection> valueCollection) {
+    void merge(const shared_ptr<DataObjectValueCollection> &valueCollection) {
         for (const auto &value : *valueCollection->getValues()) {
             this->values->push_back(value);
         }
     }
 
     string to_string() {
-        return "";
+        string strVal;
+        for (const auto &value  : *values) {
+            strVal += value->to_string() + "\n";
+        }
+        return strVal;
     }
 
 };

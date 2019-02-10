@@ -54,11 +54,11 @@ const static SiPrefix si_kilo = SiPrefix("k", "kilo", 1000);
 const static SiPrefix si_none = SiPrefix("", "", 1);
 
 
-const static DataObjectUnit unit_bool = DataObjectUnit("Boolean", "", &si_none);
-const static DataObjectUnit unit_none = DataObjectUnit("", "", &si_none);
+const static DataObjectUnit unit_bool = DataObjectUnit("Boolean", "On/Off", &si_none);
+const static DataObjectUnit unit_none = DataObjectUnit("None", "n.a.", &si_none);
 
 const static DataObjectUnit unit_volt = DataObjectUnit("Volt", "V", &si_none);
-const static DataObjectUnit  unit_kPa = DataObjectUnit("Pascal", "Pa", &si_kilo);
+const static DataObjectUnit unit_kPa = DataObjectUnit("Pascal", "Pa", &si_kilo);
 const static DataObjectUnit unit_celsius = DataObjectUnit("Celsius", "°C", &si_none);
 const static DataObjectUnit unit_rpm = DataObjectUnit("Revolutions per Minute", "RPM", &si_none);
 const static DataObjectUnit unit_degree = DataObjectUnit("Degree", "°", &si_none);
@@ -70,7 +70,6 @@ const static DataObjectUnit unit_ratio = DataObjectUnit("Ratio", "", &si_none);
 const static DataObjectUnit unit_count = DataObjectUnit("Count", "", &si_none);
 const static DataObjectUnit unit_km = DataObjectUnit("Kilometre", "m", &si_kilo);
 const static DataObjectUnit unit_mA = DataObjectUnit("Ampere", "A", &si_milli);
-
 
 
 #endif //OPEN_OBD2_DATAOBJECTUNIT_H

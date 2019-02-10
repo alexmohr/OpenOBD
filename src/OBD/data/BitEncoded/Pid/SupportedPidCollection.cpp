@@ -8,17 +8,18 @@
 SupportedPidCollection::SupportedPidCollection() {
     supportedPids = make_unique<vector<DataObject<bool>>>();
     int i;
+    int pidId = 1;
     for (i = 7; i >= 0; i--) {
-        supportedPids->emplace_back(A, i, DataObjectDescriptionText::getPidSupported());
+        supportedPids->emplace_back(A, i, DataObjectDescriptionText::getPidSupported(pidId++));
     }
     for (i = 7; i >= 0; i--) {
-        supportedPids->emplace_back(B, i, DataObjectDescriptionText::getPidSupported());
+        supportedPids->emplace_back(B, i, DataObjectDescriptionText::getPidSupported(pidId++));
     }
     for (i = 7; i >= 0; i--) {
-        supportedPids->emplace_back(C, i, DataObjectDescriptionText::getPidSupported());
+        supportedPids->emplace_back(C, i, DataObjectDescriptionText::getPidSupported(pidId++));
     }
     for (i = 7; i >= 0; i--) {
-        supportedPids->emplace_back(D, i, DataObjectDescriptionText::getPidSupported());
+        supportedPids->emplace_back(D, i, DataObjectDescriptionText::getPidSupported(pidId++));
     }
     for (auto &pid  : *supportedPids) {
         pid.setValue(false);

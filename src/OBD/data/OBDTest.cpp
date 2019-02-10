@@ -10,11 +10,11 @@
 OBDTest::OBDTest(string name, ByteIndex availableByte, unsigned int availableIndex, ByteIndex incompleteByte,
                  unsigned int incompleteIndex) {
     this->name = std::move(name);
-    string description = DataObjectDescriptionText::OBDTest + this->name;
+    string description = DataObjectDescriptionText::getOBDTest() + this->name;
     this->available = make_unique<DataObject<bool>>(availableByte, availableIndex,
-                                                    description + DataObjectDescriptionText::OBDTestAvailable);
+                                                    description + DataObjectDescriptionText::getOBDTestAvailable());
     this->incomplete = make_unique<DataObject<bool>>(incompleteByte, incompleteIndex,
-                                                     DataObjectDescriptionText::OBDTestIncomplete);
+                                                     DataObjectDescriptionText::getOBDTestIncomplete());
     available->setValue(false);
 }
 
@@ -44,10 +44,11 @@ DataObject<bool> &OBDTest::getIncomplete() {
     return *incomplete;
 }
 
-string OBDTest::getPrintableData() {
-    return "OBDTest: " + name +
-           "\nAvailable: " + available->getPrintableData() +
-           "\nIncomplete: " + incomplete->getPrintableData();
+shared_ptr<DataObjectValueCollection> OBDTest::getDataObjectValue() {
+    auto valueCollection = make_shared<DataObjectValueCollection>();
+    valueCollection->merge(available->getDataObjectValue());
+    valueCollection->merge(incomplete->getDataObjectValue());
+    return valueCollection;
 }
 
 DataObjectStateCollection OBDTest::setValueFromString(string data) {

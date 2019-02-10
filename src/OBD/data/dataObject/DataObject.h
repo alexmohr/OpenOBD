@@ -32,13 +32,9 @@ enum ByteIndex {
     00  01  02  03  04  05  06  07  08  09  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31
  */
 
-
-
-
-
-
 template<class T>
 class DataObject : public IFrameObject, public IDataObject<T> {
+
 private:
     ByteIndex startByte;
     unsigned int startIndex;
@@ -46,7 +42,7 @@ private:
     unsigned int stopIndex;
     T value;
     bool isBool = false;
-    unique_ptr<DataObjectDescription> description;
+    shared_ptr<DataObjectDescription> description;
 
     int getBitIndexRead(int byteVal, int idx, int sByte) const {
         if (sByte == A) {
@@ -67,8 +63,8 @@ private:
 public:
 
     // boolean C'tor
-    DataObject(ByteIndex startByte, unsigned int startIndex, const string description) :
-            DataObject(startByte, startIndex, startByte, startIndex, unit_bool, false, true, description) {
+    DataObject(ByteIndex startByte, unsigned int startIndex, const string &description) :
+            DataObject(startByte, startIndex, unit_bool, description) {
     }
 
     // boolean C'tor
@@ -77,34 +73,29 @@ public:
 
     }
 
-    DataObject(ByteIndex startByte, unsigned int startIndex,
-               ByteIndex stopByte, unsigned int stopIndex, const DataObjectUnit &unit, T min, T max) :
-            DataObject(startByte, startIndex, stopByte, stopIndex) {
-        this->description = make_unique<DataObjectDescription>(unit, (double) min, (double) max, "");
-    }
+//    // boolean C'tor
+//    DataObject(ByteIndex startByte, unsigned int startIndex, T min, T max, const string description) :
+//            DataObject(startByte, startIndex, startByte, startIndex, unit_bool, min, max, description) {
+//
+//    }
 
     DataObject(ByteIndex startByte, unsigned int startIndex,
                ByteIndex stopByte, unsigned int stopIndex, const DataObjectUnit &unit, T min, T max,
                const string &description) :
-            DataObject(startByte, startIndex, stopByte, stopIndex) {
-        this->description = make_unique<DataObjectDescription>(unit, (double) min, (double) max, description);
+            DataObject(startByte, startIndex, stopByte, stopIndex,
+                       make_shared<DataObjectDescription>(unit, (double) min, (double) max, description)) {
+
     }
 
-    // c'tors without description
 public:
-    // boolean C'tor
-    DataObject(ByteIndex startByte, unsigned int startIndex) :
-            DataObject(startByte, startIndex, startByte, startIndex) {
-        this->description = make_unique<DataObjectDescription>(unit_none, 0, 1, "");
-    }
 
     DataObject(ByteIndex startByte, unsigned int startIndex,
-               ByteIndex stopByte, unsigned int stopIndex) {
+               ByteIndex stopByte, unsigned int stopIndex, shared_ptr<DataObjectDescription> description) {
         this->startByte = startByte;
         this->startIndex = startIndex;
         this->stopByte = stopByte;
         this->stopIndex = stopIndex;
-        this->description = nullptr;
+        this->description = description;
 
         if (startByte == stopByte && stopIndex == startIndex) {
             isBool = true;
@@ -117,7 +108,6 @@ public:
     T getValue() override {
         return value;
     }
-
 
     DataObjectState setValue(T value) override {
         DataObjectState i;
@@ -132,6 +122,11 @@ public:
         return i;
     }
 
+    DataObjectState setValueWithoutBoundCheck(T value) {
+        DataObjectState i;
+        this->value = value;
+        return i;
+    }
 
     unsigned int toFrame(unsigned int &data, int &size) override {
         auto startByteValue = -BITS_PER_BYTE + ((startByte + 1) * BITS_PER_BYTE);
@@ -199,15 +194,10 @@ public:
         delete[] dataBytes;
     }
 
-    string getPrintableData() override {
-        string unit;
-        if (nullptr != description) {
-            unit = description->getUnit().toShortString();
-        }
-
-        return to_string(getValue()) + unit;
+    shared_ptr<DataObjectValueCollection> getDataObjectValue() override {
+        auto ptr = make_shared<DataObjectValue>((double) getValue(), description);
+        return make_shared<DataObjectValueCollection>(ptr);
     }
-
 
     DataObjectStateCollection setValueFromString(string data) override {
         DataObjectStateCollection rs = DataObjectStateCollection();

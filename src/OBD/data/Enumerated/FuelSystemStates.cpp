@@ -7,9 +7,11 @@
 
 FuelSystemStates::FuelSystemStates() {
     fuelSystem1 = make_unique<DataObject<StateOfFuelSystem>>(
-            A, 7, A, 0, unit_none, StateOfFuelSystemDoesNotExist, ClosedLoopUsingOxygenSensorWithFault);
+            A, 7, A, 0, unit_none, StateOfFuelSystemDoesNotExist, ClosedLoopUsingOxygenSensorWithFault,
+            DataObjectDescriptionText::getFuelSystemState(1));
     fuelSystem2 = make_unique<DataObject<StateOfFuelSystem>>(
-            B, 7, B, 0, unit_none, StateOfFuelSystemDoesNotExist, ClosedLoopUsingOxygenSensorWithFault);
+            B, 7, B, 0, unit_none, StateOfFuelSystemDoesNotExist, ClosedLoopUsingOxygenSensorWithFault,
+            DataObjectDescriptionText::getFuelSystemState(2));
 }
 
 DataObject<StateOfFuelSystem> &FuelSystemStates::getFuelSystem1() {
@@ -31,10 +33,11 @@ void FuelSystemStates::fromFrame(byte *frame, int size) {
     fuelSystem2->fromFrame(frame, size);
 }
 
-string FuelSystemStates::getPrintableData() {
-    return "fuelSystem1: " + fuelSystem1->getPrintableData() +
-            "\nfuelSystem2: " + fuelSystem2->getPrintableData();
-
+shared_ptr<DataObjectValueCollection> FuelSystemStates::getDataObjectValue() {
+    auto valueCollection = make_shared<DataObjectValueCollection>();
+    valueCollection->merge(fuelSystem1->getDataObjectValue());
+    valueCollection->merge(fuelSystem2->getDataObjectValue());
+    return valueCollection;
 }
 
 DataObjectStateCollection FuelSystemStates::setValueFromString(string data) {

@@ -14,32 +14,37 @@ Engine::Engine() {
     engineSystem6 = make_unique<OBDTest>("", C, 2, D, 2);
     engineSystem7 = make_unique<OBDTest>("", C, 1, D, 1);
     engineSystem8 = make_unique<OBDTest>("", C, 0, D, 0);
-    type = make_unique<DataObject<EngineType>>(B, 3);
+    type = make_unique<DataObject<EngineType>>(B, 3, B, 3, unit_bool, EngineType::PETROL, EngineType::DIESEL,
+                                               DataObjectDescriptionText::getEngineType());
     setEngineType(PETROL);
 
 
-    calculatedLoad = CalculatedDataObjectFactory::percent();
-    coolantTemperature = CalculatedDataObjectFactory::celsius_AMinus40();
-
-    shortTermFuelTrimBank1 = CalculatedDataObjectFactory::percent_Percent128Minus100(A);
+    calculatedLoad = CalculatedDataObjectFactory::percent(DataObjectDescriptionText::getCalculatedLoad());
+    coolantTemperature = CalculatedDataObjectFactory::celsius_AMinus40(
+            DataObjectDescriptionText::getCoolantTemperature());
 
     // Fuel banks
-    shortTermFuelTrimBank1 = CalculatedDataObjectFactory::percent_Percent128Minus100(A);
-    shortTermFuelTrimBank2 = CalculatedDataObjectFactory::percent_Percent128Minus100(A);
-    longTermFuelTrimBank1 = CalculatedDataObjectFactory::percent_Percent128Minus100(A);
-    longTermFuelTrimBank2 = CalculatedDataObjectFactory::percent_Percent128Minus100(A);
+    shortTermFuelTrimBank1 = CalculatedDataObjectFactory::percent_Percent128Minus100(
+            A, DataObjectDescriptionText::getShortTermFuelTrimBank(1));
+    shortTermFuelTrimBank2 = CalculatedDataObjectFactory::percent_Percent128Minus100(
+            A, DataObjectDescriptionText::getShortTermFuelTrimBank(2));
+    longTermFuelTrimBank1 = CalculatedDataObjectFactory::percent_Percent128Minus100(
+            A, DataObjectDescriptionText::getLongTermFuelTrimBank(1));
+    longTermFuelTrimBank2 = CalculatedDataObjectFactory::percent_Percent128Minus100(
+            A, DataObjectDescriptionText::getLongTermFuelTrimBank(2));
 
 
-    fuelPressure = CalculatedDataObjectFactory::kPa_3A();
+    fuelPressure = CalculatedDataObjectFactory::kPa_3A(DataObjectDescriptionText::getFuelPressure());
 
-    intakeManifoldAbsolutePressure = make_unique<DataObject<byte>>(
-            A, 7, A, 0,
-            unit_kPa, (byte) 0, (byte) 255);
+    intakeManifoldAbsolutePressure = make_unique<DataObject<byte>>(A, 7, A, 0,
+                                                                   unit_kPa, (byte) 0, (byte) 255,
+                                                                   DataObjectDescriptionText::getIntakeManifoldAbsolutePressure());
 
-    engineRPM = CalculatedDataObjectFactory::rpm_divided4();
-    timingAdvance = CalculatedDataObjectFactory::degree_Divided2Minus64();
-    intakeAirTemperature = CalculatedDataObjectFactory::celsius_AMinus40();
-    mafAirFlowRate = CalculatedDataObjectFactory::gramSec_Divided100();
+    engineRPM = CalculatedDataObjectFactory::rpm_divided4(DataObjectDescriptionText::getEngineRPM());
+    timingAdvance = CalculatedDataObjectFactory::degree_Divided2Minus64(DataObjectDescriptionText::getTimingAdvance());
+    intakeAirTemperature = CalculatedDataObjectFactory::celsius_AMinus40(
+            DataObjectDescriptionText::getIntakeAirTemperature());
+    mafAirFlowRate = CalculatedDataObjectFactory::gramSec_Divided100(DataObjectDescriptionText::getMafAirFlowRate());
 }
 
 void Engine::fromFrameForMonitoringSystem(byte *frame, int size) {
@@ -82,35 +87,35 @@ DataObject<EngineType> &Engine::getEngineType() {
     return *type;
 }
 
-OBDTest& Engine::getEngineSystem1() {
+OBDTest &Engine::getEngineSystem1() {
     return *engineSystem1;
 }
 
-OBDTest& Engine::getEngineSystem2() {
+OBDTest &Engine::getEngineSystem2() {
     return *engineSystem2;
 }
 
-OBDTest& Engine::getEngineSystem3() {
+OBDTest &Engine::getEngineSystem3() {
     return *engineSystem3;
 }
 
-OBDTest& Engine::getEngineSystem4() {
+OBDTest &Engine::getEngineSystem4() {
     return *engineSystem4;
 }
 
-OBDTest& Engine::getEngineSystem5() {
+OBDTest &Engine::getEngineSystem5() {
     return *engineSystem5;
 }
 
-OBDTest& Engine::getEngineSystem6() {
+OBDTest &Engine::getEngineSystem6() {
     return *engineSystem6;
 }
 
-OBDTest& Engine::getEngineSystem7() {
+OBDTest &Engine::getEngineSystem7() {
     return *engineSystem7;
 }
 
-OBDTest& Engine::getEngineSystem8() {
+OBDTest &Engine::getEngineSystem8() {
     return *engineSystem8;
 }
 

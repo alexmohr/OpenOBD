@@ -28,7 +28,7 @@ public:// IFrameObject
 
     unsigned int toFrame(unsigned int &data, int &size) override;
 
-    string getPrintableData() override;
+    shared_ptr<DataObjectValueCollection> getDataObjectValue() override;
 
     DataObjectStateCollection setValueFromString(string data) override;
 

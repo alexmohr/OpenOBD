@@ -9,10 +9,9 @@
 #include "DataObjectDescription.h"
 #include "DataObjectState.h"
 #include "DataObjectStateFactory.h"
+#include "DataObjectValue.h"
 
 using namespace std;
-
-
 
 
 class IFrameObject {
@@ -37,7 +36,7 @@ public:
      * This is currently used in the CLI
      * @return A string representing the current state of the object
      */
-    virtual string getPrintableData() = 0;
+    virtual shared_ptr<DataObjectValueCollection> getDataObjectValue() = 0;
 
     /**
      * Sets the object value from string.

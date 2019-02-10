@@ -119,7 +119,7 @@ DataObjectState VehicleDataProvider::getPrintableDataForPid(bool freezeFrameVehi
     if (frameObject == nullptr) {
         return DataObjectState(NOT_SUPPORTED);
     }
-    value = frameObject->getPrintableData();
+    value = frameObject->getDataObjectValue()->to_string();
     return DataObjectState(SUCCESS);
 }
 

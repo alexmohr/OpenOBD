@@ -13,8 +13,6 @@
 using namespace std;
 
 
-
-
 //template<class T>
 class DataObjectDescription {
 private:
@@ -35,8 +33,12 @@ public:
         return *unit;
     }
 
-    const string &getDescription() {
+    const string &getDescriptionText() {
         return description;
+    }
+
+    void setDescription(string description) {
+        this->description = move(description);
     }
 
     double getMin() {
@@ -48,7 +50,7 @@ public:
     }
 
     DataObjectState checkBounds(double value) {
-        DataObjectState state  = DataObjectState();
+        DataObjectState state = DataObjectState();
         if (value < getMin()) {
             state.min = getMin();
             state.value = value;

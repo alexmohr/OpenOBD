@@ -18,7 +18,7 @@ private:
     unique_ptr<DataObject<bool>> bank4Sensor1presentIn4Banks;
     unique_ptr<DataObject<bool>> bank4Sensor2presentIn4Banks;
 
-    vector<DataObject<bool>*> allSensors;
+    vector<DataObject<bool> *> allSensors;
 
 public:
     BankOxygenSensors4BankCollection();
@@ -44,7 +44,7 @@ public:// IFrameObject
 
     void fromFrame(byte *frame, int size) override;
 
-    string getPrintableData() override;
+    shared_ptr<DataObjectValueCollection> getDataObjectValue() override;
 
     DataObjectStateCollection setValueFromString(string data) override;
 

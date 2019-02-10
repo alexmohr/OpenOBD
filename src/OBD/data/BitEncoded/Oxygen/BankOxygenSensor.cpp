@@ -5,8 +5,9 @@
 #include "BankOxygenSensor.h"
 
 BankOxygenSensor::BankOxygenSensor() {
-    voltage = CalculatedDataObjectFactory::volt_ADivided200();
-    shortTermFuelTrim = CalculatedDataObjectFactory::percent_Percent128Minus100(B);
+    voltage = CalculatedDataObjectFactory::volt_ADivided200(DataObjectDescriptionText::getVoltage());
+    shortTermFuelTrim = CalculatedDataObjectFactory::percent_Percent128Minus100(
+            B, DataObjectDescriptionText::getShortTermFuelTrim());
 }
 
 
@@ -33,9 +34,11 @@ void BankOxygenSensor::fromFrame(byte *data, int size) {
     shortTermFuelTrim->fromFrame(data, size);
 }
 
-string BankOxygenSensor::getPrintableData() {
-    return "voltage: " + voltage->getPrintableData() +
-           "\nshortTermFuelTrim: " + shortTermFuelTrim->getPrintableData();
+shared_ptr<DataObjectValueCollection> BankOxygenSensor::getDataObjectValue() {
+    auto valueCollection = make_shared<DataObjectValueCollection>();
+    valueCollection->merge(voltage->getDataObjectValue());
+    valueCollection->merge(shortTermFuelTrim->getDataObjectValue());
+    return valueCollection;
 }
 
 DataObjectStateCollection BankOxygenSensor::setValueFromString(string data) {

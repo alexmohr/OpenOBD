@@ -24,35 +24,52 @@ Vehicle::Vehicle(shared_ptr<map<int, DataTroubleCode>> dtcMap) {
 
 
     commandedSecondaryAirStatus = make_unique<DataObject<StateOfCommandedSecondaryAir>>(
-            A, 7, A, 0,
-            unit_none, CommandedSecondaryAirStatusDoesNotExist, PumpCommandedOnForDiagnostics);
+            A, 7, A, 0, unit_none, CommandedSecondaryAirStatusDoesNotExist, PumpCommandedOnForDiagnostics,
+            DataObjectDescriptionText::getCommandedSecondaryAirStatus());
 
-    speed = make_unique<DataObject<byte>>(A, 7, A, 0, unit_kph, (byte) 0, (byte) 255);
-    warmUpsSinceCodesCleared = make_unique<DataObject<byte>>(A, 7, A, 0, unit_count, (byte) 0, (byte) 255);
-    distanceTraveledSinceCodesCleared = make_unique<DataObject<unsigned short>>(A, 7, B, 0, unit_km, 0, 65535);
+    speed = make_unique<DataObject<byte>>(A, 7, A, 0, unit_kph, (byte) 0, (byte) 255,
+                                          DataObjectDescriptionText::getSpeed());
 
-    auxiliaryInputStatus = make_unique<DataObject<bool>>(A, 0);
-    runTimeSinceEngineStart = make_unique<DataObject<unsigned short>>(A, 7, B, 0, unit_seconds, 0, 65535);
+    warmUpsSinceCodesCleared = make_unique<DataObject<byte>>(A, 7, A, 0, unit_count, (byte) 0, (byte) 255,
+                                                             DataObjectDescriptionText::getWarmUpsSinceCodesCleared());
 
-    distanceTraveledWithMilOn = make_unique<DataObject<unsigned short>>(A, 7, B, 0, unit_km, 0, 65535);
+    distanceTraveledSinceCodesCleared = make_unique<DataObject<unsigned short>>(
+            A, 7, B, 0, unit_km, 0, 65535, DataObjectDescriptionText::getDistanceTraveledSinceCodesCleared());
 
-    absoluteBarometricPressure = make_unique<DataObject<byte>>(A, 7, A, 0, unit_kPa, (byte) 0, (byte) 255);
+    auxiliaryInputStatus = make_unique<DataObject<bool>>(A, 0, DataObjectDescriptionText::getAuxiliaryInputStatus());
+    runTimeSinceEngineStart = make_unique<DataObject<unsigned short>>(A, 7, B, 0, unit_seconds, 0, 65535,
+                                                                      DataObjectDescriptionText::getRunTimeSinceEngineStart());
+
+    distanceTraveledWithMilOn = make_unique<DataObject<unsigned short>>(A, 7, B, 0, unit_km, 0, 65535,
+                                                                        DataObjectDescriptionText::getDistanceTraveledWithMilOn());
+
+    absoluteBarometricPressure = make_unique<DataObject<byte>>(A, 7, A, 0, unit_kPa, (byte) 0, (byte) 255,
+                                                               DataObjectDescriptionText::getAbsoluteBarometricPressure());
 
 
-    fuelRailPressure = CalculatedDataObjectFactory::kPa_0_079Value();
-    fuelRailGaugePressure = CalculatedDataObjectFactory::kPa_UShortTimes10();
-    commandedEGR = CalculatedDataObjectFactory::percent();
+    fuelRailPressure = CalculatedDataObjectFactory::kPa_0_079Value(DataObjectDescriptionText::getFuelRailPressure());
+    fuelRailGaugePressure = CalculatedDataObjectFactory::kPa_UShortTimes10(
+            DataObjectDescriptionText::getFuelRailGaugePressure());
 
-    egrError = CalculatedDataObjectFactory::percent_Percent128Minus100(A);
-    commandedEvaporativePurge = CalculatedDataObjectFactory::percent();
-    fuelTankLevelInput = CalculatedDataObjectFactory::percent();
+    commandedEGR = CalculatedDataObjectFactory::percent(DataObjectDescriptionText::getCommandedEGR());
 
-    evaporativePurgeSystemVaporPressure = CalculatedDataObjectFactory::percent_Divided4TwoComplement();
-    controlModuleVoltage = CalculatedDataObjectFactory::volt_Divided1000();
-    absoluteLoadValue = CalculatedDataObjectFactory::percent_100Divided255TimesTimes256APlusB();
+    egrError = CalculatedDataObjectFactory::percent_Percent128Minus100(A, DataObjectDescriptionText::getEgrError());
+    commandedEvaporativePurge = CalculatedDataObjectFactory::percent(
+            DataObjectDescriptionText::getCommandedEvaporativePurge());
 
-    fuelAirCommandedEquivalenceRatio = CalculatedDataObjectFactory::ratio_2Divided2Pow16TimesValue();
-    ambientAirTemperature = CalculatedDataObjectFactory::celsius_AMinus40();
+    fuelTankLevelInput = CalculatedDataObjectFactory::percent(DataObjectDescriptionText::getFuelTankLevelInput());
+
+    evaporativePurgeSystemVaporPressure = CalculatedDataObjectFactory::percent_Divided4TwoComplement(
+            DataObjectDescriptionText::getEvaporativePurgeSystemVaporPressure());
+    controlModuleVoltage = CalculatedDataObjectFactory::volt_Divided1000(
+            DataObjectDescriptionText::getControlModuleVoltage());
+    absoluteLoadValue = CalculatedDataObjectFactory::percent_100Divided255TimesTimes256APlusB(
+            DataObjectDescriptionText::getAbsoluteLoadValue());
+
+    fuelAirCommandedEquivalenceRatio = CalculatedDataObjectFactory::ratio_2Divided2Pow16TimesValue(
+            DataObjectDescriptionText::getFuelAirCommandedEquivalenceRatio());
+    ambientAirTemperature = CalculatedDataObjectFactory::celsius_AMinus40(
+            DataObjectDescriptionText::getAmbientAirTemperature());
 }
 
 Vehicle::~Vehicle() = default;

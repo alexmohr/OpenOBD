@@ -356,7 +356,8 @@ TEST(OBDHandler, PID_02_FreezeDTC) {
     auto code = handler->getVehicle()->getFreezeDTC().getValue();
 
     EXPECT_EQ("U2500", code.getSaeId());
-    EXPECT_EQ("(CAN) Lack of Acknowledgement From Engine Management", code.getDescription());
+    EXPECT_EQ("Data Trouble Code\n(CAN) Lack of Acknowledgement From Engine Management",
+              code.getDescription()->getDescriptionText());
     EXPECT_EQ(0xe500, code.getCanId());
 }
 
@@ -370,7 +371,8 @@ TEST(OBDHandler, PID_02_FreezeDTC_Setter) {
     DataTroubleCode code = freezeDTC.getValue();
     EXPECT_EQ(codeID, code.getCanId());
     EXPECT_EQ("C1751", code.getSaeId());
-    EXPECT_EQ("Vehicle Speed Sensor # 1 Output Circuit Short to Vbatt", code.getDescription());
+    EXPECT_EQ("Data Trouble Code\nVehicle Speed Sensor # 1 Output Circuit Short to Vbatt",
+              code.getDescription()->getDescriptionText());
 
     const auto pid = (byte) FreezeDTCPid;
     vector<byte> request{(RequestServiceID), pid};

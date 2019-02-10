@@ -14,6 +14,8 @@
 
 DataTroubleCode::DataTroubleCode() {
     canId = 0;
+    this->description = make_shared<DataObjectDescription>(unit_none, 0, 99999999,
+                                                           DataObjectDescriptionText::getDataTroubleCode());
 }
 
 
@@ -60,15 +62,19 @@ void DataTroubleCode::setSaeId(string saeId) {
     this->saeId = std::move(saeId);
 }
 
-void DataTroubleCode::setDescription(string description) {
-    this->description = std::move(description);
+void DataTroubleCode::addDescription(string descriptionText) {
+    if (nullptr == this->description) {
+        this->description = make_shared<DataObjectDescription>(unit_none, canId, canId, descriptionText);
+    } else {
+        this->description->setDescription(this->description->getDescriptionText() + '\n' + descriptionText);
+    }
 }
 
 string DataTroubleCode::getSaeId() {
     return saeId;
 }
 
-string DataTroubleCode::getDescription() {
+shared_ptr<DataObjectDescription> DataTroubleCode::getDescription() {
     return description;
 }
 

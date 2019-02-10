@@ -9,16 +9,16 @@ SupportedPidCollection::SupportedPidCollection() {
     supportedPids = make_unique<vector<DataObject<bool>>>();
     int i;
     for (i = 7; i >= 0; i--) {
-        supportedPids->emplace_back(A, i);
+        supportedPids->emplace_back(A, i, DataObjectDescriptionText::getPidSupported());
     }
     for (i = 7; i >= 0; i--) {
-        supportedPids->emplace_back(B, i);
+        supportedPids->emplace_back(B, i, DataObjectDescriptionText::getPidSupported());
     }
     for (i = 7; i >= 0; i--) {
-        supportedPids->emplace_back(C, i);
+        supportedPids->emplace_back(C, i, DataObjectDescriptionText::getPidSupported());
     }
     for (i = 7; i >= 0; i--) {
-        supportedPids->emplace_back(D, i);
+        supportedPids->emplace_back(D, i, DataObjectDescriptionText::getPidSupported());
     }
     for (auto &pid  : *supportedPids) {
         pid.setValue(false);
@@ -54,12 +54,13 @@ void SupportedPidCollection::fromFrame(byte *data, int size) {
     }
 }
 
-string SupportedPidCollection::getPrintableData() {
-    string data;
+shared_ptr<DataObjectValueCollection> SupportedPidCollection::getDataObjectValue() {
+    auto valueCollection = make_shared<DataObjectValueCollection>();
+
     for (auto &pid : *supportedPids) {
-        data += to_string(pid.getValue()) + " ";
+        valueCollection->merge(pid.getDataObjectValue());
     }
-    return data;
+    return valueCollection;
 }
 
 DataObjectStateCollection SupportedPidCollection::setValueFromString(string data) {

@@ -67,12 +67,12 @@ void TestCalculatedData(Service1Pids pid,
     }
 
     vector<pair<S, ErrorType>> values{
-            {((S) system->getDescriptions().at(0)->getMin()),             SUCCESS},
-            {(S) ((S) system->getDescriptions().at(0)->getMax() - 0.001), SUCCESS},
-            {(S) ((S) system->getDescriptions().at(0)->getMax() / 2),     SUCCESS},
-            {(S) ((S) system->getDescriptions().at(0)->getMax() / 3),     SUCCESS},
-            {(S) ((S) system->getDescriptions().at(0)->getMax() / 4),     SUCCESS},
-            {(S) ((S) system->getDescriptions().at(0)->getMax() / 5),     SUCCESS},
+            {((S) system->getDescriptions().at(0)->getMin()),            SUCCESS},
+            {(S) ((S) system->getDescriptions().at(0)->getMax() - 0.01), SUCCESS},
+            {(S) ((S) system->getDescriptions().at(0)->getMax() / 2),    SUCCESS},
+            {(S) ((S) system->getDescriptions().at(0)->getMax() / 3),    SUCCESS},
+            {(S) ((S) system->getDescriptions().at(0)->getMax() / 4),    SUCCESS},
+            {(S) ((S) system->getDescriptions().at(0)->getMax() / 5),    SUCCESS},
     };
 
     dataTest<S>(system, values, offset);
@@ -266,7 +266,7 @@ TEST(OBDHandler, PID_22_FuelRailPressure) {
         return (float) (0.079 * value);
     };
 
-    TestCalculatedData(FuelRailPressure, cb, 20, dc);
+    TestCalculatedData(FuelRailPressure, cb, 22, dc);
 }
 
 

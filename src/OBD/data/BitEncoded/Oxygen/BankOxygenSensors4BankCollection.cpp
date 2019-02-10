@@ -7,14 +7,22 @@
 
 BankOxygenSensors4BankCollection::BankOxygenSensors4BankCollection() {
 
-    bank1Sensor1presentIn4Banks = make_unique<DataObject<bool>>(A, 0);
-    bank1Sensor2presentIn4Banks = make_unique<DataObject<bool>>(A, 1);
-    bank2Sensor1presentIn4Banks = make_unique<DataObject<bool>>(A, 2);
-    bank2Sensor2presentIn4Banks = make_unique<DataObject<bool>>(A, 3);
-    bank3Sensor1presentIn4Banks = make_unique<DataObject<bool>>(A, 4);
-    bank3Sensor2presentIn4Banks = make_unique<DataObject<bool>>(A, 5);
-    bank4Sensor1presentIn4Banks = make_unique<DataObject<bool>>(A, 6);
-    bank4Sensor2presentIn4Banks = make_unique<DataObject<bool>>(A, 7);
+    bank1Sensor1presentIn4Banks =
+            make_unique<DataObject<bool>>(A, 0, DataObjectDescriptionText::getBankSensorPresentIn4Banks(1, 1));
+    bank1Sensor2presentIn4Banks =
+            make_unique<DataObject<bool>>(A, 1, DataObjectDescriptionText::getBankSensorPresentIn4Banks(1, 2));
+    bank2Sensor1presentIn4Banks =
+            make_unique<DataObject<bool>>(A, 2, DataObjectDescriptionText::getBankSensorPresentIn4Banks(2, 1));
+    bank2Sensor2presentIn4Banks =
+            make_unique<DataObject<bool>>(A, 3, DataObjectDescriptionText::getBankSensorPresentIn4Banks(2, 2));
+    bank3Sensor1presentIn4Banks =
+            make_unique<DataObject<bool>>(A, 4, DataObjectDescriptionText::getBankSensorPresentIn4Banks(3, 1));
+    bank3Sensor2presentIn4Banks =
+            make_unique<DataObject<bool>>(A, 5, DataObjectDescriptionText::getBankSensorPresentIn4Banks(3, 2));
+    bank4Sensor1presentIn4Banks =
+            make_unique<DataObject<bool>>(A, 6, DataObjectDescriptionText::getBankSensorPresentIn4Banks(4, 1));
+    bank4Sensor2presentIn4Banks =
+            make_unique<DataObject<bool>>(A, 7, DataObjectDescriptionText::getBankSensorPresentIn4Banks(4, 2));
 
     allSensors = vector<DataObject<bool> *>();
     allSensors.push_back(bank1Sensor1presentIn4Banks.get());
@@ -75,15 +83,19 @@ unsigned int BankOxygenSensors4BankCollection::toFrame(unsigned int &data, int &
     return data;
 }
 
-string BankOxygenSensors4BankCollection::getPrintableData() {
-    return "bank1Sensor1presentIn4Banks: " + bank1Sensor1presentIn4Banks->getPrintableData() + "\n" +
-           "bank1Sensor2presentIn4Banks: " + bank1Sensor2presentIn4Banks->getPrintableData() + "\n" +
-           "bank2Sensor1presentIn4Banks: " + bank2Sensor1presentIn4Banks->getPrintableData() + "\n" +
-           "bank2Sensor2presentIn4Banks: " + bank2Sensor2presentIn4Banks->getPrintableData() + "\n" +
-           "bank3Sensor1presentIn4Banks: " + bank3Sensor1presentIn4Banks->getPrintableData() + "\n" +
-           "bank3Sensor2presentIn4Banks: " + bank3Sensor2presentIn4Banks->getPrintableData() + "\n" +
-           "bank4Sensor1presentIn4Banks: " + bank4Sensor1presentIn4Banks->getPrintableData() + "\n" +
-           "bank4Sensor2presentIn4Banks: " + bank4Sensor2presentIn4Banks->getPrintableData() + "\n";
+shared_ptr<DataObjectValueCollection> BankOxygenSensors4BankCollection::getDataObjectValue() {
+    auto valueCollection = make_shared<DataObjectValueCollection>();
+
+    valueCollection->merge(bank1Sensor1presentIn4Banks->getDataObjectValue());
+    valueCollection->merge(bank1Sensor2presentIn4Banks->getDataObjectValue());
+    valueCollection->merge(bank2Sensor1presentIn4Banks->getDataObjectValue());
+    valueCollection->merge(bank2Sensor2presentIn4Banks->getDataObjectValue());
+    valueCollection->merge(bank3Sensor1presentIn4Banks->getDataObjectValue());
+    valueCollection->merge(bank3Sensor2presentIn4Banks->getDataObjectValue());
+    valueCollection->merge(bank4Sensor1presentIn4Banks->getDataObjectValue());
+    valueCollection->merge(bank4Sensor2presentIn4Banks->getDataObjectValue());
+
+    return valueCollection;
 }
 
 DataObjectStateCollection BankOxygenSensors4BankCollection::setValueFromString(string data) {

@@ -4,6 +4,7 @@
 
 #ifndef OPEN_OBD2_CALCULATEDDATAOBJECT_H
 #define OPEN_OBD2_CALCULATEDDATAOBJECT_H
+
 #include "DataObject.h"
 #include "CalculatedValues.h"
 #include <functional>
@@ -15,26 +16,28 @@ class CalculatedDataObject : public IFrameObject, public IDataObject<T> {
 private:
 
     unique_ptr<DataObject<S>> dataObj;
-    unique_ptr<DataObjectDescription> description;
+    shared_ptr<DataObjectDescription> description;
     function<T(S)> fromFrameFunction;
     function<S(T)> toFrameFunction;
 
 
 public: // todo refactor this to private;
     friend class CalculatedDataObjectFactory;
+
+/*
     CalculatedDataObject(ByteIndex startByte, unsigned int startIndex,
                          ByteIndex stopByte, unsigned stopIndex, function<T(S)> fromFrameFunction,
                          function<S(T)> toFrameFunction, const DataObjectUnit &unit, T min, T max)
             : CalculatedDataObject(startByte, startIndex, stopByte, stopIndex, fromFrameFunction, toFrameFunction,
                                    unit, min, max, "") {}
-
+*/
 
     CalculatedDataObject(ByteIndex startByte, unsigned int startIndex,
                          ByteIndex stopByte, unsigned stopIndex, function<T(S)> fromFrameFunction,
                          function<S(T)> toFrameFunction, const DataObjectUnit &unit, T min, T max,
-                         const string &description) {
-        this->dataObj = make_unique<DataObject<S>>(startByte, startIndex, stopByte, stopIndex);
-        this->description = make_unique<DataObjectDescription>(unit, (double)min, (double)max, description);
+                         const string &descriptionText) {
+        this->description = make_unique<DataObjectDescription>(unit, (double) min, (double) max, descriptionText);
+        this->dataObj = make_unique<DataObject<S>>(startByte, startIndex, stopByte, stopIndex, description);
         this->toFrameFunction = toFrameFunction;
         this->fromFrameFunction = fromFrameFunction;
     }
@@ -59,7 +62,7 @@ public:
             }
         }
 
-        i = dataObj->setValue(toFrameFunction(value));
+        i = dataObj->setValueWithoutBoundCheck(toFrameFunction(value));
         return i;
     }
 
@@ -71,13 +74,9 @@ public:
         return dataObj->toFrame(data, size);
     }
 
-    string getPrintableData() override {
-        string unit = "";
-        if (nullptr != description) {
-            unit = description->getUnit().toShortString();
-        }
-
-        return to_string(getValue()) + unit;
+    shared_ptr<DataObjectValueCollection> getDataObjectValue() override {
+        auto ptr = make_shared<DataObjectValue>((double) getValue(), description);
+        return make_shared<DataObjectValueCollection>(ptr);
     }
 
     DataObjectStateCollection setValueFromString(string data) override {

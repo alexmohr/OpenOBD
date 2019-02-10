@@ -5,13 +5,20 @@
 #include "Throttle.h"
 
 Throttle::Throttle() {
-    relativeThrottlePosition = CalculatedDataObjectFactory::percent();
-    throttlePosition =  CalculatedDataObjectFactory::percent();
-    absoluteThrottlePositionB = CalculatedDataObjectFactory::percent();
-    absoluteThrottlePositionC = CalculatedDataObjectFactory::percent();
-    acceleratorPedalPositionD = CalculatedDataObjectFactory::percent();
-    acceleratorPedalPositionE = CalculatedDataObjectFactory::percent();
-    acceleratorPedalPositionF = CalculatedDataObjectFactory::percent();
+    relativeThrottlePosition = CalculatedDataObjectFactory::percent(
+            DataObjectDescriptionText::getRelativeThrottlePosition());
+    throttlePosition = CalculatedDataObjectFactory::percent(
+            DataObjectDescriptionText::getThrottlePosition());
+    absoluteThrottlePositionB = CalculatedDataObjectFactory::percent(
+            DataObjectDescriptionText::getAbsoluteThrottlePosition("B"));
+    absoluteThrottlePositionC = CalculatedDataObjectFactory::percent(
+            DataObjectDescriptionText::getAbsoluteThrottlePosition("C"));
+    acceleratorPedalPositionD = CalculatedDataObjectFactory::percent(
+            DataObjectDescriptionText::getAbsoluteThrottlePosition("D"));
+    acceleratorPedalPositionE = CalculatedDataObjectFactory::percent(
+            DataObjectDescriptionText::getAbsoluteThrottlePosition("E"));
+    acceleratorPedalPositionF = CalculatedDataObjectFactory::percent(
+            DataObjectDescriptionText::getAbsoluteThrottlePosition("F"));
 }
 
 

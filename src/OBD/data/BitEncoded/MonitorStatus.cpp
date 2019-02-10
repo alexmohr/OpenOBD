@@ -10,14 +10,14 @@
 MonitorStatus::MonitorStatus(shared_ptr<Engine> *engine) {
     this->engine = *engine;
 
-    mil = make_unique<DataObject<bool>>(A, 7, DataObjectDescriptionText::MonitorStatusMIL);
+    mil = make_unique<DataObject<bool>>(A, 7, DataObjectDescriptionText::getMonitorStatusMIL());
 
     dtcCount = make_unique<DataObject<unsigned short>>(A, 6, A, 0, unit_none, 0, 128,
-                                                       DataObjectDescriptionText::MonitorStatusDTC);
+                                                       DataObjectDescriptionText::getMonitorStatusDTC());
 
-    components = make_unique<OBDTest>("Components", B, 2, B, 6);
-    fuelSystem = make_unique<OBDTest>("FuelSystem", B, 1, B, 5);
-    misfire = make_unique<OBDTest>("Misfire", B, 0, B, 4);
+    components = make_unique<OBDTest>(DataObjectDescriptionText::getComponents(), B, 2, B, 6);
+    fuelSystem = make_unique<OBDTest>(DataObjectDescriptionText::getFuelSystem(), B, 1, B, 5);
+    misfire = make_unique<OBDTest>(DataObjectDescriptionText::getMisfire(), B, 0, B, 4);
 
 }
 
@@ -77,21 +77,23 @@ OBDTest &MonitorStatus::getMisfire() {
     return *misfire;
 }
 
-string MonitorStatus::getPrintableData() {
-    return "mil: " + mil->getPrintableData() +
-           "\ndtcCount: " + dtcCount->getPrintableData() +
-           "\ncomponents: " + components->getPrintableData() +
-           "\nmisfire: " + misfire->getPrintableData() +
-           "\nfuelSystem: " + fuelSystem->getPrintableData() +
-           "\nEngineSystem1: " + engine->getEngineSystem1().getPrintableData() +
-           "\nEngineSystem2: " + engine->getEngineSystem2().getPrintableData() +
-           "\nEngineSystem3: " + engine->getEngineSystem3().getPrintableData() +
-           "\nEngineSystem4: " + engine->getEngineSystem4().getPrintableData() +
-           "\nEngineSystem5: " + engine->getEngineSystem5().getPrintableData() +
-           "\nEngineSystem6: " + engine->getEngineSystem6().getPrintableData() +
-           "\nEngineSystem7: " + engine->getEngineSystem7().getPrintableData() +
-           "\nEngineSystem8: " + engine->getEngineSystem8().getPrintableData() +
-           "\nEngineType: " + to_string(engine->getEngineType().getValue());
+shared_ptr<DataObjectValueCollection> MonitorStatus::getDataObjectValue() {
+    auto valueCollection = make_shared<DataObjectValueCollection>();
+    valueCollection->merge(mil->getDataObjectValue());
+    valueCollection->merge(dtcCount->getDataObjectValue());
+    valueCollection->merge(components->getDataObjectValue());
+    valueCollection->merge(misfire->getDataObjectValue());
+    valueCollection->merge(fuelSystem->getDataObjectValue());
+    valueCollection->merge(engine->getEngineSystem1().getDataObjectValue());
+    valueCollection->merge(engine->getEngineSystem2().getDataObjectValue());
+    valueCollection->merge(engine->getEngineSystem3().getDataObjectValue());
+    valueCollection->merge(engine->getEngineSystem4().getDataObjectValue());
+    valueCollection->merge(engine->getEngineSystem5().getDataObjectValue());
+    valueCollection->merge(engine->getEngineSystem6().getDataObjectValue());
+    valueCollection->merge(engine->getEngineSystem7().getDataObjectValue());
+    valueCollection->merge(engine->getEngineSystem8().getDataObjectValue());
+    valueCollection->merge(engine->getEngineType().getDataObjectValue());
+    return valueCollection;
 }
 
 DataObjectStateCollection MonitorStatus::setValueFromString(string data) {

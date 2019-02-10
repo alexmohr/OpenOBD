@@ -359,7 +359,7 @@ DataObjectState CommandHandler::setDataViaPid(string val, Service service, Pid p
         }
     }
 
-    cout << "New value: " << frameObject->getPrintableData() << endl;
+    cout << "New value: " << frameObject->getDataObjectValue()->to_string() << endl;
     return DataObjectState(SUCCESS);
 }
 

@@ -74,7 +74,7 @@ public:
      */
     void fromFrame(byte *frame, int size) override;
 
-    string getPrintableData() override;
+    shared_ptr<DataObjectValueCollection> getDataObjectValue() override;
 
     DataObjectStateCollection setValueFromString(string data) override;
 

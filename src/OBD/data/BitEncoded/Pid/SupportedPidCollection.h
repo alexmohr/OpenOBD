@@ -38,7 +38,7 @@ public: // IFrameObject
      * This is currently used in the CLI
      * @return A string representing the current state of the object
      */
-    string getPrintableData() override;
+    shared_ptr<DataObjectValueCollection> getDataObjectValue() override;
 
     /**
      * Sets the object value from string.

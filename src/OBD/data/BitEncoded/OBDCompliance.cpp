@@ -6,34 +6,38 @@
 
 OBDCompliance::OBDCompliance() {
     allSystems = vector<DataObject<bool> *>();
-    oBD_II_CARB = make_unique<DataObject<bool>>(A, 1);
-    oBD_EPA = make_unique<DataObject<bool>>(A, 2);
-    oBD_and_OBD_II = make_unique<DataObject<bool>>(A, 3);
-    oBD_I = make_unique<DataObject<bool>>(A, 4);
-    notOBDcompliant = make_unique<DataObject<bool>>(A, 5);
-    eOBD = make_unique<DataObject<bool>>(A, 6);
-    eOBDandOBD_II = make_unique<DataObject<bool>>(A, 7);
-    eOBDandOBD = make_unique<DataObject<bool>>(A, 8);
-    eOBD_OBD_and_OBDII = make_unique<DataObject<bool>>(A, 9);
-    jOBD = make_unique<DataObject<bool>>(A, 10);
-    jOBDandOBDII = make_unique<DataObject<bool>>(A, 11);
-    jOBDandEOBD = make_unique<DataObject<bool>>(A, 12);
-    jOBD_EOBD_and_OBDII = make_unique<DataObject<bool>>(A, 13);
-    engineManufacturerDiagnostics = make_unique<DataObject<bool>>(A, 17);
-    engineManufacturerDiagnosticsEnhanced = make_unique<DataObject<bool>>(A, 18);
-    heavyDutyOn_BoardDiagnostics_OBD_C = make_unique<DataObject<bool>>(A, 19);
-    heavyDutyOn_BoardDiagnostics = make_unique<DataObject<bool>>(A, 20);
-    worldWideHarmonizedOBD = make_unique<DataObject<bool>>(A, 21);
-    heavyDutyEuroOBDStageIwithoutNOxcontrol = make_unique<DataObject<bool>>(A, 23);
-    heavyDutyEuroOBDStageIwithNOxcontrol = make_unique<DataObject<bool>>(A, 24);
-    heavyDutyEuroOBDStageIIwithoutNOxcontrol = make_unique<DataObject<bool>>(A, 25);
-    heavyDutyEuroOBDStageIIwithNOxcontrol = make_unique<DataObject<bool>>(A, 26);
-    brazilOBDPhase1 = make_unique<DataObject<bool>>(A, 28);
-    brazilOBDPhase2 = make_unique<DataObject<bool>>(A, 29);
-    koreanOBD = make_unique<DataObject<bool>>(A, 30);
-    indiaOBDI = make_unique<DataObject<bool>>(A, 31);
-    indiaOBDII = make_unique<DataObject<bool>>(A, 32);
-    heavyDutyEuroOBDStageVI = make_unique<DataObject<bool>>(A, 33);
+    oBD_II_CARB = make_unique<DataObject<bool>>(A, 1, "OBD_II_CARB");
+    oBD_EPA = make_unique<DataObject<bool>>(A, 2, "OBD_EPA");
+    oBD_and_OBD_II = make_unique<DataObject<bool>>(A, 3, "OBD_and_OBD_II");
+    oBD_I = make_unique<DataObject<bool>>(A, 4, "OBD_I");
+    notOBDcompliant = make_unique<DataObject<bool>>(A, 5, "NotOBDcompliant");
+    eOBD = make_unique<DataObject<bool>>(A, 6, "EOBD");
+    eOBDandOBD_II = make_unique<DataObject<bool>>(A, 7, "EOBDandOBD_II");
+    eOBDandOBD = make_unique<DataObject<bool>>(A, 8, "EOBDandOBD");
+    eOBD_OBD_and_OBDII = make_unique<DataObject<bool>>(A, 9, "EOBD_OBD_and_OBDII");
+    jOBD = make_unique<DataObject<bool>>(A, 10, "JOBD");
+    jOBDandOBDII = make_unique<DataObject<bool>>(A, 11, "JOBDandOBDII");
+    jOBDandEOBD = make_unique<DataObject<bool>>(A, 12, "JOBDandEOBD");
+    jOBD_EOBD_and_OBDII = make_unique<DataObject<bool>>(A, 13, "JOBD_EOBD_and_OBDII");
+    engineManufacturerDiagnostics = make_unique<DataObject<bool>>(A, 17, "EngineManufacturerDiagnostics");
+    engineManufacturerDiagnosticsEnhanced = make_unique<DataObject<bool>>(A, 18,
+                                                                          "EngineManufacturerDiagnosticsEnhanced");
+    heavyDutyOn_BoardDiagnostics_OBD_C = make_unique<DataObject<bool>>(A, 19, "HeavyDutyOn_BoardDiagnostics_OBD_C");
+    heavyDutyOn_BoardDiagnostics = make_unique<DataObject<bool>>(A, 20, "HeavyDutyOn_BoardDiagnostics");
+    worldWideHarmonizedOBD = make_unique<DataObject<bool>>(A, 21, "WorldWideHarmonizedOBD");
+    heavyDutyEuroOBDStageIwithoutNOxcontrol = make_unique<DataObject<bool>>(A, 23,
+                                                                            "HeavyDutyEuroOBDStageIwithoutNOxcontrol");
+    heavyDutyEuroOBDStageIwithNOxcontrol = make_unique<DataObject<bool>>(A, 24, "HeavyDutyEuroOBDStageIwithNOxcontrol");
+    heavyDutyEuroOBDStageIIwithoutNOxcontrol = make_unique<DataObject<bool>>(A, 25,
+                                                                             "HeavyDutyEuroOBDStageIIwithoutNOxcontrol");
+    heavyDutyEuroOBDStageIIwithNOxcontrol = make_unique<DataObject<bool>>(A, 26,
+                                                                          "HeavyDutyEuroOBDStageIIwithNOxcontrol");
+    brazilOBDPhase1 = make_unique<DataObject<bool>>(A, 28, "BrazilOBDPhase1");
+    brazilOBDPhase2 = make_unique<DataObject<bool>>(A, 29, "BrazilOBDPhase2");
+    koreanOBD = make_unique<DataObject<bool>>(A, 30, "KoreanOBD");
+    indiaOBDI = make_unique<DataObject<bool>>(A, 31, "IndiaOBDI");
+    indiaOBDII = make_unique<DataObject<bool>>(A, 32, "IndiaOBDII");
+    heavyDutyEuroOBDStageVI = make_unique<DataObject<bool>>(A, 33, "HeavyDutyEuroOBDStageVI");
 
     allSystems.push_back(oBD_II_CARB.get());
     allSystems.push_back(oBD_EPA.get());
@@ -190,36 +194,37 @@ unsigned int OBDCompliance::toFrame(unsigned int &data, int &size) {
     return data;
 }
 
-string OBDCompliance::getPrintableData() {
-    return "OBD_II_CARB: " + oBD_II_CARB->getPrintableData() +
-           "\nOBD_EPA: " + oBD_EPA->getPrintableData() +
-           "\nOBD_and_OBD_II: " + oBD_and_OBD_II->getPrintableData() +
-           "\nOBD_I: " + oBD_I->getPrintableData() +
-           "\nNotOBDcompliant: " + notOBDcompliant->getPrintableData() +
-           "\nEOBD: " + eOBD->getPrintableData() +
-           "\nEOBDandOBD_II: " + eOBDandOBD_II->getPrintableData() +
-           "\nEOBDandOBD: " + eOBDandOBD->getPrintableData() +
-           "\nEOBD_OBD_and_OBDII: " + eOBD_OBD_and_OBDII->getPrintableData() +
-           "\nJOBD: " + jOBD->getPrintableData() +
-           "\nJOBDandOBDII: " + jOBDandOBDII->getPrintableData() +
-           "\nJOBDandEOBD: " + jOBDandEOBD->getPrintableData() +
-           "\nJOBD_EOBD_and_OBDII: " + jOBD_EOBD_and_OBDII->getPrintableData() +
-           "\nEngineManufacturerDiagnostics: " + engineManufacturerDiagnostics->getPrintableData() +
-           "\nEngineManufacturerDiagnosticsEnhanced: " + engineManufacturerDiagnosticsEnhanced->getPrintableData() +
-           "\nHeavyDutyOn_BoardDiagnostics_OBD_C: " + heavyDutyOn_BoardDiagnostics_OBD_C->getPrintableData() +
-           "\nHeavyDutyOn_BoardDiagnostics: " + heavyDutyOn_BoardDiagnostics->getPrintableData() +
-           "\nWorldWideHarmonizedOBD: " + worldWideHarmonizedOBD->getPrintableData() +
-           "\nHeavyDutyEuroOBDStageIwithoutNOxcontrol: " + heavyDutyEuroOBDStageIwithoutNOxcontrol->getPrintableData() +
-           "\nHeavyDutyEuroOBDStageIwithNOxcontrol: " + heavyDutyEuroOBDStageIwithNOxcontrol->getPrintableData() +
-           "\nHeavyDutyEuroOBDStageIIwithoutNOxcontrol: " +
-           heavyDutyEuroOBDStageIIwithoutNOxcontrol->getPrintableData() +
-           "\nHeavyDutyEuroOBDStageIIwithNOxcontrol: " + heavyDutyEuroOBDStageIIwithNOxcontrol->getPrintableData() +
-           "\nBrazilOBDPhase1: " + brazilOBDPhase1->getPrintableData() +
-           "\nBrazilOBDPhase2: " + brazilOBDPhase2->getPrintableData() +
-           "\nKoreanOBD: " + koreanOBD->getPrintableData() +
-           "\nIndiaOBDI: " + indiaOBDI->getPrintableData() +
-           "\nIndiaOBDII: " + indiaOBDII->getPrintableData() +
-           "\nHeavyDutyEuroOBDStageVI: " + heavyDutyEuroOBDStageVI->getPrintableData();
+shared_ptr<DataObjectValueCollection> OBDCompliance::getDataObjectValue() {
+    auto valueCollection = make_shared<DataObjectValueCollection>();
+    valueCollection->merge(oBD_II_CARB->getDataObjectValue());
+    valueCollection->merge(oBD_EPA->getDataObjectValue());
+    valueCollection->merge(oBD_and_OBD_II->getDataObjectValue());
+    valueCollection->merge(oBD_I->getDataObjectValue());
+    valueCollection->merge(notOBDcompliant->getDataObjectValue());
+    valueCollection->merge(eOBD->getDataObjectValue());
+    valueCollection->merge(eOBDandOBD_II->getDataObjectValue());
+    valueCollection->merge(eOBDandOBD->getDataObjectValue());
+    valueCollection->merge(eOBD_OBD_and_OBDII->getDataObjectValue());
+    valueCollection->merge(jOBD->getDataObjectValue());
+    valueCollection->merge(jOBDandOBDII->getDataObjectValue());
+    valueCollection->merge(jOBDandEOBD->getDataObjectValue());
+    valueCollection->merge(jOBD_EOBD_and_OBDII->getDataObjectValue());
+    valueCollection->merge(engineManufacturerDiagnostics->getDataObjectValue());
+    valueCollection->merge(engineManufacturerDiagnosticsEnhanced->getDataObjectValue());
+    valueCollection->merge(heavyDutyOn_BoardDiagnostics_OBD_C->getDataObjectValue());
+    valueCollection->merge(heavyDutyOn_BoardDiagnostics->getDataObjectValue());
+    valueCollection->merge(worldWideHarmonizedOBD->getDataObjectValue());
+    valueCollection->merge(heavyDutyEuroOBDStageIwithoutNOxcontrol->getDataObjectValue());
+    valueCollection->merge(heavyDutyEuroOBDStageIwithNOxcontrol->getDataObjectValue());
+    valueCollection->merge(heavyDutyEuroOBDStageIIwithoutNOxcontrol->getDataObjectValue());
+    valueCollection->merge(heavyDutyEuroOBDStageIIwithNOxcontrol->getDataObjectValue());
+    valueCollection->merge(brazilOBDPhase1->getDataObjectValue());
+    valueCollection->merge(brazilOBDPhase2->getDataObjectValue());
+    valueCollection->merge(koreanOBD->getDataObjectValue());
+    valueCollection->merge(indiaOBDI->getDataObjectValue());
+    valueCollection->merge(indiaOBDII->getDataObjectValue());
+    valueCollection->merge(heavyDutyEuroOBDStageVI->getDataObjectValue());
+    return valueCollection;
 }
 
 DataObjectStateCollection OBDCompliance::setValueFromString(string data) {

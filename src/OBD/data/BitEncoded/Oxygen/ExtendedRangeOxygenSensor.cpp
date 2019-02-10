@@ -5,8 +5,10 @@
 #include "ExtendedRangeOxygenSensor.h"
 
 ExtendedRangeOxygenSensor::ExtendedRangeOxygenSensor() {
-    fuelAirEquivalenceRatio = CalculatedDataObjectFactory::ratio_2Divided2Pow16TimesValue();
-    current = CalculatedDataObjectFactory::mA_ValueMinus128();
+    fuelAirEquivalenceRatio = CalculatedDataObjectFactory::ratio_2Divided2Pow16TimesValue(
+            DataObjectDescriptionText::getFuelAirEquivalenceRatio());
+    current = CalculatedDataObjectFactory::mA_ValueMinus128(
+            DataObjectDescriptionText::getCurrent());
 }
 
 CalculatedDataObject<unsigned short, float> &ExtendedRangeOxygenSensor::getFuelAirEquivalenceRatio() {
@@ -28,9 +30,11 @@ unsigned int ExtendedRangeOxygenSensor::toFrame(unsigned int &data, int &size) {
     return data;
 }
 
-string ExtendedRangeOxygenSensor::getPrintableData() {
-    return "fuelAirEquivalenceRatio: " + fuelAirEquivalenceRatio->getPrintableData() +
-           "\ncurrent: " + current->getPrintableData();
+shared_ptr<DataObjectValueCollection> ExtendedRangeOxygenSensor::getDataObjectValue() {
+    auto valueCollection = make_shared<DataObjectValueCollection>();
+    valueCollection->merge(fuelAirEquivalenceRatio->getDataObjectValue());
+    valueCollection->merge(current->getDataObjectValue());
+    return valueCollection;
 }
 
 DataObjectStateCollection ExtendedRangeOxygenSensor::setValueFromString(string data) {

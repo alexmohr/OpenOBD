@@ -5,8 +5,10 @@
 #include "FuelRailOxygenSensor.h"
 
 FuelRailOxygenSensor::FuelRailOxygenSensor() {
-    fuelAirEquivalenceRatio = CalculatedDataObjectFactory::ratio_2Divided2Pow16TimesValue();
-    voltage = CalculatedDataObjectFactory::ratio_8Divided2Pow16TimesValue();
+    fuelAirEquivalenceRatio = CalculatedDataObjectFactory::ratio_2Divided2Pow16TimesValue(
+            DataObjectDescriptionText::getFuelAirEquivalenceRatio());
+    voltage = CalculatedDataObjectFactory::ratio_8Divided2Pow16TimesValue(
+            DataObjectDescriptionText::getVoltage());
 }
 
 CalculatedDataObject<unsigned short, float> &FuelRailOxygenSensor::getFuelAirEquivalenceRatio() {
@@ -27,9 +29,11 @@ void FuelRailOxygenSensor::fromFrame(byte *data, int size) {
     voltage->fromFrame(data, size);
 }
 
-string FuelRailOxygenSensor::getPrintableData() {
-    return "fuelAirEquivalenceRatio: " + fuelAirEquivalenceRatio->getPrintableData() +
-           "\nvoltage: " + voltage->getPrintableData();
+shared_ptr<DataObjectValueCollection> FuelRailOxygenSensor::getDataObjectValue() {
+    auto valueCollection = make_shared<DataObjectValueCollection>();
+    valueCollection->merge(fuelAirEquivalenceRatio->getDataObjectValue());
+    valueCollection->merge(voltage->getDataObjectValue());
+    return valueCollection;
 }
 
 DataObjectStateCollection FuelRailOxygenSensor::setValueFromString(string data) {

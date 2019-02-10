@@ -34,7 +34,7 @@ private:
 // fields set from configuration
 private:
     string saeId;
-    string description;
+    shared_ptr<DataObjectDescription> description;
 
 
 public:
@@ -44,11 +44,11 @@ public:
 
     void setSaeId(string saeId);
 
-    void setDescription(string description);
+    void addDescription(string descriptionText);
 
     string getSaeId();
 
-    string getDescription();
+    shared_ptr<DataObjectDescription> getDescription();
 
 };
 

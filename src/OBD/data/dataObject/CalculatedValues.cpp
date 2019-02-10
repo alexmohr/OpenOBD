@@ -94,7 +94,7 @@ unsigned short CalculatedValues::from0_079_Times256APlusB(float val) {
     double a = ((1000.0 * val) / 20303);
     byte bVal[2];
     bVal[0] = (byte) (a);
-    bVal[1] = (byte) ceil((1000.0f * val) / 79.0f - 256 * a);
+    bVal[1] = (byte) ((1000.0f * val) / 79.0f - 256 * a);
     return byteArrayToUShort(bVal);
 }
 

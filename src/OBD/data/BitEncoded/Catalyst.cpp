@@ -5,11 +5,14 @@
 #include "Catalyst.h"
 
 Catalyst::Catalyst() {
-    temperatureBank1Sensor1 = CalculatedDataObjectFactory::celsius_Divided10Minus40();
-    temperatureBank2Sensor1 = CalculatedDataObjectFactory::celsius_Divided10Minus40();
-    temperatureBank1Sensor2 = CalculatedDataObjectFactory::celsius_Divided10Minus40();
-    temperatureBank2Sensor2 = CalculatedDataObjectFactory::celsius_Divided10Minus40();
-
+    temperatureBank1Sensor1 = CalculatedDataObjectFactory::celsius_Divided10Minus40(
+            DataObjectDescriptionText::getCatalystTemperatureSensor(1, 1));
+    temperatureBank2Sensor1 = CalculatedDataObjectFactory::celsius_Divided10Minus40(
+            DataObjectDescriptionText::getCatalystTemperatureSensor(2, 1));
+    temperatureBank1Sensor2 = CalculatedDataObjectFactory::celsius_Divided10Minus40(
+            DataObjectDescriptionText::getCatalystTemperatureSensor(1, 2));
+    temperatureBank2Sensor2 = CalculatedDataObjectFactory::celsius_Divided10Minus40(
+            DataObjectDescriptionText::getCatalystTemperatureSensor(2, 2));
 }
 
 CalculatedDataObject<unsigned short, float> &Catalyst::getTemperatureBank1Sensor1() {

@@ -3,6 +3,7 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import purple from '@material-ui/core/colors/purple';
 import green from '@material-ui/core/colors/green';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import ResponsiveDrawer from './pages/appdrawer'
 
 // A theme with custom primary and secondary color.
 // It's optional.
@@ -13,6 +14,7 @@ const theme = createMuiTheme({
   typography: {
     useNextVariants: true,
   },
+
 });
 
 function withRoot<P>(Component: React.ComponentType<P>) {
@@ -23,6 +25,7 @@ function withRoot<P>(Component: React.ComponentType<P>) {
       <MuiThemeProvider theme={theme}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
+        <ResponsiveDrawer/>
         <Component {...props} />
       </MuiThemeProvider>
     );

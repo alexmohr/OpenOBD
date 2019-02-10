@@ -17,7 +17,6 @@ const styles = (theme: Theme) =>
   createStyles({
     root: {
       textAlign: 'center',
-   //   paddingTop: theme.spacing.unit * 20,
     },
   });
 
@@ -25,7 +24,7 @@ type State = {
   open: boolean;
 };
 
-class Dashboard extends React.Component<WithStyles<typeof styles>, State> {
+class Overview extends React.Component<WithStyles<typeof styles>, State> {
 
   state = {
     open: false,
@@ -62,7 +61,7 @@ class Dashboard extends React.Component<WithStyles<typeof styles>, State> {
     return (
       <div className={this.props.classes.root}>
         <Dialog open={this.state.open} onClose={this.handleClose}>
-          <DialogTitle>Super Secret Password</DialogTitle>
+          <DialogTitle>Overview</DialogTitle>
           <DialogContent>
             <DialogContentText>1-2-3-4-5</DialogContentText>
           </DialogContent>
@@ -86,4 +85,4 @@ class Dashboard extends React.Component<WithStyles<typeof styles>, State> {
   }
 }
 
-export default withRoot(withStyles(styles)(Dashboard));
+export default withRoot(withStyles(styles)(Overview));

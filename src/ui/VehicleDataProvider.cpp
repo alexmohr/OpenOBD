@@ -98,6 +98,10 @@ bool VehicleDataProvider::getPid(const string &pidName, Pid &pid, Service &servi
                 break;
             }
         }
+
+        if (foundPid) {
+            break;
+        }
     }
 
     if (!foundPid) {

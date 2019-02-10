@@ -91,7 +91,7 @@ class Loader extends React.Component<WithStyles<typeof styles>, State> {
 
   render() {
     if (stateStore.getState().autobahn.isOpen()) {
-      return <Redirect to='/app' />
+      return <Redirect to='/dashboard' />
     }
 
     return (

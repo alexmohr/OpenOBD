@@ -23,7 +23,7 @@ int CliHandler::openCli(int argc, char *argv[]) {
     bool enableElm = false;
     bool enableWamp = false;
 
-    CLI_TYPE type;
+    APP_TYPE type;
 
     if (getCommandLineArgs(argc, argv, *interface, port, type, enableElm, *script,
                            enableWamp) == EXIT_FAILURE) {
@@ -84,7 +84,7 @@ int CliHandler::openCli(int argc, char *argv[]) {
     }
 
     if (enableWamp) {
-        wampHandler = make_shared<Wamp>(logicalComInterface, obdHandler);
+        wampHandler = make_shared<Wamp>(logicalComInterface, obdHandler, type);
         wampHandler->openInterface();
     }
 
@@ -135,7 +135,7 @@ void CliHandler::display_help(char *progname) {
 }
 
 int
-CliHandler::getCommandLineArgs(int argc, char **argv, char &interface, int &port, CLI_TYPE &type, bool &enableElm,
+CliHandler::getCommandLineArgs(int argc, char **argv, char &interface, int &port, APP_TYPE &type, bool &enableElm,
                                char &script, bool &enableWamp) {
     char *typeTester = const_cast<char *>("tester");
     char *typeEcu = const_cast<char *>("ecu");

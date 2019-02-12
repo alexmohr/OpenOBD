@@ -6,11 +6,14 @@
 #include "wampcc/json.h"
 #include <functional>
 
-Wamp::Wamp(shared_ptr<ICommunicationInterface> comInterface, shared_ptr<OBDHandler> obdHandler) {
+// TODO WRITE TESTS <3
+
+Wamp::Wamp(shared_ptr<ICommunicationInterface> comInterface, shared_ptr<OBDHandler> obdHandler, APP_TYPE type) {
     this->comInterface = comInterface;
     this->obdHandler = obdHandler;
     this->vehicleDataProvider = make_unique<VehicleDataProvider>(obdHandler, comInterface);
     this->exitRequested = false;
+    this->type = type;
 }
 
 int Wamp::openInterface() {
@@ -83,9 +86,11 @@ void Wamp::getPidsInService(wampcc::wamp_router &, wampcc::wamp_session &caller,
 
 void
 Wamp::getPid(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_info info, Service service, Pid pid) {
-    std::string value;
-    vehicleDataProvider->queryVehicle(pid, service);
-    vehicleDataProvider->getPrintableDataForPid(service == 2, pid, value);
+    shared_ptr<DataObjectValueCollection> dataObjectValue;
+    if (type != APP_TYPE::ECU) {
+        vehicleDataProvider->queryVehicle(pid, service);
+    }
+    vehicleDataProvider->getPrintableDataForPid(service == 2, pid, dataObjectValue);
 
     wampcc::json_value v = wampcc::json_value::make_array();
 
@@ -108,8 +113,25 @@ Wamp::getPid(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_i
 
     rootObject["pid"] = jsonPid;
 
-    auto jsonData = wampcc::json_value::make_object();
-    jsonData["string"] = value;
+    auto jsonData = wampcc::json_value::make_array();
+    wampcc::json_value jsonDataValue;
+    for (const shared_ptr<DataObjectValue> &dataVal : *dataObjectValue->getValues()) {
+        jsonDataValue = wampcc::json_value::make_object();
+        jsonDataValue["numberValue"] = dataVal->getValue();
+
+        const auto &desc = dataVal->getDescription();
+        jsonDataValue["name"] = desc->getDescriptionText();
+        jsonDataValue["unit"] = desc->getUnit().toShortString();
+        jsonDataValue["min"] = desc->getMin();
+        jsonDataValue["max"] = desc->getMax();
+
+        auto details = wampcc::json_value::make_object();
+        for (const auto &detail : *dataVal->getDetails()) {
+            details[detail.first] = detail.second;
+        }
+        jsonDataValue["details"] = details;
+        jsonData.as<wampcc::json_array>().push_back(jsonDataValue);
+    }
     rootObject["data"] = jsonData;
 
     caller.result(info.request_id, v.as<wampcc::json_array>());

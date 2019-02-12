@@ -41,7 +41,7 @@ void initCommandHandler(shared_ptr<MockCommInterface> mockComm, CommandHandler *
 
 }
 
-void TestCommandHandler(CLI_TYPE type) {
+void TestCommandHandler(APP_TYPE type) {
     shared_ptr<MockCommInterface> mockComm = make_shared<MockCommInterface>();
     shared_ptr<OBDHandler> obdHandler = OBDHandler::createInstance();
     auto *cmdHandler = new CommandHandler(type, mockComm, obdHandler);
@@ -124,27 +124,27 @@ void TestCommandHandler(CLI_TYPE type) {
 }
 
 TEST(CommandHandlerTest, setData_getData_TESTER) {
-    TestCommandHandler(CLI_TYPE::TESTER);
+    TestCommandHandler(APP_TYPE::TESTER);
 
 }
 
 TEST(CommandHandlerTest, setData_getData_ECU) {
-    TestCommandHandler(CLI_TYPE::ECU);
+    TestCommandHandler(APP_TYPE::ECU);
 }
 
 TEST(CommandHandlerTest, setData_getData_WIFI_ELM) {
-    TestCommandHandler(CLI_TYPE::WIFI_ELM);
+    TestCommandHandler(APP_TYPE::WIFI_ELM);
 }
 
 TEST(CommandHandlerTest, setData_getData_SERIAL_ELM) {
-    TestCommandHandler(CLI_TYPE::SERIAL_ELM);
+    TestCommandHandler(APP_TYPE::SERIAL_ELM);
 }
 
 
 TEST(CommandHandlerTest, set_special) {
     shared_ptr<MockCommInterface> mockComm = make_shared<MockCommInterface>();
     shared_ptr<OBDHandler> obdHandler = OBDHandler::createInstance();
-    auto *cmdHandler = new CommandHandler(CLI_TYPE::ECU, mockComm, obdHandler);
+    auto *cmdHandler = new CommandHandler(APP_TYPE::ECU, mockComm, obdHandler);
     initCommandHandler(mockComm, cmdHandler);
 
     // invalid
@@ -202,7 +202,7 @@ TEST(CommandHandlerTest, set_special) {
 TEST(CommandHandlerTest, tryBreakStuff) {
     shared_ptr<MockCommInterface> mockComm = make_shared<MockCommInterface>();
     shared_ptr<OBDHandler> obdHandler = OBDHandler::createInstance();
-    auto *cmdHandler = new CommandHandler(CLI_TYPE::ECU, mockComm, obdHandler);
+    auto *cmdHandler = new CommandHandler(APP_TYPE::ECU, mockComm, obdHandler);
     vector<string> data = {"set"};
     cmdHandler->setData(data);
 

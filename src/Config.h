@@ -19,6 +19,13 @@ using json = nlohmann::json;
 #define TESTER_ID 0x7DF
 #define VEHICLE_ID 0x7E8
 
+enum APP_TYPE {
+    ECU,
+    TESTER,
+    WIFI_ELM,
+    SERIAL_ELM
+};
+
 
 void from_json(const json &jsdata, map<Service, PidCollection> &pcmap);
 

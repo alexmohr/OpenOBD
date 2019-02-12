@@ -112,7 +112,8 @@ bool VehicleDataProvider::getPid(const string &pidName, Pid &pid, Service &servi
 }
 
 
-DataObjectState VehicleDataProvider::getPrintableDataForPid(bool freezeFrameVehicle, Pid &pid, string &value) const {
+DataObjectState VehicleDataProvider::getPrintableDataForPid(bool freezeFrameVehicle, Pid &pid,
+                                                            shared_ptr<DataObjectValueCollection> &value) const {
     IFrameObject *frameObject;
     if (freezeFrameVehicle) {
         frameObject = pid.getFrameObject(obdHandler->getFreezeFrameVehicle());
@@ -123,7 +124,7 @@ DataObjectState VehicleDataProvider::getPrintableDataForPid(bool freezeFrameVehi
     if (frameObject == nullptr) {
         return DataObjectState(NOT_SUPPORTED);
     }
-    value = frameObject->getDataObjectValue()->to_string();
+    value = frameObject->getDataObjectValue();
     return DataObjectState(SUCCESS);
 }
 

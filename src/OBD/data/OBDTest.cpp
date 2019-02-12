@@ -14,7 +14,7 @@ OBDTest::OBDTest(string name, ByteIndex availableByte, unsigned int availableInd
     this->available = make_unique<DataObject<bool>>(availableByte, availableIndex,
                                                     description + DataObjectDescriptionText::getOBDTestAvailable());
     this->incomplete = make_unique<DataObject<bool>>(incompleteByte, incompleteIndex,
-                                                     DataObjectDescriptionText::getOBDTestIncomplete());
+                                                     description + DataObjectDescriptionText::getOBDTestIncomplete());
     available->setValue(false);
 }
 

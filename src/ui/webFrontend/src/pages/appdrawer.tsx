@@ -7,18 +7,20 @@ import Divider from '@material-ui/core/Divider';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import { Theme } from '@material-ui/core/styles/createMuiTheme';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Dashboard from '@material-ui/icons/Dashboard';
-import MailIcon from '@material-ui/icons/Mail';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
+import FormatListBulleted from '@material-ui/icons/FormatListBulleted';
+import Warning from '@material-ui/icons/Warning';
+
 import Typography from '@material-ui/core/Typography';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
+import { setUrlPath } from '../utils/common'
 
 const drawerWidth = 240;
 
@@ -62,33 +64,41 @@ class AppDrawer extends React.Component<WithStyles<typeof styles>, State> {
         desktopOpen: true
     };
 
-    handleDrawerToggleMobile = () => {
+    private handleDrawerToggleMobile(): void {
         this.setState(state => ({ mobileOpen: !state.mobileOpen }));
     };
 
-    handleDrawerToggleDesktop = () => {
+    private handleDrawerToggleDesktop(): void {
         this.setState(state => ({ desktopOpen: !state.desktopOpen }));
     };
 
     render() {
-
         const drawer = (
             <div>
                 <div className={this.props.classes.toolbar} />
                 <Divider />
                 <List>
-                    <ListItem button onClick={()=>document.location.pathname="/dashboard"} >
-                        <ListItemIcon><Dashboard/></ListItemIcon>
-                        <ListItemText primary={"Dashboard"} />
+                    <ListItem button onClick={() => setUrlPath("Dashboard")}>
+                        <ListItemIcon>
+                            <Dashboard/>
+                        </ListItemIcon>
+                        <ListItemText primary="Dashboard" />
+                    </ListItem>
+                    <ListItem button onClick={() => setUrlPath("Overview")}>
+                        <ListItemIcon>
+                            <FormatListBulleted/>
+                        </ListItemIcon>
+                        <ListItemText primary="Overview" />
                     </ListItem>
                 </List>
+                <Divider />
                 <List>
-                    {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                        <ListItem button key={text}>
-                            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItem>
-                    ))}
+                    <ListItem button onClick={() => setUrlPath("TroubleCodes")}>
+                        <ListItemIcon>
+                            <Warning/>
+                        </ListItemIcon>
+                        <ListItemText primary="Trouble Codes" />
+                    </ListItem>
                 </List>
             </div>
         );

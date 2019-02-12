@@ -44,7 +44,7 @@ public:
 private:
     void display_help(char *progname);
 
-    int getCommandLineArgs(int argc, char **argv, char &interface, int &port, CLI_TYPE &type, bool &enableElm,
+    int getCommandLineArgs(int argc, char **argv, char &interface, int &port, APP_TYPE &type, bool &enableElm,
                            char &script, bool &enableWamp);
 };
 

@@ -13,7 +13,7 @@
 #include <readline/history.h>
 
 
-CommandHandler::CommandHandler(CLI_TYPE type, shared_ptr<ICommunicationInterface> comInterface,
+CommandHandler::CommandHandler(APP_TYPE type, shared_ptr<ICommunicationInterface> comInterface,
                                shared_ptr<OBDHandler> obdHandler) {
     this->obdHandler = obdHandler;
     this->comInterface = comInterface;
@@ -245,11 +245,10 @@ DataObjectState CommandHandler::getData(const vector<string> &cmd, bool freezeFr
         }
     }
 
-    string value;
-
+    shared_ptr<DataObjectValueCollection> value;
     state = vehicleDataProvider->getPrintableDataForPid(freezeFrameVehicle, pid, value);
     if (state.type == SUCCESS) {
-        cout << value << endl;
+        cout << value->to_string() << endl;
     }
 
     return state;

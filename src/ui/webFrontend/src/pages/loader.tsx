@@ -42,7 +42,7 @@ class Loader extends React.Component<WithStyles<typeof styles>, State> {
   };
 
   private initVehicle() : void{
-    stateStore.getState().autobahn.getServices();
+    //stateStore.getState().autobahn.getServices();
   }
 
   private waitForConnection(connectionOpenRequestTime: Date): void {
@@ -81,7 +81,7 @@ class Loader extends React.Component<WithStyles<typeof styles>, State> {
     this.openConnection();
   }
 
-  handleRetry = () => {
+  private handleRetry() : void {
     this.setState({
       retryDialogOpen: false,
     });
@@ -91,7 +91,7 @@ class Loader extends React.Component<WithStyles<typeof styles>, State> {
 
   render() {
     if (stateStore.getState().autobahn.isOpen()) {
-      return <Redirect to='/dashboard' />
+      return <Redirect to='Dashboard' />
     }
 
     return (

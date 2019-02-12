@@ -1,5 +1,8 @@
 import * as autobahn from "autobahn";
 import { PidQuery } from "./PidQuery";
+import { ServiceQuery } from "./ServiceQuery";
+import { setUrlPath } from '../utils/common'
+
 export class Communication {
     ////
     // Private fields
@@ -37,27 +40,35 @@ export class Communication {
         return this._isOpen;
     }
 
-    private parsePidQuery(result: any): PidQuery {
-        return PidQuery.deserialize(result);
-    }
-
-    public getServices(): void {
-        //this._session.call("service.get.1.VehicleSpeed").catch((error) => this.logWampError(error))
-        if (this._session == undefined) {
-            return;
-        }
-
-        //this._session.call("get.service.1").then(this.foobar)
-
-
-    }
-
-    public getVehicleData(pidName: string): When.Promise<PidQuery> | null {
+    public getPidData(pidName: string): When.Promise<PidQuery> | null {
         if (this._session == undefined) {
             return null;
         }
 
-        return this._session.call("get.service.1." + pidName + "").then(this.parsePidQuery)
+        return this._session.call("get.service.1." + pidName).then(this.parsePidQuery)
+    }
+
+    public getServiceData(serviceId: number): When.Promise<ServiceQuery> | null {
+        if (this._session == undefined) {
+            return null;
+        }
+
+        return this._session.call("get.service." + serviceId.toString()).then(this.parseServiceQuery)
+    }
+
+
+    public verifyLoaded(): void {
+        if (!this.isOpen()) {
+            setUrlPath("");
+        }
+    }
+
+    private parsePidQuery(result: any): PidQuery {
+        return PidQuery.deserialize(result);
+    }
+
+    private parseServiceQuery(result: any): ServiceQuery {
+        return ServiceQuery.deserialize(result);
     }
 
     private connectionOpened = (session: autobahn.Session): void => {

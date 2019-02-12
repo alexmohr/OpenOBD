@@ -19,14 +19,6 @@
 
 using namespace std;
 
-
-enum CLI_TYPE {
-    ECU,
-    TESTER,
-    WIFI_ELM,
-    SERIAL_ELM
-};
-
 class CommandHandler {
 private:
 
@@ -68,11 +60,11 @@ private:
     bool initDone;
     bool cmdHandlerRdy;
     bool exitRequested;
-    CLI_TYPE type;
+    APP_TYPE type;
 
 
 public:
-    CommandHandler(CLI_TYPE type, shared_ptr<ICommunicationInterface> comInterface,
+    CommandHandler(APP_TYPE type, shared_ptr<ICommunicationInterface> comInterface,
                    shared_ptr<OBDHandler> obdHandler);
 
 public:

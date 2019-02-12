@@ -4,6 +4,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
+import TextField from '@material-ui/core/TextField';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
 import { Theme } from '@material-ui/core/styles/createMuiTheme';
@@ -12,75 +13,121 @@ import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import withRoot from '../withRoot';
 import { Communication } from '../wamp/autobahn';
 import { stateStore } from '../redux/reducer'
+import Paper from '@material-ui/core/Paper';
+import { loadavg } from 'os';
+import { element } from 'prop-types';
+import { CircularProgress } from '@material-ui/core';
 
 const styles = (theme: Theme) =>
   createStyles({
     root: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      marginLeft: 240 + theme.spacing.unit
+    },
+    loaderDiv: {
       textAlign: 'center',
+      paddingTop: theme.spacing.unit * 10,
+    },
+    progress: {
+      margin: theme.spacing.unit * 2,
+    },
+    paper: {
+      padding: theme.spacing.unit,
+      paddingTop: theme.spacing.unit * 2,
+      paddingBottom: theme.spacing.unit * 2,
+      margin: theme.spacing.unit
+    },
+    textField: {
+      marginLeft: theme.spacing.unit,
+      marginRight: theme.spacing.unit,
+      width: 200,
     },
   });
 
 type State = {
-  open: boolean;
+  loadingDone: boolean;
+  loading: boolean;
 };
 
 class Overview extends React.Component<WithStyles<typeof styles>, State> {
+  private elements: JSX.Element[] = new Array<JSX.Element>();
 
   state = {
-    open: false,
+    loadingDone: false,
+    loading: false,
   };
-
 
   componentDidMount() {
-    if (!stateStore.getState().autobahn.isOpen()) {
-      document.location.pathname = "/";
-    }
-
-    let pidQuery = stateStore.getState().autobahn.getVehicleData("VehicleSpeed");
-    if (pidQuery == null) return;
-    pidQuery.done((pq) =>{
-      console.log(pq.getData().getStringData())
-    })
-    
+    stateStore.getState().autobahn.verifyLoaded();
   }
 
+  private load(): void {
+    let serviceQuery = stateStore.getState().autobahn.getServiceData(1);
+    if (null == serviceQuery) return;
+    serviceQuery.done((sq) => {
+      sq.getPidNames().forEach(pidName => {
+        let pidQuery = stateStore.getState().autobahn.getPidData(pidName);
+        if (null != pidQuery) {
+          pidQuery.done((pq) => {
+            let dataMember = pq.getData().getDataMember();
+            let index = 0;
+            let fields: JSX.Element[] = new Array<JSX.Element>();
 
-  handleClose = () => {
-    this.setState({
-      open: false,
-    });
-  };
+            dataMember.forEach(dm => {
+              fields.push(
+                <TextField
+                  className={this.props.classes.textField}
+                  key={dm.getName() + index++}
+                  label={dm.getName()}
+                  defaultValue={dm.getNumberValue()}
+                  helperText={"Unit: " + dm.getUnit()}
+                  margin="normal"
+                  InputProps={{ readOnly: true }} />)
+            })
 
-  handleClick = () => {
-    this.setState({
-      open: true,
-    });
-  };
+            this.elements.push(
+              <Paper key={pq.getPid().getName() + index++} elevation={1} className={this.props.classes.paper}>
+                <Typography variant="h5" gutterBottom>
+                  {pq.getPid().getDescription()}
+                </Typography>
+                {fields}
+              </Paper>)
+
+            this.setState({
+              loadingDone: true,
+            });
+          });
+        };
+      });
+    })
+
+
+  }
 
   render() {
+    if (!this.state.loadingDone) {
+      if (!this.state.loading) {
+        this.load();
+      }
+      return <div className={this.props.classes.loaderDiv}>
+        <CircularProgress className={this.props.classes.progress} disableShrink={true}> 
+          <Typography variant="h4" gutterBottom>
+            Loading
+          </Typography>
+        </CircularProgress>
+        </div>
+    }
+
+
     return (
       <div className={this.props.classes.root}>
-        <Dialog open={this.state.open} onClose={this.handleClose}>
-          <DialogTitle>Overview</DialogTitle>
-          <DialogContent>
-            <DialogContentText>1-2-3-4-5</DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button color="primary" onClick={this.handleClose}>
-              OK
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <Typography variant="h4" gutterBottom>
-          Material-UI
-        </Typography>
-        <Typography variant="subtitle1" gutterBottom>
-          example project
-        </Typography>
-        <Button variant="contained" color="secondary" onClick={this.handleClick}>
-          Super Secret Password
-        </Button>
+        <div>
+          {this.elements}
+        </div>
       </div>
+
+
     );
   }
 }

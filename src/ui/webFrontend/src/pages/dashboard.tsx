@@ -17,7 +17,6 @@ const styles = (theme: Theme) =>
   createStyles({
     root: {
       textAlign: 'center',
-   //   paddingTop: theme.spacing.unit * 20,
     },
   });
 
@@ -33,15 +32,13 @@ class Dashboard extends React.Component<WithStyles<typeof styles>, State> {
 
 
   componentDidMount() {
-    if (!stateStore.getState().autobahn.isOpen()) {
-      document.location.pathname = "/";
-    }
+    stateStore.getState().autobahn.verifyLoaded();
 
-    let pidQuery = stateStore.getState().autobahn.getVehicleData("VehicleSpeed");
+    let pidQuery = stateStore.getState().autobahn.getPidData("VehicleSpeed");
     if (pidQuery == null) return;
-    pidQuery.done((pq) =>{
+   /* pidQuery.done((pq) =>{
       console.log(pq.getData().getStringData())
-    })
+    })*/
     
   }
 

@@ -21,6 +21,7 @@ private:
     shared_ptr<ICommunicationInterface> comInterface;
     shared_ptr<OBDHandler> obdHandler;
     unique_ptr<VehicleDataProvider> vehicleDataProvider;
+    APP_TYPE type;
 private:
     bool exitRequested;
 private:
@@ -30,7 +31,8 @@ private:
 
 public:
     Wamp(shared_ptr<ICommunicationInterface> comInterface,
-         shared_ptr<OBDHandler> obdHandler);
+         shared_ptr<OBDHandler> obdHandler,
+         APP_TYPE type);
 
 
 public: // Implements ICloseable

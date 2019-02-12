@@ -55,7 +55,8 @@ public:
 
     bool getPid(const string &pidName, Pid &pid, Service &service) const;
 
-    DataObjectState getPrintableDataForPid(bool freezeFrameVehicle, Pid &pid, string &value) const;
+    DataObjectState getPrintableDataForPid(bool freezeFrameVehicle, Pid &pid,
+                                           shared_ptr<DataObjectValueCollection> &value) const;
 };
 
 

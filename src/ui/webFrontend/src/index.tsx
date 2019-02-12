@@ -5,16 +5,15 @@ import Dashboard from './pages/dashboard';
 import Overview from './pages/overview';
 
 import {
-  BrowserRouter as Router,Route,Link,Switch} from 'react-router-dom'
-import overview from './pages/overview';
+  HashRouter as Router,Route,Link,Switch} from 'react-router-dom'
 
 //ReactDOM.render(<Index />, document.querySelector('#root'));
 ReactDOM.render(
     <Router>
         <Switch>
             <Route exact path='/' component={Loader} />
-            <Route exact path='/dashboard' component={Dashboard} />
-            <Route exact path='/overview' component={Overview} />
+            <Route exact path='/Dashboard' component={Dashboard} />
+            <Route exact path='/Overview' component={Overview} />
             Overview
         </Switch>
     </Router>,

@@ -33,9 +33,9 @@ class Dashboard extends React.Component<WithStyles<typeof styles>, State> {
 
   componentDidMount() {
     stateStore.getState().autobahn.verifyLoaded();
-
+/*
     let pidQuery = stateStore.getState().autobahn.getPidData("VehicleSpeed");
-    if (pidQuery == null) return;
+    if (pidQuery == null) return;*/
    /* pidQuery.done((pq) =>{
       console.log(pq.getData().getStringData())
     })*/

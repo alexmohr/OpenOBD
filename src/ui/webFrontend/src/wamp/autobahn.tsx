@@ -40,12 +40,12 @@ export class Communication {
         return this._isOpen;
     }
 
-    public getPidData(pidName: string): When.Promise<PidQuery> | null {
+    public getPidData(serviceId: number, pidName: string): When.Promise<PidQuery> | null {
         if (this._session == undefined) {
             return null;
         }
 
-        return this._session.call("get.service.1." + pidName).then(this.parsePidQuery)
+        return this._session.call("get.service." + serviceId + "." + pidName).then(this.parsePidQuery)
     }
 
     public getServiceData(serviceId: number): When.Promise<ServiceQuery> | null {
@@ -54,6 +54,25 @@ export class Communication {
         }
 
         return this._session.call("get.service." + serviceId.toString()).then(this.parseServiceQuery)
+    }
+
+    public subscribeToPid(serviceId: number, pidName: string, handler: (pidQuery: PidQuery) => any): void {
+        if (this._session == undefined) {
+            return;
+        }
+        let url = "get.service." + serviceId + "." + pidName;
+        this._session.call(url + ".subscribe");
+        this._session.subscribe(url, (data) => {
+            let pidData = this.parsePidQuery(data[0]);
+        });
+    }
+
+    public clearSubscriptions(): void {
+        if (this._session == undefined) {
+            return;
+        }
+
+        this._session.call("set.clearSubscriptions").done();
     }
 
 

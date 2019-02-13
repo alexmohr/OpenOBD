@@ -6,6 +6,8 @@
 #define OPEN_OBD2_WAMP_H
 
 #include <thread>
+#include <map>
+#include <mutex>
 #include "wampcc/wampcc.h"
 #include "../../communication/ICloseable.h"
 #include "../../communication/ICommunicationInterface.h"
@@ -22,8 +24,14 @@ private:
     shared_ptr<OBDHandler> obdHandler;
     unique_ptr<VehicleDataProvider> vehicleDataProvider;
     APP_TYPE type;
+
 private:
     bool exitRequested;
+
+private:
+    unique_ptr<map<string, pair<Service, Pid>>> subscriptions;
+    std::mutex subscriptionMutex;
+
 private:
     /* Create the wampcc kernel. */
     wampcc::kernel the_kernel;
@@ -44,14 +52,27 @@ private:
 
     void serve();
 
-private:
+private: // wamp calls.
 
     void getPidsInService(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_info info, Service service);
 
     void getPid(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_info info, Service service, Pid pid);
 
+    void subscribeToPid(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_info info, Service service,
+                        Pid pid, string key);
+
+    void
+    unsubscribeFromPid(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_info info, string key);
+
+    void clearPidSubscriptions(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_info info);
+
+    // void setUpdateRate(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_info info);
+
+private:
     template<typename T>
-    void addVectorToJsonObject(wampcc::json_value &obj, string name, vector<T> vec);
+    void addVectorToJsonObject(wampcc::json_value &obj, string name, vector<T> vec) const;
+
+    wampcc::json_value getPidData(const Service &service, const Pid &pid) const;
 };
 
 

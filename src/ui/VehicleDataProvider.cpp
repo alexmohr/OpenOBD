@@ -112,7 +112,7 @@ bool VehicleDataProvider::getPid(const string &pidName, Pid &pid, Service &servi
 }
 
 
-DataObjectState VehicleDataProvider::getPrintableDataForPid(bool freezeFrameVehicle, Pid &pid,
+DataObjectState VehicleDataProvider::getPrintableDataForPid(bool freezeFrameVehicle, const Pid &pid,
                                                             shared_ptr<DataObjectValueCollection> &value) const {
     IFrameObject *frameObject;
     if (freezeFrameVehicle) {

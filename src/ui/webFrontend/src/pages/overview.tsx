@@ -48,6 +48,7 @@ const styles = (theme: Theme) =>
 type State = {
   loadingDone: boolean;
   loading: boolean;
+  values: Map<string, number>;
 };
 
 class Overview extends React.Component<WithStyles<typeof styles>, State> {
@@ -56,6 +57,7 @@ class Overview extends React.Component<WithStyles<typeof styles>, State> {
   state = {
     loadingDone: false,
     loading: false,
+    values: new Map<string, number>()
   };
 
   componentDidMount() {
@@ -67,7 +69,7 @@ class Overview extends React.Component<WithStyles<typeof styles>, State> {
     if (null == serviceQuery) return;
     serviceQuery.done((sq) => {
       sq.getPidNames().forEach(pidName => {
-        let pidQuery = stateStore.getState().autobahn.getPidData(pidName);
+        let pidQuery = stateStore.getState().autobahn.getPidData(1,pidName);
         if (null != pidQuery) {
           pidQuery.done((pq) => {
             let dataMember = pq.getData().getDataMember();
@@ -75,16 +77,23 @@ class Overview extends React.Component<WithStyles<typeof styles>, State> {
             let fields: JSX.Element[] = new Array<JSX.Element>();
 
             dataMember.forEach(dm => {
+              let key = dm.getName() + index++;
+              this.state.values.set(key, dm.getNumberValue())
               fields.push(
                 <TextField
                   className={this.props.classes.textField}
-                  key={dm.getName() + index++}
+                  key={key}
                   label={dm.getName()}
-                  defaultValue={dm.getNumberValue()}
+                  defaultValue={this.state.values.get(key)}
                   helperText={"Unit: " + dm.getUnit()}
                   margin="normal"
                   InputProps={{ readOnly: true }} />)
             })
+
+/*
+            stateStore.getState().autobahn.subscribeToPid(1, pidName, (result) => {
+              this.state.values.get("VehicleSpeed") = 42
+            });*/
 
             this.elements.push(
               <Paper key={pq.getPid().getName() + index++} elevation={1} className={this.props.classes.paper}>

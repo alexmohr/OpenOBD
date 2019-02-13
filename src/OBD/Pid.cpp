@@ -43,7 +43,7 @@ byte *Pid::getVehicleData(Service service, Vehicle *vehicle, int &size) {
     return data;
 }
 
-IFrameObject *Pid::getFrameObject(Vehicle *vehicle) {
+IFrameObject *Pid::getFrameObject(Vehicle *vehicle) const {
     auto pid = (Service1Pids) id;
     switch (pid) {
         case SupportedPid01_20:

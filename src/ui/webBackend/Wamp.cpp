@@ -6,14 +6,17 @@
 #include "wampcc/json.h"
 #include <functional>
 
+
 // TODO WRITE TESTS <3
 
 Wamp::Wamp(shared_ptr<ICommunicationInterface> comInterface, shared_ptr<OBDHandler> obdHandler, APP_TYPE type) {
     this->comInterface = comInterface;
     this->obdHandler = obdHandler;
-    this->vehicleDataProvider = make_unique<VehicleDataProvider>(obdHandler, comInterface);
     this->exitRequested = false;
     this->type = type;
+
+    this->vehicleDataProvider = make_unique<VehicleDataProvider>(obdHandler, comInterface);
+    this->subscriptions = make_unique<map<string, pair<Service, Pid>>>();
 }
 
 int Wamp::openInterface() {
@@ -30,38 +33,73 @@ int Wamp::closeInterface() {
 
 void Wamp::serve() {
 
-    // Create an embedded wamp router.
-    wampcc::wamp_router router(&the_kernel);
+    // Create an embedded wamp router->
+    auto router = make_shared<wampcc::wamp_router>(&the_kernel);
+
 
     // Accept clients on IPv4 port, without authentication.
-    auto lstFut = router.listen(wampcc::auth_provider::no_auth_required(), 55555);
+    auto lstFut = router->listen(wampcc::auth_provider::no_auth_required(), 55555);
     if (auto ec = lstFut.get()) {
         LOG(ERROR) << "Failed WAMP start" << ec.message();
         return;
     }
 
+    string clearPidSubscriptionsUrl = "set.clearPidSubscriptions";
+    router->callable(REALM, clearPidSubscriptionsUrl,
+                     std::bind(&Wamp::clearPidSubscriptions, this,
+                               std::placeholders::_1,
+                               std::placeholders::_2,
+                               std::placeholders::_3));
+
+
     for (auto const&[service, pidCollection] :  *obdHandler->getPidConfig()) {
         std::string serviceUrl = "get.service." + to_string(service);
-        router.callable(REALM, serviceUrl,
-                        std::bind(&Wamp::getPidsInService,
-                                  this, std::placeholders::_1,
-                                  std::placeholders::_2,
-                                  std::placeholders::_3,
-                                  service));
+        router->callable(REALM, serviceUrl,
+                         std::bind(&Wamp::getPidsInService, this,
+                                   std::placeholders::_1,
+                                   std::placeholders::_2,
+                                   std::placeholders::_3,
+                                   service));
 
         for (const auto &pid: pidCollection.get_pid_list_as_vector()) {
             if (pid.name.empty()) { continue; }
-            std::string pidUrl = serviceUrl + "." + pid.name;
-            router.callable(REALM, pidUrl,
-                            std::bind(&Wamp::getPid,
-                                      this, std::placeholders::_1,
-                                      std::placeholders::_2,
-                                      std::placeholders::_3,
-                                      service, pid));
+            std::string url = serviceUrl + "." + pid.name;
+            router->callable(REALM, url,
+                             std::bind(&Wamp::getPid, this,
+                                       std::placeholders::_1,
+                                       std::placeholders::_2,
+                                       std::placeholders::_3,
+                                       service, pid));
+
+            router->callable(REALM, url + ".subscribe",
+                             std::bind(&Wamp::subscribeToPid, this,
+                                       std::placeholders::_1,
+                                       std::placeholders::_2,
+                                       std::placeholders::_3,
+                                       service, pid, url));
+
+            router->callable(REALM, url + ".unsubscribe",
+                             std::bind(&Wamp::unsubscribeFromPid, this,
+                                       std::placeholders::_1,
+                                       std::placeholders::_2,
+                                       std::placeholders::_3,
+                                       url));
         }
     }
-
     while (!exitRequested) {
+        for (auto const&[key, val] : *subscriptions) {
+            /** Publish to an internal topic */
+
+            auto json = getPidData(val.first, val.second);
+
+            wampcc::json_value v = wampcc::json_value::make_array();
+            v.as<wampcc::json_array>().push_back(json);
+
+            auto args = wampcc::wamp_args();
+            args.args_list = v.as<wampcc::json_array>();
+            router->publish(REALM, key, {}, args);
+        }
+
         this_thread::sleep_for(100ms);
     }
 }
@@ -86,19 +124,56 @@ void Wamp::getPidsInService(wampcc::wamp_router &, wampcc::wamp_session &caller,
 
 void
 Wamp::getPid(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_info info, Service service, Pid pid) {
+    auto json = getPidData(service, pid);
+    wampcc::json_value v = wampcc::json_value::make_array();
+    v.as<wampcc::json_array>().push_back(json);
+
+    caller.result(info.request_id, v.as<wampcc::json_array>());
+}
+
+template<typename T>
+void Wamp::addVectorToJsonObject(wampcc::json_value &obj, string name, vector<T> vec) const {
+    obj[name] = wampcc::json_value::make_array();
+    for (const auto &value : vec) {
+        obj[name].as<wampcc::json_array>().emplace_back(value);
+    }
+}
+
+void Wamp::subscribeToPid(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_info info, Service service,
+                          Pid pid, string key) {
+    subscriptionMutex.lock();
+    subscriptions->insert({key, {service, pid}});
+    subscriptionMutex.unlock();
+}
+
+void
+Wamp::unsubscribeFromPid(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_info info, string key) {
+    subscriptionMutex.lock();
+    subscriptions->erase(key);
+    subscriptionMutex.unlock();
+}
+
+void Wamp::clearPidSubscriptions(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_info info) {
+    subscriptionMutex.lock();
+    subscriptions->clear();
+    subscriptionMutex.unlock();
+}
+
+
+wampcc::json_value Wamp::getPidData(const Service &service, const Pid &pid) const {
     shared_ptr<DataObjectValueCollection> dataObjectValue;
-    if (type != APP_TYPE::ECU) {
+    if (type != ECU) {
         vehicleDataProvider->queryVehicle(pid, service);
     }
     vehicleDataProvider->getPrintableDataForPid(service == 2, pid, dataObjectValue);
 
-    wampcc::json_value v = wampcc::json_value::make_array();
+    wampcc::json_value v = wampcc::json_value::make_object();
 
-    wampcc::json_object &rootObject = v.append_object();
+    //wampcc::json_object &rootObject = v.append_object();
 
     auto jsonService = wampcc::json_value::make_object();
     jsonService["id"] = service;
-    rootObject["service"] = jsonService;
+    v["service"] = jsonService;
 
     auto jsonPid = wampcc::json_value::make_object();
     jsonPid["name"] = pid.name;
@@ -111,7 +186,7 @@ Wamp::getPid(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_i
     addVectorToJsonObject(jsonPid, "maxValues", pid.maxValues);
     addVectorToJsonObject(jsonPid, "units", pid.units);
 
-    rootObject["pid"] = jsonPid;
+    v["pid"] = jsonPid;
 
     auto jsonData = wampcc::json_value::make_array();
     wampcc::json_value jsonDataValue;
@@ -120,6 +195,7 @@ Wamp::getPid(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_i
         jsonDataValue["numberValue"] = dataVal->getValue();
 
         const auto &desc = dataVal->getDescription();
+        jsonDataValue["name"] = desc->getDescriptionText();
         jsonDataValue["name"] = desc->getDescriptionText();
         jsonDataValue["unit"] = desc->getUnit().toShortString();
         jsonDataValue["min"] = desc->getMin();
@@ -132,15 +208,7 @@ Wamp::getPid(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_i
         jsonDataValue["details"] = details;
         jsonData.as<wampcc::json_array>().push_back(jsonDataValue);
     }
-    rootObject["data"] = jsonData;
-
-    caller.result(info.request_id, v.as<wampcc::json_array>());
+    v["data"] = jsonData;
+    return v;
 }
 
-template<typename T>
-void Wamp::addVectorToJsonObject(wampcc::json_value &obj, string name, vector<T> vec) {
-    obj[name] = wampcc::json_value::make_array();
-    for (const auto &value : vec) {
-        obj[name].as<wampcc::json_array>().emplace_back(value);
-    }
-}

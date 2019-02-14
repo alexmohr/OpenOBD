@@ -17,6 +17,7 @@ import Paper from '@material-ui/core/Paper';
 import { loadavg } from 'os';
 import { element } from 'prop-types';
 import { CircularProgress } from '@material-ui/core';
+import { PidQuery } from '../wamp/PidQuery';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -47,85 +48,97 @@ const styles = (theme: Theme) =>
 
 type State = {
   loadingDone: boolean;
-  loading: boolean;
-  values: Map<string, number>;
+  valueMap: Map<string, number>;
 };
 
 class Overview extends React.Component<WithStyles<typeof styles>, State> {
   private elements: JSX.Element[] = new Array<JSX.Element>();
+  private paperKeyIndex: number = 0;
 
   state = {
     loadingDone: false,
-    loading: false,
-    values: new Map<string, number>()
+    valueMap: new Map<string, number>()
   };
 
   componentDidMount() {
     stateStore.getState().autobahn.verifyLoaded();
+    this.load();
   }
+
+  private processPidQuery(pidQuery: PidQuery): void {
+    let dataMember = pidQuery.getData().getDataMember();
+    let fields: JSX.Element[] = new Array<JSX.Element>();
+    let pidName = pidQuery.getPid().getName();
+
+
+    dataMember.forEach(dm => {
+      let key = pidName + pidQuery.getPid().getId() + dm.getName();
+      this.state.valueMap.set(key, dm.getNumberValue())
+
+      fields.push(
+        <TextField
+          className={this.props.classes.textField}
+          key={key}
+          label={dm.getName()}
+          defaultValue={this.state.valueMap.get(key)}
+          helperText={"Unit: " + dm.getUnit()}
+          margin="normal"
+          InputProps={{ readOnly: true }} />)
+    })
+
+    stateStore.getState().autobahn.subscribeToPid(1, pidName, (result) => {
+      let map = this.state.valueMap;
+      result.getData().getDataMember().forEach(dm => {
+        let key = pidName + pidQuery.getPid().getId() + dm.getName();
+        let entry = map.get(key);
+        if (undefined != entry) {
+          map.set(key, dm.getNumberValue());
+        }
+      });
+      this.setState({valueMap: map})
+    });
+
+    this.elements.push(
+      <Paper key={pidName + this.paperKeyIndex++ + pidQuery.getPid().getId()} elevation={1} className={this.props.classes.paper}>
+        <Typography variant="h5" gutterBottom>
+          {pidQuery.getPid().getDescription()}
+        </Typography>
+        {fields}
+      </Paper>)
+  }
+
 
   private load(): void {
     let serviceQuery = stateStore.getState().autobahn.getServiceData(1);
     if (null == serviceQuery) return;
+
     serviceQuery.done((sq) => {
-      sq.getPidNames().forEach(pidName => {
-        let pidQuery = stateStore.getState().autobahn.getPidData(1,pidName);
-        if (null != pidQuery) {
-          pidQuery.done((pq) => {
-            let dataMember = pq.getData().getDataMember();
-            let index = 0;
-            let fields: JSX.Element[] = new Array<JSX.Element>();
+      for (let pidName of sq.getPidNames()) {
+        let pidQuery = stateStore.getState().autobahn.getPidData(1, pidName);
+        if (null == pidQuery) 
+          continue;
 
-            dataMember.forEach(dm => {
-              let key = dm.getName() + index++;
-              this.state.values.set(key, dm.getNumberValue())
-              fields.push(
-                <TextField
-                  className={this.props.classes.textField}
-                  key={key}
-                  label={dm.getName()}
-                  defaultValue={this.state.values.get(key)}
-                  helperText={"Unit: " + dm.getUnit()}
-                  margin="normal"
-                  InputProps={{ readOnly: true }} />)
-            })
+        pidQuery.done((pq) => { 
+          this.processPidQuery(pq);
 
-/*
-            stateStore.getState().autobahn.subscribeToPid(1, pidName, (result) => {
-              this.state.values.get("VehicleSpeed") = 42
-            });*/
-
-            this.elements.push(
-              <Paper key={pq.getPid().getName() + index++} elevation={1} className={this.props.classes.paper}>
-                <Typography variant="h5" gutterBottom>
-                  {pq.getPid().getDescription()}
-                </Typography>
-                {fields}
-              </Paper>)
-
-            this.setState({
-              loadingDone: true,
-            });
+          this.setState({
+            loadingDone: true,
           });
-        };
-      });
+        });
+      }
+      
     })
-
-
   }
 
   render() {
     if (!this.state.loadingDone) {
-      if (!this.state.loading) {
-        this.load();
-      }
       return <div className={this.props.classes.loaderDiv}>
-        <CircularProgress className={this.props.classes.progress} disableShrink={true}> 
+        <CircularProgress className={this.props.classes.progress} disableShrink={true}>
           <Typography variant="h4" gutterBottom>
             Loading
           </Typography>
         </CircularProgress>
-        </div>
+      </div>
     }
 
 
@@ -135,8 +148,6 @@ class Overview extends React.Component<WithStyles<typeof styles>, State> {
           {this.elements}
         </div>
       </div>
-
-
     );
   }
 }

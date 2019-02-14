@@ -10,7 +10,7 @@ DataObjectDescriptionText::getMonitorStatusMIL() { return "Off or On, indicates 
 const string
 DataObjectDescriptionText::getMonitorStatusDTC() { return "Number of confirmed emissions-related DTCs available for display."; }
 
-const string DataObjectDescriptionText::getOBDTest() { return "OBDTest "; }
+const string DataObjectDescriptionText::getOBDTest() { return "OBDTest"; }
 
 const string DataObjectDescriptionText::getOBDTestAvailable() { return " available"; }
 
@@ -183,4 +183,8 @@ const string DataObjectDescriptionText::getAmbientAirTemperature() {
 
 const string DataObjectDescriptionText::getFuelRailGaugePressure() {
     return "Fuel Rail Gauge Pressure";
+}
+
+const string DataObjectDescriptionText::getEngineSystem(int index) {
+    return "EngineSystem " + to_string(index);
 }

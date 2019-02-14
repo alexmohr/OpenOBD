@@ -130,6 +130,10 @@ public:
     const static string getFuelAirCommandedEquivalenceRatio();
 
     const static string getAmbientAirTemperature();
+
+public:
+
+    const static string getEngineSystem(int index);
 };
 
 

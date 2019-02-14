@@ -87,20 +87,17 @@ void Wamp::serve() {
         }
     }
     while (!exitRequested) {
+        wampcc::json_value v = wampcc::json_value::make_array();
         for (auto const&[key, val] : *subscriptions) {
-            /** Publish to an internal topic */
-
             auto json = getPidData(val.first, val.second);
-
-            wampcc::json_value v = wampcc::json_value::make_array();
             v.as<wampcc::json_array>().push_back(json);
-
-            auto args = wampcc::wamp_args();
-            args.args_list = v.as<wampcc::json_array>();
-            router->publish(REALM, key, {}, args);
         }
 
-        this_thread::sleep_for(100ms);
+        auto args = wampcc::wamp_args();
+        args.args_list = v.as<wampcc::json_array>();
+        router->publish(REALM, "get.service.any.subscriptions", {}, args);
+
+        this_thread::sleep_for(10000ms);
     }
 }
 

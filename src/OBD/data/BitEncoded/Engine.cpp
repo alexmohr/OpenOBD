@@ -6,14 +6,14 @@
 
 
 Engine::Engine() {
-    engineSystem1 = make_unique<OBDTest>("", C, 7, D, 7);
-    engineSystem2 = make_unique<OBDTest>("", C, 6, D, 6);
-    engineSystem3 = make_unique<OBDTest>("", C, 5, D, 5);
-    engineSystem4 = make_unique<OBDTest>("", C, 4, D, 4);
-    engineSystem5 = make_unique<OBDTest>("", C, 3, D, 3);
-    engineSystem6 = make_unique<OBDTest>("", C, 2, D, 2);
-    engineSystem7 = make_unique<OBDTest>("", C, 1, D, 1);
-    engineSystem8 = make_unique<OBDTest>("", C, 0, D, 0);
+    engineSystem1 = make_unique<OBDTest>(DataObjectDescriptionText::getEngineSystem(1), C, 7, D, 7);
+    engineSystem2 = make_unique<OBDTest>(DataObjectDescriptionText::getEngineSystem(2), C, 6, D, 6);
+    engineSystem3 = make_unique<OBDTest>(DataObjectDescriptionText::getEngineSystem(3), C, 5, D, 5);
+    engineSystem4 = make_unique<OBDTest>(DataObjectDescriptionText::getEngineSystem(4), C, 4, D, 4);
+    engineSystem5 = make_unique<OBDTest>(DataObjectDescriptionText::getEngineSystem(5), C, 3, D, 3);
+    engineSystem6 = make_unique<OBDTest>(DataObjectDescriptionText::getEngineSystem(6), C, 2, D, 2);
+    engineSystem7 = make_unique<OBDTest>(DataObjectDescriptionText::getEngineSystem(7), C, 1, D, 1);
+    engineSystem8 = make_unique<OBDTest>(DataObjectDescriptionText::getEngineSystem(8), C, 0, D, 0);
     type = make_unique<DataObject<EngineType>>(B, 3, B, 3, unit_bool, EngineType::PETROL, EngineType::DIESEL,
                                                DataObjectDescriptionText::getEngineType());
     setEngineType(PETROL);

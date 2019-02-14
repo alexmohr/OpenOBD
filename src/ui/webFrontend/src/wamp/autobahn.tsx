@@ -22,7 +22,10 @@ export class Communication {
 
     private _isOpen: boolean = false;
 
+    private _pidSubscribers: Map<string, Array<(pidQuery: PidQuery) => any>>;
+
     public constructor() {
+        this._pidSubscribers = new Map<string, Array<(pidQuery: PidQuery) => any>>();
     }
 
 
@@ -60,10 +63,37 @@ export class Communication {
         if (this._session == undefined) {
             return;
         }
-        let url = "get.service." + serviceId + "." + pidName;
-        this._session.call(url + ".subscribe");
+
+        let url = "get.service." + serviceId + "." + pidName + ".subscribe";
+        this._session.call(url);
+        let subs = this._pidSubscribers.get(pidName);
+        if (subs == undefined) {
+            subs = new Array<(pidQuery: PidQuery) => any>()
+            this._pidSubscribers.set(pidName, subs);
+        }
+
+        subs.push(handler);
+    }
+
+    private initSubscriptions(): void {
+        if (this._session == undefined) {
+            return;
+        }
+
+        let url = "get.service.any.subscriptions";
         this._session.subscribe(url, (data) => {
-            let pidData = this.parsePidQuery(data[0]);
+            for (let i = 0; i < data.length; i++) {
+                let pidData = this.parsePidQuery(data[i]);
+                let pidName = pidData.getPid().getName();
+                let subs = this._pidSubscribers.get(pidName);
+                if (undefined == subs) {
+                    continue;
+                }
+
+                for (let sub in subs) {
+                    subs[sub](pidData);
+                }
+            }
         });
     }
 
@@ -93,5 +123,6 @@ export class Communication {
     private connectionOpened = (session: autobahn.Session): void => {
         this._session = session;
         this._isOpen = true;
+        this.initSubscriptions()
     }
 }

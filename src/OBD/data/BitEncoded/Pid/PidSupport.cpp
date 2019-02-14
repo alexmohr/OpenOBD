@@ -5,7 +5,7 @@
 #include "PidSupport.h"
 
 
-PidSupport::PidSupport(){
+PidSupport::PidSupport() {
     pidSupported01_20 = make_unique<SupportedPidCollection>();
     pidSupported21_40 = make_unique<SupportedPidCollection>();
     pidSupported41_60 = make_unique<SupportedPidCollection>();

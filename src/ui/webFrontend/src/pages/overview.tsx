@@ -48,85 +48,81 @@ const styles = (theme: Theme) =>
 
 type State = {
   loadingDone: boolean;
-  valueMap: Map<string, number>;
+  trigger: boolean;
+  elements: Map<string, JSX.Element>;
 };
 
 class Overview extends React.Component<WithStyles<typeof styles>, State> {
-  private elements: JSX.Element[] = new Array<JSX.Element>();
-  private paperKeyIndex: number = 0;
-
   state = {
     loadingDone: false,
-    valueMap: new Map<string, number>()
+    trigger: false,
+    elements: new Map<string, JSX.Element>()
   };
 
   componentDidMount() {
     stateStore.getState().autobahn.verifyLoaded();
-    this.load();
+    this.initialLoad();
   }
 
-  private processPidQuery(pidQuery: PidQuery): void {
+  private processPidQuery(pidQuery: PidQuery): JSX.Element {
     let dataMember = pidQuery.getData().getDataMember();
     let fields: JSX.Element[] = new Array<JSX.Element>();
     let pidName = pidQuery.getPid().getName();
 
-
     dataMember.forEach(dm => {
       let key = pidName + pidQuery.getPid().getId() + dm.getName();
-      this.state.valueMap.set(key, dm.getNumberValue())
-
+      console.log(dm.getNumberValue())
       fields.push(
         <TextField
           className={this.props.classes.textField}
           key={key}
           label={dm.getName()}
-          defaultValue={this.state.valueMap.get(key)}
+          value={dm.getNumberValue()}
           helperText={"Unit: " + dm.getUnit()}
           margin="normal"
           InputProps={{ readOnly: true }} />)
     })
 
-    stateStore.getState().autobahn.subscribeToPid(1, pidName, (result) => {
-      let map = this.state.valueMap;
-      result.getData().getDataMember().forEach(dm => {
-        let key = pidName + pidQuery.getPid().getId() + dm.getName();
-        let entry = map.get(key);
-        if (undefined != entry) {
-          map.set(key, dm.getNumberValue());
-        }
-      });
-      this.setState({valueMap: map})
+    let paperKey = pidName + pidQuery.getPid().getId();
+    let paper = <Paper key={paperKey} elevation={1} className={this.props.classes.paper}>
+      <Typography variant="h5" gutterBottom>
+        {pidQuery.getPid().getDescription()}
+      </Typography>
+      {fields}
+    </Paper>
+
+    let elements = this.state.elements;
+    elements.set(paperKey, paper);
+
+    this.setState({
+      elements: elements
     });
 
-    this.elements.push(
-      <Paper key={pidName + this.paperKeyIndex++ + pidQuery.getPid().getId()} elevation={1} className={this.props.classes.paper}>
-        <Typography variant="h5" gutterBottom>
-          {pidQuery.getPid().getDescription()}
-        </Typography>
-        {fields}
-      </Paper>)
+    return paper;
   }
 
 
-  private load(): void {
+  private initialLoad(): void {
     let serviceQuery = stateStore.getState().autobahn.getServiceData(1);
     if (null == serviceQuery) return;
 
     serviceQuery.done((sq) => {
       for (let pidName of sq.getPidNames()) {
         let pidQuery = stateStore.getState().autobahn.getPidData(1, pidName);
-        if (null == pidQuery) 
+        if (null == pidQuery)
           continue;
-
-        pidQuery.done((pq) => { 
-          this.processPidQuery(pq);
-
-          this.setState({
-            loadingDone: true,
+          
+        pidQuery.done((pq) => {
+          this.processPidQuery(pq)
+          stateStore.getState().autobahn.subscribeToPid(1, pidName, (result) => {
+            this.processPidQuery(result)
+            this.setState({ trigger: !this.state.trigger })
           });
+
+          this.setState({ loadingDone: true });
         });
       }
-      
+
     })
   }
 
@@ -141,11 +137,18 @@ class Overview extends React.Component<WithStyles<typeof styles>, State> {
       </div>
     }
 
+    let elementList = new Array<JSX.Element>();
+    this.state.elements.forEach((value: JSX.Element, key: string) => {
+      elementList.push(value)
+    });
+    
 
     return (
       <div className={this.props.classes.root}>
         <div>
-          {this.elements}
+          {
+             elementList
+          }
         </div>
       </div>
     );

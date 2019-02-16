@@ -13,7 +13,7 @@ class SupportedPidCollection : public IFrameObject {
 private:
     unique_ptr<vector<DataObject<bool>>> supportedPids;
 public:
-    SupportedPidCollection();
+    SupportedPidCollection(int offset);
 
     vector<DataObject<bool>> &getSupportedPids();
 

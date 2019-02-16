@@ -6,13 +6,13 @@
 
 
 PidSupport::PidSupport() {
-    pidSupported01_20 = make_unique<SupportedPidCollection>();
-    pidSupported21_40 = make_unique<SupportedPidCollection>();
-    pidSupported41_60 = make_unique<SupportedPidCollection>();
-    pidSupported61_80 = make_unique<SupportedPidCollection>();
-    pidSupported81_A0 = make_unique<SupportedPidCollection>();
-    pidSupportedA1_C0 = make_unique<SupportedPidCollection>();
-    pidSupportedC1_E0 = make_unique<SupportedPidCollection>();
+    pidSupported01_20 = make_unique<SupportedPidCollection>(1);
+    pidSupported21_40 = make_unique<SupportedPidCollection>(32);
+    pidSupported41_60 = make_unique<SupportedPidCollection>(64);
+    pidSupported61_80 = make_unique<SupportedPidCollection>(96);
+    pidSupported81_A0 = make_unique<SupportedPidCollection>(128);
+    pidSupportedA1_C0 = make_unique<SupportedPidCollection>(160);
+    pidSupportedC1_E0 = make_unique<SupportedPidCollection>(192);
 }
 
 void PidSupport::setPidSupported(Service service, int pid, bool supported) {

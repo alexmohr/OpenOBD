@@ -5,10 +5,10 @@
 #include "../../../../common/endian.h"
 #include "SupportedPidCollection.h"
 
-SupportedPidCollection::SupportedPidCollection() {
+SupportedPidCollection::SupportedPidCollection(int offset) {
     supportedPids = make_unique<vector<DataObject<bool>>>();
     int i;
-    int pidId = 1;
+    int pidId = offset;
     for (i = 7; i >= 0; i--) {
         supportedPids->emplace_back(A, i, DataObjectDescriptionText::getPidSupported(pidId++));
     }

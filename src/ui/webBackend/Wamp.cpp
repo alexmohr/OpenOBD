@@ -97,7 +97,7 @@ void Wamp::serve() {
         args.args_list = v.as<wampcc::json_array>();
         router->publish(REALM, "get.service.any.subscriptions", {}, args);
 
-        this_thread::sleep_for(10000ms);
+        this_thread::sleep_for(1s);
     }
 }
 

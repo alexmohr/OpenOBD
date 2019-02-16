@@ -7,12 +7,12 @@
 
 PidSupport::PidSupport() {
     pidSupported01_20 = make_unique<SupportedPidCollection>(1);
-    pidSupported21_40 = make_unique<SupportedPidCollection>(32);
-    pidSupported41_60 = make_unique<SupportedPidCollection>(64);
-    pidSupported61_80 = make_unique<SupportedPidCollection>(96);
-    pidSupported81_A0 = make_unique<SupportedPidCollection>(128);
-    pidSupportedA1_C0 = make_unique<SupportedPidCollection>(160);
-    pidSupportedC1_E0 = make_unique<SupportedPidCollection>(192);
+    pidSupported21_40 = make_unique<SupportedPidCollection>(33);
+    pidSupported41_60 = make_unique<SupportedPidCollection>(65);
+    pidSupported61_80 = make_unique<SupportedPidCollection>(97);
+    pidSupported81_A0 = make_unique<SupportedPidCollection>(129);
+    pidSupportedA1_C0 = make_unique<SupportedPidCollection>(161);
+    pidSupportedC1_E0 = make_unique<SupportedPidCollection>(193);
 }
 
 void PidSupport::setPidSupported(Service service, int pid, bool supported) {

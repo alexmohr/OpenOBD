@@ -3,8 +3,7 @@
     "validForServices": [1, 2], "pidList": [
     {
       "id": 0,
-      "size": 4,
-      "description": "PIDs supported [01 - 20]",
+      "size": 4, "description": "PIDs supported [01 - 32]",
       "name": "SupportedPid01_20",
       "minValues": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       "maxValues": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -291,8 +290,7 @@
       "dataFields": 1
     }, {
       "id": 32,
-      "size": 4,
-      "description": "PIDs supported [21 - 40]",
+      "size": 4, "description": "PIDs supported [33 - 64]",
       "name": "SupportedPid21_40",
       "minValues": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       "maxValues": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -579,8 +577,7 @@
       "dataFields": 1
     }, {
       "id": 64,
-      "size": 4,
-      "description": "PIDs supported [41 - 60]",
+      "size": 4, "description": "PIDs supported [65 - 96]",
       "name": "SupportedPid41_60",
       "minValues": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       "maxValues": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -867,8 +864,7 @@
       "dataFields": 1
     }, {
       "id": 96,
-      "size": 4,
-      "description": "PIDs supported [61 - 80]",
+      "size": 4, "description": "PIDs supported [96 - 127]",
       "name": "SupportedPid61_80",
       "minValues": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       "maxValues": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -1155,8 +1151,7 @@
       "dataFields": 1
     }, {
       "id": 128,
-      "size": 4,
-      "description": "PIDs supported [81 - A0]",
+      "size": 4, "description": "PIDs supported [129 - 160]",
       "name": "SupportedPid81_A0",
       "minValues": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       "maxValues": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -1416,8 +1411,7 @@
       "dataFields": 1
     }, {
       "id": 160,
-      "size": 4,
-      "description": "PIDs supported [A1 - C0]",
+      "size": 4, "description": "PIDs supported [161 - 192]",
       "name": "SupportedPidA1_C0",
       "minValues": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       "maxValues": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -1479,8 +1473,7 @@
       "dataFields": 1
     }, {
       "id": 192,
-      "size": 4,
-      "description": "PIDs supported [C1 - E0]",
+      "size": 4, "description": "PIDs supported [193 - 224]",
       "name": "SupportedPidC1_E0",
       "minValues": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       "maxValues": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],

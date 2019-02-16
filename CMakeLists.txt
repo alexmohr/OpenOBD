@@ -43,6 +43,18 @@ add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
         EXCLUDE_FROM_ALL)
 
 
+#### WEB
+# build the webinterface
+execute_process(COMMAND npm install
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/ui/webFrontend)
+execute_process(COMMAND npm run build
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/ui/webFrontend)
+execute_process(COMMAND cp -r ${PROJECT_SOURCE_DIR}/src/ui/webFrontend/build/* -r ${CMAKE_BINARY_DIR}/web)
+
+
+###
+
+
 find_package(OpenSSL REQUIRED)
 find_package(Libuv REQUIRED)
 set(HAVE_LIBUV ON)

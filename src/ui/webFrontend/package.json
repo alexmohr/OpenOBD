@@ -9,12 +9,12 @@
     "@types/react": "*",
     "@types/react-dom": "*",
     "@types/react-router-dom": "*",
+    "autobahn": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "react-scripts": "latest",
     "react-router-dom": "latest",
-    "redux": "latest",
-    "autobahn": "latest"
+    "react-scripts": "^2.1.5",
+    "redux": "latest"
   },
   "devDependencies": {
     "@types/jest": "*",

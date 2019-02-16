@@ -19,7 +19,7 @@ int CliHandler::openCli(int argc, char *argv[]) {
     char *script = new char[targetSize];
     memset(script, 0, targetSize);
 
-    int port = 35000;
+    int port = 0;
     bool enableElm = false;
     bool enableWamp = false;
 
@@ -126,7 +126,7 @@ void CliHandler::display_help(char *progname) {
                     "                                  selm: Serial Elm Interface.\n"
                     "                                  Note that tester does not work together with an elm interface\n"
                     "  -i ADDRESS                      IP Address or tty device of the ELM interface.\n"
-                    "  -p PORT                         PORT or baudrate of the ELM interface, set baudrate to 0 for auto baud.\n."
+                    "  -p PORT                         PORT or baudrate of the ELM interface, set baudrate to 0 for auto baud.\n"
                     "  -x                              Set logging to debug\n."
                     "  -e                              Enable elm server\n."
                     "  -r                              Run a script directly before showing console.\n"

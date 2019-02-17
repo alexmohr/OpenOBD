@@ -49,20 +49,24 @@ int SocketServer::openInterface() {
 
     exitRequested = false;
     tServeThread = thread(&SocketServer::serve, this);
-    isOpen = true;
+    open = true;
     return 0;
 }
 
 int SocketServer::closeInterface() {
-    if (!isOpen) {
+    if (!open) {
         return 0;
     }
 
     exitRequested = true;
     tServeThread.join();
     close(socketHandle);
-    isOpen = false;
+    open = false;
     return 0;
+}
+
+bool SocketServer::isOpen() {
+    return open;
 }
 
 void SocketServer::setClientHandler(ISocketServerClientHandler *handler) {
@@ -102,3 +106,4 @@ int SocketServer::send(byte *buf, int buflen, int socketHandle) {
 void SocketServer::receive(byte *buf, int bufSize, int &readSize, int socketHandle) {
     SocketCommunicationBase::receive(buf, bufSize, readSize, socketHandle);
 }
+

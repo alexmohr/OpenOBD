@@ -27,6 +27,8 @@ public: // ICommunicationInterface-
 
     int configureInterface() override { return 0; };
 
+    bool isOpen() override;
+
 public:
     static void receive(byte *buf, int bufSize, int &readSize, int socketHandle);
 

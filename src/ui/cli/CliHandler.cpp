@@ -22,6 +22,7 @@ int CliHandler::openCli(int argc, char *argv[]) {
     int port = 0;
     bool enableElm = false;
     bool enableWamp = false;
+    bool disableCli = false;
 
     char *configDir = new char[targetSize];
     memset(configDir, 0, targetSize);
@@ -29,7 +30,7 @@ int CliHandler::openCli(int argc, char *argv[]) {
     APP_TYPE type;
 
     if (getCommandLineArgs(argc, argv, *interface, port, type, enableElm, *script,
-                           enableWamp, *configDir) == EXIT_FAILURE) {
+                           enableWamp, *configDir, disableCli) == EXIT_FAILURE) {
         return EXIT_FAILURE;
     }
 
@@ -73,7 +74,7 @@ int CliHandler::openCli(int argc, char *argv[]) {
     }
 
     shared_ptr<OBDHandler> obdHandler = OBDHandler::createInstance();
-    cmdHandler = make_unique<CommandHandler>(type, logicalComInterface, obdHandler);
+
     delete[] interface;
     delete[] configDir;
 
@@ -85,10 +86,15 @@ int CliHandler::openCli(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    int val = cmdHandler->start();
-    if (script[0] != 0) {
-        cmdHandler->executeFile(string(script));
+    int val = 0;
+    if (!disableCli) {
+        cmdHandler = make_unique<CommandHandler>(type, logicalComInterface, obdHandler);
+        val = cmdHandler->start();
+        if (script[0] != 0) {
+            cmdHandler->executeFile(string(script));
+        }
     }
+
 
     if (enableWamp) {
         wampHandler = make_shared<Wamp>(logicalComInterface, obdHandler, type);
@@ -139,12 +145,13 @@ void CliHandler::display_help(char *progname) {
                     "  -r                              Run a script directly before showing console.\n"
                     "  -w                              Enable web server.\n"
                     "  -c                              Set the configuration directory.\n"
+                    "  -n                              Disable command line interface.\n"
                     "\n");
 }
 
 int
 CliHandler::getCommandLineArgs(int argc, char **argv, char &interface, int &port, APP_TYPE &type, bool &enableElm,
-                               char &script, bool &enableWamp, char &configDir) {
+                               char &script, bool &enableWamp, char &configDir, bool &disableCli) {
     char *typeTester = const_cast<char *>("tester");
     char *typeEcu = const_cast<char *>("ecu");
     char *typeWElm = const_cast<char *>("welm");
@@ -155,7 +162,7 @@ CliHandler::getCommandLineArgs(int argc, char **argv, char &interface, int &port
     bool logDebug = false;
 
     int c;
-    while ((c = getopt(argc, argv, "d:t:i:r:c:p:xew")) != -1) {
+    while ((c = getopt(argc, argv, "d:t:i:r:c:p:xewn")) != -1) {
         switch (c) {
             case 'e':
                 enableElm = true;
@@ -191,6 +198,9 @@ CliHandler::getCommandLineArgs(int argc, char **argv, char &interface, int &port
                 break;
             case 'w':
                 enableWamp = true;
+                break;
+            case 'n':
+                disableCli = true;
                 break;
             case 'c':
                 strcpy(&configDir, optarg);
@@ -232,10 +242,20 @@ bool CliHandler::isOpen() {
     if (nullptr != elmServer) {
         return elmServer->isOpen();
     }
+    if (nullptr != wampHandler) {
+        return wampHandler->isOpen();
+    }
     return false;
 }
 
 bool CliHandler::isExitRequested() {
-    return cmdHandler->isExitRequested();
+    if (nullptr != cmdHandler) {
+        return cmdHandler->isExitRequested();
+    }
+    if (nullptr != wampHandler) {
+        return wampHandler->isExitRequested();
+    }
+
+    return true;
 }
 

@@ -16,7 +16,7 @@ private:
     std::thread tServeThread;
     ISocketServerClientHandler *clientHandler;
     bool exitRequested;
-    bool isOpen;
+    bool open;
 public:
 
     explicit SocketServer(int port);
@@ -25,6 +25,8 @@ public: // override ICommunicationInterface
     int openInterface() override;
 
     int closeInterface() override;
+
+    bool isOpen() override;
 
 public: // override ISocketServer
     void setClientHandler(ISocketServerClientHandler *handler) override;

@@ -11,6 +11,8 @@ public:
 
     virtual int openInterface() = 0;
 
+    virtual bool isOpen() = 0;
+
     virtual ~ICloseable() = default;
 };
 

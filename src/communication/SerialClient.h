@@ -17,6 +17,7 @@ private:
     int baudrate;
     char *ttyDevice;
     int ttyFd;
+    bool clientOpen;
 public:
     SerialClient(int baudrate, char *ttyDevice);
 
@@ -26,6 +27,8 @@ public: // override ICloseable
     int closeInterface() override;
 
     int openInterface() override;
+
+    bool isOpen() override;
 
 public: // override ICommunicationInterface
     int send(byte *buf, int buflen) override;

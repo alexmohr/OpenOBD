@@ -38,7 +38,7 @@ SerialClient::~SerialClient() {
 
 
 int SerialClient::openInterface() {
-    ttyFd = open(ttyDevice, O_RDWR | O_NOCTTY | O_NONBLOCK);
+    ttyFd = ::open(ttyDevice, O_RDWR | O_NOCTTY | O_NONBLOCK);
     if (ttyFd == -1) {
         LOG(ERROR) << "Failed to open Interface: '" << ttyDevice << "': " << strerror(errno);
         return -1;
@@ -79,6 +79,7 @@ int SerialClient::openSerialPort() {
         return -1;
     }
 
+    clientOpen = true;
     return 0;
 }
 
@@ -123,7 +124,7 @@ int SerialClient::closeInterface() {
     if (res != 0) {
         el::Loggers::getLogger("default")->error("Failed closing ttyFd %s \n", strerror(errno));
     }
-
+    clientOpen = false;
     return res;
 }
 
@@ -140,6 +141,10 @@ int SerialClient::configureInterface() {
     write(ttyFd, ELM_DEVICE_RESET.c_str(), ELM_DEVICE_RESET.size());
     this_thread::sleep_for(1s); // give device time to init.
     return 0;
+}
+
+bool SerialClient::isOpen() {
+    return clientOpen;
 }
 
 

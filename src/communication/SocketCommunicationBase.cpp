@@ -41,7 +41,6 @@ int SocketCommunicationBase::send(byte *buf, int buflen, int socketHandle) {
 }
 
 
-
 void SocketCommunicationBase::receive(byte *buffer, int buffSize, int &readSize) {
     SocketCommunicationBase::receive(buffer, buffSize, readSize, socketHandle);
 }
@@ -68,4 +67,8 @@ int SocketCommunicationBase::closeInterface() {
     close(socketHandle);
     socketHandle = -1;
     return 0;
+}
+
+bool SocketCommunicationBase::isOpen() {
+    return socketHandle > 0;
 }

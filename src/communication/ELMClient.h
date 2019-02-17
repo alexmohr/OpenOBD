@@ -36,6 +36,8 @@ public: // override ICommunicationInterface
 
     int configureInterface() override;
 
+    bool isOpen() override;
+
 private:
     bool configurationCommandSendSuccessfully(byte *buf, int bufSize, string data);
 

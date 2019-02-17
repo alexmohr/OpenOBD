@@ -27,6 +27,7 @@ private:
 
 private:
     bool exitRequested;
+    bool wampOpen;
 
 private:
     unique_ptr<map<string, pair<Service, Pid>>> subscriptions;
@@ -47,6 +48,11 @@ public: // Implements ICloseable
     int closeInterface() override;
 
     int openInterface() override;
+
+    bool isOpen() override;
+
+public:
+    bool isExitRequested();
 
 private:
 

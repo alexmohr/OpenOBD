@@ -301,3 +301,7 @@ int ELMClient::sendString(const string &data) {
     LOG(DEBUG) << "Sending: " << data;
     return elmInterface->send((byte *) data.c_str(), static_cast<int>(data.size()));
 }
+
+bool ELMClient::isOpen() {
+    return elmInterface->isOpen();
+}

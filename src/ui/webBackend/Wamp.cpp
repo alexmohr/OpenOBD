@@ -21,14 +21,21 @@ Wamp::Wamp(shared_ptr<ICommunicationInterface> comInterface, shared_ptr<OBDHandl
 
 int Wamp::openInterface() {
     this->exitRequested = false;
+    wampOpen = true;
     tServe = thread(&Wamp::serve, this);
+
     return 0;
 }
 
 int Wamp::closeInterface() {
     this->exitRequested = true;
     tServe.join();
+    wampOpen = false;
     return 0;
+}
+
+bool Wamp::isOpen() {
+    return wampOpen;
 }
 
 void Wamp::serve() {
@@ -86,6 +93,8 @@ void Wamp::serve() {
                                        url));
         }
     }
+
+
     while (!exitRequested) {
         wampcc::json_value v = wampcc::json_value::make_array();
         for (auto const&[key, val] : *subscriptions) {
@@ -207,5 +216,9 @@ wampcc::json_value Wamp::getPidData(const Service &service, const Pid &pid) cons
     }
     v["data"] = jsonData;
     return v;
+}
+
+bool Wamp::isExitRequested() {
+    return this->exitRequested;
 }
 

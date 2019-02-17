@@ -39,9 +39,11 @@ void copyToVector(const json &jsdata, vector<T> &target);
 
 
 class Config {
+private:
+    static inline string configFolder = "../configuration/";
 public:
-    const string pidConfigName = "pidConfig.json";
-    const string dtcConfigName = "dtcConfig.json";
+    static inline const string pidConfigName = "pidConfig.json";
+    static inline const string dtcConfigName = "dtcConfig.json";
 
 public:
     template<typename T>
@@ -62,13 +64,9 @@ public:
 
     static void configureLogging(bool logdebug, bool toFile);
 
-    /**
-     * Tries to find configuration files.
-     * @param fileName The filename to find.
-     * @return A path to the file or an empty string if nothing found.
-     */
-    string findConfigFolder(vector<string> additionalSearchPaths);
+    static void setConfigFolder(string folder);
 
+    static string getConfigFolder();
 };
 
 

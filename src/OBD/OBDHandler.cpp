@@ -17,10 +17,10 @@ shared_ptr<OBDHandler> OBDHandler::createInstance() {
 
     // todo make paths configurable
     auto pcMap = map<Service, PidCollection>();
-    p.parseJson("../configuration/pidConfig.json", pcMap);
+    p.parseJson(Config::getConfigFolder() + Config::pidConfigName, pcMap);
 
     auto dtcMap = map<int, DataTroubleCode>();
-    p.parseJson("../configuration/dtcConfig.json", dtcMap);
+    p.parseJson(Config::getConfigFolder() + Config::dtcConfigName, dtcMap);
 
     return make_shared<OBDHandler>(
             make_unique<map<Service, PidCollection>>(pcMap),

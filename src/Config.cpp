@@ -1,3 +1,5 @@
+#include <utility>
+
 //
 // Created by me on 12/12/18.
 //
@@ -94,6 +96,13 @@ void Config::configureLogging(bool logdebug, bool toFile) {
 
 }
 
-string Config::findConfigFolder(vector<string> additionalSearchPaths) {
-    return std::__cxx11::string();
+void Config::setConfigFolder(string folder) {
+    configFolder = std::move(folder);
+    if (configFolder[configFolder.size() - 1] != '/') {
+        configFolder += "/";
+    }
+}
+
+string Config::getConfigFolder() {
+    return configFolder;
 }

@@ -23,11 +23,18 @@ int CliHandler::openCli(int argc, char *argv[]) {
     bool enableElm = false;
     bool enableWamp = false;
 
+    char *configDir = new char[targetSize];
+    memset(configDir, 0, targetSize);
+
     APP_TYPE type;
 
     if (getCommandLineArgs(argc, argv, *interface, port, type, enableElm, *script,
-                           enableWamp) == EXIT_FAILURE) {
+                           enableWamp, *configDir) == EXIT_FAILURE) {
         return EXIT_FAILURE;
+    }
+
+    if (configDir[0] != 0) {
+        Config::setConfigFolder(string(configDir));
     }
 
     switch (type) {
@@ -68,7 +75,7 @@ int CliHandler::openCli(int argc, char *argv[]) {
     shared_ptr<OBDHandler> obdHandler = OBDHandler::createInstance();
     cmdHandler = make_unique<CommandHandler>(type, logicalComInterface, obdHandler);
     delete[] interface;
-
+    delete[] configDir;
 
     if (logicalComInterface->openInterface() != 0) {
         return EXIT_FAILURE;
@@ -131,12 +138,13 @@ void CliHandler::display_help(char *progname) {
                     "  -e                              Enable elm server\n."
                     "  -r                              Run a script directly before showing console.\n"
                     "  -w                              Enable web server.\n"
+                    "  -c                              Set the configuration directory.\n"
                     "\n");
 }
 
 int
 CliHandler::getCommandLineArgs(int argc, char **argv, char &interface, int &port, APP_TYPE &type, bool &enableElm,
-                               char &script, bool &enableWamp) {
+                               char &script, bool &enableWamp, char &configDir) {
     char *typeTester = const_cast<char *>("tester");
     char *typeEcu = const_cast<char *>("ecu");
     char *typeWElm = const_cast<char *>("welm");
@@ -147,7 +155,7 @@ CliHandler::getCommandLineArgs(int argc, char **argv, char &interface, int &port
     bool logDebug = false;
 
     int c;
-    while ((c = getopt(argc, argv, "d:t:i:r:p:xew")) != -1) {
+    while ((c = getopt(argc, argv, "d:t:i:r:c:p:xew")) != -1) {
         switch (c) {
             case 'e':
                 enableElm = true;
@@ -183,6 +191,9 @@ CliHandler::getCommandLineArgs(int argc, char **argv, char &interface, int &port
                 break;
             case 'w':
                 enableWamp = true;
+                break;
+            case 'c':
+                strcpy(&configDir, optarg);
                 break;
             case '?':
             case 'h':

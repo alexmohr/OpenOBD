@@ -24,7 +24,6 @@ const styles = (theme: Theme) =>
     root: {
       display: 'flex',
       flexWrap: 'wrap',
-      marginLeft: 240 + theme.spacing.unit
     },
     loaderDiv: {
       textAlign: 'center',
@@ -71,7 +70,6 @@ class Overview extends React.Component<WithStyles<typeof styles>, State> {
 
     dataMember.forEach(dm => {
       let key = pidName + pidQuery.getPid().getId() + dm.getName();
-      console.log(dm.getNumberValue())
       fields.push(
         <TextField
           className={this.props.classes.textField}

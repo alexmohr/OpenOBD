@@ -25,8 +25,9 @@ function withRoot<P>(Component: React.ComponentType<P>) {
       <MuiThemeProvider theme={theme}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
-        <ResponsiveDrawer/>
-        <Component {...props} />
+        <ResponsiveDrawer>
+          <Component {...props} />
+        </ResponsiveDrawer>
       </MuiThemeProvider>
     );
   }

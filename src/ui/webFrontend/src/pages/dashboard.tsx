@@ -10,7 +10,8 @@ import { Theme } from '@material-ui/core/styles/createMuiTheme';
 import createStyles from '@material-ui/core/styles/createStyles';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import withRoot from '../withRoot';
-import { Communication } from '../wamp/autobahn';
+import Paper from '@material-ui/core/Paper';
+import TextField from '@material-ui/core/TextField';
 import { stateStore } from '../redux/reducer'
 
 const styles = (theme: Theme) =>
@@ -18,6 +19,18 @@ const styles = (theme: Theme) =>
     root: {
       textAlign: 'center',
     },
+    paper: {
+      padding: theme.spacing.unit,
+      paddingTop: theme.spacing.unit * 2,
+      paddingBottom: theme.spacing.unit * 2,
+      margin: theme.spacing.unit
+    },
+    textField: {
+      marginLeft: theme.spacing.unit,
+      marginRight: theme.spacing.unit,
+      width: 200,
+    },
+
   });
 
 type State = {
@@ -30,18 +43,9 @@ class Dashboard extends React.Component<WithStyles<typeof styles>, State> {
     open: false,
   };
 
-
   componentDidMount() {
     stateStore.getState().autobahn.verifyLoaded();
-/*
-    let pidQuery = stateStore.getState().autobahn.getPidData("VehicleSpeed");
-    if (pidQuery == null) return;*/
-   /* pidQuery.done((pq) =>{
-      console.log(pq.getData().getStringData())
-    })*/
-    
   }
-
 
   handleClose = () => {
     this.setState({
@@ -56,30 +60,18 @@ class Dashboard extends React.Component<WithStyles<typeof styles>, State> {
   };
 
   render() {
-    return (
-      <div className={this.props.classes.root}>
-        <Dialog open={this.state.open} onClose={this.handleClose}>
-          <DialogTitle>Super Secret Password</DialogTitle>
-          <DialogContent>
-            <DialogContentText>1-2-3-4-5</DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button color="primary" onClick={this.handleClose}>
-              OK
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <Typography variant="h4" gutterBottom>
-          Material-UI
-        </Typography>
-        <Typography variant="subtitle1" gutterBottom>
-          example project
-        </Typography>
-        <Button variant="contained" color="secondary" onClick={this.handleClick}>
-          Super Secret Password
-        </Button>
-      </div>
-    );
+
+   return  <Paper key={"asdaf"} elevation={1} className={this.props.classes.paper}>
+      <TextField
+          className={this.props.classes.textField}
+          key={"asd"}
+          label="Vehicle Speed"
+          value={0}
+          helperText={"Unit: " + "n"}
+          margin="normal"
+          InputProps={{ readOnly: true }} />
+    </Paper>
+  
   }
 }
 

@@ -45,9 +45,16 @@ const styles = (theme: Theme) =>
         drawerPaper: {
             width: drawerWidth,
         },
-        content: {
-            flexGrow: 1,
-            padding: theme.spacing.unit * 3,
+        contentWithMenu: {
+            marginLeft: drawerWidth + theme.spacing.unit,
+            marginRight: theme.spacing.unit, 
+            [theme.breakpoints.down('xs')]: {
+                marginLeft: theme.spacing.unit,
+            },
+        },
+        contentWithoutMenu: {
+            marginLeft: theme.spacing.unit,
+            marginRight: theme.spacing.unit
         },
     });
 
@@ -64,11 +71,11 @@ class AppDrawer extends React.Component<WithStyles<typeof styles>, State> {
         desktopOpen: true
     };
 
-    private handleDrawerToggleMobile(): void {
+    handleDrawerToggleMobile = () => {
         this.setState(state => ({ mobileOpen: !state.mobileOpen }));
-    };
+    }
 
-    private handleDrawerToggleDesktop(): void {
+    handleDrawerToggleDesktop = () => {
         this.setState(state => ({ desktopOpen: !state.desktopOpen }));
     };
 
@@ -80,13 +87,13 @@ class AppDrawer extends React.Component<WithStyles<typeof styles>, State> {
                 <List>
                     <ListItem button onClick={() => setUrlPath("Dashboard")}>
                         <ListItemIcon>
-                            <Dashboard/>
+                            <Dashboard />
                         </ListItemIcon>
                         <ListItemText primary="Dashboard" />
                     </ListItem>
                     <ListItem button onClick={() => setUrlPath("Overview")}>
                         <ListItemIcon>
-                            <FormatListBulleted/>
+                            <FormatListBulleted />
                         </ListItemIcon>
                         <ListItemText primary="Overview" />
                     </ListItem>
@@ -95,12 +102,13 @@ class AppDrawer extends React.Component<WithStyles<typeof styles>, State> {
                 <List>
                     <ListItem button onClick={() => setUrlPath("TroubleCodes")}>
                         <ListItemIcon>
-                            <Warning/>
+                            <Warning />
                         </ListItemIcon>
                         <ListItemText primary="Trouble Codes" />
                     </ListItem>
                 </List>
             </div>
+
         );
 
         let drawerClass = ""
@@ -108,61 +116,72 @@ class AppDrawer extends React.Component<WithStyles<typeof styles>, State> {
             drawerClass = this.props.classes.drawer
         }
 
+        let drawerOpenClass = this.props.classes.contentWithoutMenu
+        if (this.state.desktopOpen) {
+            drawerOpenClass = this.props.classes.contentWithMenu
+        }
+
         return (
-            <div className={this.props.classes.root}>
-                <CssBaseline />
-                <AppBar position="fixed" className={this.props.classes.appBar}>
-                    <Toolbar>
+            <div>
+                <div className={this.props.classes.root}>
+                    <CssBaseline />
+                    <AppBar position="fixed" className={this.props.classes.appBar}>
+                        <Toolbar>
+                            <Hidden smUp implementation="css">
+                                <IconButton
+                                    color="inherit"
+                                    aria-label="Open drawer"
+                                    onClick={this.handleDrawerToggleMobile}
+                                    className={this.props.classes.menuButton}>
+                                    <MenuIcon />
+                                </IconButton>
+                            </Hidden>
+                            <Hidden xsDown implementation="css">
+                                <IconButton
+                                    color="inherit"
+                                    aria-label="Open drawer"
+                                    onClick={this.handleDrawerToggleDesktop}
+                                    className={this.props.classes.menuButton}>
+                                    <MenuIcon />
+                                </IconButton>
+                            </Hidden>
+                            <Typography variant="h6" color="inherit" noWrap>
+                                Open OBD
+                        </Typography>
+                        </Toolbar>
+                    </AppBar>
+                    <nav className={drawerClass}>
                         <Hidden smUp implementation="css">
-                            <IconButton
-                                color="inherit"
-                                aria-label="Open drawer"
-                                onClick={this.handleDrawerToggleMobile}
-                                className={this.props.classes.menuButton}>
-                                <MenuIcon />
-                            </IconButton>
+                            <SwipeableDrawer
+                                onOpen={this.handleDrawerToggleMobile}
+                                onClose={this.handleDrawerToggleMobile}
+                                variant="temporary"
+                                open={this.state.mobileOpen}
+                                classes={{
+                                    paper: this.props.classes.drawerPaper,
+                                }}>
+                                {drawer}
+                            </SwipeableDrawer>
                         </Hidden>
                         <Hidden xsDown implementation="css">
-                            <IconButton
-                                color="inherit"
-                                aria-label="Open drawer"
-                                onClick={this.handleDrawerToggleDesktop}
-                                className={this.props.classes.menuButton}>
-                                <MenuIcon />
-                            </IconButton>
+                            <SwipeableDrawer
+                                onOpen={this.handleDrawerToggleMobile}
+                                onClose={this.handleDrawerToggleMobile}
+                                classes={{
+                                    paper: this.props.classes.drawerPaper,
+                                }}
+                                variant="persistent"
+                                open={this.state.desktopOpen}>
+                                {drawer}
+                            </SwipeableDrawer>
                         </Hidden>
-                        <Typography variant="h6" color="inherit" noWrap>
-                            Open OBD
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
-                <nav className={drawerClass}>
-                    <Hidden smUp implementation="css">
-                        <SwipeableDrawer
-                            onOpen={this.handleDrawerToggleMobile}
-                            onClose={this.handleDrawerToggleMobile}
-                            variant="temporary"
-                            open={this.state.mobileOpen}
-                            classes={{
-                                paper: this.props.classes.drawerPaper,
-                            }}>
-                            {drawer}
-                        </SwipeableDrawer>
-                    </Hidden>
-                    <Hidden xsDown implementation="css">
-                        <SwipeableDrawer
-                            onOpen={this.handleDrawerToggleMobile}
-                            onClose={this.handleDrawerToggleMobile}
-                            classes={{
-                                paper: this.props.classes.drawerPaper,
-                            }}
-                            variant="persistent"
-                            open={this.state.desktopOpen}>
-                            {drawer}
-                        </SwipeableDrawer>
-                    </Hidden>
-                </nav>
+                    </nav>
+                </div>
+                <div className={drawerOpenClass}>
+                    {this.props.children}
+                </div>
             </div>
+
         );
     }
 }

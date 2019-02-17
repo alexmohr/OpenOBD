@@ -27,6 +27,7 @@ struct DataObjectState {
         this->max = 0;
         this->count = 0;
         this->expectedCount = 0;
+        this->value = 0;
     }
 
     DataObjectState(ErrorType type) : DataObjectState() {

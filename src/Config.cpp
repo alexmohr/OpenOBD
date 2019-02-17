@@ -72,12 +72,14 @@ void from_json(const json &jsData, Pid &pid) {
 
 void Config::configureLogging(bool logdebug, bool toFile) {
 
+    debugLog = logdebug;
+
     el::Configurations defaultConf;
     defaultConf.setToDefault();
 
     string val = "true";
     if (!logdebug) {
-        val = false;
+        val = "false";
     }
 
     defaultConf.set(el::Level::Trace, el::ConfigurationType::Enabled, val);
@@ -94,6 +96,7 @@ void Config::configureLogging(bool logdebug, bool toFile) {
     // default logger uses default configurations
     el::Loggers::reconfigureLogger("default", defaultConf);
 
+    d
 }
 
 void Config::setConfigFolder(string folder) {
@@ -105,4 +108,8 @@ void Config::setConfigFolder(string folder) {
 
 string Config::getConfigFolder() {
     return configFolder;
+}
+
+bool Config::isDebugLogEnabled() {
+    return debugLog;
 }

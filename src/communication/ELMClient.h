@@ -7,6 +7,7 @@
 
 #include "SocketClient.h"
 #include "ELM327.h"
+#include "../Config.h"
 
 #include <string>
 #include <vector>

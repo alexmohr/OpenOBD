@@ -44,7 +44,7 @@ private:
 public:
     static inline const string pidConfigName = "pidConfig.json";
     static inline const string dtcConfigName = "dtcConfig.json";
-
+    static inline bool debugLog = false;
 public:
     template<typename T>
     bool parseJson(const string &filename, T &t) {
@@ -67,6 +67,8 @@ public:
     static void setConfigFolder(string folder);
 
     static string getConfigFolder();
+
+    static bool isDebugLogEnabled();
 };
 
 

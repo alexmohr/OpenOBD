@@ -61,10 +61,13 @@ bool ELMClient::readDeviceBuffer(byte *buf, int bufSize, int &readSize) {
         hasPrompt = readSize > 0 && (char) buf[readSize - 1] == ELM_FLOW_PROMPT;
     } while (!hasPrompt && !hasTimeout);
 
-    auto runTime = (chrono::high_resolution_clock::now() - startTime);
-    LOG(DEBUG) << "Getting value from ecu took: "
-               << chrono::duration_cast<chrono::milliseconds>(runTime).count()
-               << "ms";
+    if (Config::isDebugLogEnabled()) {
+        auto runTime = (chrono::high_resolution_clock::now() - startTime);
+        LOG(DEBUG) << "Getting value from ecu took: "
+                   << chrono::duration_cast<chrono::milliseconds>(runTime).count() << "ms\n"
+                   << "Received the following data: " << (char *) buf;
+    }
+
 
     delete[] tempReadBuffer;
     if (readSize < 1) {

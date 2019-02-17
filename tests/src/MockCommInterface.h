@@ -51,6 +51,8 @@ public:
 
     int openInterface() override;
 
+    bool isOpen() override;
+
     void receive(byte *buf, int bufSize, int &readSize) override;
 
     void setDataForNextReceiveCall(byte *data, int size);

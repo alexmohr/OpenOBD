@@ -90,3 +90,7 @@ void MockCommInterface::setDataReceivedCallback(
 
 }
 
+bool MockCommInterface::isOpen() {
+    return true;
+}
+

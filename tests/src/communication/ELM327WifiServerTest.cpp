@@ -81,6 +81,10 @@ public: // ISocketServer
     int openInterface() override {
         return 0;
     }
+
+    bool isOpen() override {
+        return true;
+    }
 };
 
 const string CONFIG_OK = ELM_FLOW_OK + ELM_FLOW_NEWLINE_PROMPT;

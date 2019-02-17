@@ -31,7 +31,7 @@ Any other compiler than g++-8 with C++17 support should work as well but is not 
 ````
 mkdir build
 cd build
-cmake ../
+cmake .. -DCMAKE_BUILD_TYPE=Release
 make
 sudo make install
 ````

@@ -3,7 +3,8 @@ project(open_obd2)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "-Wall -pedantic")
-SET(COVERAGE OFF CACHE BOOL "Coverage")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+set(COVERAGE OFF CACHE BOOL "Coverage")
 set(CMAKE_MODULE_PATH
         ${CMAKE_MODULE_PATH}
         "${PROJECT_SOURCE_DIR}/submodules/wampcc/cmake"
@@ -49,8 +50,6 @@ execute_process(COMMAND npm install
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/ui/webFrontend)
 execute_process(COMMAND npm run build
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/ui/webFrontend)
-execute_process(COMMAND cp -r ${PROJECT_SOURCE_DIR}/src/ui/webFrontend/build/* -r ${CMAKE_BINARY_DIR}/web)
-
 
 ###
 
@@ -213,8 +212,6 @@ add_executable(Test
         tests/src/OBD/OBDHandlerTestsService1.cpp
         tests/src/OBD/OBDHandlerTestsService2.cpp)
 
-
-install(TARGETS open_obd2 EXPORT open_obd2 DESTINATION bin)
 target_link_libraries(Test PRIVATE gtest readline pthread readline crypto uv ssl atomic ${JANSSON_LIBRARIES})
 
 if (COVERAGE)
@@ -222,3 +219,7 @@ if (COVERAGE)
     target_link_libraries(Test PRIVATE gtest --coverage)
 endif ()
 add_test(NAME obdtest COMMAND Test)
+
+install(TARGETS open_obd2 EXPORT open_obd2 DESTINATION bin)
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/src/ui/webFrontend/build DESTINATION /usr/share/local/open-obd/web)
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/configuration/ DESTINATION /usr/share/local/open-obd/configuration)

@@ -32,7 +32,7 @@ type State = {
 };
 
 class Loader extends React.Component<WithStyles<typeof styles>, State> {
-  private _connectTimeoutMs: number = 5000;
+  private _connectTimeoutMs: number = 30000;
 
 
   state = {

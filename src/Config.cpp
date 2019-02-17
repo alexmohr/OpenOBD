@@ -72,8 +72,6 @@ void from_json(const json &jsData, Pid &pid) {
 
 void Config::configureLogging(bool logdebug, bool toFile) {
 
-    debugLog = logdebug;
-
     el::Configurations defaultConf;
     defaultConf.setToDefault();
 

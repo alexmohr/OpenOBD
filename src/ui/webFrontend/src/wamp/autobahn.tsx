@@ -75,6 +75,15 @@ export class Communication {
         subs.push(handler);
     }
 
+    public setUpdateRate(updateRateMs: number){
+        if (this._session == undefined) {
+            return;
+        }
+
+        let url = "set.service.any.setUpdateRate";
+        this._session.call(url, [updateRateMs]).done();
+    }
+
     private initSubscriptions(): void {
         if (this._session == undefined) {
             return;
@@ -110,6 +119,8 @@ export class Communication {
         if (!this.isOpen()) {
             setUrlPath("");
         }
+
+        this.clearSubscriptions();
     }
 
     private parsePidQuery(result: any): PidQuery {

@@ -16,6 +16,11 @@
             return null;
         let obj = JSON.parse(item)
         let cast = obj as T;
+
+        if (null == cast){
+            cast = {} as T;;
+        }
+
         return cast
     }
     

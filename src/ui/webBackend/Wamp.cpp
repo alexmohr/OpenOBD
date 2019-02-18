@@ -51,9 +51,16 @@ void Wamp::serve() {
         return;
     }
 
-    string clearPidSubscriptionsUrl = "set.clearPidSubscriptions";
+    string clearPidSubscriptionsUrl = "set.service.any.clearPidSubscriptions";
     router->callable(REALM, clearPidSubscriptionsUrl,
                      std::bind(&Wamp::clearPidSubscriptions, this,
+                               std::placeholders::_1,
+                               std::placeholders::_2,
+                               std::placeholders::_3));
+
+    string setUpdateRateUrl = "set.service.any.setUpdateRate";
+    router->callable(REALM, setUpdateRateUrl,
+                     std::bind(&Wamp::setUpdateRate, this,
                                std::placeholders::_1,
                                std::placeholders::_2,
                                std::placeholders::_3));
@@ -106,7 +113,7 @@ void Wamp::serve() {
         args.args_list = v.as<wampcc::json_array>();
         router->publish(REALM, "get.service.any.subscriptions", {}, args);
 
-        this_thread::sleep_for(1s);
+        this_thread::sleep_for(chrono::milliseconds(updateRate));
     }
 }
 
@@ -175,8 +182,6 @@ wampcc::json_value Wamp::getPidData(const Service &service, const Pid &pid) cons
 
     wampcc::json_value v = wampcc::json_value::make_object();
 
-    //wampcc::json_object &rootObject = v.append_object();
-
     auto jsonService = wampcc::json_value::make_object();
     jsonService["id"] = service;
     v["service"] = jsonService;
@@ -220,5 +225,12 @@ wampcc::json_value Wamp::getPidData(const Service &service, const Pid &pid) cons
 
 bool Wamp::isExitRequested() {
     return this->exitRequested;
+}
+
+void Wamp::setUpdateRate(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_info info) {
+    if (info.args.args_list.size() == 1) {
+        updateRate = info.args.args_list[0].as_int();
+    }
+
 }
 

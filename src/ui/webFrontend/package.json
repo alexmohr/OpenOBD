@@ -14,7 +14,8 @@
     "react-dom": "latest",
     "react-router-dom": "latest",
     "react-scripts": "^2.1.5",
-    "redux": "latest"
+    "redux": "latest",
+    "typescript-map": "0.0.7"
   },
   "devDependencies": {
     "@types/jest": "*",

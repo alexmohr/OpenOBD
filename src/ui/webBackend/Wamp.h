@@ -28,6 +28,7 @@ private:
 private:
     bool exitRequested;
     bool wampOpen;
+    long updateRate = 1000;
 
 private:
     unique_ptr<map<string, pair<Service, Pid>>> subscriptions;
@@ -72,7 +73,7 @@ private: // wamp calls.
 
     void clearPidSubscriptions(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_info info);
 
-    // void setUpdateRate(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_info info);
+    void setUpdateRate(wampcc::wamp_router &, wampcc::wamp_session &caller, wampcc::call_info info);
 
 private:
     template<typename T>

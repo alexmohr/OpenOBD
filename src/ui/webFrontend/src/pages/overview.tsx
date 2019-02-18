@@ -1,21 +1,13 @@
 import * as React from 'react';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import TextField from '@material-ui/core/TextField';
-import DialogTitle from '@material-ui/core/DialogTitle';
+
 import Typography from '@material-ui/core/Typography';
 import { Theme } from '@material-ui/core/styles/createMuiTheme';
 import createStyles from '@material-ui/core/styles/createStyles';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import withRoot from '../withRoot';
-import { Communication } from '../wamp/autobahn';
 import { stateStore } from '../redux/reducer'
 import Paper from '@material-ui/core/Paper';
-import { loadavg } from 'os';
-import { element } from 'prop-types';
+import TextField from '@material-ui/core/TextField';
 import { CircularProgress } from '@material-ui/core';
 import { PidQuery } from '../wamp/PidQuery';
 
@@ -60,6 +52,7 @@ class Overview extends React.Component<WithStyles<typeof styles>, State> {
 
   componentDidMount() {
     stateStore.getState().autobahn.verifyLoaded();
+    stateStore.getState().autobahn.setUpdateRate(5000);
     this.initialLoad();
   }
 

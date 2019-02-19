@@ -22,7 +22,7 @@ public:
 private:
     shared_ptr<ICommunicationInterface> comInterface;
     shared_ptr<OBDHandler> obdHandler;
-    unique_ptr<VehicleDataProvider> vehicleDataProvider;
+    shared_ptr<VehicleDataProvider> vehicleDataProvider;
     APP_TYPE type;
 
 private:
@@ -42,6 +42,7 @@ private:
 public:
     Wamp(shared_ptr<ICommunicationInterface> comInterface,
          shared_ptr<OBDHandler> obdHandler,
+         shared_ptr<VehicleDataProvider> vehicleDataProvider,
          APP_TYPE type);
 
 

@@ -34,17 +34,13 @@ void initCommandHandler(shared_ptr<MockCommInterface> mockComm, CommandHandler *
     mockComm->supportEverything = true;
 
     cmdHandler->start();
-
-    while (!cmdHandler->isInitDone()) {
-        usleep(1000);
-    }
-
 }
 
 void TestCommandHandler(APP_TYPE type) {
     shared_ptr<MockCommInterface> mockComm = make_shared<MockCommInterface>();
     shared_ptr<OBDHandler> obdHandler = OBDHandler::createInstance();
-    auto *cmdHandler = new CommandHandler(type, mockComm, obdHandler);
+    shared_ptr<VehicleDataProvider> vehicleDataProvider = make_shared<VehicleDataProvider>(obdHandler, mockComm);
+    auto *cmdHandler = new CommandHandler(type, mockComm, obdHandler, vehicleDataProvider);
 
     initCommandHandler(mockComm, cmdHandler);
 
@@ -144,7 +140,8 @@ TEST(CommandHandlerTest, setData_getData_SERIAL_ELM) {
 TEST(CommandHandlerTest, set_special) {
     shared_ptr<MockCommInterface> mockComm = make_shared<MockCommInterface>();
     shared_ptr<OBDHandler> obdHandler = OBDHandler::createInstance();
-    auto *cmdHandler = new CommandHandler(APP_TYPE::ECU, mockComm, obdHandler);
+    shared_ptr<VehicleDataProvider> vehicleDataProvider = make_shared<VehicleDataProvider>(obdHandler, mockComm);
+    auto *cmdHandler = new CommandHandler(APP_TYPE::ECU, mockComm, obdHandler, vehicleDataProvider);
     initCommandHandler(mockComm, cmdHandler);
 
     // invalid
@@ -202,7 +199,8 @@ TEST(CommandHandlerTest, set_special) {
 TEST(CommandHandlerTest, tryBreakStuff) {
     shared_ptr<MockCommInterface> mockComm = make_shared<MockCommInterface>();
     shared_ptr<OBDHandler> obdHandler = OBDHandler::createInstance();
-    auto *cmdHandler = new CommandHandler(APP_TYPE::ECU, mockComm, obdHandler);
+    shared_ptr<VehicleDataProvider> vehicleDataProvider = make_shared<VehicleDataProvider>(obdHandler, mockComm);
+    auto *cmdHandler = new CommandHandler(APP_TYPE::ECU, mockComm, obdHandler, vehicleDataProvider);
     vector<string> data = {"set"};
     cmdHandler->setData(data);
 

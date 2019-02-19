@@ -54,10 +54,9 @@ private:
     std::thread tInit;
     shared_ptr<OBDHandler> obdHandler;
     shared_ptr<ICommunicationInterface> comInterface;
-    unique_ptr<VehicleDataProvider> vehicleDataProvider;
+    shared_ptr<VehicleDataProvider> vehicleDataProvider;
     unique_ptr<CppReadline::Console> console;
     bool open;
-    bool initDone;
     bool cmdHandlerRdy;
     bool exitRequested;
     APP_TYPE type;
@@ -65,7 +64,7 @@ private:
 
 public:
     CommandHandler(APP_TYPE type, shared_ptr<ICommunicationInterface> comInterface,
-                   shared_ptr<OBDHandler> obdHandler);
+                   shared_ptr<OBDHandler> obdHandler, shared_ptr<VehicleDataProvider> vehicleDataProvider);
 
 public:
 
@@ -105,8 +104,6 @@ private:
     DataObjectState getDataSpecial(const vector<string> &cmd);
 
     void configureVirtualVehicle(Vehicle *vehicle);
-
-    void configureVehicle();
 
     void ecuRecvThread();
 

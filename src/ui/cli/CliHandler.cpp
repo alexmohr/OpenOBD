@@ -86,9 +86,19 @@ int CliHandler::openCli(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
+    LOG(INFO) << "Getting supported pids from vehicle";
+
+    auto vehicleDataProvider = make_shared<VehicleDataProvider>(obdHandler, logicalComInterface);
+    bool anyError = vehicleDataProvider->configureVehicle();
+    if (!anyError) {
+        LOG(INFO) << "Successfully configured vehicle.";
+    } else {
+        LOG(INFO) << "Could not read all data from vehicle. Available commands may be incomplete.";
+    }
+
     int val = 0;
     if (!disableCli) {
-        cmdHandler = make_unique<CommandHandler>(type, logicalComInterface, obdHandler);
+        cmdHandler = make_unique<CommandHandler>(type, logicalComInterface, obdHandler, vehicleDataProvider);
         val = cmdHandler->start();
         if (script[0] != 0) {
             cmdHandler->executeFile(string(script));
@@ -97,10 +107,9 @@ int CliHandler::openCli(int argc, char *argv[]) {
 
 
     if (enableWamp) {
-        wampHandler = make_shared<Wamp>(logicalComInterface, obdHandler, type);
+        wampHandler = make_shared<Wamp>(logicalComInterface, obdHandler, vehicleDataProvider, type);
         wampHandler->openInterface();
     }
-
 
     delete[] script;
     return val;

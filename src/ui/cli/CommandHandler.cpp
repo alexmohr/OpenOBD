@@ -14,10 +14,10 @@
 
 
 CommandHandler::CommandHandler(APP_TYPE type, shared_ptr<ICommunicationInterface> comInterface,
-                               shared_ptr<OBDHandler> obdHandler) {
+                               shared_ptr<OBDHandler> obdHandler, shared_ptr<VehicleDataProvider> vehicleDataProvider) {
     this->obdHandler = obdHandler;
     this->comInterface = comInterface;
-    this->vehicleDataProvider = make_unique<VehicleDataProvider>(obdHandler, comInterface);
+    this->vehicleDataProvider = vehicleDataProvider;
     open = false;
     this->type = type;
 }
@@ -29,7 +29,6 @@ int CommandHandler::start() {
 
     LOG(INFO) << "Starting CLI";
     exitRequested = false;
-    initDone = false;
     cmdHandlerRdy = false;
 
     open = true;
@@ -38,10 +37,6 @@ int CommandHandler::start() {
     if (type == ECU) {
         configureVirtualVehicle(obdHandler->getVehicle());
         tRecv = thread(&CommandHandler::ecuRecvThread, this);
-    } else {
-        // run in background to give user to chance to abort if
-        // the requests to the vehicle time out.
-        tInit = thread(&CommandHandler::configureVehicle, this);
     }
 
     return 0;
@@ -74,23 +69,7 @@ void CommandHandler::configureVirtualVehicle(Vehicle *vehicle) {
             vehicle->getPidSupport().setPidSupported(service, pid.id, true);
         }
     }
-
-    initDone = true;
 }
-
-void CommandHandler::configureVehicle() {
-    LOG(INFO) << "Getting supported pids from vehicle";
-
-    bool anyError = vehicleDataProvider->configureVehicle();
-    if (!anyError) {
-        LOG(INFO) << "Successfully configured vehicle.";
-    } else {
-        LOG(INFO) << "Could not read all data from vehicle. Available commands may be incomplete.";
-    }
-
-    initDone = true;
-}
-
 
 void CommandHandler::ecuRecvThread() {
     int bufSize = 255;
@@ -121,11 +100,6 @@ void CommandHandler::ecuRecvThread() {
 }
 
 void CommandHandler::cmdHandler() {
-
-    while (!initDone) {
-        this_thread::sleep_for(1ms);
-    }
-
     if (exitRequested) {
         return;
     }
@@ -389,10 +363,6 @@ DataObjectState CommandHandler::setDataSpecial(const vector<string> &cmd) {
 
 OBDHandler &CommandHandler::getObdHandler() {
     return *obdHandler;
-}
-
-bool CommandHandler::isInitDone() {
-    return initDone;
 }
 
 bool CommandHandler::isExitRequested() {

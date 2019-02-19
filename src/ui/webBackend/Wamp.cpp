@@ -9,13 +9,15 @@
 
 // TODO WRITE TESTS <3
 
-Wamp::Wamp(shared_ptr<ICommunicationInterface> comInterface, shared_ptr<OBDHandler> obdHandler, APP_TYPE type) {
+Wamp::Wamp(shared_ptr<ICommunicationInterface> comInterface, shared_ptr<OBDHandler> obdHandler,
+           shared_ptr<VehicleDataProvider> vehicleDataProvider, APP_TYPE type) {
     this->comInterface = comInterface;
     this->obdHandler = obdHandler;
+    this->vehicleDataProvider = vehicleDataProvider;
     this->exitRequested = false;
     this->type = type;
 
-    this->vehicleDataProvider = make_unique<VehicleDataProvider>(obdHandler, comInterface);
+
     this->subscriptions = make_unique<map<string, pair<Service, Pid>>>();
 }
 

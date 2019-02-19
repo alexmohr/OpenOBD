@@ -223,6 +223,7 @@ class Dashboard extends React.Component<WithStyles<typeof styles>, State> {
 
     setObject(Dashboard.blackListName, blackList.toJSON())
     setObject(Dashboard.requestListName, requests.toJSON())
+    stateStore.getState().autobahn.unsubscribeFromPid(request.serviceId, request.pidName);
 
     this.processRequestList(requests, blackList);
     this.handleClose();

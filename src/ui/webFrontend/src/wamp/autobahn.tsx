@@ -75,6 +75,16 @@ export class Communication {
         subs.push(handler);
     }
 
+    public unsubscribeFromPid(serviceId: number, pidName: string): void {
+        if (this._session == undefined) {
+            return;
+        }
+
+        let url = "get.service." + serviceId + "." + pidName + ".unsubscribe";
+        this._session.call(url);
+        this._pidSubscribers.set(pidName,  new Array<(pidQuery: PidQuery) => any>());
+    }
+
     public setUpdateRate(updateRateMs: number){
         if (this._session == undefined) {
             return;
@@ -111,7 +121,7 @@ export class Communication {
             return;
         }
 
-        this._session.call("set.clearSubscriptions").done();
+        this._session.call("set.service.any.clearPidSubscriptions").done();
     }
 
 

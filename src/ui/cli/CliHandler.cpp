@@ -34,6 +34,11 @@ int CliHandler::openCli(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
+    if (disableCli && !enableWamp) {
+        LOG(ERROR) << "Cannot start without cli and / or wamp";
+        return EXIT_FAILURE;
+    }
+
     if (configDir[0] != 0) {
         Config::setConfigFolder(string(configDir));
     }
@@ -53,6 +58,10 @@ int CliHandler::openCli(int argc, char *argv[]) {
             break;
         case ECU:
             logicalComInterface = make_shared<CanIsoTP>(TESTER_ID, VEHICLE_ID, interface);
+            if (disableCli) {
+                LOG(ERROR) << "ECU cannot be used without cli.";
+                return EXIT_FAILURE;
+            }
             break;
         default:
             LOG(ERROR) << "Unsupported interface type";
@@ -88,13 +97,16 @@ int CliHandler::openCli(int argc, char *argv[]) {
 
     LOG(INFO) << "Getting supported pids from vehicle";
 
-    auto vehicleDataProvider = make_shared<VehicleDataProvider>(obdHandler, logicalComInterface);
-    bool anyError = vehicleDataProvider->configureVehicle();
-    if (!anyError) {
-        LOG(INFO) << "Successfully configured vehicle.";
-    } else {
-        LOG(INFO) << "Could not read all data from vehicle. Available commands may be incomplete.";
+    if (type != ECU) {
+        auto vehicleDataProvider = make_shared<VehicleDataProvider>(obdHandler, logicalComInterface);
+        bool anyError = vehicleDataProvider->configureVehicle();
+        if (!anyError) {
+            LOG(INFO) << "Successfully configured vehicle.";
+        } else {
+            LOG(INFO) << "Could not read all data from vehicle. Available commands may be incomplete.";
+        }
     }
+
 
     int val = 0;
     if (!disableCli) {

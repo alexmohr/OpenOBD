@@ -17,6 +17,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import FormatListBulleted from '@material-ui/icons/FormatListBulleted';
 import Warning from '@material-ui/icons/Warning';
+import Autorenew from '@material-ui/icons/Autorenew';
 
 import Typography from '@material-ui/core/Typography';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
@@ -105,6 +106,14 @@ class AppDrawer extends React.Component<WithStyles<typeof styles>, State> {
                             <Warning />
                         </ListItemIcon>
                         <ListItemText primary="Trouble Codes" />
+                    </ListItem>
+                </List>
+                <List>
+                    <ListItem button onClick={() => location.reload()}>
+                        <ListItemIcon>
+                            <Autorenew />
+                        </ListItemIcon>
+                        <ListItemText primary="Reload" />
                     </ListItem>
                 </List>
             </div>

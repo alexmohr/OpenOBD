@@ -14,6 +14,8 @@ import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import withRoot from '../withRoot';
 import { Redirect } from 'react-router-dom'
 import { stateStore } from '../redux/reducer'
+import { setUrlPath } from '../utils/common'
+
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -41,15 +43,10 @@ class Loader extends React.Component<WithStyles<typeof styles>, State> {
     connectionReady: false
   };
 
-  private initVehicle() : void{
-    //stateStore.getState().autobahn.getServices();
-  }
-
   private waitForConnection(connectionOpenRequestTime: Date): void {
     setTimeout(() => {
       let elapsedTime = new Date().valueOf() - connectionOpenRequestTime.valueOf();
       if (stateStore.getState().autobahn.isOpen()) {
-        this.initVehicle();
         this.setState({
           connectionReady: true,
         });
@@ -82,10 +79,7 @@ class Loader extends React.Component<WithStyles<typeof styles>, State> {
   }
 
   private handleRetry() : void {
-    this.setState({
-      retryDialogOpen: false,
-    });
-    this.openConnection();
+    location.reload();
   };
 
 

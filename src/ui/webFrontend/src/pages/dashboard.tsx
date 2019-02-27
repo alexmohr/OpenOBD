@@ -69,19 +69,6 @@ class Request {
     this.type = type;
     this.key = this.serviceId.toString() + this.pidName + this.type;
   }
-/*
-  public getServiceId(): number {
-    return this.serviceId;
-  }
-  public getPidName(): string {
-    return this.pidName;
-  }
-  public getType(): DisplayType {
-    return this.type;
-  }
-  public getKey(): string{
-    return this.serviceId.toString() + this.pidName + this.type;
-  }*/
 }
 
 type State = {
@@ -129,7 +116,10 @@ class Dashboard extends React.Component<WithStyles<typeof styles>, State> {
     
     this.load();
   }
-
+/*
+  http://voidcanvas.com/top-10-react-graph-chart-libraries-with-demo/
+  https://whawker.github.io/react-jsx-highcharts/examples/Gauge/index.html
+*/
   componentWillUnmount(){
     stateStore.getState().autobahn.clearSubscriptions();
   }
@@ -307,12 +297,7 @@ class Dashboard extends React.Component<WithStyles<typeof styles>, State> {
           </DialogActions>
         </Dialog>
       </div>
-
-
     </div>
-
-
-
   }
 }
 

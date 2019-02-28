@@ -17,15 +17,17 @@ import { stateStore } from '../redux/reducer'
 import { setUrlPath } from '../utils/common'
 
 
+
 const styles = (theme: Theme) =>
   createStyles({
-    root: {
+    loaderRoot: {
       textAlign: 'center',
       paddingTop: theme.spacing.unit * 20,
     },
     progress: {
       margin: theme.spacing.unit * 2,
     },
+   
   });
 
 type State = {
@@ -75,6 +77,7 @@ class Loader extends React.Component<WithStyles<typeof styles>, State> {
   };
 
   componentDidMount() {
+    stateStore.getState().commonStyles = styles;
     this.openConnection();
   }
 
@@ -89,7 +92,7 @@ class Loader extends React.Component<WithStyles<typeof styles>, State> {
     }
 
     return (
-      <div className={this.props.classes.root}>
+      <div className={this.props.classes.loaderRoot}>
         <CircularProgress className={this.props.classes.progress} />
         <Typography variant="h4" gutterBottom>
           Loading

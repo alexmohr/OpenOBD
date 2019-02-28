@@ -11,19 +11,19 @@ const stateCookie: string = "state";*/
 export const stateStore: ReduxStore<AppState> = createStore(reducer)
 export type AppState = {
     autobahn: Communication;
-    test: boolean;
+    commonStyles: any;
 }
 
 
 const initialState: AppState = {
-    test: true,
-    autobahn: new Communication()
+    autobahn: new Communication(),
+    commonStyles: {}
 }
 
 function reducer(state: AppState | undefined, action: Action): AppState {
     if (undefined == state) {
         state = {
-            test: true,
+            commonStyles: {},
             autobahn: new Communication()
         }
     }

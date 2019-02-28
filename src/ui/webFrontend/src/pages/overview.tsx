@@ -6,10 +6,9 @@ import createStyles from '@material-ui/core/styles/createStyles';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import withRoot from '../withRoot';
 import { stateStore } from '../redux/reducer'
-import Paper from '@material-ui/core/Paper';
-import TextField from '@material-ui/core/TextField';
 import { CircularProgress } from '@material-ui/core';
 import { PidQuery } from '../wamp/PidQuery';
+import { PidDisplay } from '../ui/PidDisplay';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -17,12 +16,17 @@ const styles = (theme: Theme) =>
       display: 'flex',
       flexWrap: 'wrap',
     },
-    loaderDiv: {
-      textAlign: 'center',
-      paddingTop: theme.spacing.unit * 10,
+    fabButton: {
+      marginTop: theme.spacing.unit * 4,
+      marginRight: theme.spacing.unit * 2
     },
-    progress: {
-      margin: theme.spacing.unit * 2,
+    addButton:{
+      textTransform: "none"
+    },
+    textField: {
+      marginLeft: theme.spacing.unit,
+      marginRight: theme.spacing.unit,
+      width: 200,
     },
     paper: {
       padding: theme.spacing.unit,
@@ -30,11 +34,17 @@ const styles = (theme: Theme) =>
       paddingBottom: theme.spacing.unit * 2,
       margin: theme.spacing.unit
     },
-    textField: {
-      marginLeft: theme.spacing.unit,
-      marginRight: theme.spacing.unit,
-      width: 200,
+    closeButton: {
+      marginLeft: theme.spacing.unit * 3,
     },
+    loaderRoot: {
+      textAlign: 'center',
+      paddingTop: theme.spacing.unit * 20,
+    },
+    progress: {
+      margin: theme.spacing.unit * 2,
+    }
+   
   });
 
 type State = {
@@ -57,31 +67,9 @@ class Overview extends React.Component<WithStyles<typeof styles>, State> {
   }
 
   private processPidQuery(pidQuery: PidQuery): JSX.Element {
-    let dataMember = pidQuery.getData().getDataMember();
-    let fields: JSX.Element[] = new Array<JSX.Element>();
-    let pidName = pidQuery.getPid().getName();
-
-    dataMember.forEach(dm => {
-      let key = pidName + pidQuery.getPid().getId() + dm.getName();
-      fields.push(
-        <TextField
-          className={this.props.classes.textField}
-          key={key}
-          label={dm.getName()}
-          value={dm.getNumberValue()}
-          helperText={"Unit: " + dm.getUnit()}
-          margin="normal"
-          InputProps={{ readOnly: true }} />)
-    })
-
-    let paperKey = pidName + pidQuery.getPid().getId();
-    let paper = <Paper key={paperKey} elevation={1} className={this.props.classes.paper}>
-      <Typography variant="h5" gutterBottom>
-        {pidQuery.getPid().getDescription()}
-      </Typography>
-      {fields}
-    </Paper>
-
+    let paper = <PidDisplay classes={this.props.classes} request={null} removeCallback={null} pidQuery={pidQuery}/>
+  
+    let paperKey = pidQuery.getPid().getName() + pidQuery.getPid().getId();
     let elements = this.state.elements;
     elements.set(paperKey, paper);
 
@@ -119,7 +107,7 @@ class Overview extends React.Component<WithStyles<typeof styles>, State> {
 
   render() {
     if (!this.state.loadingDone) {
-      return <div className={this.props.classes.loaderDiv}>
+      return <div className={this.props.classes.loaderRoot}>
         <CircularProgress className={this.props.classes.progress} disableShrink={true}>
           <Typography variant="h4" gutterBottom>
             Loading

@@ -1,23 +1,19 @@
 import * as React from 'react';
 import { PidQuery } from '../wamp/PidQuery';
-import Typography from '@material-ui/core/Typography';
+import { Request, DisplayType } from '../ui/request';
+import { PidDisplay } from '../ui/PidDisplay';
 import { Theme } from '@material-ui/core/styles/createMuiTheme';
 import createStyles from '@material-ui/core/styles/createStyles';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import withRoot from '../withRoot';
-import Paper from '@material-ui/core/Paper';
-import TextField from '@material-ui/core/TextField';
 import { stateStore } from '../redux/reducer'
 import Grid from '@material-ui/core/Grid';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
 import  {getObject, setObject} from '../redux/localStorage';
@@ -28,48 +24,37 @@ const styles = (theme: Theme) =>
     root: {
       flexGrow: 1
     },
-    paper: {
-      padding: theme.spacing.unit,
-      paddingTop: theme.spacing.unit * 2,
-      paddingBottom: theme.spacing.unit * 2,
-      margin: theme.spacing.unit
+    fabButton: {
+      marginTop: theme.spacing.unit * 4,
+      marginRight: theme.spacing.unit * 2
+    },
+    addButton:{
+      textTransform: "none"
     },
     textField: {
       marginLeft: theme.spacing.unit,
       marginRight: theme.spacing.unit,
       width: 200,
     },
-    fabButton: {
-      marginTop: theme.spacing.unit * 4,
-      marginRight: theme.spacing.unit * 2
+    paper: {
+      padding: theme.spacing.unit,
+      paddingTop: theme.spacing.unit * 2,
+      paddingBottom: theme.spacing.unit * 2,
+      margin: theme.spacing.unit
     },
     closeButton: {
-      marginLeft: theme.spacing.unit*3,
-    }, 
-    addButton:{
-      textTransform: "none"
+      marginLeft: theme.spacing.unit * 3,
+    },
+    loaderRoot: {
+      textAlign: 'center',
+      paddingTop: theme.spacing.unit * 20,
+    },
+    progress: {
+      margin: theme.spacing.unit * 2,
     }
 
   });
 
-enum DisplayType {
-  TextField,
-  Gauge,
-}
-
-class Request {
- public readonly serviceId: number;
- public readonly pidName: string;
- public readonly type: DisplayType;
- public readonly key: string;
-
-  constructor(serviceId: number, pidName: string, type: DisplayType) {
-    this.serviceId = serviceId;
-    this.pidName = pidName;
-    this.type = type;
-    this.key = this.serviceId.toString() + this.pidName + this.type;
-  }
-}
 
 type State = {
   open: boolean;
@@ -154,38 +139,9 @@ class Dashboard extends React.Component<WithStyles<typeof styles>, State> {
   }
 
   private processPidQuery(request: Request, pidQuery: PidQuery): JSX.Element {
-    let dataMember = pidQuery.getData().getDataMember();
-    let fields: JSX.Element[] = new Array<JSX.Element>();
-    let pidName = pidQuery.getPid().getName();
-
-    dataMember.forEach(dm => {
-      let key = pidName + pidQuery.getPid().getId() + dm.getName();
-      fields.push(
-        <TextField
-          className={this.props.classes.textField}
-          key={key}
-          label={dm.getName()}
-          value={dm.getNumberValue()}
-          helperText={"Unit: " + dm.getUnit()}
-          margin="normal"
-          InputProps={{ readOnly: true }} />)
-    })
-
-    let paperKey = request.key;
-    let paper = <Paper key={paperKey} elevation={1} className={this.props.classes.paper}>
-      <Typography variant="h5" gutterBottom>
-        {pidQuery.getPid().getDescription()}
-        <IconButton aria-label="Delete"
-          onClick={()=>this.handleRemove(request)}
-            className={this.props.classes.closeButton}>
-          <DeleteIcon fontSize="small" />
-        </IconButton>
-      </Typography>
-      {fields}
-    </Paper>
-
+    let paper = <PidDisplay classes={this.props.classes} request={request} removeCallback={(rq)=> {this.handleRemove(rq)}} pidQuery={pidQuery}/>
     let elements = this.state.elements;
-    elements.set(paperKey, paper);
+    elements.set(request.key, paper);
     this.setState({
       elements: elements
     });
@@ -197,7 +153,10 @@ class Dashboard extends React.Component<WithStyles<typeof styles>, State> {
     this.setState({ open: true });
   };
 
-  private handleRemove(request: Request): void {
+  private handleRemove(request: Request | null): void {
+    if (null == request){
+      return;
+    }
     let requests = this.state.requestList;
     let elements = this.state.elements;
     let blackList = this.state.blackList;

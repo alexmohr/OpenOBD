@@ -7,7 +7,7 @@
 #include <functional>
 
 
-// TODO WRITE TESTS <3
+// TODO WRITE TESTS
 
 Wamp::Wamp(shared_ptr<ICommunicationInterface> comInterface, shared_ptr<OBDHandler> obdHandler,
            shared_ptr<VehicleDataProvider> vehicleDataProvider, APP_TYPE type) {
@@ -129,7 +129,10 @@ void Wamp::getPidsInService(wampcc::wamp_router &, wampcc::wamp_session &caller,
 
     auto &pidCollection = obdHandler->getPidConfig()->at(service);
     for (const auto &pid: pidCollection.get_pid_list_as_vector()) {
-        if (pid.name.empty()) { continue; }
+        if (pid.name.empty()) {
+            continue;
+        }
+
         pids.as<wampcc::json_array>().emplace_back(pid.name);
     }
     rootObject["pids"] = pids;

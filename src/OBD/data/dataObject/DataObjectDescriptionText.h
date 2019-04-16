@@ -89,6 +89,8 @@ public:
 
     const static string getAbsoluteThrottlePosition(string val);
 
+    const static string getCommandedThrottleActuator();
+
 public:
     const static string getFuelSystemState(int system);
 

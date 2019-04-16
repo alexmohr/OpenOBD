@@ -29,7 +29,7 @@ public:
 private:
     unsigned int canId;
 
-    unsigned int convertSaeIdToCan(string saeId);
+    static unsigned int convertSaeIdToCan(string saeId);
 
 // fields set from configuration
 private:

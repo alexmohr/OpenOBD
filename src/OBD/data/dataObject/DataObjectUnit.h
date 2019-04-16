@@ -49,7 +49,7 @@ public:
     }
 };
 
-const static SiPrefix si_milli = SiPrefix("k", "kilo", -1000);
+const static SiPrefix si_milli = SiPrefix("m", "milli", -1000);
 const static SiPrefix si_kilo = SiPrefix("k", "kilo", 1000);
 const static SiPrefix si_none = SiPrefix("", "", 1);
 

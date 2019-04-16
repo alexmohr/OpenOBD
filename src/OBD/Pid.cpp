@@ -206,6 +206,8 @@ IFrameObject *Pid::getFrameObject(Vehicle *vehicle) const {
             return &vehicle->getThrottle().getAcceleratorPedalPositionE();
         case AcceleratorPedalPositionF:
             return &vehicle->getThrottle().getAcceleratorPedalPositionF();
+        case CommandedThrottleActuator:
+            return &vehicle->getThrottle().getCommandedThrottleActuator();
         default:
             LOG(ERROR) << "pid: " + to_string(pid) + " not implemented";
             return nullptr;

@@ -19,6 +19,9 @@ Throttle::Throttle() {
             DataObjectDescriptionText::getAbsoluteThrottlePosition("E"));
     acceleratorPedalPositionF = CalculatedDataObjectFactory::percent(
             DataObjectDescriptionText::getAbsoluteThrottlePosition("F"));
+
+    commandedThrottleActuator = CalculatedDataObjectFactory::percent(
+            DataObjectDescriptionText::getCommandedThrottleActuator());
 }
 
 
@@ -48,4 +51,8 @@ CalculatedDataObject<byte, float> &Throttle::getAcceleratorPedalPositionE() {
 
 CalculatedDataObject<byte, float> &Throttle::getAcceleratorPedalPositionF() {
     return *acceleratorPedalPositionF;
+}
+
+CalculatedDataObject<byte, float> &Throttle::getCommandedThrottleActuator() {
+    return *commandedThrottleActuator;
 }

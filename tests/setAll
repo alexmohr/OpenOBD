@@ -157,3 +157,5 @@ sleep 10
 set_1 AcceleratorPedalPositionE 1
 sleep 10
 set_1 AcceleratorPedalPositionF 1
+sleep 10
+set_1 CommandedThrottleActuator 1

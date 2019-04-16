@@ -24,13 +24,6 @@ private:
 public: // todo refactor this to private;
     friend class CalculatedDataObjectFactory;
 
-/*
-    CalculatedDataObject(ByteIndex startByte, unsigned int startIndex,
-                         ByteIndex stopByte, unsigned stopIndex, function<T(S)> fromFrameFunction,
-                         function<S(T)> toFrameFunction, const DataObjectUnit &unit, T min, T max)
-            : CalculatedDataObject(startByte, startIndex, stopByte, stopIndex, fromFrameFunction, toFrameFunction,
-                                   unit, min, max, "") {}
-*/
 
     CalculatedDataObject(ByteIndex startByte, unsigned int startIndex,
                          ByteIndex stopByte, unsigned stopIndex, function<T(S)> fromFrameFunction,

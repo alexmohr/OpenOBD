@@ -95,6 +95,7 @@ enum Service1Pids {
     AcceleratorPedalPositionD = 0x49,
     AcceleratorPedalPositionE = 0x4A,
     AcceleratorPedalPositionF = 0x4B,
+    CommandedThrottleActuator = 0x4C
 };
 
 class Pid {

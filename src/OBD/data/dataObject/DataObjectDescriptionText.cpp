@@ -110,7 +110,7 @@ const string DataObjectDescriptionText::getFuelSystemState(int system) {
 
 
 const string DataObjectDescriptionText::getCommandedSecondaryAirStatus() {
-    return "Commanded Secondary AirS tatus";
+    return "Commanded Secondary Air status";
 }
 
 const string DataObjectDescriptionText::getSpeed() {
@@ -187,4 +187,8 @@ const string DataObjectDescriptionText::getFuelRailGaugePressure() {
 
 const string DataObjectDescriptionText::getEngineSystem(int index) {
     return "EngineSystem " + to_string(index);
+}
+
+const string DataObjectDescriptionText::getCommandedThrottleActuator() {
+    return "Commanded Throttle Actuator";
 }

@@ -18,6 +18,8 @@ private:
     unique_ptr<CalculatedDataObject<byte, float>> acceleratorPedalPositionD;
     unique_ptr<CalculatedDataObject<byte, float>> acceleratorPedalPositionE;
     unique_ptr<CalculatedDataObject<byte, float>> acceleratorPedalPositionF;
+    unique_ptr<CalculatedDataObject<byte, float>> commandedThrottleActuator;
+
 
 public:
     Throttle();
@@ -36,6 +38,9 @@ public:
     CalculatedDataObject<byte, float> &getAcceleratorPedalPositionE();
 
     CalculatedDataObject<byte, float> &getAcceleratorPedalPositionF();
+
+    CalculatedDataObject<byte, float> &getCommandedThrottleActuator();
+
 
 };
 

@@ -444,4 +444,13 @@ TEST(OBDHandler, PID_4B_AcceleratorPedalPositionF) {
     TestCalculatedData(AcceleratorPedalPositionF, cb, 0.5f, dc);
 }
 
+TEST(OBDHandler, PID_4C_CommandedThrottleActuator) {
+    function<CalculatedDataObject<byte, float> *(Vehicle &vehicle)> cb =
+            [](Vehicle &vehicle) { return &vehicle.getThrottle().getCommandedThrottleActuator(); };
+
+    function<float(int)> dc = [](int value) { return 100.0f / 255 * value; };
+
+    TestCalculatedData(CommandedThrottleActuator, cb, 0.5f, dc);
+}
+
 
